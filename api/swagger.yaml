@@ -47,8 +47,8 @@ paths:
           content:
             application/json;version=35.2:
               schema:
-                type: string
                 x-content-type: application/json;version=35.2
+                $ref: '#/components/schemas/loginSuccess'
         "400":
           description: Bad Request
           content:
@@ -565,6 +565,17 @@ paths:
             application/json;version=35.2:
               schema:
                 $ref: '#/components/schemas/parentJob'
+              examples:
+                deleteEdgeGW:
+                  summary: delete edge gateway
+                  value:
+                    actions:
+                    - name: DELETE T1
+                      details: 3ed625b3-8f6f-49f8-828b-90bca70816d5
+                      status: DONE
+                    status: DONE
+                    name: parent_job
+                    description: parent job containing a list of actions
         "400":
           description: Bad Request
           content:
@@ -1012,6 +1023,19 @@ paths:
                 items:
                   $ref: '#/components/schemas/edgeGateway'
                 x-content-type: application/json;version=35.2
+              example:
+                - ownerType: vdc
+                  edgeId: cc1f35c2-90a2-48d1-9359-62794faf44ad
+                  ownerName: myVDC01
+                  edgeName: edgeName
+                  tier0VrfId: prvrf01iocb0000001allsp01
+                  description: Edge Gateway
+                - ownerType: vdc-group
+                  edgeId: 485dfb22-a8e4-47c8-a73a-97c0e68e7668
+                  ownerName: myVDC02
+                  edgeName: edgeNameG
+                  tier0VrfId: prvrf01iocb0000002allsp02
+                  description: Edge Gateway
         "400":
           description: Bad Request
           content:
@@ -1081,6 +1105,25 @@ paths:
             application/json;version=35.2:
               schema:
                 $ref: '#/components/schemas/edgeGateway'
+              examples:
+                vdc:
+                  summary: vdc edge gateway
+                  value:
+                    ownerType: vdc
+                    edgeId: cc1f35c2-90a2-48d1-9359-62794faf44ad
+                    ownerName: myVDC01
+                    edgeName: edgeName
+                    tier0VrfId: prvrf01iocb0000001allsp01
+                    description: Edge Gateway
+                vdc-group:
+                  summary: vdc-group edge gateway
+                  value:
+                    ownerType: vdc-group
+                    edgeId: 485dfb22-a8e4-47c8-a73a-97c0e68e7668
+                    ownerName: myVDC02
+                    edgeName: edgeNameG
+                    tier0VrfId: prvrf01iocb0000002allsp02
+                    description: Edge Gateway
         "400":
           description: Bad Request
           content:
@@ -1565,6 +1608,11 @@ paths:
                 items:
                   $ref: '#/components/schemas/vDCList'
                 x-content-type: application/json;version=35.2
+              example:
+              - vdc_name: vdc01
+                vdc_uuid: 1bb33b06-8a3b-4a2c-a077-d4771794cf3c
+              - vdc_name: vdc02
+                vdc_uuid: 9b1243ea-ca4f-4a20-9ff4-844f0584b3e7
         "400":
           description: Bad Request
           content:
@@ -1919,6 +1967,22 @@ paths:
       - NGP_API_FOR_CUSTOMER
 components:
   schemas:
+    loginSuccess:
+      example:
+        id: urn:vcloud:session:c0b72ac7-dad9-49d1-99f8-496ab79f5181
+        user:
+          name: dasilva
+          id: urn:vcloud:user:c8f80949-ae41-413f-9d10-a5eba6a8fcff
+        org:
+          name: yourorg
+          id: urn:vcloud:org:03a008bd-1d44-458d-bf13-01a23ca509b2
+        location: 1ad81464-3646-48f2-8acc-43e9e16a6f55@ded4bb44-a4b8-49ae-aef5-41dc44137a48
+        roles:
+          - Organization Administrator
+        roleRefs:
+          - name: Organization Administrator
+            id: urn:vcloud:role:7046b248-44b1-4b43-ad1d-f5d3a90f017c
+        sessionIdleTimeoutMinutes: 30
     customerInformation:
       required:
       - bssServiceId
@@ -2224,17 +2288,6 @@ components:
           - IN_PROGRESS
           - FAILED
           - DONE
-      example:
-        name: name
-        description: description
-        actions:
-        - name: CREATE_VORG
-          details: details
-          status: CREATED
-        - name: CREATE_VORG
-          details: details
-          status: CREATED
-        status: CREATED
     parentJob:
       type: array
       items:
@@ -2623,13 +2676,6 @@ components:
         description:
           type: string
       description: Edge Gateway (NSX-T Tier-1 Gateway)
-      example:
-        ownerType: vdc
-        edgeId: cc1f35c2-90a2-48d1-9359-62794faf44ad
-        ownerName: myVDC01
-        edgeName: edgeName
-        tier0VrfId: prvrf01iocb0000001allsp01
-        description: description
     vDCList:
       type: object
       properties:
@@ -2642,9 +2688,6 @@ components:
           description: vDC uuid
           example: 1bb33b06-8a3b-4a2c-a077-d4771794cf3c
       description: vDC list
-      example:
-        vdc_name: vdc01
-        vdc_uuid: 1bb33b06-8a3b-4a2c-a077-d4771794cf3c
     edgeGatewayNetworks:
       type: array
       description: List of edge gateway network configuration.
