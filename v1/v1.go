@@ -5,4 +5,5 @@ type V1 struct {
 	PublicIP    PublicIP
 	EdgeGateway EdgeGateway
 	T0          Tier0
+	VDC         CAVVDC
 }
