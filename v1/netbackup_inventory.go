@@ -14,9 +14,16 @@ func (i *InventoryClient) Refresh() (job *commonnetbackup.JobAPIResponse, err er
 		return job, err
 	}
 
+	type jobAPIResponse struct {
+		Data []struct {
+			ID     int    `json:"Id,omitempty"`
+			Status string `json:"Status,omitempty"`
+		} `json:"data,omitempty"`
+	}
+
 	r, err := c.R().
 		SetError(&commonnetbackup.APIError{}).
-		SetResult(&commonnetbackup.JobAPIResponse{}).
+		SetResult(&jobAPIResponse{}).
 		SetHeader("Content-Length", "0").
 		Post("/v6/assetimport/vcloud/tenants/import")
 	if err != nil {
@@ -27,5 +34,15 @@ func (i *InventoryClient) Refresh() (job *commonnetbackup.JobAPIResponse, err er
 		return job, commonnetbackup.ToError(r.Error().(*commonnetbackup.APIError))
 	}
 
-	return r.Result().(*commonnetbackup.JobAPIResponse), nil
+	jAPIResponse := &commonnetbackup.JobAPIResponse{
+		Data: struct {
+			ID     int    `json:"Id,omitempty"`
+			Status string `json:"Status,omitempty"`
+		}{
+			ID:     r.Result().(*jobAPIResponse).Data[0].ID,
+			Status: r.Result().(*jobAPIResponse).Data[0].Status,
+		},
+	}
+
+	return jAPIResponse, nil
 }
