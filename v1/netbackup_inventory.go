@@ -17,6 +17,7 @@ func (i *InventoryClient) Refresh() (job *commonnetbackup.JobAPIResponse, err er
 	r, err := c.R().
 		SetError(&commonnetbackup.APIError{}).
 		SetResult(&commonnetbackup.JobAPIResponse{}).
+		SetHeader("Content-Length", "0").
 		Post("/v6/assetimport/vcloud/tenants/import")
 	if err != nil {
 		return job, err
