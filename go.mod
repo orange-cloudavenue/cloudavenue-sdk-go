@@ -1,6 +1,6 @@
 module github.com/orange-cloudavenue/cloudavenue-sdk-go
 
-go 1.21.0
+go 1.20
 
 require (
 	github.com/go-resty/resty/v2 v2.9.1
