@@ -3,10 +3,9 @@ package v1
 import (
 	"fmt"
 
-	"golang.org/x/exp/slices"
-
 	clientcloudavenue "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/clients/cloudavenue"
 	commoncloudavenue "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/common/cloudavenue"
+	"golang.org/x/exp/slices"
 )
 
 type (
