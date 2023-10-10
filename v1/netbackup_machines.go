@@ -77,6 +77,11 @@ func (m *Machine) GetDisplayName() string {
 	return m.DisplayName
 }
 
+// GetName returns the DisplayName field of Machine
+func (m *Machine) GetName() string {
+	return m.DisplayName
+}
+
 // GetProtectionTypeName returns the ProtectionTypeName field of Machine
 func (m *Machine) GetProtectionTypeName() string {
 	return m.ProtectionTypeName
