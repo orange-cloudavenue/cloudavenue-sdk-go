@@ -1,0 +1,11 @@
+```release-note:enhancement
+`v1/t0` - Add `GetBandwidthCapacity` function to get the Bandwidth Capacity of the T0 in Mbps.
+```
+
+```release-note:enhancement
+`v1/edgegw` - Add `GetBandwidthCapacityRemaining` function to get the Bandwidth Capacity Remaining of the Edge Gateway in Mbps.
+```
+
+```release-note:enhancement
+`v1/edgegw` - Add `GetAllowedBandwidthValues` function to get the Allowed Bandwidth Values of the Edge Gateway in Mbps.
+```

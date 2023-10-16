@@ -146,3 +146,16 @@ func (t *Tier0) GetT0(t0 string) (response *T0, err error) {
 
 	return r.Result().(*T0), nil
 }
+
+// GetBandwidthCapacity - Returns the Bandwidth Capacity of the T0 in Mbps
+func (t *T0) GetBandwidthCapacity() (bandwidthCapacity int, err error) {
+	switch t.GetClassService() {
+	case ClassServiceVRFStandard:
+		bandwidthCapacity = 300
+	case ClassServiceVRFPremium:
+		bandwidthCapacity = 1000
+	default:
+		err = fmt.Errorf("unknown class service: %s", t.GetClassService())
+	}
+	return
+}

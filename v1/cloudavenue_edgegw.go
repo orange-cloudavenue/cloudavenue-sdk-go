@@ -10,7 +10,7 @@ import (
 
 type (
 	EdgeGateway struct{}
-	RateLimit   int
+	Bandwidth   int
 	OwnerType   string
 )
 
@@ -38,7 +38,7 @@ type (
 		OwnerType    OwnerType `json:"ownerType"`
 		OwnerName    string    `json:"ownerName"`
 		Description  string    `json:"description"`
-		RateLimit    RateLimit `json:"rateLimit"`
+		Bandwidth    Bandwidth `json:"rateLimit"`
 	}
 )
 
@@ -97,6 +97,53 @@ func (v *EdgeGateway) List() (response *EdgeGateways, err error) {
 	}
 
 	return r.Result().(*EdgeGateways), nil
+}
+
+var (
+	allowedRateLimitVRFStandard = []int{5, 25, 50, 75, 100, 150, 200, 250, 300}
+	allowedRateLimitVRFPremium  = append(allowedRateLimitVRFStandard, []int{400, 500, 600, 700, 800, 900, 1000}...)
+)
+
+// GetAllowedBandwidthValues - Returns the allowed rate limit value
+func (v *EdgeGateway) GetAllowedBandwidthValues(t0VrfName string) (allowedValues []int, err error) {
+	t0, err := (&Tier0{}).GetT0(t0VrfName)
+	if err != nil {
+		return
+	}
+
+	switch t0.GetClassService() {
+	case ClassServiceVRFPremium:
+		allowedValues = allowedRateLimitVRFPremium
+	case ClassServiceVRFStandard:
+		allowedValues = allowedRateLimitVRFStandard
+	}
+
+	return
+}
+
+// GetBandwidthCapacityRemaining - Returns the bandwidth capacity remaining in Mbps
+func (e *EdgeGateways) GetBandwidthCapacityRemaining(t0VrfName string) (response int, err error) {
+	t0, err := (&Tier0{}).GetT0(t0VrfName)
+	if err != nil {
+		return
+	}
+
+	t0BandwidthCapacity, err := t0.GetBandwidthCapacity()
+	if err != nil {
+		return
+	}
+
+	for _, edgeGateway := range *e {
+		if edgeGateway.GetT0() == t0VrfName {
+			t0BandwidthCapacity -= int(edgeGateway.GetBandwidth())
+		}
+	}
+
+	if t0BandwidthCapacity < 0 {
+		return 0, fmt.Errorf("no bandwidth capacity remaining")
+	}
+
+	return t0BandwidthCapacity, nil
 }
 
 // * New
@@ -224,17 +271,15 @@ func (e *EdgeGw) Delete() (job *commoncloudavenue.JobStatus, err error) {
 	return r.Result().(*commoncloudavenue.JobStatus), nil
 }
 
-// * RateLimit
+// * Bandwidth
 
-// CalculateRateLimitAvailable - Returns the rate limit available
-
-// GetRateLimit - Returns the RateLimit
-func (e *EdgeGw) GetRateLimit() RateLimit {
-	return e.RateLimit
+// GetBandwidth - Returns the rate limit
+func (e *EdgeGw) GetBandwidth() Bandwidth {
+	return e.Bandwidth
 }
 
-// SetRateLimit - Sets the rate limit
-func (e *EdgeGw) SetRateLimit(rateLimit int) (job *commoncloudavenue.JobStatus, err error) {
+// UpdateBandwidth - Updates the bandwidth
+func (e *EdgeGw) UpdateBandwidth(rateLimit int) (job *commoncloudavenue.JobStatus, err error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {
 		return
@@ -255,7 +300,7 @@ func (e *EdgeGw) SetRateLimit(rateLimit int) (job *commoncloudavenue.JobStatus, 
 	}
 
 	if r.IsError() {
-		return job, fmt.Errorf("error on set rate limit: %s", r.Error().(*commoncloudavenue.APIErrorResponse).FormatError())
+		return job, fmt.Errorf("error on set bandwidth: %s", r.Error().(*commoncloudavenue.APIErrorResponse).FormatError())
 	}
 
 	return r.Result().(*commoncloudavenue.JobStatus), nil
