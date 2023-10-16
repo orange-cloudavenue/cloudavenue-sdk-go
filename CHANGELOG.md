@@ -1,5 +1,11 @@
 ## 0.1.0 (Unreleased)
 
+### :tada: **Improvements**
+
+* `v1/edgegw` - Add `GetAllowedBandwidthValues` function to get the Allowed Bandwidth Values of the Edge Gateway in Mbps. ([GH-9](https://github.com/orange-cloudavenue/terraform-provider-cloudavenue/issues/9))
+* `v1/edgegw` - Add `GetBandwidthCapacityRemaining` function to get the Bandwidth Capacity Remaining of the Edge Gateway in Mbps. ([GH-9](https://github.com/orange-cloudavenue/terraform-provider-cloudavenue/issues/9))
+* `v1/t0` - Add `GetBandwidthCapacity` function to get the Bandwidth Capacity of the T0 in Mbps. ([GH-9](https://github.com/orange-cloudavenue/terraform-provider-cloudavenue/issues/9))
+
 ### :dependabot: **Dependencies**
 
 * deps: bumps github.com/go-resty/resty/v2 from 2.9.1 to 2.10.0 ([GH-13](https://github.com/orange-cloudavenue/terraform-provider-cloudavenue/issues/13))
