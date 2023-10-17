@@ -60,3 +60,8 @@ func New() (*Client, error) {
 
 	return &Client{x}, nil
 }
+
+// GetBearerToken - Returns the bearer token
+func GetBearerToken() string {
+	return c.token.GetToken()
+}
