@@ -3,7 +3,7 @@ module github.com/orange-cloudavenue/cloudavenue-sdk-go
 go 1.20
 
 require (
-	github.com/aws/aws-sdk-go v1.45.26
+	github.com/aws/aws-sdk-go v1.46.1
 	github.com/go-resty/resty/v2 v2.10.0
 	github.com/sethvargo/go-envconfig v0.9.0
 	golang.org/x/exp v0.0.0-20231006140011-7918f672742d
