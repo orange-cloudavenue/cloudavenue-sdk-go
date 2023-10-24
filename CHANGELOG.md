@@ -1,4 +1,5 @@
 ## 0.4.0 (Unreleased)
+## 0.3.1 (October 24, 2023)
 ## 0.3.0 (October 17, 2023)
 ## 0.2.0 (October 16, 2023)
 ## 0.1.0 (October 16, 2023)
