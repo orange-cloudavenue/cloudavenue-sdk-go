@@ -86,7 +86,7 @@ func (t *token) RefreshAccessKey() error {
 			}
 
 			if r.IsError() {
-				return r.Error().(error)
+				return fmt.Errorf("error getting organization ID: %s", r.Error())
 			}
 
 			if len(r.Result().(*tenantsResponse).Items) == 0 {
@@ -134,11 +134,11 @@ func (t *token) RefreshAccessKey() error {
 		}
 
 		if r.IsError() {
-			return fmt.Errorf("error getting credentials: %s", r.Error().(error))
+			return fmt.Errorf("error getting access token: %s", r.Error())
 		}
 
 		if len(r.Result().(*credentialsResponse).Items) == 0 {
-			return fmt.Errorf("no credentials found for user %s", t.userName)
+			return fmt.Errorf("no access token found for user %s", t.userName)
 		}
 
 		// find first immutable credentials
