@@ -7,6 +7,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/go-resty/resty/v2"
 	"github.com/sethvargo/go-envconfig"
 )
 
@@ -67,4 +68,37 @@ func New() (*Client, error) {
 	}
 
 	return &Client{s3.New(s)}, nil
+}
+
+// NewOSE - Return a new OSE client
+func NewOSE() *resty.Client {
+	return resty.New().
+		SetDebug(GetDebug()).
+		SetBaseURL(GetOSEEndpoint()).
+		SetAuthToken(GetOSEToken())
+}
+
+// GetDebug - Returns the debug flag
+func GetDebug() bool {
+	return c.token.debug
+}
+
+// GetOrganizationName - Returns the organization name
+func GetOrganizationName() string {
+	return c.token.organizationName
+}
+
+// GetOrganizationID - Returns the organization ID
+func GetOrganizationID() string {
+	return c.token.organizationID
+}
+
+// GetOSEEndpoint - Returns the OSE endpoint
+func GetOSEEndpoint() string {
+	return c.token.oseEndpoint
+}
+
+// GetOSEToken - Returns the OSE token
+func GetOSEToken() string {
+	return c.token.cavToken
 }

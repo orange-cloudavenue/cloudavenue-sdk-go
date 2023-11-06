@@ -1,0 +1,7 @@
+```release-note:enhancement
+`s3/user` - Allow to List/Get OSE User and Get Canonical ID
+```
+
+```release-note:enhancement
+`s3/credential` - Allow to List/Get/Delete OSE User Credential
+```
