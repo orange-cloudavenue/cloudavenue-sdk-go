@@ -1,4 +1,5 @@
-## 0.4.0 (Unreleased)
+## 0.5.0 (Unreleased)
+## 0.4.0 (November  7, 2023)
 
 ### :tada: **Improvements**
 
