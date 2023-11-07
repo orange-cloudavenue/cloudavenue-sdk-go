@@ -1,4 +1,10 @@
 ## 0.4.0 (Unreleased)
+
+### :tada: **Improvements**
+
+* `s3/credential` - Allow to List/Get/Delete OSE User Credential ([GH-18](https://github.com/orange-cloudavenue/terraform-provider-cloudavenue/issues/18))
+* `s3/user` - Allow to List/Get OSE User and Get Canonical ID ([GH-18](https://github.com/orange-cloudavenue/terraform-provider-cloudavenue/issues/18))
+
 ## 0.3.1 (October 24, 2023)
 ## 0.3.0 (October 17, 2023)
 ## 0.2.0 (October 16, 2023)
