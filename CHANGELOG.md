@@ -1,4 +1,9 @@
 ## 0.5.0 (Unreleased)
+
+### :rocket: **New Features**
+
+* `s3/Sync - Force synchronization of a bucket ([GH-19](https://github.com/orange-cloudavenue/terraform-provider-cloudavenue/issues/19))
+
 ## 0.4.0 (November  7, 2023)
 
 ### :tada: **Improvements**
