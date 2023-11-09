@@ -1,0 +1,3 @@
+```release-note:feature
+`s3/Sync - Force synchronization of a bucket
+```
