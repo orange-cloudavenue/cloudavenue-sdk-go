@@ -4,6 +4,10 @@
 
 * `s3/Sync - Force synchronization of a bucket ([GH-19](https://github.com/orange-cloudavenue/terraform-provider-cloudavenue/issues/19))
 
+### :tada: **Improvements**
+
+* `s3/NewCredential` - Remove `username` parameter. ([GH-21](https://github.com/orange-cloudavenue/terraform-provider-cloudavenue/issues/21))
+
 ## 0.4.0 (November  7, 2023)
 
 ### :tada: **Improvements**
