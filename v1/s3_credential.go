@@ -139,12 +139,12 @@ func (s *S3User) GetCredential(accessKey string) (resp *S3Credential, err error)
 }
 
 // NewCredential - Create a new credential
-func (s *S3User) NewCredential(username string) (resp *S3Credential, err error) {
+func (s *S3User) NewCredential() (resp *S3Credential, err error) {
 	r, err := clients3.NewOSE().R().
 		SetResult(&S3Credential{}).
 		SetPathParams(map[string]string{
 			"orgID":    clients3.GetOrganizationID(),
-			"userName": username,
+			"userName": s.Name,
 		}).
 		Post("/api/v1/core/tenants/{orgID}/users/{userName}/credentials")
 	if err != nil {
