@@ -8,6 +8,10 @@
 
 * `s3/NewCredential` - Remove `username` parameter. ([GH-21](https://github.com/orange-cloudavenue/terraform-provider-cloudavenue/issues/21))
 
+### :dependabot: **Dependencies**
+
+* deps: bumps github.com/aws/aws-sdk-go from 1.45.26 to 1.47.9 ([GH-23](https://github.com/orange-cloudavenue/terraform-provider-cloudavenue/issues/23))
+
 ## 0.4.0 (November  7, 2023)
 
 ### :tada: **Improvements**
