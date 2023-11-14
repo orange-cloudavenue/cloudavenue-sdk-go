@@ -41,8 +41,8 @@ func (v *VDCAIps) IsIPExists(ip string) bool {
 	return slices.Contains(*v, ip)
 }
 
-// AddIP - Adds a new IP to the list
-func (v *VDCAIps) AddIP(ip string) error {
+// RegisterIP - Registers a new IP to the list
+func (v *VCDA) RegisterIP(ip string) error {
 	c, err := clientcloudavenue.New()
 	if err != nil {
 		return err
@@ -59,8 +59,6 @@ func (v *VDCAIps) AddIP(ip string) error {
 	if r.IsError() {
 		return fmt.Errorf("error on add new VDCA IP: %s", r.Error().(*commoncloudavenue.APIErrorResponse).FormatError())
 	}
-
-	*v = append(*v, ip)
 
 	return nil
 }
