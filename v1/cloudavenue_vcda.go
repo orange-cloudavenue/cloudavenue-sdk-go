@@ -51,7 +51,7 @@ func (v *VCDA) RegisterIP(ip string) error {
 	r, err := c.R().
 		SetError(&commoncloudavenue.APIErrorResponse{}).
 		SetPathParam("ip", ip).
-		Post("/api/customers/v2.0/vcda/ips/{ip}")
+		Post("/api/customers/v2.0/vcda/ips/{ip}/")
 	if err != nil {
 		return err
 	}
@@ -73,7 +73,7 @@ func (v *VDCAIps) DeleteIP(ip string) error {
 	r, err := c.R().
 		SetError(&commoncloudavenue.APIErrorResponse{}).
 		SetPathParam("ip", ip).
-		Delete("/api/customers/v2.0/vcda/ips/{ip}")
+		Delete("/api/customers/v2.0/vcda/ips/{ip}/")
 	if err != nil {
 		return err
 	}
