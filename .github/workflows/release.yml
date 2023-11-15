@@ -31,6 +31,7 @@ jobs:
           path: release-notes.txt
           retention-days: 1
   publish-release:
+    needs: [release-notes]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -46,6 +47,7 @@ jobs:
         with:
           files: ${{ steps.release-notes-download.outputs.download-path }}/release-notes.txt
   highest-version-tag:
+    needs: [publish-release]
     runs-on: ubuntu-latest
     outputs:
       tag: ${{ steps.highest-version-tag.outputs.tag }}
