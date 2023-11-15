@@ -1,0 +1,3 @@
+```release-note:bug
+`s3/GetCanonicalID` - Fix GetCanonicalID to return the correct canonical ID for the account.
+```

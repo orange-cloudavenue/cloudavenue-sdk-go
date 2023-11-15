@@ -125,20 +125,25 @@ func (s *S3User) GetSourceTenant() string {
 // * user
 
 // GetUser - Get a S3 user by username
-func (s S3Client) GetUser(username string) (resp *S3User, err error) {
-	r, err := clients3.NewOSE().R().
+func (s S3Client) GetUser(username string) (resp *S3User, err *OSEError) {
+	r, errA := clients3.NewOSE().R().
 		SetResult(&S3User{}).
+		SetError(&OSEError{}).
 		SetPathParams(map[string]string{
 			"orgID":    clients3.GetOrganizationID(),
 			"userName": username,
 		}).
 		Get("/api/v1/core/tenants/{orgID}/users/{userName}")
-	if err != nil {
-		return
+	if errA != nil {
+		return nil, &OSEError{
+			Status:  500,
+			Code:    "internal_server_error",
+			Message: errA.Error(),
+		}
 	}
 
 	if r.IsError() {
-		return resp, fmt.Errorf("error getting user: %s", r.Error())
+		return nil, r.Error().(*OSEError)
 	}
 
 	return r.Result().(*S3User), nil
@@ -162,7 +167,7 @@ func (s *S3User) GetCanonicalID() (resp string, err error) {
 			return resp, fmt.Errorf("error getting canonical ID: %s", r.Error())
 		}
 
-		s.CanoncialID = *r.Result().(*string)
+		s.CanoncialID = r.String()
 	}
 
 	return s.CanoncialID, nil
