@@ -1,4 +1,9 @@
 ## 0.6.0 (Unreleased)
+
+### :bug: **Bug Fixes**
+
+* `s3/GetCanonicalID` - Fix GetCanonicalID to return the correct canonical ID for the account. (GH-30)
+
 ## 0.5.0 (November 15, 2023)
 ## 0.5.0 (November 15, 2023)
 
