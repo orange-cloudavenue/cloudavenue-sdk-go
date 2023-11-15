@@ -1,5 +1,6 @@
 ## 0.6.0 (Unreleased)
 ## 0.5.0 (November 15, 2023)
+## 0.5.0 (November 15, 2023)
 
 ### :tada: **Improvements**
 
