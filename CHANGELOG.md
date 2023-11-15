@@ -1,4 +1,9 @@
 ## 0.5.0 (Unreleased)
+
+### :tada: **Improvements**
+
+* `vcda/ip` - Allow to List/Get/Create/Delete VCDA IP (GH-28)
+
 ## 0.4.1 (November 13, 2023)
 
 ### :rocket: **New Features**
