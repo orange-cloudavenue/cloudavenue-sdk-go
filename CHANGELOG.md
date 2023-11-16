@@ -1,4 +1,9 @@
 ## 0.6.0 (Unreleased)
+
+### :bug: **Bug Fixes**
+
+* `s3/login` - Fix bug where `s3/login` would fail if the user does not have a system key. (GH-31)
+
 ## 0.5.1 (November 15, 2023)
 
 ### :bug: **Bug Fixes**
