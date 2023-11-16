@@ -141,14 +141,8 @@ func (t *token) RefreshAccessKey() error {
 			return fmt.Errorf("no access token found for user %s", t.userName)
 		}
 
-		// find first immutable credentials
-		for _, item := range r.Result().(*credentialsResponse).Items {
-			if item.Immutable {
-				t.accessKey = item.AccessKey
-				t.secretKey = item.SecretKey
-				break
-			}
-		}
+		t.accessKey = r.Result().(*credentialsResponse).Items[0].AccessKey
+		t.secretKey = r.Result().(*credentialsResponse).Items[0].SecretKey
 	}
 	return nil
 }
