@@ -12,7 +12,10 @@ type S3Client struct {
 }
 
 func (v *V1) S3() S3Client {
-	c, _ := clientS3.New()
+	c, err := clientS3.New()
+	if err != nil {
+		panic(err)
+	}
 	return S3Client{c.S3}
 }
 
