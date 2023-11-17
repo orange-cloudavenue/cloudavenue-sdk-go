@@ -2,12 +2,15 @@ package s3
 
 import (
 	"context"
+	"fmt"
+	"log"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/go-resty/resty/v2"
+	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/clients/consoles"
 	"github.com/sethvargo/go-envconfig"
 )
 
@@ -15,7 +18,7 @@ var c = internalClient{}
 
 // Opts - Is a struct that contains the options for the S3 client
 type Opts struct {
-	OSEEndpoint      string `env:"ENDPOINT,default=https://s3console1.cloudavenue.orange-business.com"`
+	OSEEndpoint      string `env:"ENDPOINT"`
 	S3Endpoint       string `env:"S3_ENDPOINT,default=https://s3-region01.cloudavenue.orange-business.com"`
 	CAVToken         string `env:"CAV_TOKEN"`
 	Debug            bool   `env:"DEBUG,default=false"`
@@ -40,6 +43,21 @@ func Init(opts Opts) (err error) {
 	c.token.s3Endpoint = opts.S3Endpoint
 	c.token.debug = opts.Debug
 	c.token.userName = opts.Username
+
+	if c.token.oseEndpoint == "" {
+		console, err := consoles.FingByOrganizationName(opts.OrganizationName)
+		if err != nil {
+			return err
+		}
+		if opts.Debug {
+			log.Default().Printf("Found console %s with URL %s", console.GetSiteID(), console.GetURL())
+		}
+
+		if !console.S3IsEnabled() {
+			return fmt.Errorf("S3 service is not available in site %s", console.GetSiteID())
+		}
+		c.token.oseEndpoint = console.GetS3Endpoint()
+	}
 
 	return
 }

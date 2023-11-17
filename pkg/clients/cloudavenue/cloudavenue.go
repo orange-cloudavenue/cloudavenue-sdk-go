@@ -2,8 +2,10 @@ package clientcloudavenue
 
 import (
 	"context"
+	"log"
 
 	"github.com/go-resty/resty/v2"
+	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/clients/consoles"
 	"github.com/sethvargo/go-envconfig"
 )
 
@@ -11,7 +13,7 @@ var c = &internalClient{}
 
 // Opts - Is a struct that contains the options for the vmware client
 type Opts struct {
-	Endpoint   string `env:"ENDPOINT,default=https://console1.cloudavenue.orange-business.com"`
+	Endpoint   string `env:"ENDPOINT"`
 	Username   string `env:"USERNAME"`
 	Password   string `env:"PASSWORD"`
 	Org        string `env:"ORG"`
@@ -38,6 +40,18 @@ func Init(opts Opts) (err error) {
 	c.token.endpoint = opts.Endpoint
 	c.token.debug = opts.Debug
 	c.token.vcdVersion = opts.VCDVersion
+
+	if c.token.endpoint == "" {
+		console, err := consoles.FingByOrganizationName(opts.Org)
+		if err != nil {
+			return err
+		}
+		if opts.Debug {
+			log.Default().Printf("Found console %s with URL %s", console.GetSiteID(), console.GetURL())
+		}
+
+		c.token.endpoint = console.GetURL()
+	}
 
 	return
 }
