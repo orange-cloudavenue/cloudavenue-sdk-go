@@ -1,0 +1,7 @@
+```release-note:bug
+`client/cloudavenue` - permit to configure the client only by environment variables.
+```
+
+```release-note:bug
+`client/s3` - Now the client use cloudavenue settings after environment variables is evaluated.
+```

@@ -75,6 +75,21 @@ func New() (*Client, error) {
 	return &Client{x}, nil
 }
 
+// GetUsername - Returns the username
+func (v *Client) GetUsername() string {
+	return c.token.username
+}
+
+// GetOrganization - Returns the organization
+func (v *Client) GetOrganization() string {
+	return c.token.org
+}
+
+// GetDebug - Returns the debug
+func (v *Client) GetDebug() bool {
+	return c.token.debug
+}
+
 // GetBearerToken - Returns the bearer token
 func GetBearerToken() string {
 	return c.token.GetToken()
