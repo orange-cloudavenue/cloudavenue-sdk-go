@@ -1,4 +1,8 @@
 ## 0.6.0 (Unreleased)
+### :information_source: **Notes**
+
+* `netbackup/` - Reorganize the NetBackup files into a directory. (GH-39)
+
 ## 0.5.4 (November 20, 2023)
 
 ### :bug: **Bug Fixes**
