@@ -1,4 +1,4 @@
-package v1
+package netbackup
 
 import (
 	"fmt"
@@ -62,7 +62,7 @@ type vdcsResponse struct {
 }
 
 // GetVdcs - Get a list of vCloud Director Virtual Data Centers
-func (v *VCloudClient) GetVdcs() (resp *VDCs, err error) {
+func (v *VcloudClient) GetVdcs() (resp *VDCs, err error) {
 	c, err := clientnetbackup.New()
 	if err != nil {
 		return
@@ -85,7 +85,7 @@ func (v *VCloudClient) GetVdcs() (resp *VDCs, err error) {
 
 // GetVdcsByOrgID - Get a list of vCloud Director Virtual Data Centers by Org ID
 // orgID - The ID of the org in the netbackup system
-func (v *VCloudClient) GetVdcsByOrgID(orgID int) (resp *VDCs, err error) {
+func (v *VcloudClient) GetVdcsByOrgID(orgID int) (resp *VDCs, err error) {
 	vdcs, err := v.GetVdcs()
 	if err != nil {
 		return
@@ -106,7 +106,7 @@ type vdcResponse struct {
 
 // GetVdcByID - Get a vCloud Director Virtual Data Center by ID
 // id - The ID of the vdc in the netbackup system
-func (v *VCloudClient) GetVdcByID(id int) (resp *VDC, err error) {
+func (v *VcloudClient) GetVdcByID(id int) (resp *VDC, err error) {
 	c, err := clientnetbackup.New()
 	if err != nil {
 		return
@@ -132,7 +132,7 @@ func (v *VCloudClient) GetVdcByID(id int) (resp *VDC, err error) {
 
 // GetVdcByIdentifier - Get a vCloud Director Virtual Data Center by Identifier
 // identifier - The Identifier of the vdc in the vmware system (URN)
-func (v *VCloudClient) GetVdcByIdentifier(identifier string) (resp *VDC, err error) {
+func (v *VcloudClient) GetVdcByIdentifier(identifier string) (resp *VDC, err error) {
 	vdcs, err := v.GetVdcs()
 	if err != nil {
 		return
@@ -149,7 +149,7 @@ func (v *VCloudClient) GetVdcByIdentifier(identifier string) (resp *VDC, err err
 
 // GetVdcByName - Get a vCloud Director Virtual Data Center by Name
 // name - The Name of the vdc in the vmware system
-func (v *VCloudClient) GetVdcByName(name string) (resp *VDC, err error) {
+func (v *VcloudClient) GetVdcByName(name string) (resp *VDC, err error) {
 	vdcs, err := v.GetVdcs()
 	if err != nil {
 		return
@@ -166,7 +166,7 @@ func (v *VCloudClient) GetVdcByName(name string) (resp *VDC, err error) {
 
 // GetVdcByNameOrIdentifier - Get a vCloud Director Virtual Data Center by Name or Identifier
 // nameOrIdentifier - The Name or Identifier of the vdc in the vmware system
-func (v *VCloudClient) GetVdcByNameOrIdentifier(nameOrIdentifier string) (resp *VDC, err error) {
+func (v *VcloudClient) GetVdcByNameOrIdentifier(nameOrIdentifier string) (resp *VDC, err error) {
 	vdcs, err := v.GetVdcs()
 	if err != nil {
 		return

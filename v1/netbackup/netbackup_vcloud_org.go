@@ -1,4 +1,4 @@
-package v1
+package netbackup
 
 import (
 	"fmt"
@@ -60,7 +60,7 @@ type orgsResponse struct {
 }
 
 // GetOrgs - Get a list of vCloud Director Organizations
-func (v *VCloudClient) GetOrgs() (resp *Orgs, err error) {
+func (v *VcloudClient) GetOrgs() (resp *Orgs, err error) {
 	c, err := clientnetbackup.New()
 	if err != nil {
 		return
@@ -88,7 +88,7 @@ type orgResponse struct {
 }
 
 // GetOrg - Get a vCloud Director Organization
-func (v *VCloudClient) GetOrg(id int) (resp *Org, err error) {
+func (v *VcloudClient) GetOrg(id int) (resp *Org, err error) {
 	c, err := clientnetbackup.New()
 	if err != nil {
 		return
@@ -113,7 +113,7 @@ func (v *VCloudClient) GetOrg(id int) (resp *Org, err error) {
 }
 
 // GetOrgByName - Get a vCloud Director Organization by name
-func (v *VCloudClient) GetOrgByName(name string) (resp *Org, err error) {
+func (v *VcloudClient) GetOrgByName(name string) (resp *Org, err error) {
 	orgs, err := v.GetOrgs()
 	if err != nil {
 		return

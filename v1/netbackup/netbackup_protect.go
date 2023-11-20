@@ -1,4 +1,4 @@
-package v1
+package netbackup
 
 type protectBody struct {
 	ProtectionLevelID int      `json:"ProtectionLevelId"`

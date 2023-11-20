@@ -1,7 +1,7 @@
-package v1
+package netbackup
 
 type Netbackup struct {
-	VCloud          VCloudClient
+	VCloud          VcloudClient
 	ProtectionLevel ProtectionLevelClient
 	Machines        MachineClient
 	Inventory       InventoryClient

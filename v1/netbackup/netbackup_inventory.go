@@ -1,4 +1,4 @@
-package v1
+package netbackup
 
 import (
 	clientnetbackup "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/clients/netbackup"

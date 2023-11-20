@@ -1,7 +1,9 @@
 package v1
 
+import "github.com/orange-cloudavenue/cloudavenue-sdk-go/v1/netbackup"
+
 type V1 struct {
-	Netbackup   Netbackup
+	Netbackup   netbackup.Netbackup
 	PublicIP    PublicIP
 	EdgeGateway EdgeGateway
 	T0          Tier0
