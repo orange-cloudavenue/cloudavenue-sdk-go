@@ -14,6 +14,7 @@ const (
 	CloudAvenuePrefix = "urn:cloudavenue:"
 
 	// * VCD.
+	Org               = UUID(VcloudPrefix + "org:")
 	VM                = UUID(VcloudPrefix + "vm:")
 	User              = UUID(VcloudPrefix + "user:")
 	Group             = UUID(VcloudPrefix + "group:")
@@ -36,6 +37,7 @@ const (
 )
 
 var UUIDs = []UUID{
+	Org,
 	VM,
 	User,
 	Group,
@@ -132,6 +134,11 @@ func Normalize(prefix UUID, uuid string) UUID {
 	return prefix + u
 }
 
+// IsOrg returns true if the UUID is an Org UUID.
+func (uuid UUID) IsOrg() bool {
+	return uuid.IsType(Org)
+}
+
 // IsVM returns true if the UUID is a VM UUID.
 func (uuid UUID) IsVM() bool {
 	return uuid.IsType(VM)
@@ -213,6 +220,11 @@ func (uuid UUID) IsVDCComputePolicy() bool {
 }
 
 // * End Methods
+
+// IsOrg returns true if the UUID is an Org UUID.
+func IsOrg(uuid string) bool {
+	return UUID(uuid).IsType(Org)
+}
 
 // IsEdgeGateway returns true if the UUID is a EdgeGateway UUID.
 func IsEdgeGateway(uuid string) bool {

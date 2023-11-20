@@ -53,7 +53,7 @@ func (v *VApps) append(vapp VApp) {
 	*v = append(*v, vapp)
 }
 
-type vappsResponse struct {
+type VAppsResponse struct {
 	Data VApps `json:"data,omitempty"`
 }
 
@@ -65,7 +65,7 @@ func (v *VcloudClient) GetVApps() (resp *VApps, err error) {
 	}
 
 	r, err := c.R().
-		SetResult(&vappsResponse{}).
+		SetResult(&VAppsResponse{}).
 		SetError(&commonnetbackup.APIError{}).
 		Get("/v6/vcloud/vapps")
 	if err != nil {
@@ -76,12 +76,12 @@ func (v *VcloudClient) GetVApps() (resp *VApps, err error) {
 		return resp, commonnetbackup.ToError(r.Error().(*commonnetbackup.APIError))
 	}
 
-	return &r.Result().(*vappsResponse).Data, nil
+	return &r.Result().(*VAppsResponse).Data, nil
 }
 
 // * VApp
 
-type vappResponse struct {
+type VAppResponse struct {
 	Data VApp `json:"data,omitempty"`
 }
 
@@ -94,7 +94,7 @@ func (v *VcloudClient) GetVAppByID(id int) (resp *VApp, err error) {
 	}
 
 	r, err := c.R().
-		SetResult(&vappResponse{}).
+		SetResult(&VAppResponse{}).
 		SetError(&commonnetbackup.APIError{}).
 		SetPathParams(map[string]string{
 			"vAppID": fmt.Sprintf("%d", id),
@@ -108,7 +108,7 @@ func (v *VcloudClient) GetVAppByID(id int) (resp *VApp, err error) {
 		return resp, commonnetbackup.ToError(r.Error().(*commonnetbackup.APIError))
 	}
 
-	return &r.Result().(*vappResponse).Data, nil
+	return &r.Result().(*VAppResponse).Data, nil
 }
 
 // GetVAppByName - Get a vCloud Director Virtual Application by Name
