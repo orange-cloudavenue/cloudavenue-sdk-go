@@ -2,6 +2,7 @@ package clientcloudavenue
 
 import (
 	"fmt"
+	"net/url"
 	"time"
 
 	"github.com/go-resty/resty/v2"
@@ -22,9 +23,25 @@ type token struct {
 	debug bool
 }
 
+// GetOrganization - Returns the organization
+func (t *token) GetOrganization() string {
+	return t.org
+}
+
+// GetVCDVersion - Returns the VCD version
+func (t *token) GetVCDVersion() string {
+	return t.vcdVersion
+}
+
 // GetEndpoint - Returns the API endpoint
 func (t *token) GetEndpoint() string {
 	return t.endpoint
+}
+
+// GetEndpointURL - Returns the API endpoint URL
+func (t *token) GetEndpointURL() url.URL {
+	u, _ := url.Parse(t.endpoint)
+	return *u
 }
 
 // IsExpired - Returns true if the token is expired

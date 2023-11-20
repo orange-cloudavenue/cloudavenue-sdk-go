@@ -2,11 +2,13 @@ package clientcloudavenue
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	"github.com/go-resty/resty/v2"
 	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/clients/consoles"
 	"github.com/sethvargo/go-envconfig"
+	"github.com/vmware/go-vcloud-director/v2/govcd"
 )
 
 var c = &internalClient{}
@@ -58,6 +60,7 @@ func Init(opts Opts) (err error) {
 
 type Client struct {
 	*resty.Client
+	Vmware *govcd.VCDClient
 }
 
 // New creates a new cloudavenue client.
@@ -66,16 +69,35 @@ func New() (*Client, error) {
 		return nil, err
 	}
 
+	// Setup InfrAPI client
 	x := resty.New().
 		SetDebug(c.token.debug).
 		SetHeader("Accept", "application/json;version="+c.token.vcdVersion).
 		SetBaseURL(c.token.GetEndpoint()).
 		SetAuthToken(c.token.GetToken())
 
-	return &Client{x}, nil
+	// Setup vmware client
+	vmware := govcd.NewVCDClient(
+		c.token.GetEndpointURL(),
+		false,
+		govcd.WithAPIVersion(c.token.GetVCDVersion()),
+	)
+	if err := vmware.SetToken(c.token.GetEndpoint(), govcd.AuthorizationHeader, c.token.GetToken()); err != nil {
+		return nil, fmt.Errorf("%s : %w", "Failed to setup vmware client", err)
+	}
+
+	return &Client{
+		Client: x,
+		Vmware: vmware,
+	}, nil
 }
 
 // GetBearerToken - Returns the bearer token
 func GetBearerToken() string {
 	return c.token.GetToken()
+}
+
+// GetOrganization - Returns the organization
+func (cli *Client) GetOrganization() string {
+	return c.token.GetOrganization()
 }

@@ -7,6 +7,7 @@ import (
 
 	clientcloudavenue "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/clients/cloudavenue"
 	commoncloudavenue "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/common/cloudavenue"
+	"github.com/vmware/go-vcloud-director/v2/govcd"
 )
 
 type (
@@ -436,4 +437,19 @@ func (v *CAVVDC) New(value *CAVVirtualDataCenter) (vdc *CAVVirtualDataCenter, er
 	}
 
 	return v.Get(value.Vdc.Name)
+}
+
+// GetVMwareObject - Return the VMware object
+func (v *CAVVirtualDataCenter) GetVMwareObject() (*govcd.Vdc, error) {
+	c, err := clientcloudavenue.New()
+	if err != nil {
+		return nil, err
+	}
+
+	org, err := c.Vmware.GetOrgByName(c.GetOrganization())
+	if err != nil {
+		return nil, err
+	}
+
+	return org.GetVDCByName(v.GetName(), true)
 }
