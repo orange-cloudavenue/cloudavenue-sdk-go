@@ -1,4 +1,4 @@
-package v1
+package netbackup
 
 import (
 	"fmt"
@@ -58,7 +58,7 @@ type vappsResponse struct {
 }
 
 // GetVApps - Get a list of vCloud Director Virtual Applications
-func (v *VCloudClient) GetVApps() (resp *VApps, err error) {
+func (v *VcloudClient) GetVApps() (resp *VApps, err error) {
 	c, err := clientnetbackup.New()
 	if err != nil {
 		return
@@ -87,7 +87,7 @@ type vappResponse struct {
 
 // GetVAppByID - Get a vCloud Director Virtual Application by ID
 // id - The ID of the vapp in the netbackup system
-func (v *VCloudClient) GetVAppByID(id int) (resp *VApp, err error) {
+func (v *VcloudClient) GetVAppByID(id int) (resp *VApp, err error) {
 	c, err := clientnetbackup.New()
 	if err != nil {
 		return
@@ -113,7 +113,7 @@ func (v *VCloudClient) GetVAppByID(id int) (resp *VApp, err error) {
 
 // GetVAppByName - Get a vCloud Director Virtual Application by Name
 // name - The name of the vapp in the netbackup system
-func (v *VCloudClient) GetVAppByName(name string) (resp *VApp, err error) {
+func (v *VcloudClient) GetVAppByName(name string) (resp *VApp, err error) {
 	vapps, err := v.GetVApps()
 	if err != nil {
 		return
@@ -130,7 +130,7 @@ func (v *VCloudClient) GetVAppByName(name string) (resp *VApp, err error) {
 
 // GetVAppByIdentifier - Get a vCloud Director Virtual Application by Identifier
 // identifier - The Identifier of the vapp in the vmware system (URN)
-func (v *VCloudClient) GetVAppByIdentifier(identifier string) (resp *VApp, err error) {
+func (v *VcloudClient) GetVAppByIdentifier(identifier string) (resp *VApp, err error) {
 	vapps, err := v.GetVApps()
 	if err != nil {
 		return
@@ -147,7 +147,7 @@ func (v *VCloudClient) GetVAppByIdentifier(identifier string) (resp *VApp, err e
 
 // GetVdcByNameOrIdentifier - Get a vCloud Director Virtual Application by Name or Identifier
 // nameOrIdentifier - The Name or Identifier of the vapp in the vmware system
-func (v *VCloudClient) GetVAppByNameOrIdentifier(nameOrIdentifier string) (resp *VApp, err error) {
+func (v *VcloudClient) GetVAppByNameOrIdentifier(nameOrIdentifier string) (resp *VApp, err error) {
 	vapps, err := v.GetVApps()
 	if err != nil {
 		return
@@ -202,7 +202,7 @@ type GetVAppMachinesResponse struct {
 }
 
 // GetVAppMachines - Get a list of vCloud Director Virtual Application Machines
-func (v *VCloudClient) GetVAppMachines(vAppID int) (resp *GetVAppMachinesResponse, err error) {
+func (v *VcloudClient) GetVAppMachines(vAppID int) (resp *GetVAppMachinesResponse, err error) {
 	c, err := clientnetbackup.New()
 	if err != nil {
 		return
