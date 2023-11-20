@@ -1,4 +1,10 @@
 ## 0.6.0 (Unreleased)
+
+### :bug: **Bug Fixes**
+
+* `client/cloudavenue` - permit to configure the client only by environment variables. (GH-38)
+* `client/s3` - Now the client use cloudavenue settings after environment variables is evaluated. (GH-38)
+
 ## 0.5.3 (November 17, 2023)
 ## 0.5.2 (November 16, 2023)
 
