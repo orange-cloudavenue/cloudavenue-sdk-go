@@ -1,4 +1,5 @@
 ## 0.6.0 (Unreleased)
+## 0.5.6 (November 21, 2023)
 ## 0.5.5 (November 20, 2023)
 ### :information_source: **Notes**
 
