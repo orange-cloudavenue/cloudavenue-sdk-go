@@ -1,0 +1,8 @@
+```release-note:bug
+`publicip` - Fix GetIP return now the good public IP.
+```
+
+```release-note:bug
+`publicip` - Fix GetJobStatus return now the good status.
+```
+
