@@ -46,6 +46,7 @@ type JobStatus struct {
 
 // GetJobStatus - Returns the status of a job
 func (j *JobCreatedAPIResponse) GetJobStatus() (response *JobStatus, err error) {
+	response = new(JobStatus)
 	response.JobID = j.JobID
 	if err := response.Refresh(); err != nil {
 		return nil, err

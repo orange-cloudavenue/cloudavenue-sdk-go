@@ -72,7 +72,7 @@ func (v *PublicIP) GetIP(publicIP string) (response *IP, err error) {
 	}
 
 	for _, ip := range ipS.NetworkConfig {
-		if ip.TranslatedIP == publicIP {
+		if ip.UplinkIP == publicIP {
 			return &ip, nil
 		}
 	}
@@ -81,7 +81,7 @@ func (v *PublicIP) GetIP(publicIP string) (response *IP, err error) {
 }
 
 // New - Returns a new PublicIP
-func New(edgeGatewayName string) (job *commoncloudavenue.JobStatus, err error) {
+func (v *PublicIP) New(edgeGatewayName string) (job *commoncloudavenue.JobStatus, err error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {
 		panic(err)
