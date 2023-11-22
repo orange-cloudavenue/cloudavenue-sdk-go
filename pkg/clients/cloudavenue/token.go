@@ -2,6 +2,7 @@ package clientcloudavenue
 
 import (
 	"fmt"
+	"net/url"
 	"time"
 
 	"github.com/go-resty/resty/v2"
@@ -14,6 +15,7 @@ type token struct {
 	username   string
 	password   string
 	org        string
+	orgID      string
 	vdc        string
 	vcdVersion string
 
@@ -22,9 +24,25 @@ type token struct {
 	debug bool
 }
 
+// GetOrganization - Returns the organization
+func (t *token) GetOrganization() string {
+	return t.org
+}
+
+// GetVCDVersion - Returns the VCD version
+func (t *token) GetVCDVersion() string {
+	return t.vcdVersion
+}
+
 // GetEndpoint - Returns the API endpoint
 func (t *token) GetEndpoint() string {
 	return t.endpoint
+}
+
+// GetEndpointURL - Returns the API endpoint URL
+func (t *token) GetEndpointURL() url.URL {
+	u, _ := url.Parse(t.endpoint)
+	return *u
 }
 
 // IsExpired - Returns true if the token is expired
@@ -40,6 +58,11 @@ func (t *token) IsSet() bool {
 // GetToken - Returns the token
 func (t *token) GetToken() string {
 	return t.baererToken
+}
+
+// GetOrgID - Returns the organization ID
+func (t *token) GetOrgID() string {
+	return t.orgID
 }
 
 // RefreshToken - Refreshes the token
@@ -67,6 +90,8 @@ func (t *token) RefreshToken() error {
 
 		// Calculate the expiration date
 		refreshedToken := r.Result().(*authTokenResponse)
+		// Set OrganizationID
+		t.orgID = refreshedToken.Org.ID
 		t.expiresAt = time.Now().Add(time.Duration(refreshedToken.SessionIdleTimeoutMinutes) * time.Minute)
 	}
 	return nil

@@ -712,6 +712,38 @@ func TestUUID_IsToken(t *testing.T) {
 	}
 }
 
+// TestUUID_IsOrg tests the UUID.IsOrg function.
+func TestUUID_IsOrg(t *testing.T) {
+	tests := []struct {
+		name string
+		uuid UUID
+		want bool
+	}{
+		{ // IsOrg
+			name: "IsOrg",
+			uuid: UUID(Org.String() + validUUIDv4),
+			want: true,
+		},
+		{ // IsNotOrg
+			name: "IsNotOrg",
+			uuid: UUID("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d4791"),
+			want: false,
+		},
+		{ // Empty string
+			name: "EmptyString",
+			uuid: UUID(""),
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.uuid.IsOrg(); got != tt.want {
+				t.Errorf("UUID.IsOrg() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
 // TestIsType tests the TestIsType function.
 func TestTestIsType(t *testing.T) {
 	testCases := []struct {
@@ -1182,6 +1214,40 @@ func TestIsUser(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := IsUser(tt.uuid); got != tt.want {
 				t.Errorf("IsUser() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+// TestIsOrg
+func TestIsOrg(t *testing.T) {
+	tests := []struct {
+		name     string
+		uuidType UUID
+		uuid     string
+		want     bool
+	}{
+		{ // IsOrg
+			name: "IsOrg",
+			uuid: UUID(Org.String() + validUUIDv4).String(),
+			want: true,
+		},
+		{ // IsNotOrg
+			name: "IsNotOrg",
+			uuid: UUID("urn:vcloud:user:f47ac10b-58cc-4372-a567-0e02b2c3d4791").String(),
+			want: false,
+		},
+		{ // EmptyString
+			name: "EmptyString",
+			uuid: UUID("").String(),
+			want: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := IsOrg(tt.uuid); got != tt.want {
+				t.Errorf("IsOrg() = %v, want %v", got, tt.want)
 			}
 		})
 	}

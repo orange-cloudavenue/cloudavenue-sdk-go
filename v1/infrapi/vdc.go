@@ -1,4 +1,4 @@
-package v1
+package infrapi
 
 import (
 	"encoding/json"
@@ -7,11 +7,12 @@ import (
 
 	clientcloudavenue "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/clients/cloudavenue"
 	commoncloudavenue "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/common/cloudavenue"
+	"github.com/vmware/go-vcloud-director/v2/govcd"
 )
 
 type (
 	CAVVDC               struct{}
-	CAVVDCs              []CAVVirtualDataCenter
+	VDCs                 []CAVVirtualDataCenter
 	CAVVirtualDataCenter struct {
 		VdcGroup string                  `json:"vdcGroup,omitempty"`
 		Vdc      CAVVirtualDataCenterVDC `json:"vdc"`
@@ -323,7 +324,7 @@ func (v *CAVVDC) Get(vdcName string) (*CAVVirtualDataCenter, error) {
 }
 
 // List - Return the list of VDCs
-func (v *CAVVDC) List() (*CAVVDCs, error) {
+func (v *CAVVDC) List() (*VDCs, error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {
 		return nil, err
@@ -346,8 +347,9 @@ func (v *CAVVDC) List() (*CAVVDCs, error) {
 		return nil, fmt.Errorf("error on list VDCs: %s", r.Error().(*commoncloudavenue.APIErrorResponse).FormatError())
 	}
 
-	vdcS := &CAVVDCs{}
+	vdcS := &VDCs{}
 
+	// TODO : Use waitgroup to get all VDCs
 	for _, vdc := range *r.Result().(*listOfVDCs) {
 		response, err := v.Get(vdc.VdcName)
 		if err != nil {
@@ -436,4 +438,19 @@ func (v *CAVVDC) New(value *CAVVirtualDataCenter) (vdc *CAVVirtualDataCenter, er
 	}
 
 	return v.Get(value.Vdc.Name)
+}
+
+// GetVMwareObject - Return the VMware object
+func (v *CAVVirtualDataCenter) GetVMwareObject() (*govcd.Vdc, error) {
+	c, err := clientcloudavenue.New()
+	if err != nil {
+		return nil, err
+	}
+
+	org, err := c.Vmware.GetOrgByName(c.GetOrganization())
+	if err != nil {
+		return nil, err
+	}
+
+	return org.GetVDCByName(v.GetName(), true)
 }

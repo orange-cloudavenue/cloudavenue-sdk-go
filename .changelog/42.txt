@@ -1,0 +1,3 @@
+```release-note:note
+`vdc` - Refactor `vdc` to use `infrapi` and `vmware` packages
+```
