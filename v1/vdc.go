@@ -235,6 +235,21 @@ func (v *VDC) RemoveStorageProfile(storageProfileName infrapi.VDCStrorageProfile
 	v.infrapi.RemoveStorageProfile(storageProfileName)
 }
 
+// SetStorageProfiles set the storage profiles of the VDC.
+func (v *VDC) SetStorageProfiles(storageProfiles []infrapi.VDCStrorageProfile) {
+	v.infrapi.SetStorageProfiles(storageProfiles)
+}
+
+// SetVCPUInMhz2 set the VCPU in MHz of the VDC.
+func (v *VDC) SetVCPUInMhz2(vcpuInMhz2 int) {
+	v.infrapi.SetVCPUInMhz2(vcpuInMhz2)
+}
+
+// Set set the VDC.
+func (v *VDC) Set(vdc *infrapi.CAVVirtualDataCenter) {
+	v.infrapi.Set(vdc)
+}
+
 // IsValid returns true if the VDC is valid.
 func (v *VDC) IsValid() (bool, error) {
 	return v.infrapi.IsValid()
