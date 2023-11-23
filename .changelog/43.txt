@@ -1,0 +1,3 @@
+```release-note:feature
+`vdc` - Add `SetStorageProfiles`, `SetVCPUInMhz2` and `Set` funcs
+```

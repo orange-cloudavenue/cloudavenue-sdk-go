@@ -212,6 +212,21 @@ func (v *CAVVirtualDataCenter) RemoveStorageProfile(storageProfile VDCStroragePr
 	}
 }
 
+// SetStorageProfiles - Set the VDC storage profiles
+func (v *CAVVirtualDataCenter) SetStorageProfiles(storageProfiles []VDCStrorageProfile) {
+	v.Vdc.StorageProfiles = storageProfiles
+}
+
+// SetVCPUInMhz2 - Set the VDC vcpu in mhz2
+func (v *CAVVirtualDataCenter) SetVCPUInMhz2(vcpuInMhz2 int) {
+	v.Vdc.VcpuInMhz2 = vcpuInMhz2
+}
+
+// Set - Set the VDC
+func (v *CAVVirtualDataCenter) Set(vdc *CAVVirtualDataCenter) {
+	v.Vdc = vdc.Vdc
+}
+
 // MarshalJSON - Marshal the VDC
 func (v *CAVVirtualDataCenter) MarshalJSON() ([]byte, error) {
 	if ok, err := v.IsValid(); !ok {
