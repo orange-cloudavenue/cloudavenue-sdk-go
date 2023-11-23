@@ -1,4 +1,8 @@
 ## 0.6.0 (Unreleased)
+
+### :rocket: **New Features**
+
+* `vdc` - Add `SetStorageProfiles`, `SetVCPUInMhz2` and `Set` funcs (GH-43)
 ### :information_source: **Notes**
 
 * `vdc` - Refactor `vdc` to use `infrapi` and `vmware` packages (GH-42)
