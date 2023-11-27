@@ -20,7 +20,7 @@ type (
 	T0Services []T0Service
 	T0Service  struct {
 		Service string `json:"service"`
-		VlanID  any    `json:"vlanId"`
+		VLANID  any    `json:"vlanId"`
 	}
 
 	ClassService string
@@ -72,9 +72,9 @@ func (t *T0Service) GetService() string {
 	return t.Service
 }
 
-// GetVlanID - Returns the VlanID
-func (t *T0Service) GetVlanID() any {
-	return t.VlanID
+// GetVLANID - Returns the VLANID
+func (t *T0Service) GetVLANID() any {
+	return t.VLANID
 }
 
 // * ClassService

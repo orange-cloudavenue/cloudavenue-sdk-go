@@ -10,8 +10,9 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/go-resty/resty/v2"
-	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/clients/consoles"
 	"github.com/sethvargo/go-envconfig"
+
+	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/clients/consoles"
 )
 
 var c = internalClient{}

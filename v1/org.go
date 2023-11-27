@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/vmware/go-vcloud-director/v2/govcd"
+
 	clientcloudavenue "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/clients/cloudavenue"
 	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/uuid"
-	"github.com/vmware/go-vcloud-director/v2/govcd"
 )
 
 type (
