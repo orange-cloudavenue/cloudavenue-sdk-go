@@ -3,6 +3,11 @@
 ### :rocket: **New Features**
 
 * `vdc` - Add `SetStorageProfiles`, `SetVCPUInMhz2` and `Set` funcs (GH-43)
+
+### :bug: **Bug Fixes**
+
+* `publicip` - Fix GetIP return now the good public IP. (GH-40)
+* `publicip` - Fix GetJobStatus return now the good status. (GH-40)
 ### :information_source: **Notes**
 
 * `vdc` - Refactor `vdc` to use `infrapi` and `vmware` packages (GH-42)
