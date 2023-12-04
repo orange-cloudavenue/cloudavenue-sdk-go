@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"sync"
 
+	"github.com/vmware/go-vcloud-director/v2/govcd"
+
 	commoncloudavenue "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/common/cloudavenue"
 	"github.com/orange-cloudavenue/cloudavenue-sdk-go/v1/infrapi"
-	"github.com/vmware/go-vcloud-director/v2/govcd"
 )
 
 type (
@@ -39,14 +40,6 @@ type (
 // The function performs concurrent requests to retrieve the VDC from both the VMware and the infrapi.
 // It uses goroutines and channels to handle the concurrent requests and waits for all goroutines to finish using a WaitGroup.
 // The function returns the VDC that was successfully retrieved from either the VMware or the infrapi.
-//
-//	// Retrieve the VDC by its name
-//	vdcName := "MyVDC"
-//	result, err := vdc.Get(vdcName)
-//	if err != nil {
-//		fmt.Printf("Error retrieving VDC: %s\n", err.Error())
-//		return
-//	}
 func (v *CAVVdc) GetVDC(vdcName string) (*VDC, error) {
 	if vdcName == "" {
 		return nil, fmt.Errorf("%w", ErrEmptyVDCNameProvided)
@@ -165,23 +158,23 @@ func (v *VDC) GetDescription() string {
 }
 
 // GetServiceClass returns the service class of the VDC.
-func (v *VDC) GetServiceClass() infrapi.VDCServiceClass {
+func (v *VDC) GetServiceClass() infrapi.ServiceClass {
 	return v.infrapi.GetServiceClass()
 }
 
 // GetDisponibilityClass returns the disponibility class of the VDC.
-func (v *VDC) GetDisponibilityClass() infrapi.VDCDisponibilityClass {
+func (v *VDC) GetDisponibilityClass() infrapi.DisponibilityClass {
 	return v.infrapi.GetDisponibilityClass()
 }
 
 // GetBillingModel returns the billing model of the VDC.
-func (v *VDC) GetBillingModel() infrapi.VDCBillingModel {
+func (v *VDC) GetBillingModel() infrapi.BillingModel {
 	return v.infrapi.GetBillingModel()
 }
 
-// GetVcpuInMhz2 returns the VCPU in MHz of the VDC.
-func (v *VDC) GetVcpuInMhz2() int {
-	return v.infrapi.GetVcpuInMhz2()
+// GetVCPUInMhz returns the VCPU in MHz of the VDC.
+func (v *VDC) GetVCPUInMhz() int {
+	return v.infrapi.GetVCPUInMhz()
 }
 
 // GetCPUAllocated returns the CPU allocated of the VDC.
@@ -195,12 +188,12 @@ func (v *VDC) GetMemoryAllocated() int {
 }
 
 // GetStorageBillingModel returns the storage billing model of the VDC.
-func (v *VDC) GetStorageBillingModel() infrapi.VDCStorageBillingModel {
+func (v *VDC) GetStorageBillingModel() infrapi.BillingModel {
 	return v.infrapi.GetStorageBillingModel()
 }
 
 // GetStorageProfiles returns the storage profiles of the VDC.
-func (v *VDC) GetStorageProfiles() []infrapi.VDCStrorageProfile {
+func (v *VDC) GetStorageProfiles() []infrapi.StorageProfile {
 	return v.infrapi.GetStorageProfiles()
 }
 
@@ -226,23 +219,23 @@ func (v *VDC) SetMemoryAllocated(memoryAllocated int) {
 }
 
 // AddStorageProfile add a storage profile to the VDC.
-func (v *VDC) AddStorageProfile(storageProfile infrapi.VDCStrorageProfile) {
+func (v *VDC) AddStorageProfile(storageProfile infrapi.StorageProfile) {
 	v.infrapi.AddStorageProfile(storageProfile)
 }
 
 // RemoveStorageProfile remove a storage profile from the VDC.
-func (v *VDC) RemoveStorageProfile(storageProfileName infrapi.VDCStrorageProfile) {
+func (v *VDC) RemoveStorageProfile(storageProfileName infrapi.StorageProfile) {
 	v.infrapi.RemoveStorageProfile(storageProfileName)
 }
 
 // SetStorageProfiles set the storage profiles of the VDC.
-func (v *VDC) SetStorageProfiles(storageProfiles []infrapi.VDCStrorageProfile) {
+func (v *VDC) SetStorageProfiles(storageProfiles []infrapi.StorageProfile) {
 	v.infrapi.SetStorageProfiles(storageProfiles)
 }
 
-// SetVCPUInMhz2 set the VCPU in MHz of the VDC.
-func (v *VDC) SetVCPUInMhz2(vcpuInMhz2 int) {
-	v.infrapi.SetVCPUInMhz2(vcpuInMhz2)
+// SetVCPUInMhz set the VCPU in MHz of the VDC.
+func (v *VDC) SetVCPUInMhz(vcpuInMhz int) {
+	v.infrapi.SetVCPUInMhz(vcpuInMhz)
 }
 
 // Set set the VDC.
@@ -251,8 +244,8 @@ func (v *VDC) Set(vdc *infrapi.CAVVirtualDataCenter) {
 }
 
 // IsValid returns true if the VDC is valid.
-func (v *VDC) IsValid() (bool, error) {
-	return v.infrapi.IsValid()
+func (v *VDC) IsValid(isUpdate bool) error {
+	return v.infrapi.IsValid(isUpdate)
 }
 
 // Delete deletes the VDC.

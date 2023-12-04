@@ -7,9 +7,10 @@ import (
 	"net/url"
 
 	"github.com/go-resty/resty/v2"
-	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/clients/consoles"
 	"github.com/sethvargo/go-envconfig"
 	"github.com/vmware/go-vcloud-director/v2/govcd"
+
+	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/clients/consoles"
 )
 
 var c = &internalClient{}

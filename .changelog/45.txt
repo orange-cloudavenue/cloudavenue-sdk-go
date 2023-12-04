@@ -1,0 +1,36 @@
+```release-note:feature
+`vdc` - Add vdc rules management
+```
+
+```release-note:enhancement
+`Lint` - Add lint for upper case var-naming rules
+```
+
+```release-note:breaking-change
+`netbackup` - Change funcs name to respect naming rules from `GetVdcByID` to `GetVDCByID`
+```
+
+```release-note:breaking-change
+`netbackup` - Change funcs name to respect naming rules from `GetVdcByIdentifier` to `GetVDCByIdentifier`
+```
+
+```release-note:breaking-change
+`netbackup` - Change funcs name to respect naming rules from `GetVdcByName` to `GetVDCByName`
+```
+
+```release-note:breaking-change
+`netbackup` - Change funcs name to respect naming rules from `GetVdcByNameOrIdentifier` to `GetVDCByNameOrIdentifier`
+```
+
+```release-note:breaking-change
+`edgegateway` - Change attribute name to respect naming ToService/VlanID to ToService/VLANID
+```
+
+```release-note:breaking-change
+`edgegateway` - Change funcs name to respect naming rules from `GetVlanID` to `GetVLANID`
+```
+
+
+```release-note:breaking-change
+`vdc` - Change funcs name from `GetVcpuInMhz2` to `GetVCPUInMhz`
+```
