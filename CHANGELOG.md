@@ -1,4 +1,5 @@
-## 0.6.0 (Unreleased)
+## 0.7.0 (Unreleased)
+## 0.6.0 (December  4, 2023)
 ### :rotating_light: **Breaking Changes**
 
 * `edgegateway` - Change attribute name to respect naming ToService/VlanID to ToService/VLANID (GH-45)
