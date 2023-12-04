@@ -1,8 +1,22 @@
 ## 0.6.0 (Unreleased)
+### :rotating_light: **Breaking Changes**
+
+* `edgegateway` - Change attribute name to respect naming ToService/VlanID to ToService/VLANID (GH-45)
+* `edgegateway` - Change funcs name to respect naming rules from `GetVlanID` to `GetVLANID` (GH-45)
+* `netbackup` - Change funcs name to respect naming rules from `GetVdcByID` to `GetVDCByID` (GH-45)
+* `netbackup` - Change funcs name to respect naming rules from `GetVdcByIdentifier` to `GetVDCByIdentifier` (GH-45)
+* `netbackup` - Change funcs name to respect naming rules from `GetVdcByNameOrIdentifier` to `GetVDCByNameOrIdentifier` (GH-45)
+* `netbackup` - Change funcs name to respect naming rules from `GetVdcByName` to `GetVDCByName` (GH-45)
+* `vdc` - Change funcs name from `GetVcpuInMhz2` to `GetVCPUInMhz` (GH-45)
 
 ### :rocket: **New Features**
 
 * `vdc` - Add `SetStorageProfiles`, `SetVCPUInMhz2` and `Set` funcs (GH-43)
+* `vdc` - Add vdc rules management (GH-45)
+
+### :tada: **Improvements**
+
+* `Lint` - Add lint for upper case var-naming rules (GH-45)
 
 ### :bug: **Bug Fixes**
 
