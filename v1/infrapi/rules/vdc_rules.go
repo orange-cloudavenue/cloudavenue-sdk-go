@@ -17,13 +17,20 @@ type (
 
 	VCPUInMhz       map[BillingModel]RuleValues
 	CPUAllocated    map[BillingModel]RuleValues
-	StorageProfiles map[StorageProfileClass]RuleValues
+	StorageProfiles map[StorageProfileClass]StorageProfile
 
 	DisponibilityClasses   []DisponibilityClass
 	BillingModels          []BillingModel
 	ServiceClasses         []ServiceClass
 	StorageBillingModels   []BillingModel
 	StorageProfilesClasses []StorageProfileClass
+
+	StorageProfile struct {
+		IOPSLimit            RuleValues
+		SizeLimit            RuleValues
+		BillingModels        BillingModels
+		DisponibilityClasses DisponibilityClasses
+	}
 
 	RuleValues struct {
 		Editable bool `json:"editable"`
@@ -81,6 +88,11 @@ const (
 	storageProfileMinMemoryGib = 500
 	storageProfileMaxMemoryGib = 50000
 
+	storageProfileSilverIOPSLimit = 600
+	storageProfileGoldIOPSLimit   = 1000
+	storageProfilePlatinum3kLimit = 3000
+	storageProfilePlatinum7kLimit = 7000
+
 	memoryAllocatedMinGib = 1
 	memoryAllocatedMaxGib = 5120
 )
@@ -130,19 +142,215 @@ var (
 )
 
 var (
-	defaultStorageProfileRule = RuleValues{
+	defaultStorageProfileRuleSizeLimit = RuleValues{
 		Editable: true,
 		Min:      utils.ToPTR(storageProfileMinMemoryGib),
 		Max:      utils.ToPTR(storageProfileMaxMemoryGib),
 	}
 
-	defaultStoragesProfiles = func() StorageProfiles {
-		sp := StorageProfiles{}
-		for _, c := range ALLStorageProfilesClass {
-			sp[c] = defaultStorageProfileRule
-		}
-		return sp
+	storageProfilesIOPSLimits = map[StorageProfileClass]RuleValues{
+		StorageProfileClassSilver: {
+			Editable: false,
+			Equal:    utils.ToPTR(storageProfileSilverIOPSLimit),
+		},
+		StorageProfileClassGold: {
+			Editable: false,
+			Equal:    utils.ToPTR(storageProfileGoldIOPSLimit),
+		},
+		StorageProfileClassPlatinum3k: {
+			Editable: false,
+			Equal:    utils.ToPTR(storageProfilePlatinum3kLimit),
+		},
+		StorageProfileClassPlatinum7k: {
+			Editable: false,
+			Equal:    utils.ToPTR(storageProfilePlatinum7kLimit),
+		},
 	}
+
+	storageProfilesRules = map[StorageProfileClass]StorageProfile{
+		// * SILVER
+		StorageProfileClassSilver: {
+			SizeLimit: defaultStorageProfileRuleSizeLimit,
+			IOPSLimit: storageProfilesIOPSLimits[StorageProfileClassSilver],
+			BillingModels: BillingModels{
+				BillingModelPayg,
+				BillingModelReserved,
+			},
+			DisponibilityClasses: DisponibilityClasses{
+				DisponibilityClassOneRoom,
+			},
+		},
+		StorageProfileClassSilverR1: {
+			SizeLimit: defaultStorageProfileRuleSizeLimit,
+			IOPSLimit: storageProfilesIOPSLimits[StorageProfileClassSilver],
+			BillingModels: BillingModels{
+				BillingModelPayg,
+				BillingModelReserved,
+			},
+			DisponibilityClasses: DisponibilityClasses{
+				DisponibilityClassDualRoom,
+			},
+		},
+		StorageProfileClassSilverR2: {
+			SizeLimit: defaultStorageProfileRuleSizeLimit,
+			IOPSLimit: storageProfilesIOPSLimits[StorageProfileClassSilver],
+			BillingModels: BillingModels{
+				BillingModelPayg,
+				BillingModelReserved,
+			},
+			DisponibilityClasses: DisponibilityClasses{
+				DisponibilityClassDualRoom,
+			},
+		},
+
+		// * GOLD
+		StorageProfileClassGold: {
+			SizeLimit: defaultStorageProfileRuleSizeLimit,
+			IOPSLimit: RuleValues{
+				Editable: false,
+				Equal:    utils.ToPTR(1000),
+			},
+			BillingModels: BillingModels{
+				BillingModelPayg,
+				BillingModelReserved,
+			},
+			DisponibilityClasses: DisponibilityClasses{
+				DisponibilityClassOneRoom,
+			},
+		},
+		StorageProfileClassGoldR1: {
+			SizeLimit: defaultStorageProfileRuleSizeLimit,
+			IOPSLimit: storageProfilesIOPSLimits[StorageProfileClassGold],
+			BillingModels: BillingModels{
+				BillingModelPayg,
+				BillingModelReserved,
+			},
+			DisponibilityClasses: DisponibilityClasses{
+				DisponibilityClassDualRoom,
+			},
+		},
+		StorageProfileClassGoldR2: {
+			SizeLimit: defaultStorageProfileRuleSizeLimit,
+			IOPSLimit: storageProfilesIOPSLimits[StorageProfileClassGold],
+			BillingModels: BillingModels{
+				BillingModelPayg,
+				BillingModelReserved,
+			},
+			DisponibilityClasses: DisponibilityClasses{
+				DisponibilityClassDualRoom,
+			},
+		},
+		StorageProfileClassGoldHm: {
+			SizeLimit: defaultStorageProfileRuleSizeLimit,
+			IOPSLimit: storageProfilesIOPSLimits[StorageProfileClassGold],
+			BillingModels: BillingModels{
+				BillingModelPayg,
+				BillingModelReserved,
+			},
+			DisponibilityClasses: DisponibilityClasses{
+				DisponibilityClassHaDualRoom,
+			},
+		},
+
+		// * PLATINUM 3K
+		StorageProfileClassPlatinum3k: {
+			SizeLimit: defaultStorageProfileRuleSizeLimit,
+			IOPSLimit: storageProfilesIOPSLimits[StorageProfileClassPlatinum3k],
+			BillingModels: BillingModels{
+				BillingModelPayg,
+				BillingModelReserved,
+			},
+			DisponibilityClasses: DisponibilityClasses{
+				DisponibilityClassOneRoom,
+			},
+		},
+		StorageProfileClassPlatinum3kR1: {
+			SizeLimit: defaultStorageProfileRuleSizeLimit,
+			IOPSLimit: storageProfilesIOPSLimits[StorageProfileClassPlatinum3k],
+			BillingModels: BillingModels{
+				BillingModelPayg,
+				BillingModelReserved,
+			},
+			DisponibilityClasses: DisponibilityClasses{
+				DisponibilityClassDualRoom,
+			},
+		},
+		StorageProfileClassPlatinum3kR2: {
+			SizeLimit: defaultStorageProfileRuleSizeLimit,
+			IOPSLimit: storageProfilesIOPSLimits[StorageProfileClassPlatinum3k],
+			BillingModels: BillingModels{
+				BillingModelPayg,
+				BillingModelReserved,
+			},
+			DisponibilityClasses: DisponibilityClasses{
+				DisponibilityClassDualRoom,
+			},
+		},
+		StorageProfileClassPlatinum3kHm: {
+			SizeLimit: defaultStorageProfileRuleSizeLimit,
+			IOPSLimit: storageProfilesIOPSLimits[StorageProfileClassPlatinum3k],
+			BillingModels: BillingModels{
+				BillingModelPayg,
+				BillingModelReserved,
+			},
+			DisponibilityClasses: DisponibilityClasses{
+				DisponibilityClassHaDualRoom,
+			},
+		},
+		// * PLATINUM 7K
+		StorageProfileClassPlatinum7k: {
+			SizeLimit: defaultStorageProfileRuleSizeLimit,
+			IOPSLimit: storageProfilesIOPSLimits[StorageProfileClassPlatinum7k],
+			BillingModels: []BillingModel{
+				BillingModelPayg,
+				BillingModelReserved,
+			},
+			DisponibilityClasses: DisponibilityClasses{
+				DisponibilityClassOneRoom,
+			},
+		},
+		StorageProfileClassPlatinum7kR1: {
+			SizeLimit: defaultStorageProfileRuleSizeLimit,
+			IOPSLimit: storageProfilesIOPSLimits[StorageProfileClassPlatinum7k],
+			BillingModels: []BillingModel{
+				BillingModelPayg,
+				BillingModelReserved,
+			},
+			DisponibilityClasses: DisponibilityClasses{
+				DisponibilityClassDualRoom,
+			},
+		},
+		StorageProfileClassPlatinum7kR2: {
+			SizeLimit: defaultStorageProfileRuleSizeLimit,
+			IOPSLimit: storageProfilesIOPSLimits[StorageProfileClassPlatinum7k],
+			BillingModels: []BillingModel{
+				BillingModelPayg,
+				BillingModelReserved,
+			},
+			DisponibilityClasses: DisponibilityClasses{
+				DisponibilityClassDualRoom,
+			},
+		},
+		StorageProfileClassPlatinum7kHm: {
+			SizeLimit: defaultStorageProfileRuleSizeLimit,
+			IOPSLimit: storageProfilesIOPSLimits[StorageProfileClassPlatinum7k],
+			BillingModels: []BillingModel{
+				BillingModelPayg,
+				BillingModelReserved,
+			},
+			DisponibilityClasses: DisponibilityClasses{
+				DisponibilityClassHaDualRoom,
+			},
+		},
+	}
+
+	// defaultStoragesProfiles = func() StorageProfiles {
+	// 	sp := StorageProfiles{}
+	// 	for _, c := range ALLStorageProfilesClass {
+	// 		sp[c] = defaultStorageProfileRule
+	// 	}
+	// 	return sp
+	// }
 
 	defaultMemoryAllocatedRule = RuleValues{
 		Editable: true,
@@ -213,8 +421,15 @@ var vdcRules = Rules{
 				Max:      utils.ToPTR(2500000),
 			},
 		},
-		MemoryAllocated:     defaultMemoryAllocatedRule,
-		StorageProfiles:     defaultStoragesProfiles(),
+		MemoryAllocated: defaultMemoryAllocatedRule,
+		StorageProfiles: StorageProfiles{
+			StorageProfileClassSilver:   storageProfilesRules[StorageProfileClassSilver],
+			StorageProfileClassSilverR1: storageProfilesRules[StorageProfileClassSilverR1],
+			StorageProfileClassSilverR2: storageProfilesRules[StorageProfileClassSilverR2],
+			StorageProfileClassGold:     storageProfilesRules[StorageProfileClassGold],
+			StorageProfileClassGoldR1:   storageProfilesRules[StorageProfileClassGoldR1],
+			StorageProfileClassGoldR2:   storageProfilesRules[StorageProfileClassGoldR2],
+		},
 		StorageBillingModel: ALLStorageBillingModels,
 	},
 	ServiceClassStd: {
@@ -258,8 +473,24 @@ var vdcRules = Rules{
 				Max:      utils.ToPTR(2500000),
 			},
 		},
-		MemoryAllocated:     defaultMemoryAllocatedRule,
-		StorageProfiles:     defaultStoragesProfiles(),
+		MemoryAllocated: defaultMemoryAllocatedRule,
+		StorageProfiles: StorageProfiles{
+			StorageProfileClassSilver:       storageProfilesRules[StorageProfileClassSilver],
+			StorageProfileClassSilverR1:     storageProfilesRules[StorageProfileClassSilverR1],
+			StorageProfileClassSilverR2:     storageProfilesRules[StorageProfileClassSilverR2],
+			StorageProfileClassGold:         storageProfilesRules[StorageProfileClassGold],
+			StorageProfileClassGoldR1:       storageProfilesRules[StorageProfileClassGoldR1],
+			StorageProfileClassGoldR2:       storageProfilesRules[StorageProfileClassGoldR2],
+			StorageProfileClassGoldHm:       storageProfilesRules[StorageProfileClassGoldHm],
+			StorageProfileClassPlatinum3k:   storageProfilesRules[StorageProfileClassPlatinum3k],
+			StorageProfileClassPlatinum3kR1: storageProfilesRules[StorageProfileClassPlatinum3kR1],
+			StorageProfileClassPlatinum3kR2: storageProfilesRules[StorageProfileClassPlatinum3kR2],
+			StorageProfileClassPlatinum3kHm: storageProfilesRules[StorageProfileClassPlatinum3kHm],
+			StorageProfileClassPlatinum7k:   storageProfilesRules[StorageProfileClassPlatinum7k],
+			StorageProfileClassPlatinum7kR1: storageProfilesRules[StorageProfileClassPlatinum7kR1],
+			StorageProfileClassPlatinum7kR2: storageProfilesRules[StorageProfileClassPlatinum7kR2],
+			StorageProfileClassPlatinum7kHm: storageProfilesRules[StorageProfileClassPlatinum7kHm],
+		},
 		StorageBillingModel: ALLStorageBillingModels,
 	},
 	ServiceClassHp: {
@@ -292,8 +523,24 @@ var vdcRules = Rules{
 				Max:      utils.ToPTR(2500000),
 			},
 		},
-		MemoryAllocated:     defaultMemoryAllocatedRule,
-		StorageProfiles:     defaultStoragesProfiles(),
+		MemoryAllocated: defaultMemoryAllocatedRule,
+		StorageProfiles: StorageProfiles{
+			StorageProfileClassSilver:       storageProfilesRules[StorageProfileClassSilver],
+			StorageProfileClassSilverR1:     storageProfilesRules[StorageProfileClassSilverR1],
+			StorageProfileClassSilverR2:     storageProfilesRules[StorageProfileClassSilverR2],
+			StorageProfileClassGold:         storageProfilesRules[StorageProfileClassGold],
+			StorageProfileClassGoldR1:       storageProfilesRules[StorageProfileClassGoldR1],
+			StorageProfileClassGoldR2:       storageProfilesRules[StorageProfileClassGoldR2],
+			StorageProfileClassGoldHm:       storageProfilesRules[StorageProfileClassGoldHm],
+			StorageProfileClassPlatinum3k:   storageProfilesRules[StorageProfileClassPlatinum3k],
+			StorageProfileClassPlatinum3kR1: storageProfilesRules[StorageProfileClassPlatinum3kR1],
+			StorageProfileClassPlatinum3kR2: storageProfilesRules[StorageProfileClassPlatinum3kR2],
+			StorageProfileClassPlatinum3kHm: storageProfilesRules[StorageProfileClassPlatinum3kHm],
+			StorageProfileClassPlatinum7k:   storageProfilesRules[StorageProfileClassPlatinum7k],
+			StorageProfileClassPlatinum7kR1: storageProfilesRules[StorageProfileClassPlatinum7kR1],
+			StorageProfileClassPlatinum7kR2: storageProfilesRules[StorageProfileClassPlatinum7kR2],
+			StorageProfileClassPlatinum7kHm: storageProfilesRules[StorageProfileClassPlatinum7kHm],
+		},
 		StorageBillingModel: ALLStorageBillingModels,
 	},
 	ServiceClassVoip: {
@@ -317,8 +564,24 @@ var vdcRules = Rules{
 				Max:      utils.ToPTR(2500000),
 			},
 		},
-		MemoryAllocated:     defaultMemoryAllocatedRule,
-		StorageProfiles:     defaultStoragesProfiles(),
+		MemoryAllocated: defaultMemoryAllocatedRule,
+		StorageProfiles: StorageProfiles{
+			StorageProfileClassSilver:       storageProfilesRules[StorageProfileClassSilver],
+			StorageProfileClassSilverR1:     storageProfilesRules[StorageProfileClassSilverR1],
+			StorageProfileClassSilverR2:     storageProfilesRules[StorageProfileClassSilverR2],
+			StorageProfileClassGold:         storageProfilesRules[StorageProfileClassGold],
+			StorageProfileClassGoldR1:       storageProfilesRules[StorageProfileClassGoldR1],
+			StorageProfileClassGoldR2:       storageProfilesRules[StorageProfileClassGoldR2],
+			StorageProfileClassGoldHm:       storageProfilesRules[StorageProfileClassGoldHm],
+			StorageProfileClassPlatinum3k:   storageProfilesRules[StorageProfileClassPlatinum3k],
+			StorageProfileClassPlatinum3kR1: storageProfilesRules[StorageProfileClassPlatinum3kR1],
+			StorageProfileClassPlatinum3kR2: storageProfilesRules[StorageProfileClassPlatinum3kR2],
+			StorageProfileClassPlatinum3kHm: storageProfilesRules[StorageProfileClassPlatinum3kHm],
+			StorageProfileClassPlatinum7k:   storageProfilesRules[StorageProfileClassPlatinum7k],
+			StorageProfileClassPlatinum7kR1: storageProfilesRules[StorageProfileClassPlatinum7kR1],
+			StorageProfileClassPlatinum7kR2: storageProfilesRules[StorageProfileClassPlatinum7kR2],
+			StorageProfileClassPlatinum7kHm: storageProfilesRules[StorageProfileClassPlatinum7kHm],
+		},
 		StorageBillingModel: ALLStorageBillingModels,
 	},
 }
@@ -354,7 +617,7 @@ func (sbm StorageBillingModels) String() string {
 func (sp StorageProfiles) String() string {
 	s := ""
 	for _, c := range ALLStorageProfilesClass {
-		s += fmt.Sprintf("%s: %s, ", c, sp[c])
+		s += string(c) + ", "
 	}
 	return s[:len(s)-2]
 }
@@ -578,8 +841,8 @@ func Validate(data ValidateData, isUpdate bool) error {
 			if !r.storageProfileClassIsValid(c) {
 				return fmt.Errorf("%w: %s (Allowed values: %v)", ErrStorageProfileClassNotFound, c, ALLStorageProfilesClass)
 			}
-			if sP.Limit < *r.StorageProfiles[c].Min || sP.Limit > *r.StorageProfiles[c].Max {
-				return fmt.Errorf("%w: %d (Allowed values: %v)", ErrStorageProfileLimitInvalid, sP.Limit, r.StorageProfiles[c])
+			if sP.Limit < *r.StorageProfiles[c].SizeLimit.Min || sP.Limit > *r.StorageProfiles[c].SizeLimit.Max {
+				return fmt.Errorf("%w: %d (Allowed values: %v)", ErrStorageProfileLimitInvalid, sP.Limit, r.StorageProfiles[c].SizeLimit)
 			}
 			// // Limit is valid if modulo of 1024 is 0
 			// if sP.Limit%1024 != 0 {
@@ -608,6 +871,7 @@ func Validate(data ValidateData, isUpdate bool) error {
 // - DisponibilityClass
 // - VCPUInMhz
 // - CPUAllocated
+// - MemoryAllocated
 func (r Rule) GetRuleDetails() string {
 	rules := [][]string{}
 
@@ -631,15 +895,59 @@ func (r Rule) GetRuleDetails() string {
 // GetRuleDetails returns one markdown table for each ServiceClass.
 func GetRulesDetails() string {
 	x := ""
-	x += "# Rules\n"
+	x += "## Rules\n"
 	x += "All fields with a ** are editable.\n\n"
 	for _, sc := range ALLServiceClasses {
 		r, err := GetRuleByServiceClass(sc)
 		if err != nil {
 			panic(err)
 		}
-		x += fmt.Sprintf("## ServiceClass %s\n", sc)
+		x += fmt.Sprintf("### ServiceClass %s\n", sc)
 		x += r.GetRuleDetails()
+		x += "\n"
+	}
+	return x
+}
+
+// GetStorageProfileDetails returns the RuleValues for the given StorageProfileClass.
+// Return markdown table with the following columns:
+// - StorageProfileClass
+// - SizeLimit
+// - IOPSLimit
+func (r Rule) GetStorageProfileDetails() string {
+	rules := [][]string{}
+
+	for _, spClass := range ALLStorageProfilesClass {
+		if sp, ok := r.StorageProfiles[spClass]; ok {
+			rules = append(rules, []string{
+				string(spClass), storageProfilesRules[spClass].SizeLimit.String(), sp.IOPSLimit.String(), sp.BillingModels.String(), sp.DisponibilityClasses.String(),
+			})
+		}
+	}
+
+	prettyPrintedTable, err := markdown.NewTableFormatterBuilder().
+		WithPrettyPrint().
+		Build("StorageProfileClass", "SizeLimit", "IOPSLimit", "BillingModels", "DisponibilityClasses").
+		Format(rules)
+	if err != nil {
+		panic(err)
+	}
+
+	return prettyPrintedTable
+}
+
+// GetStorageProfilesDetails returns one markdown table for each ServiceClass.
+func GetStorageProfilesDetails() string {
+	x := ""
+	x += "## Storage Profiles\n"
+	x += "All fields with a ** are editable.\n\n"
+	for _, sc := range ALLServiceClasses {
+		r, err := GetRuleByServiceClass(sc)
+		if err != nil {
+			panic(err)
+		}
+		x += fmt.Sprintf("### ServiceClass %s\n", sc)
+		x += r.GetStorageProfileDetails()
 		x += "\n"
 	}
 	return x
