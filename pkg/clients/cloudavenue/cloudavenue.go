@@ -65,8 +65,14 @@ type Client struct {
 	Vmware *govcd.VCDClient
 }
 
+var cache *Client
+
 // New creates a new cloudavenue client.
 func New() (*Client, error) {
+	if cache != nil {
+		return cache, nil
+	}
+
 	if err := c.token.RefreshToken(); err != nil {
 		return nil, err
 	}
@@ -96,6 +102,11 @@ func New() (*Client, error) {
 	vmware.Client.APIVersion = c.token.GetVCDVersion()
 	vmware.QueryHREF = vmware.Client.VCDHREF
 	vmware.QueryHREF.Path += "/query"
+
+	cache = &Client{
+		Client: x,
+		Vmware: vmware,
+	}
 
 	return &Client{
 		Client: x,
