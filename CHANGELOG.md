@@ -2,6 +2,7 @@
 
 ### :dependabot: **Dependencies**
 
+* deps: bumps actions/setup-go from 4 to 5 (GH-50)
 * deps: bumps actions/upload-artifact from 3 to 4 (GH-53)
 * deps: bumps github.com/go-resty/resty/v2 from 2.10.0 to 2.11.0 (GH-56)
 * deps: bumps github.com/hashicorp/terraform-plugin-sdk/v2 from 2.30.0 to 2.31.0 (GH-55)
