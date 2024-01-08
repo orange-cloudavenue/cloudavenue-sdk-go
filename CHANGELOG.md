@@ -1,4 +1,9 @@
 ## 0.7.0 (Unreleased)
+
+### :dependabot: **Dependencies**
+
+* deps: bumps github.com/go-resty/resty/v2 from 2.10.0 to 2.11.0 (GH-56)
+
 ## 0.6.0 (December  4, 2023)
 ### :rotating_light: **Breaking Changes**
 
