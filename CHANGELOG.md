@@ -2,6 +2,7 @@
 
 ### :dependabot: **Dependencies**
 
+* deps: bumps actions/upload-artifact from 3 to 4 (GH-53)
 * deps: bumps github.com/go-resty/resty/v2 from 2.10.0 to 2.11.0 (GH-56)
 
 ## 0.6.0 (December  4, 2023)
