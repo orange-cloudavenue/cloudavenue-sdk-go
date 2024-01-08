@@ -15,6 +15,9 @@ jobs:
         id: dependabot-metadata
         uses: dependabot/fetch-metadata@c9c4182bf1b97f5224aee3906fd373f6b61b4526    # v1.6.0
       - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608             # v4.1.0
+      - uses: sersoft-gmbh/setup-gh-cli-action@v2
+        with:
+          version: stable
       - run: |
           gh pr checkout $PR_URL
           cat << EOF > .changelog/$PR_NUMBER.txt
