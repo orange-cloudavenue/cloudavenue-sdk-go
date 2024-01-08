@@ -1,4 +1,5 @@
 ## 0.7.0 (Unreleased)
+## 0.6.1 (January  8, 2024)
 
 ### :dependabot: **Dependencies**
 
