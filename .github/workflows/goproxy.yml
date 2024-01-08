@@ -11,7 +11,7 @@ on:
 jobs:
     build:
         name: Renew documentation
-        runs-on: ubuntu-latest
+        runs-on: speedy-gonzales
         steps:
             - name: Pull new module version
               uses: andrewslotin/go-proxy-pull-action@master
