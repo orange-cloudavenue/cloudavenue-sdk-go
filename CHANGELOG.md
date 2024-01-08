@@ -5,6 +5,7 @@
 * deps: bumps actions/download-artifact from 3.0.2 to 4.1.0 (GH-61)
 * deps: bumps actions/setup-go from 4 to 5 (GH-50)
 * deps: bumps actions/upload-artifact from 3 to 4 (GH-53)
+* deps: bumps github.com/aws/aws-sdk-go from 1.47.9 to 1.49.16 (GH-62)
 * deps: bumps github.com/go-resty/resty/v2 from 2.10.0 to 2.11.0 (GH-56)
 * deps: bumps github.com/hashicorp/terraform-plugin-sdk/v2 from 2.30.0 to 2.31.0 (GH-55)
 * deps: bumps github/codeql-action from 2 to 3 (GH-52)
