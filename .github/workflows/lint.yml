@@ -18,7 +18,8 @@ jobs:
   # Ensure project builds before running testing matrix
   lint:
     name: GolangCI-Lint
-    runs-on: speedy-gonzales
+    runs-on:
+      group: Default
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4 # v3.5.0

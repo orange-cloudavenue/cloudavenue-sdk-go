@@ -15,7 +15,8 @@ permissions:
 
 jobs:
   release-notes:
-    runs-on: speedy-gonzales
+    runs-on:
+      group: Default
     steps:
       - uses: actions/checkout@v4
         with:
@@ -32,7 +33,8 @@ jobs:
           retention-days: 1
   publish-release:
     needs: [release-notes]
-    runs-on: speedy-gonzales
+    runs-on:
+      group: Default
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -48,7 +50,8 @@ jobs:
           body_path: ${{ steps.release-notes-download.outputs.download-path }}/release-notes.txt
   highest-version-tag:
     needs: [publish-release]
-    runs-on: speedy-gonzales
+    runs-on:
+      group: Default
     outputs:
       tag: ${{ steps.highest-version-tag.outputs.tag }}
     steps:
@@ -64,7 +67,8 @@ jobs:
   changelog-newversion:
     needs: [highest-version-tag]
     if: github.ref_name == needs.highest-version-tag.outputs.tag
-    runs-on: speedy-gonzales
+    runs-on:
+      group: Default
     steps:
       - uses: actions/checkout@v4
         with:
