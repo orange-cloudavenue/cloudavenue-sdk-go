@@ -6,6 +6,6 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: speedy-gonzales
     steps:
       - uses: creekorful/goreportcard-action@v1.0
