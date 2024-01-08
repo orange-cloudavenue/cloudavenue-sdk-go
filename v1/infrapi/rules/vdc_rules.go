@@ -344,14 +344,6 @@ var (
 		},
 	}
 
-	// defaultStoragesProfiles = func() StorageProfiles {
-	// 	sp := StorageProfiles{}
-	// 	for _, c := range ALLStorageProfilesClass {
-	// 		sp[c] = defaultStorageProfileRule
-	// 	}
-	// 	return sp
-	// }
-
 	defaultMemoryAllocatedRule = RuleValues{
 		Editable: true,
 		Min:      utils.ToPTR(memoryAllocatedMinGib),
@@ -883,7 +875,7 @@ func (r Rule) GetRuleDetails() string {
 
 	prettyPrintedTable, err := markdown.NewTableFormatterBuilder().
 		WithPrettyPrint().
-		Build("BillingModels", "StorageBillingModels", "DisponibilityClasses", "VCPUInMhz", "CPUAllocated", "MemoryAllocated").
+		Build("BillingModels", "StorageBillingModels", "DisponibilityClasses", "CPUInMhz (Mhz)", "CPUAllocated (Mhz)", "MemoryAllocated (Gb)").
 		Format(rules)
 	if err != nil {
 		panic(err)
@@ -896,6 +888,7 @@ func (r Rule) GetRuleDetails() string {
 func GetRulesDetails() string {
 	x := ""
 	x += "## Rules\n"
+	x += "More information about rules can be found [here](https://wiki.cloudavenue.orange-business.com/wiki/Virtual_Datacenter)."
 	x += "All fields with a ** are editable.\n\n"
 	for _, sc := range ALLServiceClasses {
 		r, err := GetRuleByServiceClass(sc)
@@ -914,6 +907,8 @@ func GetRulesDetails() string {
 // - StorageProfileClass
 // - SizeLimit
 // - IOPSLimit
+// - BillingModels
+// - DisponibilityClasses
 func (r Rule) GetStorageProfileDetails() string {
 	rules := [][]string{}
 
@@ -927,7 +922,7 @@ func (r Rule) GetStorageProfileDetails() string {
 
 	prettyPrintedTable, err := markdown.NewTableFormatterBuilder().
 		WithPrettyPrint().
-		Build("StorageProfileClass", "SizeLimit", "IOPSLimit", "BillingModels", "DisponibilityClasses").
+		Build("StorageProfileClass", "SizeLimit (Gb)", "IOPSLimit", "BillingModels", "DisponibilityClasses").
 		Format(rules)
 	if err != nil {
 		panic(err)
@@ -940,6 +935,7 @@ func (r Rule) GetStorageProfileDetails() string {
 func GetStorageProfilesDetails() string {
 	x := ""
 	x += "## Storage Profiles\n"
+	x += "More information about storage profiles can be found [here](https://wiki.cloudavenue.orange-business.com/wiki/Storage)."
 	x += "All fields with a ** are editable.\n\n"
 	for _, sc := range ALLServiceClasses {
 		r, err := GetRuleByServiceClass(sc)
