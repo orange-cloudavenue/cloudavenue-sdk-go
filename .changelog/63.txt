@@ -1,0 +1,3 @@
+```release-note:feature
+`client` - Improve seep of `client`. Use cached if already connected.
+```
