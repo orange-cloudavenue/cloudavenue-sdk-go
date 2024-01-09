@@ -1,4 +1,10 @@
 ## 0.7.0 (Unreleased)
+
+### :rocket: **New Features**
+
+* `client` - Improve seep of `client`. Use cached if already connected. (GH-63)
+* `vdc/rules` - Add storage profile rules for VDC. (GH-64)
+
 ## 0.6.1 (January  8, 2024)
 
 ### :dependabot: **Dependencies**
