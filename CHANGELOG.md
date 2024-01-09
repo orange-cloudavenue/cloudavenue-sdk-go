@@ -3,6 +3,7 @@
 ### :rocket: **New Features**
 
 * `client` - Improve seep of `client`. Use cached if already connected. (GH-63)
+* `querier` - Add querier vmware. Permit to Get/List VDC/VAPP/VM/EdgeGateway. (GH-65)
 * `vdc/rules` - Add storage profile rules for VDC. (GH-64)
 
 ## 0.6.1 (January  8, 2024)
