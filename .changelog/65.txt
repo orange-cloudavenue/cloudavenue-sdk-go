@@ -1,0 +1,3 @@
+```release-note:feature
+`querier` - Add querier vmware. Permit to Get/List VDC/VAPP/VM/EdgeGateway.
+```
