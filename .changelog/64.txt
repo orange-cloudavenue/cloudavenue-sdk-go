@@ -1,0 +1,3 @@
+```release-note:feature
+`vdc/rules` - Add storage profile rules for VDC.
+```
