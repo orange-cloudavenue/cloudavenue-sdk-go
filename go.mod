@@ -7,7 +7,7 @@ require (
 	github.com/fbiville/markdown-table-formatter v0.3.0
 	github.com/go-resty/resty/v2 v2.11.0
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.31.0
-	github.com/sethvargo/go-envconfig v0.9.0
+	github.com/sethvargo/go-envconfig v1.0.0
 	github.com/vmware/go-vcloud-director/v2 v2.21.0
 	golang.org/x/exp v0.0.0-20231006140011-7918f672742d
 	golang.org/x/sync v0.6.0
