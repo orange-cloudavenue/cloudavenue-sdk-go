@@ -3,7 +3,7 @@ module github.com/orange-cloudavenue/cloudavenue-sdk-go
 go 1.20
 
 require (
-	github.com/aws/aws-sdk-go v1.49.16
+	github.com/aws/aws-sdk-go v1.49.21
 	github.com/fbiville/markdown-table-formatter v0.3.0
 	github.com/go-resty/resty/v2 v2.11.0
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.31.0
