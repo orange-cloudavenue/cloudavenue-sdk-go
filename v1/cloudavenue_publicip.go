@@ -2,6 +2,7 @@ package v1
 
 import (
 	"fmt"
+	"regexp"
 
 	clientcloudavenue "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/clients/cloudavenue"
 	commoncloudavenue "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/common/cloudavenue"
@@ -78,6 +79,24 @@ func (v *PublicIP) GetIP(publicIP string) (response *IP, err error) {
 	}
 
 	return nil, fmt.Errorf("public IP %s not found", publicIP)
+}
+
+// GetIPByJob - Returns the public IP by job
+func (v *PublicIP) GetIPByJob(job *commoncloudavenue.JobStatus) (response *IP, err error) {
+	if job == nil {
+		return nil, fmt.Errorf("job is nil")
+	}
+
+	for _, action := range job.Actions {
+		// if actions details have a public IP then return it
+		// regex IPV4
+		reg := regexp.MustCompile(`\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b`)
+		if reg.MatchString(action.Details) {
+			return v.GetIP(reg.FindString(action.Details))
+		}
+	}
+
+	return nil, fmt.Errorf("public IP not found")
 }
 
 // New - Returns a new PublicIP
