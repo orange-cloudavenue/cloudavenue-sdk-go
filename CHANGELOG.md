@@ -1,4 +1,9 @@
 ## 0.8.0 (Unreleased)
+
+### :rocket: **New Features**
+
+* `publicIP/GetIPByJob` - Retrieve the public IP address by a Job. (GH-71)
+
 ## 0.7.0 (January  9, 2024)
 
 ### :rocket: **New Features**
