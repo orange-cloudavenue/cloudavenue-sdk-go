@@ -1,0 +1,3 @@
+```release-note:feature
+`publicIP/GetIPByJob` - Retrieve the public IP address by a Job.
+```
