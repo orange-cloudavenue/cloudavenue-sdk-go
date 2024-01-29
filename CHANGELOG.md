@@ -1,4 +1,9 @@
 ## 0.8.0 (Unreleased)
+
+### :dependabot: **Dependencies**
+
+* deps: bumps actions/download-artifact from 4.1.0 to 4.1.1 (GH-70)
+
 ## 0.7.1 (January 18, 2024)
 
 ### :rocket: **New Features**
