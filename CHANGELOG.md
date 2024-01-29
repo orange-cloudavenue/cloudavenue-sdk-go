@@ -1,4 +1,5 @@
-## 0.8.0 (Unreleased)
+## 0.9.0 (Unreleased)
+## 0.8.0 (January 29, 2024)
 ### :rotating_light: **Breaking Changes**
 
 * `console` - Remove funcs `S3IsEnabled()`, `GetS3Endpoint()`, `IsVCDAEnabled()` and `GetVCDAEndpoint()`. (GH-73)
