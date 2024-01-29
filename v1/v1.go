@@ -1,6 +1,9 @@
 package v1
 
 import (
+	"github.com/vmware/go-vcloud-director/v2/govcd"
+
+	clientcloudavenue "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/clients/cloudavenue"
 	"github.com/orange-cloudavenue/cloudavenue-sdk-go/v1/netbackup"
 )
 
@@ -16,4 +19,12 @@ type V1 struct {
 
 func (v *V1) VDC() *CAVVdc {
 	return &CAVVdc{}
+}
+
+func (v *V1) Vmware() (*govcd.VCDClient, error) {
+	client, err := clientcloudavenue.New()
+	if err != nil {
+		return nil, err
+	}
+	return client.Vmware, nil
 }

@@ -1,0 +1,49 @@
+```release-note:note
+`client` - The `CLOUDAVENUE_ENDPOINT` environment variable has been renamed to `CLOUDAVENUE_URL`.
+```
+
+```release-note:note
+`client` - The `NETBACKUP_ENDPOINT` environment variable has been renamed to `NETBACKUP_URL`.
+```
+
+
+```release-note:feature
+`consoles` - Add consoles `console5`, `console7`, `console8` and `console9`.
+```
+
+```release-note:feature
+`client` - Add Validation for the creation of a new client (CloudAvenue and Netbackup).
+```
+
+```release-note:feature
+`v1/Vmware` - Now the `V1()` function returns a Vmware object.
+```
+
+```release-note:feature
+`errors` - Add `errors` package. The following errors are available: `ErrNotFound`, `ErrEmpty` and `ErrInvalidFormat`
+```
+
+```release-note:feature
+`client/s3` - Now the `S3` client return an error if the s3 service is not available in the location.
+```
+
+```release-note:breaking-change
+`console` - Remove funcs `S3IsEnabled()`, `GetS3Endpoint()`, `IsVCDAEnabled()` and `GetVCDAEndpoint()`.
+```
+
+```release-note:feature
+`console`- Add func `Services()` to get the services available in the console.
+```
+
+```release-note:feature
+`console/service` - Add funcs `IsEnabled()` and `GetEndpoint()`.
+```
+
+```release-note:feature
+`console` - Add func `CheckOrganizationName()` to check if the organization name is valid without creating new client.
+```
+
+
+```release-note:feature
+`client/cloudavenue` - Add func `GetURL()` to get the cloudavenue url.
+```

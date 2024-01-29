@@ -2,6 +2,7 @@ package cloudavenue
 
 import (
 	clientcloudavenue "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/clients/cloudavenue"
+	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/clients/consoles"
 	clientnetbackup "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/clients/netbackup"
 	clientS3 "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/clients/s3"
 	v1 "github.com/orange-cloudavenue/cloudavenue-sdk-go/v1"
@@ -19,17 +20,23 @@ type ClientOpts struct {
 
 func New(opts ClientOpts) (*Client, error) {
 	// * Client CloudAvenue
-	if opts.CloudAvenue != nil {
-		if err := clientcloudavenue.Init(*opts.CloudAvenue); err != nil {
-			return nil, err
-		}
+	if err := clientcloudavenue.Init(*opts.CloudAvenue); err != nil {
+		return nil, err
+	}
 
-		// New refresh token
-		cavClient, err := clientcloudavenue.New()
-		if err != nil {
-			return nil, err
-		}
+	// New refresh token
+	cavClient, err := clientcloudavenue.New()
+	if err != nil {
+		return nil, err
+	}
 
+	console, err := consoles.FingByOrganizationName(cavClient.GetOrganization())
+	if err != nil {
+		return nil, err
+	}
+
+	// * Client S3
+	if console.Services().S3.IsEnabled() {
 		if err := clientS3.Init(clientS3.Opts{
 			Username:         cavClient.GetUsername(),
 			OrganizationName: cavClient.GetOrganization(),
@@ -41,11 +48,46 @@ func New(opts ClientOpts) (*Client, error) {
 	}
 
 	// * Client Netbackup
-	if opts.Netbackup != nil {
-		if err := clientnetbackup.Init(*opts.Netbackup); err != nil {
+	if console.Services().Netbackup.IsEnabled() {
+		if err := clientnetbackup.Init(*opts.Netbackup, cavClient.GetOrganization()); err != nil {
 			return nil, err
 		}
 	}
 
 	return &Client{}, nil
+}
+
+// * Expose particular functions
+
+type ClientConfig struct{}
+
+func (c *Client) Config() ClientConfig {
+	return ClientConfig{}
+}
+
+func (cc ClientConfig) GetOrganization() (string, error) {
+	c, err := clientcloudavenue.New()
+	if err != nil {
+		return "", err
+	}
+
+	return c.GetOrganization(), nil
+}
+
+func (cc ClientConfig) GetUsername() (string, error) {
+	c, err := clientcloudavenue.New()
+	if err != nil {
+		return "", err
+	}
+
+	return c.GetUsername(), nil
+}
+
+func (cc ClientConfig) GetURL() (string, error) {
+	c, err := clientcloudavenue.New()
+	if err != nil {
+		return "", err
+	}
+
+	return c.GetURL(), nil
 }

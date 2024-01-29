@@ -54,10 +54,10 @@ func Init(opts Opts) (err error) {
 			log.Default().Printf("Found console %s with URL %s", console.GetSiteID(), console.GetURL())
 		}
 
-		if !console.S3IsEnabled() {
-			return fmt.Errorf("S3 service is not available in site %s", console.GetSiteID())
+		if !console.Services().S3.IsEnabled() {
+			return fmt.Errorf("S3 service is not available in location %s", console.GetSiteID())
 		}
-		c.token.oseEndpoint = console.GetS3Endpoint()
+		c.token.oseEndpoint = console.Services().S3.GetEndpoint()
 	}
 
 	return

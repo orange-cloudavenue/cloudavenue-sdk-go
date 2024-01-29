@@ -9,21 +9,83 @@ import (
 	"github.com/go-resty/resty/v2"
 	"github.com/sethvargo/go-envconfig"
 	"github.com/vmware/go-vcloud-director/v2/govcd"
+	"golang.org/x/mod/semver"
 
 	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/clients/consoles"
+	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/clients/model"
+	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/errors"
 )
 
-var c = &internalClient{}
+var (
+	_ model.ClientOpts = (*Opts)(nil)
+	c                  = &internalClient{}
+)
 
 // Opts - Is a struct that contains the options for the vmware client
 type Opts struct {
-	Endpoint   string `env:"ENDPOINT"`
-	Username   string `env:"USERNAME"`
-	Password   string `env:"PASSWORD"`
-	Org        string `env:"ORG"`
-	VDC        string `env:"VDC"`
-	Debug      bool   `env:"DEBUG,default=false"`
-	VCDVersion string `env:"VCD_VERSION,default=37.2"`
+	Endpoint   string `env:"ENDPOINT,overwrite"` // Deprecated - use URL instead
+	URL        string `env:"URL,overwrite"`      // Computed from Org if not provided
+	Username   string `env:"USERNAME,overwrite"` // Required
+	Password   string `env:"PASSWORD,overwrite"` // Required
+	Org        string `env:"ORG,overwrite"`      // Required
+	VDC        string `env:"VDC,overwrite"`
+	Debug      bool   `env:"DEBUG,overwrite"`
+	VCDVersion string `env:"VCD_VERSION,default=37.2,overwrite"`
+}
+
+func (o *Opts) Validate() error {
+	l := envconfig.PrefixLookuper("CLOUDAVENUE_", envconfig.OsLookuper())
+	if err := envconfig.ProcessWith(context.Background(), o, l); err != nil {
+		return err
+	}
+
+	// Check if username is not empty
+	if o.Username == "" {
+		return fmt.Errorf("the username is %w", errors.ErrEmpty)
+	}
+
+	// Check if password is not empty
+	if o.Password == "" {
+		return fmt.Errorf("the password is %w", errors.ErrEmpty)
+	}
+
+	// Check if organization is not empty
+	if o.Org == "" {
+		return fmt.Errorf("the organization is %w", errors.ErrEmpty)
+	}
+
+	// Check if Organization has a valid format
+	if ok := consoles.CheckOrganizationName(o.Org); !ok {
+		return fmt.Errorf("the organization has an %w", errors.ErrInvalidFormat)
+	}
+
+	if o.Endpoint == "" && o.URL == "" {
+		console, err := consoles.FingByOrganizationName(o.Org)
+		if err != nil {
+			return err
+		}
+		if o.Debug {
+			log.Default().Printf("Found console %s with URL %s", console.GetSiteID(), console.GetURL())
+		}
+
+		o.URL = console.GetURL()
+		o.Endpoint = o.URL
+	}
+
+	if o.URL == "" && o.Endpoint != "" {
+		o.URL = o.Endpoint
+	}
+
+	// Check if VDCVersion is not empty and semver format
+	if o.VCDVersion == "" {
+		return fmt.Errorf("the vcd version is %w", errors.ErrEmpty)
+	}
+
+	if semver.IsValid(o.VCDVersion) {
+		return fmt.Errorf("the vcd version is %w", errors.ErrInvalidFormat)
+	}
+
+	return nil
 }
 
 type internalClient struct {
@@ -32,8 +94,7 @@ type internalClient struct {
 
 // Init - Initializes the client
 func Init(opts Opts) (err error) {
-	l := envconfig.PrefixLookuper("CLOUDAVENUE_", envconfig.OsLookuper())
-	if err := envconfig.ProcessWith(context.Background(), &opts, l); err != nil {
+	if err := opts.Validate(); err != nil {
 		return err
 	}
 
@@ -44,18 +105,7 @@ func Init(opts Opts) (err error) {
 	c.token.endpoint = opts.Endpoint
 	c.token.debug = opts.Debug
 	c.token.vcdVersion = opts.VCDVersion
-
-	if c.token.endpoint == "" {
-		console, err := consoles.FingByOrganizationName(opts.Org)
-		if err != nil {
-			return err
-		}
-		if opts.Debug {
-			log.Default().Printf("Found console %s with URL %s", console.GetSiteID(), console.GetURL())
-		}
-
-		c.token.endpoint = console.GetURL()
-	}
+	c.token.endpoint = opts.URL
 
 	return
 }
@@ -108,10 +158,7 @@ func New() (*Client, error) {
 		Vmware: vmware,
 	}
 
-	return &Client{
-		Client: x,
-		Vmware: vmware,
-	}, nil
+	return cache, nil
 }
 
 // GetUsername - Returns the username
@@ -137,6 +184,11 @@ func (v *Client) GetEndpoint() string {
 // GetDebug - Returns the debug
 func (v *Client) GetDebug() bool {
 	return c.token.debug
+}
+
+// GetURL - Returns the API endpoint
+func (v *Client) GetURL() string {
+	return c.token.GetEndpoint()
 }
 
 // GetBearerToken - Returns the bearer token
