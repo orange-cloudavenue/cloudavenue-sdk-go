@@ -1,4 +1,23 @@
 ## 0.8.0 (Unreleased)
+### :rotating_light: **Breaking Changes**
+
+* `console` - Remove funcs `S3IsEnabled()`, `GetS3Endpoint()`, `IsVCDAEnabled()` and `GetVCDAEndpoint()`. (GH-73)
+
+### :rocket: **New Features**
+
+* `client/cloudavenue` - Add func `GetURL()` to get the cloudavenue url. (GH-73)
+* `client/s3` - Now the `S3` client return an error if the s3 service is not available in the location. (GH-73)
+* `client` - Add Validation for the creation of a new client (CloudAvenue and Netbackup). (GH-73)
+* `console/service` - Add funcs `IsEnabled()` and `GetEndpoint()`. (GH-73)
+* `console` - Add func `CheckOrganizationName()` to check if the organization name is valid without creating new client. (GH-73)
+* `console`- Add func `Services()` to get the services available in the console. (GH-73)
+* `consoles` - Add consoles `console5`, `console7`, `console8` and `console9`. (GH-73)
+* `errors` - Add `errors` package. The following errors are available: `ErrNotFound`, `ErrEmpty` and `ErrInvalidFormat` (GH-73)
+* `v1/Vmware` - Now the `V1()` function returns a Vmware object. (GH-73)
+### :information_source: **Notes**
+
+* `client` - The `CLOUDAVENUE_ENDPOINT` environment variable has been renamed to `CLOUDAVENUE_URL`. (GH-73)
+* `client` - The `NETBACKUP_ENDPOINT` environment variable has been renamed to `NETBACKUP_URL`. (GH-73)
 
 ### :dependabot: **Dependencies**
 
