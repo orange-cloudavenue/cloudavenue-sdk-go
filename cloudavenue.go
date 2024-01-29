@@ -19,6 +19,14 @@ type ClientOpts struct {
 }
 
 func New(opts ClientOpts) (*Client, error) {
+	if opts.CloudAvenue == nil {
+		opts.CloudAvenue = new(clientcloudavenue.Opts)
+	}
+
+	if opts.Netbackup == nil {
+		opts.Netbackup = new(clientnetbackup.Opts)
+	}
+
 	// * Client CloudAvenue
 	if err := clientcloudavenue.Init(*opts.CloudAvenue); err != nil {
 		return nil, err
