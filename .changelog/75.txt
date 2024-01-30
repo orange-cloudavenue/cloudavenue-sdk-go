@@ -1,0 +1,3 @@
+```release-note:bug
+`client` - Fix bug `nil` pointer dereference in `client` package if no `opts` are passed to `New()` func.
+```
