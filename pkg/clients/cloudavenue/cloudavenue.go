@@ -30,7 +30,7 @@ type Opts struct {
 	Org        string `env:"ORG,overwrite"`      // Required
 	VDC        string `env:"VDC,overwrite"`
 	Debug      bool   `env:"DEBUG,overwrite"`
-	VCDVersion string `env:"VCD_VERSION,default=37.2,overwrite"`
+	VCDVersion string `env:"VCD_VERSION,overwrite,default=37.2"`
 }
 
 func (o *Opts) Validate() error {
@@ -93,7 +93,7 @@ type internalClient struct {
 }
 
 // Init - Initializes the client
-func Init(opts Opts) (err error) {
+func Init(opts *Opts) (err error) {
 	if err := opts.Validate(); err != nil {
 		return err
 	}

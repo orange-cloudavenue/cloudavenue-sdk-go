@@ -10,6 +10,7 @@ import (
 
 type Client struct {
 	V1 v1.V1
+	// TODO add config
 }
 
 // Opts - Is a struct that contains the options for the SDK
@@ -18,7 +19,15 @@ type ClientOpts struct {
 	Netbackup   *clientnetbackup.Opts
 }
 
-func New(opts ClientOpts) (*Client, error) {
+// New creates a new instance of the Client struct.
+// It initializes the CloudAvenue and Netbackup options if they are nil.
+// It then initializes the CloudAvenue client and retrieves a new refresh token.
+// It fetches the console information for the organization.
+// If the S3 service is enabled, it initializes the S3 client.
+// If the Netbackup service is enabled, it initializes the Netbackup client.
+// Finally, it returns a pointer to the Client struct and nil error if successful.
+// Otherwise, it returns nil and the error encountered.
+func New(opts *ClientOpts) (*Client, error) {
 	if opts.CloudAvenue == nil {
 		opts.CloudAvenue = new(clientcloudavenue.Opts)
 	}
@@ -28,7 +37,7 @@ func New(opts ClientOpts) (*Client, error) {
 	}
 
 	// * Client CloudAvenue
-	if err := clientcloudavenue.Init(*opts.CloudAvenue); err != nil {
+	if err := clientcloudavenue.Init(opts.CloudAvenue); err != nil {
 		return nil, err
 	}
 
@@ -57,7 +66,7 @@ func New(opts ClientOpts) (*Client, error) {
 
 	// * Client Netbackup
 	if console.Services().Netbackup.IsEnabled() {
-		if err := clientnetbackup.Init(*opts.Netbackup, cavClient.GetOrganization()); err != nil {
+		if err := clientnetbackup.Init(opts.Netbackup, cavClient.GetOrganization()); err != nil {
 			return nil, err
 		}
 	}
