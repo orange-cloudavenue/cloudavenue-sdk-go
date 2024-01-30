@@ -1,4 +1,5 @@
 ## 0.9.0 (Unreleased)
+## 0.8.1 (January 30, 2024)
 
 ### :bug: **Bug Fixes**
 
