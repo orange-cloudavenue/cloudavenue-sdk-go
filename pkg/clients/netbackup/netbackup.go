@@ -29,7 +29,7 @@ type internalClient struct {
 }
 
 // Init - Initializes the netbackup client
-func Init(opts Opts, organizationName string) error {
+func Init(opts *Opts, organizationName string) error {
 	opts.org = organizationName
 	if err := opts.Validate(); err != nil {
 		return err
