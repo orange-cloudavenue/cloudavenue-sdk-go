@@ -1,4 +1,9 @@
 ## 0.9.0 (Unreleased)
+
+### :bug: **Bug Fixes**
+
+* `client` - Fix bug `nil` pointer dereference in `client` package if no `opts` are passed to `New()` func. (GH-75)
+
 ## 0.8.0 (January 29, 2024)
 ### :rotating_light: **Breaking Changes**
 
