@@ -6,6 +6,7 @@
 
 ### :dependabot: **Dependencies**
 
+* deps: bumps github.com/aws/aws-sdk-go from 1.49.16 to 1.50.7 (GH-80)
 * deps: bumps github.com/vmware/go-vcloud-director/v2 from 2.21.0 to 2.22.0 (GH-54)
 
 ## 0.8.1 (January 30, 2024)
