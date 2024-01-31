@@ -1,4 +1,9 @@
 ## 0.9.0 (Unreleased)
+
+### :rocket: **New Features**
+
+* `rules/vdc` - Now support custom storage profile class. (GH-78)
+
 ## 0.8.1 (January 30, 2024)
 
 ### :bug: **Bug Fixes**
