@@ -146,12 +146,9 @@ func New() (*Client, error) {
 		govcd.WithAPIVersion(c.token.GetVCDVersion()),
 	)
 
-	vmware.Client.UsingBearerToken = true
-	vmware.Client.VCDAuthHeader = govcd.BearerTokenHeader
-	vmware.Client.VCDToken = c.token.GetToken()
-	vmware.Client.APIVersion = c.token.GetVCDVersion()
-	vmware.QueryHREF = vmware.Client.VCDHREF
-	vmware.QueryHREF.Path += "/query"
+	if err := vmware.SetToken(c.token.GetOrganization(), govcd.AuthorizationHeader, c.token.GetToken()); err != nil {
+		return nil, fmt.Errorf("%w : %w", errors.ErrConfigureVmwareClient, err)
+	}
 
 	cache = &Client{
 		Client: x,
