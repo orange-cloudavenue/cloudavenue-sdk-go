@@ -4,6 +4,10 @@
 
 * `rules/vdc` - Now support custom storage profile class. (GH-78)
 
+### :dependabot: **Dependencies**
+
+* deps: bumps github.com/vmware/go-vcloud-director/v2 from 2.21.0 to 2.22.0 (GH-54)
+
 ## 0.8.1 (January 30, 2024)
 
 ### :bug: **Bug Fixes**
