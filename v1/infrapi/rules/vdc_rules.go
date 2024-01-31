@@ -1,7 +1,9 @@
 package rules
 
 import (
+	"errors"
 	"fmt"
+	"regexp"
 
 	"github.com/fbiville/markdown-table-formatter/pkg/markdown"
 	"golang.org/x/sync/errgroup"
@@ -353,6 +355,7 @@ var (
 
 var (
 	ErrServiceClassNotFound = fmt.Errorf("service class not found")
+	ErrServiceClassCustom   = fmt.Errorf("service class is custom")
 
 	ErrBillingModelNotAvailable = fmt.Errorf("billing model is not available")
 
@@ -642,16 +645,6 @@ func (rv RuleValues) String() string {
 	return s[:len(s)-2]
 }
 
-// ParseServiceClass returns the ServiceClass from the given string.
-func ParseServiceClass(s string) (ServiceClass, error) {
-	for _, sc := range ALLServiceClasses {
-		if sc == ServiceClass(s) {
-			return sc, nil
-		}
-	}
-	return "", fmt.Errorf("%w (Allowed values: %v)", ErrServiceClassNotFound, ALLServiceClasses)
-}
-
 // ParseStorageBillingModel returns the StorageBillingModel from the given string.
 func ParseStorageBillingModel(s string) (BillingModel, error) {
 	for _, bm := range ALLStorageBillingModels {
@@ -664,8 +657,18 @@ func ParseStorageBillingModel(s string) (BillingModel, error) {
 
 // GetRuleByServiceClass returns the Rule for the given ServiceClass.
 func GetRuleByServiceClass(sc ServiceClass) (Rule, error) {
+	var matchRegex bool
+
+	re := regexp.MustCompile(`^(silver|gold|platinum[3,7]k)(_ocb[0-9]{7})?(_r[1,2]{1}|_hm)?$`)
+	if re.MatchString(string(sc)) {
+		matchRegex = true
+	}
+
 	r, ok := vdcRules[sc]
 	if !ok {
+		if matchRegex {
+			return Rule{}, ErrServiceClassCustom
+		}
 		return Rule{}, ErrServiceClassNotFound
 	}
 	return r, nil
@@ -771,6 +774,11 @@ type ValidateData struct {
 func Validate(data ValidateData, isUpdate bool) error {
 	r, err := GetRuleByServiceClass(data.ServiceClass)
 	if err != nil {
+		if errors.Is(err, ErrServiceClassCustom) {
+			// Service Class match with pattern but is not in the list.
+			// No need to validate the rule.
+			return nil
+		}
 		return err
 	}
 
