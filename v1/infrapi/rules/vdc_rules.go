@@ -1,7 +1,6 @@
 package rules
 
 import (
-	"errors"
 	"fmt"
 	"regexp"
 
@@ -355,7 +354,6 @@ var (
 
 var (
 	ErrServiceClassNotFound = fmt.Errorf("service class not found")
-	ErrServiceClassCustom   = fmt.Errorf("service class is custom")
 
 	ErrBillingModelNotAvailable = fmt.Errorf("billing model is not available")
 
@@ -657,18 +655,8 @@ func ParseStorageBillingModel(s string) (BillingModel, error) {
 
 // GetRuleByServiceClass returns the Rule for the given ServiceClass.
 func GetRuleByServiceClass(sc ServiceClass) (Rule, error) {
-	var matchRegex bool
-
-	re := regexp.MustCompile(`^(silver|gold|platinum[3,7]k)(_ocb[0-9]{7})?(_r[1,2]{1}|_hm)?$`)
-	if re.MatchString(string(sc)) {
-		matchRegex = true
-	}
-
 	r, ok := vdcRules[sc]
 	if !ok {
-		if matchRegex {
-			return Rule{}, ErrServiceClassCustom
-		}
 		return Rule{}, ErrServiceClassNotFound
 	}
 	return r, nil
@@ -701,7 +689,14 @@ func (r Rule) storageProfileClassIsValid(sp StorageProfileClass) bool {
 			return true
 		}
 	}
-	return false
+
+	return r.storageProfileClassIsCustom(sp)
+}
+
+// storageProfileClassIsCustom returns true if the given StorageProfileClass is custom for the given ServiceClass.
+func (r Rule) storageProfileClassIsCustom(sp StorageProfileClass) bool {
+	re := regexp.MustCompile(`^(silver|gold|platinum[3,7]k)(_ocb[0-9]{7})?(_r[1,2]{1}|_hm)?$`)
+	return re.MatchString(string(sp))
 }
 
 // storageBillingModelIsValid returns true if the given BillingModel is valid for the given ServiceClass.
@@ -774,11 +769,6 @@ type ValidateData struct {
 func Validate(data ValidateData, isUpdate bool) error {
 	r, err := GetRuleByServiceClass(data.ServiceClass)
 	if err != nil {
-		if errors.Is(err, ErrServiceClassCustom) {
-			// Service Class match with pattern but is not in the list.
-			// No need to validate the rule.
-			return nil
-		}
 		return err
 	}
 
@@ -841,7 +831,9 @@ func Validate(data ValidateData, isUpdate bool) error {
 			if !r.storageProfileClassIsValid(c) {
 				return fmt.Errorf("%w: %s (Allowed values: %v)", ErrStorageProfileClassNotFound, c, ALLStorageProfilesClass)
 			}
-			if sP.Limit < *r.StorageProfiles[c].SizeLimit.Min || sP.Limit > *r.StorageProfiles[c].SizeLimit.Max {
+
+			// If not custom, check if limit is valid
+			if !r.storageProfileClassIsCustom(c) && (sP.Limit < *r.StorageProfiles[c].SizeLimit.Min || sP.Limit > *r.StorageProfiles[c].SizeLimit.Max) {
 				return fmt.Errorf("%w: %d (Allowed values: %v)", ErrStorageProfileLimitInvalid, sP.Limit, r.StorageProfiles[c].SizeLimit)
 			}
 			// // Limit is valid if modulo of 1024 is 0

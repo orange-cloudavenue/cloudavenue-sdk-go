@@ -1,0 +1,3 @@
+```release-note:bug
+`rules/vdc` - Fix custom storage profile class.
+```
