@@ -1,5 +1,9 @@
 ## 0.10.0 (Unreleased)
 
+### :bug: **Bug Fixes**
+
+* `rules/vdc` - Fix custom storage profile class. (GH-83)
+
 ### :dependabot: **Dependencies**
 
 * deps: bumps github.com/aws/aws-sdk-go from 1.50.7 to 1.50.10 (GH-81)
