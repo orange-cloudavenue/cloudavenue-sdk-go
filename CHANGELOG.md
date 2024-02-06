@@ -1,4 +1,9 @@
 ## 0.10.0 (Unreleased)
+
+### :dependabot: **Dependencies**
+
+* deps: bumps github.com/hashicorp/terraform-plugin-sdk/v2 from 2.31.0 to 2.32.0 (GH-82)
+
 ## 0.9.0 (January 31, 2024)
 
 ### :rocket: **New Features**
