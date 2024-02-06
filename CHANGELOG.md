@@ -2,6 +2,7 @@
 
 ### :dependabot: **Dependencies**
 
+* deps: bumps github.com/aws/aws-sdk-go from 1.50.7 to 1.50.10 (GH-81)
 * deps: bumps github.com/hashicorp/terraform-plugin-sdk/v2 from 2.31.0 to 2.32.0 (GH-82)
 
 ## 0.9.0 (January 31, 2024)
