@@ -100,8 +100,10 @@ func (v *EdgeGateway) List() (response *EdgeGateways, err error) {
 }
 
 var (
-	allowedRateLimitVRFStandard = []int{5, 25, 50, 75, 100, 150, 200, 250, 300}
-	allowedRateLimitVRFPremium  = append(allowedRateLimitVRFStandard, []int{400, 500, 600, 700, 800, 900, 1000}...)
+	allowedRateLimitVRFStandard        = []int{5, 25, 50, 75, 100, 150, 200, 250, 300}                                     // 5, 25, 50, 75, 100, 150, 200, 250, 300
+	allowedRateLimitVRFPremium         = append(allowedRateLimitVRFStandard, []int{400, 500, 600, 700, 800, 900, 1000}...) // 5, 25, 50, 75, 100, 150, 200, 250, 300, 400, 500, 600, 700, 800, 900, 1000
+	allowedRateLimitVRFDedicatedMedium = append(allowedRateLimitVRFPremium, []int{2000}...)                                // 5, 25, 50, 75, 100, 150, 200, 250, 300, 400, 500, 600, 700, 800, 900, 1000, 2000
+	allowedRateLimitVRFDedicatedLarge  = append(allowedRateLimitVRFDedicatedMedium, []int{3000, 4000, 5000, 6000}...)      // 5, 25, 50, 75, 100, 150, 200, 250, 300, 400, 500, 600, 700, 800, 900, 1000, 2000, 3000, 4000, 5000, 6000
 )
 
 // GetAllowedBandwidthValues - Returns the allowed rate limit value
@@ -116,6 +118,10 @@ func (v *EdgeGateway) GetAllowedBandwidthValues(t0VrfName string) (allowedValues
 		allowedValues = allowedRateLimitVRFPremium
 	case ClassServiceVRFStandard:
 		allowedValues = allowedRateLimitVRFStandard
+	case ClassServiceVRFDedicatedMedium:
+		allowedValues = allowedRateLimitVRFDedicatedMedium
+	case ClassServiceVRFDedicatedLarge:
+		allowedValues = allowedRateLimitVRFDedicatedLarge
 	}
 
 	return
