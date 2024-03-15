@@ -31,6 +31,10 @@ const (
 	ClassServiceVRFStandard ClassService = "VRF_STANDARD"
 	// ClassServiceVRFPremium - VRF Premium
 	ClassServiceVRFPremium ClassService = "VRF_PREMIUM"
+	// ClassServiceVRFDedicatedMedium - VRF Dedicated Medium
+	ClassServiceVRFDedicatedMedium ClassService = "VRF_DEDICATED_MEDIUM"
+	// ClassServiceVRFDedicatedLarge - VRF Dedicated Large
+	ClassServiceVRFDedicatedLarge ClassService = "VRF_DEDICATED_LARGE"
 )
 
 // * T0
@@ -87,6 +91,16 @@ func (c ClassService) IsVRFStandard() bool {
 // IsVRFPremium - Returns true if the ClassService is VRFPremium
 func (c ClassService) IsVRFPremium() bool {
 	return c == ClassServiceVRFPremium
+}
+
+// IsVRFDedicatedMedium - Returns true if the ClassService is VRFDedicatedMedium
+func (c ClassService) IsVRFDedicatedMedium() bool {
+	return c == ClassServiceVRFDedicatedMedium
+}
+
+// IsVRFDedicatedLarge - Returns true if the ClassService is VRFDedicatedLarge
+func (c ClassService) IsVRFDedicatedLarge() bool {
+	return c == ClassServiceVRFDedicatedLarge
 }
 
 // * List

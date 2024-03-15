@@ -1,0 +1,3 @@
+```release-note:feature
+`edgegateway` - Support Dedicated EdgeGateway Medium and Large.
+```
