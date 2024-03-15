@@ -40,12 +40,12 @@ jobs:
         uses: actions/checkout@v4
       - id: release-notes-download
         name: Release Notes Download
-        uses: actions/download-artifact@6b208ae046db98c579e8a3aa621ab581ff575935 # v4.1.1
+        uses: actions/download-artifact@c850b930e6ba138125429b7e5c93fc707a7f8427 # v4.1.4
         with:
           name: release-notes
           path: /tmp
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           body_path: ${{ steps.release-notes-download.outputs.download-path }}/release-notes.txt
   highest-version-tag:
