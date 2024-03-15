@@ -1,5 +1,9 @@
 ## 0.10.0 (Unreleased)
 
+### :rocket: **New Features**
+
+* `edgegateway` - Support Dedicated EdgeGateway Medium and Large. (GH-90)
+
 ### :dependabot: **Dependencies**
 
 * deps: bumps actions/download-artifact from 4.1.1 to 4.1.2 (GH-85)
