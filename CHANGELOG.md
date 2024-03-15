@@ -3,6 +3,11 @@
 ### :dependabot: **Dependencies**
 
 * deps: bumps actions/download-artifact from 4.1.1 to 4.1.2 (GH-85)
+* deps: bumps actions/download-artifact from 4.1.2 to 4.1.4 (GH-91)
+* deps: bumps github.com/hashicorp/terraform-plugin-sdk/v2 from 2.32.0 to 2.33.0 (GH-89)
+* deps: bumps golang.org/x/mod from 0.14.0 to 0.16.0 (GH-94)
+* deps: bumps golangci/golangci-lint-action from 3.7.0 to 4.0.0 (GH-86)
+* deps: bumps softprops/action-gh-release from 1 to 2 (GH-92)
 
 ## 0.9.1 (February  6, 2024)
 
