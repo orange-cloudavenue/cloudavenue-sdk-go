@@ -45,7 +45,7 @@ jobs:
           name: release-notes
           path: /tmp
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           body_path: ${{ steps.release-notes-download.outputs.download-path }}/release-notes.txt
   highest-version-tag:
