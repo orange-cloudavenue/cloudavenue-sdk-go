@@ -9,8 +9,8 @@ require (
 	github.com/go-resty/resty/v2 v2.12.0
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.33.0
 	github.com/sethvargo/go-envconfig v1.0.1
-	github.com/vmware/go-vcloud-director/v2 v2.22.0
-	golang.org/x/exp v0.0.0-20231006140011-7918f672742d
+	github.com/vmware/go-vcloud-director/v2 v2.23.0
+	golang.org/x/exp v0.0.0-20240119083558-1b970713d09a
 	golang.org/x/mod v0.17.0
 	golang.org/x/sync v0.6.0
 )
@@ -68,4 +68,5 @@ require (
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20231106174013-bbf56f31fb17 // indirect
 	google.golang.org/grpc v1.61.1 // indirect
 	google.golang.org/protobuf v1.32.0 // indirect
+	sigs.k8s.io/yaml v1.4.0 // indirect
 )
