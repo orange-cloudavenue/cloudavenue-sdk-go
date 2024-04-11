@@ -1,4 +1,9 @@
 ## 0.11.0 (Unreleased)
+
+### :bug: **Bug Fixes**
+
+* `querier/get` - Fix nil pointer when resource doesn't exist. (GH-101)
+
 ## 0.10.0 (March 15, 2024)
 
 ### :rocket: **New Features**
