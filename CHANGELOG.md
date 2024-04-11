@@ -4,6 +4,10 @@
 
 * `querier/get` - Fix nil pointer when resource doesn't exist. (GH-101)
 
+### :dependabot: **Dependencies**
+
+* deps: bumps golang.org/x/mod from 0.16.0 to 0.17.0 (GH-102)
+
 ## 0.10.0 (March 15, 2024)
 
 ### :rocket: **New Features**
