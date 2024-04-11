@@ -1,15 +1,14 @@
 module github.com/orange-cloudavenue/cloudavenue-sdk-go
 
 go 1.21
-
-toolchain go1.22.1
+toolchain go1.22.2
 
 require (
 	github.com/aws/aws-sdk-go v1.51.1
 	github.com/fbiville/markdown-table-formatter v0.3.0
 	github.com/go-resty/resty/v2 v2.12.0
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.33.0
-	github.com/sethvargo/go-envconfig v0.9.0
+	github.com/sethvargo/go-envconfig v1.0.1
 	github.com/vmware/go-vcloud-director/v2 v2.22.0
 	golang.org/x/exp v0.0.0-20231006140011-7918f672742d
 	golang.org/x/mod v0.17.0
