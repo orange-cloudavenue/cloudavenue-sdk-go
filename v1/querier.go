@@ -112,6 +112,9 @@ func (q *List) VDC() ([]*types.QueryResultOrgVdcRecordType, error) {
 // VDC get a vdc informations by name
 func (q *Get) VDC(vdcName string) (*types.QueryResultOrgVdcRecordType, error) {
 	r, err := queryGet(typeVDC, vdcName)
+	if r.Results.OrgVdcRecord == nil {
+		return nil, err
+	}
 	return r.Results.OrgVdcRecord[0], err
 }
 
@@ -124,6 +127,9 @@ func (q *List) VAPP() ([]*types.QueryResultVAppRecordType, error) {
 // VAPP get a vapp informations by name
 func (q *Get) VAPP(vappName string) (*types.QueryResultVAppRecordType, error) {
 	r, err := queryGet(typeVAPP, vappName)
+	if r.Results.VAppRecord == nil {
+		return nil, err
+	}
 	return r.Results.VAppRecord[0], err
 }
 
@@ -172,5 +178,8 @@ func (q *List) EdgeGW() ([]*types.QueryResultEdgeGatewayRecordType, error) {
 // EdgeGW get a edgegw informations by name
 func (q *Get) EdgeGW(edgeGWName string) (*types.QueryResultEdgeGatewayRecordType, error) {
 	r, err := queryGet(typeEdgeGW, edgeGWName)
+	if r.Results.EdgeGatewayRecord == nil {
+		return nil, err
+	}
 	return r.Results.EdgeGatewayRecord[0], err
 }

@@ -1,0 +1,3 @@
+```release-note:bug
+`querier/get` - Fix nil pointer when resource doesn't exist.
+```
