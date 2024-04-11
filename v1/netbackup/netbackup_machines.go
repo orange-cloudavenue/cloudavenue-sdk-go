@@ -188,7 +188,7 @@ func (m *Machine) GetLocation() string {
 type Machines []Machine
 
 // append - Append a Machine to the Machines slice
-func (m *Machines) append(machine Machine) {
+func (m *Machines) append(machine Machine) { //nolint:unused
 	*m = append(*m, machine)
 }
 

@@ -1,7 +1,4 @@
-default: build
-
-build:
-	go build -v ./...
+default: lint test
 
 lint:
 	golangci-lint run

@@ -50,7 +50,7 @@ func (vApp *VApp) GetProtectionTypeID() int {
 type VApps []VApp
 
 // append - Append a VApp to the VApps slice
-func (v *VApps) append(vapp VApp) {
+func (v *VApps) append(vapp VApp) { //nolint:unused
 	*v = append(*v, vapp)
 }
 

@@ -35,7 +35,11 @@ type Opts struct {
 
 func (o *Opts) Validate() error {
 	l := envconfig.PrefixLookuper("CLOUDAVENUE_", envconfig.OsLookuper())
-	if err := envconfig.ProcessWith(context.Background(), o, l); err != nil {
+	config := &envconfig.Config{
+		Target:   o,
+		Lookuper: l,
+	}
+	if err := envconfig.ProcessWith(context.Background(), config); err != nil {
 		return err
 	}
 
