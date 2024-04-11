@@ -6,6 +6,7 @@
 
 ### :dependabot: **Dependencies**
 
+* deps: bumps github.com/aws/aws-sdk-go from 1.51.0 to 1.51.1 (GH-96)
 * deps: bumps github.com/go-resty/resty/v2 from 2.11.0 to 2.12.0 (GH-97)
 * deps: bumps golang.org/x/mod from 0.16.0 to 0.17.0 (GH-102)
 
