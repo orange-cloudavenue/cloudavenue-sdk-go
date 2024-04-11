@@ -12,7 +12,7 @@ require (
 	github.com/sethvargo/go-envconfig v0.9.0
 	github.com/vmware/go-vcloud-director/v2 v2.22.0
 	golang.org/x/exp v0.0.0-20231006140011-7918f672742d
-	golang.org/x/mod v0.16.0
+	golang.org/x/mod v0.17.0
 	golang.org/x/sync v0.6.0
 )
 
