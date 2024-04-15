@@ -35,7 +35,7 @@ type internalClient struct {
 func Init(opts Opts) (err error) {
 	l := envconfig.PrefixLookuper("S3_", envconfig.OsLookuper())
 	config := &envconfig.Config{
-		Target:   opts,
+		Target:   &opts,
 		Lookuper: l,
 	}
 	if err := envconfig.ProcessWith(context.Background(), config); err != nil {
