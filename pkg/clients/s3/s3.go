@@ -34,7 +34,11 @@ type internalClient struct {
 // Init - Initializes the client
 func Init(opts Opts) (err error) {
 	l := envconfig.PrefixLookuper("S3_", envconfig.OsLookuper())
-	if err := envconfig.ProcessWith(context.Background(), &opts, l); err != nil {
+	config := &envconfig.Config{
+		Target:   &opts,
+		Lookuper: l,
+	}
+	if err := envconfig.ProcessWith(context.Background(), config); err != nil {
 		return err
 	}
 
@@ -60,7 +64,7 @@ func Init(opts Opts) (err error) {
 		c.token.oseEndpoint = console.Services().S3.GetEndpoint()
 	}
 
-	return
+	return err
 }
 
 type Client struct {

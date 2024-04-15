@@ -1,17 +1,14 @@
 # Visit https://golangci-lint.run/ for usage documentation
 # and information on other useful linters
 issues:
-  max-per-linter: 0
+  max-issues-per-linter: 0
   max-same-issues: 0
-
-
-skip-dirs-use-default: false
+  exclude-dirs-use-default: false
 
 linters:
   enable:
     - asciicheck # Simple linter to check that your code does not contain non-ASCII identifiers [fast: true, auto-fix: false]
     - bidichk # Checks for dangerous unicode character sequences [fast: true, auto-fix: false]
-    - deadcode # Finds unused code [fast: false, auto-fix: false]
     - decorder # check declaration order and count of types, constants, variables and functions [fast: true, auto-fix: false]
     - dogsled # Checks assignments with too many blank identifiers (e.g. x, _, _, _, := f()) [fast: true, auto-fix: false]
     - durationcheck # check for two durations multiplied together [fast: false, auto-fix: false]
@@ -36,7 +33,6 @@ linters:
     - gosimple #(megacheck): Linter for Go source code that specializes in simplifying a code [fast: false, auto-fix: false]
     - govet #(vet, vetshadow): Vet examines Go source code and reports suspicious constructs, such as Printf calls whose arguments do not align with the format string [fast: false, auto-fix: false]
     - grouper # An analyzer to analyze expression groups. [fast: true, auto-fix: false]
-    - ifshort # Checks that your code uses short syntax for if-statements whenever possible [fast: true, auto-fix: false]
     - importas # Enforces consistent import aliases [fast: false, auto-fix: false]
     - ineffassign # Detects when assignments to existing variables are not used [fast: true, auto-fix: false]
     - makezero # Finds slice declarations with non-zero initial length [fast: false, auto-fix: false]
@@ -51,13 +47,12 @@ linters:
     - revive # Fast, configurable, extensible, flexible, and beautiful linter for Go. Drop-in replacement of golint. [fast: false, auto-fix: false]
     - rowserrcheck # checks whether Err of rows is checked successfully [fast: false, auto-fix: false]
     - sqlclosecheck # Checks that sql.Rows and sql.Stmt are closed. [fast: false, auto-fix: false]
-    - structcheck # Finds unused struct fields [fast: false, auto-fix: false]
     - stylecheck # Stylecheck is a replacement for golint [fast: false, auto-fix: false]
     - tenv # tenv is analyzer that detects using os.Setenv instead of t.Setenv since Go1.17 [fast: false, auto-fix: false]
     - tparallel # tparallel detects inappropriate usage of t.Parallel() method in your Go test codes [fast: false, auto-fix: false]
     - typecheck # Like the front-end of a Go compiler, parses and type-checks Go code [fast: false, auto-fix: false]
     - unconvert # Remove unnecessary type conversions [fast: false, auto-fix: false]
-    - varcheck # Finds unused global variables and constants [fast: false, auto-fix: false]
+    - unused # Checks Go code for unused constants, variables, functions and types [fast: false, auto-fix: false]
     - wastedassign # wastedassign finds wasted assignment statements. [fast: false, auto-fix: false]
     - whitespace # Tool for detection of leading and trailing whitespace [fast: true, auto-fix: true]
 
@@ -84,7 +79,6 @@ linters:
     - nilnil # Checks that there is no simultaneous return of `nil` error and an invalid value. [fast: false, auto-fix: false]
     - nlreturn # nlreturn checks for a new line before return and branch statements to increase code clarity [fast: true, auto-fix: false]
     - staticcheck #(megacheck): Staticcheck is a go vet on steroids, applying a ton of static analysis checks [fast: false, auto-fix: false]
-    - unused #(megacheck): Checks Go code for unused constants, variables, functions and types [fast: false, auto-fix: false]
     - varnamelen # checks that the length of a variable's name matches its scope [fast: false, auto-fix: false]
     - wrapcheck # Checks that errors returned from external packages are wrapped [fast: false, auto-fix: false]
     - wsl # Whitespace Linter - Forces you to use empty lines! [fast: true, auto-fix: false]
