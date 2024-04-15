@@ -13,6 +13,7 @@
 * deps: bumps github.com/sethvargo/go-envconfig from 0.9.0 to 1.0.1 (GH-103)
 * deps: bumps github.com/vmware/go-vcloud-director/v2 from 2.22.0 to 2.23.0 (GH-99)
 * deps: bumps golang.org/x/mod from 0.16.0 to 0.17.0 (GH-102)
+* deps: bumps golang.org/x/sync from 0.6.0 to 0.7.0 (GH-106)
 
 ## 0.10.0 (March 15, 2024)
 
