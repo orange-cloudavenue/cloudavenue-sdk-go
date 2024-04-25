@@ -163,6 +163,7 @@ jobs:
       - name: Update Changelog Header
         run: |
           CHANGELOG_FILE_NAME="CHANGELOG.md"
+          github.ref_type="tag"
           PREVIOUS_RELEASE_TAG=${{ github.ref_name }}
 
           # Add Release Date
