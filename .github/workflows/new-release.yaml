@@ -2,7 +2,6 @@ name: TagRelease
 
 on:
   workflow_dispatch:
-    release:
     inputs:
       tag:
         description: 'Tag version number (Eg: v0.1.0)'
