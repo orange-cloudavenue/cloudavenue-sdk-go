@@ -173,7 +173,7 @@ jobs:
           # Prepend next release line
           echo Release is: $RELEASE_TAG
 
-          NEW_RELEASE_LINE=$(echo $PREVIOUS_RELEASE_TAG | awk -F. '{
+          NEW_RELEASE_LINE=$(echo $RELEASE_TAG | awk -F. '{
               $1 = substr($1,2)
               $2 += 1
               printf("%s.%01d.0\n\n", $1, $2);
