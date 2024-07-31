@@ -1,6 +1,7 @@
 package infrapi
 
 import (
+	"context"
 	"fmt"
 	"regexp"
 
@@ -246,7 +247,7 @@ func (v *CAVVDC) List() (*VDCs, error) {
 }
 
 // Delete - Delete the VDC
-func (v *CAVVirtualDataCenter) Delete() (job *commoncloudavenue.JobStatus, err error) {
+func (v *CAVVirtualDataCenter) Delete(ctx context.Context) (err error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {
 		return
@@ -262,14 +263,14 @@ func (v *CAVVirtualDataCenter) Delete() (job *commoncloudavenue.JobStatus, err e
 	}
 
 	if r.IsError() {
-		return nil, fmt.Errorf("error on delete VDC: %s", r.Error().(*commoncloudavenue.APIErrorResponse).FormatError())
+		return fmt.Errorf("error on delete VDC: %s", r.Error().(*commoncloudavenue.APIErrorResponse).FormatError())
 	}
 
-	return r.Result().(*commoncloudavenue.JobStatus), nil
+	return r.Result().(*commoncloudavenue.JobStatus).WaitWithContext(ctx, 5)
 }
 
 // Update - Update the VDC
-func (v *CAVVirtualDataCenter) Update() (err error) {
+func (v *CAVVirtualDataCenter) Update(ctx context.Context) (err error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {
 		return err
@@ -289,11 +290,11 @@ func (v *CAVVirtualDataCenter) Update() (err error) {
 		return fmt.Errorf("error on update VDC: %s", r.Error().(*commoncloudavenue.APIErrorResponse).FormatError())
 	}
 
-	return r.Result().(*commoncloudavenue.JobStatus).Wait(1, 90)
+	return r.Result().(*commoncloudavenue.JobStatus).WaitWithContext(ctx, 5)
 }
 
 // New - Create a new VDC
-func (v *CAVVDC) New(value *CAVVirtualDataCenter) (vdc *CAVVirtualDataCenter, err error) {
+func (v *CAVVDC) New(ctx context.Context, value *CAVVirtualDataCenter) (vdc *CAVVirtualDataCenter, err error) {
 	if err := value.IsValid(false); err != nil {
 		return nil, fmt.Errorf("error on create VDC: %w", err)
 	}
@@ -316,7 +317,7 @@ func (v *CAVVDC) New(value *CAVVirtualDataCenter) (vdc *CAVVirtualDataCenter, er
 		return nil, fmt.Errorf("error on create VDC: %s", r.Error().(*commoncloudavenue.APIErrorResponse).FormatError())
 	}
 
-	if err := r.Result().(*commoncloudavenue.JobStatus).Wait(1, 90); err != nil {
+	if err := r.Result().(*commoncloudavenue.JobStatus).WaitWithContext(ctx, 5); err != nil {
 		return nil, err
 	}
 

@@ -1,0 +1,3 @@
+```release-note:note
+`job` - Now if the job return a error (ERROR or FAILED status code), the `Wait` method will return the error.
+```

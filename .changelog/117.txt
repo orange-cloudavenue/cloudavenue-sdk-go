@@ -1,0 +1,7 @@
+```release-note:feature
+`job` - Add `WaitWithContext` method to `job` package. This method allows users to wait for a job to complete with a context (Context with timeout). If context does not have a timeout, it will wait 90 seconds by default.
+```
+
+```release-note:breaking-change
+`v1/vdc` - Now the `New`/`Update`/`Delete` methods of the `vdc` package require a `context.Context` as the first argument.
+```

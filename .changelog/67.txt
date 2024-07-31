@@ -1,0 +1,3 @@
+```release-note:bug
+`job` - Fix nil pointer dereference in `wait` command when the job is not found.
+```
