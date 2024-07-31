@@ -14,6 +14,10 @@
 
 * `job` - Now if the job return a error (ERROR or FAILED status code), the `Wait` method will return the error. (GH-116)
 
+### :dependabot: **Dependencies**
+
+* deps: bumps github.com/sethvargo/go-envconfig from 1.0.1 to 1.1.0 (GH-119)
+
 ## 0.10.1 (April 26, 2024)
 
 ### :bug: **Bug Fixes**
