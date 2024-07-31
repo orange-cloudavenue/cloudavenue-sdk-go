@@ -1,0 +1,3 @@
+```release-note:dependency
+deps: bumps github.com/sethvargo/go-envconfig from 1.0.1 to 1.1.0
+```
