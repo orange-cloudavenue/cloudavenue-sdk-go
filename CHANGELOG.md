@@ -1,4 +1,19 @@
 ## 0.11.0 (Unreleased)
+### :rotating_light: **Breaking Changes**
+
+* `v1/vdc` - Now the `New`/`Update`/`Delete` methods of the `vdc` package require a `context.Context` as the first argument. (GH-117)
+
+### :rocket: **New Features**
+
+* `job` - Add `WaitWithContext` method to `job` package. This method allows users to wait for a job to complete with a context (Context with timeout). If context does not have a timeout, it will wait 90 seconds by default. (GH-117)
+
+### :bug: **Bug Fixes**
+
+* `job` - Fix nil pointer dereference in `wait` command when the job is not found. (GH-67)
+### :information_source: **Notes**
+
+* `job` - Now if the job return a error (ERROR or FAILED status code), the `Wait` method will return the error. (GH-116)
+
 ## 0.10.1 (April 26, 2024)
 
 ### :bug: **Bug Fixes**
