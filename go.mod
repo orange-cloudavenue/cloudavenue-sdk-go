@@ -5,7 +5,7 @@ go 1.22
 toolchain go1.22.2
 
 require (
-	github.com/aws/aws-sdk-go v1.51.21
+	github.com/aws/aws-sdk-go v1.55.5
 	github.com/fbiville/markdown-table-formatter v0.3.0
 	github.com/go-resty/resty/v2 v2.13.1
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.34.0
