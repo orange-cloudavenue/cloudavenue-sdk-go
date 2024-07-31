@@ -16,6 +16,7 @@
 
 ### :dependabot: **Dependencies**
 
+* deps: bumps dependabot/fetch-metadata from 2.0.0 to 2.2.0 (GH-120)
 * deps: bumps github.com/go-resty/resty/v2 from 2.12.0 to 2.13.1 (GH-113)
 * deps: bumps github.com/sethvargo/go-envconfig from 1.0.1 to 1.1.0 (GH-119)
 
