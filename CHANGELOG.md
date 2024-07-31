@@ -18,6 +18,7 @@
 
 * deps: bumps actions/download-artifact from 4.1.4 to 4.1.8 (GH-122)
 * deps: bumps dependabot/fetch-metadata from 2.0.0 to 2.2.0 (GH-120)
+* deps: bumps github.com/aws/aws-sdk-go from 1.51.21 to 1.55.5 (GH-124)
 * deps: bumps github.com/go-resty/resty/v2 from 2.12.0 to 2.13.1 (GH-113)
 * deps: bumps github.com/hashicorp/terraform-plugin-sdk/v2 from 2.33.0 to 2.34.0 (GH-114)
 * deps: bumps github.com/sethvargo/go-envconfig from 1.0.1 to 1.1.0 (GH-119)
