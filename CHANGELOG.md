@@ -1,4 +1,5 @@
-## 0.11.0 (Unreleased)
+## 0.12.0 (Unreleased)
+## 0.11.0 (July 31, 2024)
 ### :rotating_light: **Breaking Changes**
 
 * `v1/vdc` - Now the `New`/`Update`/`Delete` methods of the `vdc` package require a `context.Context` as the first argument. (GH-117)
