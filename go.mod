@@ -10,7 +10,7 @@ require (
 	github.com/go-resty/resty/v2 v2.13.1
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.34.0
 	github.com/sethvargo/go-envconfig v1.1.0
-	github.com/vmware/go-vcloud-director/v2 v2.23.0
+	github.com/vmware/go-vcloud-director/v2 v2.25.0
 	golang.org/x/exp v0.0.0-20240119083558-1b970713d09a
 	golang.org/x/mod v0.17.0
 	golang.org/x/sync v0.7.0
@@ -56,7 +56,6 @@ require (
 	github.com/mitchellh/reflectwalk v1.0.2 // indirect
 	github.com/oklog/run v1.0.0 // indirect
 	github.com/peterhellberg/link v1.1.0 // indirect
-	github.com/stretchr/testify v1.8.2 // indirect
 	github.com/vmihailenco/msgpack v4.0.4+incompatible // indirect
 	github.com/vmihailenco/msgpack/v5 v5.4.1 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
