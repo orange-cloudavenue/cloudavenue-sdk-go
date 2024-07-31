@@ -21,6 +21,7 @@
 * deps: bumps github.com/go-resty/resty/v2 from 2.12.0 to 2.13.1 (GH-113)
 * deps: bumps github.com/hashicorp/terraform-plugin-sdk/v2 from 2.33.0 to 2.34.0 (GH-114)
 * deps: bumps github.com/sethvargo/go-envconfig from 1.0.1 to 1.1.0 (GH-119)
+* deps: bumps golangci/golangci-lint-action from 4 to 6 (GH-121)
 
 ## 0.10.1 (April 26, 2024)
 
