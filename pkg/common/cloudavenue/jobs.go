@@ -1,6 +1,7 @@
 package commoncloudavenue
 
 import (
+	"context"
 	"fmt"
 	"time"
 
@@ -80,6 +81,9 @@ func (j *JobStatus) Refresh() error {
 	}
 
 	x := *r.Result().(*[]JobStatus)
+	if len(x) == 0 {
+		return fmt.Errorf("job with ID %s not found", jobID)
+	}
 	*j = x[0]
 
 	j.JobID = jobID
@@ -90,6 +94,11 @@ func (j *JobStatus) Refresh() error {
 // IsDone - Returns true if the job is done with a success
 func (j *JobStatus) IsDone() bool {
 	return j.Status == DONE
+}
+
+// OnError - Returns true if the job is done with an error
+func (j *JobStatus) OnError() bool {
+	return j.Status == FAILED || j.Status == ERROR
 }
 
 // Wait - Waits for the job to be done
@@ -105,15 +114,35 @@ func (j *JobStatus) Wait(refreshInterval, timeout int) error {
 		return nil
 	}
 
+	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(timeout)*time.Second)
+	defer cancel()
+
+	return j.WaitWithContext(ctx, refreshInterval)
+}
+
+// WaitWithContext - Waits for the job to be done
+// refreshInterval - The interval in seconds between each refresh
+func (j *JobStatus) WaitWithContext(ctx context.Context, refreshInterval int) error {
+	if _, deadlineSet := ctx.Deadline(); !deadlineSet {
+		return j.Wait(refreshInterval, 90)
+	}
+
+	err := j.Refresh()
+	if err != nil {
+		return err
+	}
+
+	if j.IsDone() {
+		return nil
+	}
+
 	ticker := time.NewTicker(time.Duration(refreshInterval) * time.Second)
 	defer ticker.Stop()
 
-	timeoutChan := time.After(time.Duration(timeout) * time.Second)
-
 	for {
 		select {
-		case <-timeoutChan:
-			return fmt.Errorf("timeout after %d seconds", timeout)
+		case <-ctx.Done():
+			return fmt.Errorf("timeout reached")
 		case <-ticker.C:
 			err := j.Refresh()
 			if err != nil {
@@ -122,6 +151,17 @@ func (j *JobStatus) Wait(refreshInterval, timeout int) error {
 
 			if j.IsDone() {
 				return nil
+			}
+
+			if j.OnError() {
+				// find the first action that failed
+				for _, a := range j.Actions {
+					if a.Status == string(FAILED) || a.Status == string(ERROR) {
+						return fmt.Errorf("job failed: %s", a.Details)
+					}
+				}
+
+				return fmt.Errorf("job failed: %s", j.Description)
 			}
 		}
 	}

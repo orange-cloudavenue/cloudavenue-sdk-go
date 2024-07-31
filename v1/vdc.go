@@ -1,12 +1,12 @@
 package v1
 
 import (
+	"context"
 	"fmt"
 	"sync"
 
 	"github.com/vmware/go-vcloud-director/v2/govcd"
 
-	commoncloudavenue "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/common/cloudavenue"
 	"github.com/orange-cloudavenue/cloudavenue-sdk-go/v1/infrapi"
 )
 
@@ -121,9 +121,10 @@ func (v *VDC) Vmware() *govcd.Vdc {
 }
 
 // New creates a new VDC.
-func (v *CAVVdc) New(object *infrapi.CAVVirtualDataCenter) (*VDC, error) {
+// For the context use contet.withTimeout to set a timeout.
+func (v *CAVVdc) New(ctx context.Context, object *infrapi.CAVVirtualDataCenter) (*VDC, error) {
 	infraPIVDC := infrapi.CAVVDC{}
-	vdcCreated, err := infraPIVDC.New(object)
+	vdcCreated, err := infraPIVDC.New(ctx, object)
 	if err != nil {
 		return nil, err
 	}
@@ -249,13 +250,13 @@ func (v *VDC) IsValid(isUpdate bool) error {
 }
 
 // Delete deletes the VDC.
-func (v *VDC) Delete() (job *commoncloudavenue.JobStatus, err error) {
-	return v.infrapi.Delete()
+func (v *VDC) Delete(ctx context.Context) (err error) {
+	return v.infrapi.Delete(ctx)
 }
 
 // Update updates the VDC.
-func (v *VDC) Update() (err error) {
-	return v.infrapi.Update()
+func (v *VDC) Update(ctx context.Context) (err error) {
+	return v.infrapi.Update(ctx)
 }
 
 // *
