@@ -695,7 +695,7 @@ func (r Rule) storageProfileClassIsValid(sp StorageProfileClass) bool {
 
 // storageProfileClassIsCustom returns true if the given StorageProfileClass is custom for the given ServiceClass.
 func (r Rule) storageProfileClassIsCustom(sp StorageProfileClass) bool {
-	re := regexp.MustCompile(`^(silver|gold|platinum[3,7]k)(_ocb[0-9]{7})?(_r[1,2]{1}|_hm)?$`)
+	re := regexp.MustCompile(`^(silver|gold|platinum[3,7]k)(_ocb[0-9]{7})(_r[1,2]{1}|_hm)?$`)
 	return re.MatchString(string(sp))
 }
 
