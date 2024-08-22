@@ -1,4 +1,9 @@
 ## 0.12.0 (Unreleased)
+
+### :dependabot: **Dependencies**
+
+* deps: bumps golang.org/x/sync from 0.7.0 to 0.8.0 (GH-127)
+
 ## 0.11.0 (July 31, 2024)
 ### :rotating_light: **Breaking Changes**
 
