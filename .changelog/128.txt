@@ -1,0 +1,3 @@
+```release-note:bug
+`vdc_rules` - Fix bad regex on storage profile custom name validation. 
+```
