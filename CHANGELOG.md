@@ -1,5 +1,9 @@
 ## 0.12.0 (Unreleased)
 
+### :bug: **Bug Fixes**
+
+* `vdc_rules` - Fix bad regex on storage profile custom name validation. (GH-128)
+
 ### :dependabot: **Dependencies**
 
 * deps: bumps golang.org/x/mod from 0.17.0 to 0.20.0 (GH-126)
