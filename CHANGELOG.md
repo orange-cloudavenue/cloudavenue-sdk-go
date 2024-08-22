@@ -2,6 +2,7 @@
 
 ### :dependabot: **Dependencies**
 
+* deps: bumps golang.org/x/mod from 0.17.0 to 0.20.0 (GH-126)
 * deps: bumps golang.org/x/sync from 0.7.0 to 0.8.0 (GH-127)
 
 ## 0.11.0 (July 31, 2024)
