@@ -13,7 +13,7 @@ type (
 	// BMS struct{}
 
 	BMS struct {
-		BMSNetworks []BMSNetwork `json:"BMSnetworkDetails"`
+		BMSNetworks []BMSNetwork `json:"BMSnetworks"`
 		BMSDetails  []BMSDetail  `json:"BMSDetails"`
 	}
 
