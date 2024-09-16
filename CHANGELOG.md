@@ -7,6 +7,7 @@
 ### :dependabot: **Dependencies**
 
 * deps: bumps github.com/go-resty/resty/v2 from 2.14.0 to 2.15.0 (GH-132)
+* deps: bumps golang.org/x/mod from 0.20.0 to 0.21.0 (GH-129)
 
 ## 0.11.1 (August 23, 2024)
 
