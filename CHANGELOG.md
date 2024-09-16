@@ -1,4 +1,9 @@
 ## 0.12.0 (Unreleased)
+
+### :rocket: **New Features**
+
+* `cav/bms` - Add support for `bms` endpoints (GH-130)
+
 ## 0.11.1 (August 23, 2024)
 
 ### :bug: **Bug Fixes**
