@@ -4,6 +4,10 @@
 
 * `cav/bms` - Add support for `bms` endpoints (GH-130)
 
+### :dependabot: **Dependencies**
+
+* deps: bumps github.com/go-resty/resty/v2 from 2.14.0 to 2.15.0 (GH-132)
+
 ## 0.11.1 (August 23, 2024)
 
 ### :bug: **Bug Fixes**
