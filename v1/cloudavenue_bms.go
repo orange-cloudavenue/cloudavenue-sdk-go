@@ -28,10 +28,10 @@ type (
 	}
 
 	BMSStorage struct {
-		Local  []BMSStorageDetail `json:"local"`
-		Shared []BMSStorageDetail `json:"shared"`
-		System []BMSStorageDetail `json:"system"`
-		Data   []BMSStorageDetail `json:"data"`
+		Local  []BMSStorageDetail `json:"local,omitempty"`
+		Shared []BMSStorageDetail `json:"shared,omitempty"`
+		System []BMSStorageDetail `json:"system,omitempty"`
+		Data   []BMSStorageDetail `json:"data,omitempty"`
 	}
 
 	BMSStorageDetail struct {
@@ -45,7 +45,7 @@ type (
 func (v *BMS) List() (response *[]BMS, err error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	r, err := c.R().
@@ -53,7 +53,7 @@ func (v *BMS) List() (response *[]BMS, err error) {
 		SetError(&commoncloudavenue.APIErrorResponse{}).
 		Get("/api/customers/v2.0/bms")
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	if r.IsError() {
@@ -67,11 +67,11 @@ func (v *BMS) GetNetworks() []BMSNetwork {
 	return v.BMSNetworks
 }
 
-func (v *BMS) GetBMSDetails() []BMSDetail {
+func (v *BMS) GetBMS() []BMSDetail {
 	return v.BMSDetails
 }
 
-func (v *BMSDetail) GetBMSStorage() BMSStorage {
+func (v *BMSDetail) GetStorages() BMSStorage {
 	return v.Storages
 }
 
