@@ -1,17 +1,13 @@
 package v1
 
 import (
-	"encoding/json"
 	"fmt"
-	"io"
 
 	clientcloudavenue "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/clients/cloudavenue"
 	commoncloudavenue "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/common/cloudavenue"
 )
 
 type (
-	// BMS struct{}
-
 	BMS struct {
 		BMSNetworks []BMSNetwork `json:"BMSnetworks"`
 		BMSDetails  []BMSDetail  `json:"BMSDetails"`
@@ -45,34 +41,17 @@ type (
 )
 
 // ! BMS
-// function List BMSolution
-func (v *BMS) List() (response *BMS, err error) {
+// Return a Slice of BMS struct
+func (v *BMS) List() (response *[]BMS, err error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {
 		return nil, err
 	}
 
 	r, err := c.R().
-		SetDoNotParseResponse(true).
-		// SetResult(&BMS{}). - because the response is not a correct json format
+		SetResult([]BMS{}). //- because the response is a slice of struct
 		SetError(&commoncloudavenue.APIErrorResponse{}).
 		Get("/api/customers/v2.0/bms")
-	if err != nil {
-		return nil, err
-	}
-	rep, err := io.ReadAll(r.RawBody())
-	if err != nil {
-		return nil, err
-	}
-	// ! convert []byte to string to fix the json format response
-	stringRep := string(rep)
-	// delete last character "]"
-	stringRep = stringRep[:len(stringRep)-1]
-	// delete first character "["
-	stringRep = stringRep[1:]
-
-	// put the json format y into struct *BMS
-	err = json.Unmarshal([]byte(stringRep), &response)
 	if err != nil {
 		return nil, err
 	}
@@ -81,8 +60,7 @@ func (v *BMS) List() (response *BMS, err error) {
 		return response, fmt.Errorf("error on list BMS(s): %s", r.Error().(*commoncloudavenue.APIErrorResponse).FormatError())
 	}
 
-	return response, nil
-	// return r.Result().(*BMS), nil
+	return r.Result().(*[]BMS), nil
 }
 
 func (v *BMS) GetNetworks() []BMSNetwork {
