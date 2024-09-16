@@ -1,5 +1,4 @@
-## .1.0 (Unreleased)
-## .0.12.0 (September 16, 2024)
+## main.1.0 (Unreleased)
 
 ### :rocket: **New Features**
 
