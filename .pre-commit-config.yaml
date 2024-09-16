@@ -9,7 +9,7 @@ repos:
 
 ## GOLANG
 - repo: https://github.com/tekwizely/pre-commit-golang
-  rev: master
+  rev: v1.0.0-rc.1
   hooks:
     - id: go-vet
     - id: go-imports-repo
@@ -26,6 +26,6 @@ repos:
 
 ## SECURITY
 - repo: https://github.com/gitleaks/gitleaks
-  rev: master
+  rev: v8.19.2
   hooks:
     - id: gitleaks
