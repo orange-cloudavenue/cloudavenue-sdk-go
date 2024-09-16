@@ -9,12 +9,12 @@ import (
 
 type (
 	BMS struct {
-		BMSNetworks []BMSNetwork `json:"BMSnetworks"`
-		BMSDetails  []BMSDetail  `json:"BMSDetails"`
+		BMSNetworks []BMSNetwork `json:"network"`
+		BMSDetails  []BMSDetail  `json:"bms"`
 	}
 
 	BMSNetwork struct {
-		VLANID string `json:"vlanId"`
+		VLANID string `json:"vlanid"`
 		Subnet string `json:"subnet"`
 		Prefix string `json:"prefix"`
 	}
@@ -24,14 +24,14 @@ type (
 		Hostname          string     `json:"hostname"`
 		OS                string     `json:"os"`
 		BiosConfiguration string     `json:"biosConfiguration"`
-		Storages          BMSStorage `json:"storages"`
+		Storages          BMSStorage `json:"storage"`
 	}
 
 	BMSStorage struct {
-		Local  BMSStorageDetail `json:"local"`
-		Shared BMSStorageDetail `json:"shared"`
-		System BMSStorageDetail `json:"system"`
-		Data   BMSStorageDetail `json:"data"`
+		Local  []BMSStorageDetail `json:"local"`
+		Shared []BMSStorageDetail `json:"shared"`
+		System []BMSStorageDetail `json:"system"`
+		Data   []BMSStorageDetail `json:"data"`
 	}
 
 	BMSStorageDetail struct {
@@ -75,19 +75,19 @@ func (v *BMSDetail) GetBMSStorage() BMSStorage {
 	return v.Storages
 }
 
-func (v *BMSStorage) GetLocal() BMSStorageDetail {
+func (v *BMSStorage) GetLocal() []BMSStorageDetail {
 	return v.Local
 }
 
-func (v *BMSStorage) GetShared() BMSStorageDetail {
+func (v *BMSStorage) GetShared() []BMSStorageDetail {
 	return v.Shared
 }
 
-func (v *BMSStorage) GetSystem() BMSStorageDetail {
+func (v *BMSStorage) GetSystem() []BMSStorageDetail {
 	return v.System
 }
 
-func (v *BMSStorage) GetData() BMSStorageDetail {
+func (v *BMSStorage) GetData() []BMSStorageDetail {
 	return v.Data
 }
 
