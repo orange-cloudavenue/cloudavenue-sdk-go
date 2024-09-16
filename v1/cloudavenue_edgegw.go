@@ -364,7 +364,7 @@ func (n NetworkType) GetEndAddress() string {
 	broadcast := numIPs - 1
 	end := make(net.IP, 4)
 	for i := 0; i < 4; i++ {
-		end[i] = start[i] + byte((broadcast>>uint(8*i))&0xff)
+		end[i] = start[i] + byte((broadcast>>uint(8*i))&0xff) //nolint:gosec //exclude: G115 directives
 	}
 
 	return end.String()

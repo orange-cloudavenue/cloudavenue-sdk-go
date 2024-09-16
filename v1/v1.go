@@ -13,6 +13,7 @@ type V1 struct {
 	EdgeGateway EdgeGateway
 	T0          Tier0
 	VCDA        VCDA
+	BMS         BMS
 	// VDC         VDC is a method of the V1 struct that returns a pointer to the CAVVdc struct
 	// S3          *s3.S3 - S3 is a method of the V1 struct that returns a pointer to the AWS S3 client preconfigured
 }

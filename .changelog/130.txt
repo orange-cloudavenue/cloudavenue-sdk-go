@@ -1,0 +1,3 @@
+```release-note:feature
+`cav/bms` - Add support for `bms` endpoints
+```
