@@ -9,7 +9,6 @@ require (
 	github.com/fbiville/markdown-table-formatter v0.3.0
 	github.com/go-resty/resty/v2 v2.14.0
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.34.0
-	github.com/k0kubun/pp v3.0.1+incompatible
 	github.com/sethvargo/go-envconfig v1.1.0
 	github.com/vmware/go-vcloud-director/v2 v2.25.0
 	golang.org/x/exp v0.0.0-20240119083558-1b970713d09a
@@ -46,7 +45,6 @@ require (
 	github.com/hashicorp/terraform-svchost v0.1.1 // indirect
 	github.com/hashicorp/yamux v0.1.1 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
-	github.com/k0kubun/colorstring v0.0.0-20150214042306-9440f1994b88 // indirect
 	github.com/kr/pretty v0.2.1 // indirect
 	github.com/kr/text v0.1.0 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
