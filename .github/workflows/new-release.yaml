@@ -101,12 +101,11 @@ jobs:
           tag: ${{ needs.pre-check.outputs.TAG_NAME }}
           tag_exists_error: true
           message: "Release ${{ needs.pre-check.outputs.TAG_NAME }}"
-  
   release-notes:
     runs-on: ubuntu-latest
     needs: [tag, pre-check]
     steps:
-      - uses: actions/checkout@v4 # v3.5.3 
+      - uses: actions/checkout@v4 # v3.5.3
         with:
           fetch-depth: 0
           ref: ${{ needs.pre-check.outputs.TAG_NAME }}
@@ -121,41 +120,28 @@ jobs:
           name: release-notes
           path: release-notes.txt
           retention-days: 1
-  release-app:
-    runs-on: ubuntu-latest
+  publish-release:
     needs: [release-notes, golangci-lint, pre-check]
+    runs-on:
+      group: Default
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          ref:  ${{ needs.pre-check.outputs.TAG_NAME }}
-  #     - name: Set up QEMU
-  #       uses: docker/setup-qemu-action@v3
-  #     - name: Set up Go
-  #       uses: actions/setup-go@v5
-  #       with:
-  #         go-version-file: 'go.mod'
       - id: release-notes-download
         name: Release Notes Download
         uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
           name: release-notes
           path: /tmp
-  #     - name: Run GoReleaser
-  #       uses: goreleaser/goreleaser-action@v5
-  #       if: success()
-  #       with:
-  #         distribution: goreleaser
-  #         version: latest
-  #         args: release --clean -f .goreleaser.yaml --release-notes=${{ steps.release-notes-download.outputs.download-path }}/release-notes.txt
-  #       env:
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: ${{ steps.release-notes-download.outputs.download-path }}/release-notes.txt
   changelog-newversion:
-    needs: [release-app, golangci-lint, pre-check]
+    needs: [publish-release, golangci-lint, pre-check]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4 # v3.5.3 
+      - uses: actions/checkout@v4 # v3.5.3
         with:
           token: ${{ secrets.CHANGELOG_PAT }}
           fetch-depth: 0
@@ -190,4 +176,3 @@ jobs:
           commit_user_name: github-actions[bot]
           commit_user_email: github-actions[bot]@users.noreply.github.com
           commit_author: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
-
