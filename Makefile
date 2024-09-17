@@ -11,8 +11,5 @@ test:
 
 .PHONY: build lint fmt test
 
-submodules:
-	@git submodule sync
-	@git submodule update --init --recursive
-	@git config core.hooksPath githooks
-	@git config submodule.recurse true
+pre-commit:
+	@pre-commit install

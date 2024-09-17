@@ -1,6 +1,4 @@
-## .1.0 (Unreleased)
-## .0.12.0 (September 16, 2024)
-## main (August 29, 2024)
+## 0.12.0 (Unreleased)
 
 ### :rocket: **New Features**
 
@@ -25,6 +23,7 @@
 * deps: bumps golang.org/x/sync from 0.7.0 to 0.8.0 (GH-127)
 
 ## 0.11.0 (July 31, 2024)
+
 ### :rotating_light: **Breaking Changes**
 
 * `v1/vdc` - Now the `New`/`Update`/`Delete` methods of the `vdc` package require a `context.Context` as the first argument. (GH-117)
@@ -36,6 +35,7 @@
 ### :bug: **Bug Fixes**
 
 * `job` - Fix nil pointer dereference in `wait` command when the job is not found. (GH-67)
+
 ### :information_source: **Notes**
 
 * `job` - Now if the job return a error (ERROR or FAILED status code), the `Wait` method will return the error. (GH-116)
@@ -112,6 +112,7 @@
 * `client` - Fix bug `nil` pointer dereference in `client` package if no `opts` are passed to `New()` func. (GH-75)
 
 ## 0.8.0 (January 29, 2024)
+
 ### :rotating_light: **Breaking Changes**
 
 * `console` - Remove funcs `S3IsEnabled()`, `GetS3Endpoint()`, `IsVCDAEnabled()` and `GetVCDAEndpoint()`. (GH-73)
@@ -127,6 +128,7 @@
 * `consoles` - Add consoles `console5`, `console7`, `console8` and `console9`. (GH-73)
 * `errors` - Add `errors` package. The following errors are available: `ErrNotFound`, `ErrEmpty` and `ErrInvalidFormat` (GH-73)
 * `v1/Vmware` - Now the `V1()` function returns a Vmware object. (GH-73)
+
 ### :information_source: **Notes**
 
 * `client` - The `CLOUDAVENUE_ENDPOINT` environment variable has been renamed to `CLOUDAVENUE_URL`. (GH-73)
@@ -164,6 +166,7 @@
 * deps: bumps golang.org/x/sync from 0.1.0 to 0.6.0 (GH-60)
 
 ## 0.6.0 (December  4, 2023)
+
 ### :rotating_light: **Breaking Changes**
 
 * `edgegateway` - Change attribute name to respect naming ToService/VlanID to ToService/VLANID (GH-45)
@@ -187,11 +190,13 @@
 
 * `publicip` - Fix GetIP return now the good public IP. (GH-40)
 * `publicip` - Fix GetJobStatus return now the good status. (GH-40)
+
 ### :information_source: **Notes**
 
 * `vdc` - Refactor `vdc` to use `infrapi` and `vmware` packages (GH-42)
 
 ## 0.5.5 (November 20, 2023)
+
 ### :information_source: **Notes**
 
 * `netbackup/` - Reorganize the NetBackup files into a directory. (GH-39)
@@ -204,6 +209,7 @@
 * `client/s3` - Now the client use cloudavenue settings after environment variables is evaluated. (GH-38)
 
 ## 0.5.3 (November 17, 2023)
+
 ## 0.5.2 (November 16, 2023)
 
 ### :bug: **Bug Fixes**
@@ -217,6 +223,7 @@
 * `s3/GetCanonicalID` - Fix GetCanonicalID to return the correct canonical ID for the account. (GH-30)
 
 ## 0.5.0 (November 15, 2023)
+
 ## 0.5.0 (November 15, 2023)
 
 ### :tada: **Improvements**
@@ -245,8 +252,11 @@
 * `s3/user` - Allow to List/Get OSE User and Get Canonical ID ([GH-18](https://github.com/orange-cloudavenue/terraform-provider-cloudavenue/issues/18))
 
 ## 0.3.1 (October 24, 2023)
+
 ## 0.3.0 (October 17, 2023)
+
 ## 0.2.0 (October 16, 2023)
+
 ## 0.1.0 (October 16, 2023)
 
 ### :tada: **Improvements**
@@ -260,4 +270,5 @@
 * deps: bumps github.com/go-resty/resty/v2 from 2.9.1 to 2.10.0 ([GH-13](https://github.com/orange-cloudavenue/terraform-provider-cloudavenue/issues/13))
 
 ## 0.0.3 (October  9, 2023)
+
 ## 0.0.2 (October  9, 2023)
