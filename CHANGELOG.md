@@ -1,4 +1,9 @@
 ## 0.13.0 (Unreleased)
+
+### :tada: **Improvements**
+
+* `BMS` - Add func GetBMSByHostname (GH-135)
+
 ## 0.12.0 (September 17, 2024)
 
 ### :rocket: **New Features**
