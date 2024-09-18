@@ -71,6 +71,16 @@ func (v *BMS) GetBMS() []BMSDetail {
 	return v.BMSDetails
 }
 
+func (v *BMS) GetBMSByHostname(hostname string) (response *BMSDetail, err error) {
+	// For each BMS find the one with the same hostname
+	for _, bms := range v.BMSDetails {
+		if bms.Hostname == hostname {
+			return &bms, nil
+		}
+	}
+	return nil, fmt.Errorf("BMS with hostname %s not found", hostname)
+}
+
 func (v *BMSDetail) GetStorages() BMSStorage {
 	return v.Storages
 }

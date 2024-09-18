@@ -125,7 +125,7 @@ linters-settings:
         disabled: false
         arguments:
           # List Bypass rules
-          - [] 
+          - []
           # List force rules
           - [
               # Default rules
@@ -175,4 +175,5 @@ linters-settings:
               "VCDA",
               "NAT",
               "VPN",
-            ] 
+              "BMS",
+            ]
