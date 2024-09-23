@@ -10,7 +10,7 @@ require (
 	github.com/go-resty/resty/v2 v2.15.0
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.34.0
 	github.com/sethvargo/go-envconfig v1.1.0
-	github.com/vmware/go-vcloud-director/v2 v2.25.0
+	github.com/vmware/go-vcloud-director/v2 v2.26.0
 	golang.org/x/exp v0.0.0-20240119083558-1b970713d09a
 	golang.org/x/mod v0.21.0
 	golang.org/x/sync v0.8.0
