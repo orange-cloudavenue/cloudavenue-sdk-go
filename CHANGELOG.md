@@ -2,6 +2,7 @@
 
 ### :dependabot: **Dependencies**
 
+* deps: bumps github.com/go-resty/resty/v2 from 2.15.0 to 2.15.3 (GH-139)
 * deps: bumps github.com/vmware/go-vcloud-director/v2 from 2.25.0 to 2.26.0 (GH-137)
 
 ## 0.12.1 (September 18, 2024)
