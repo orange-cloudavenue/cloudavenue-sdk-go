@@ -1,4 +1,9 @@
 ## 0.13.0 (Unreleased)
+
+### :dependabot: **Dependencies**
+
+* deps: bumps github.com/vmware/go-vcloud-director/v2 from 2.25.0 to 2.26.0 (GH-137)
+
 ## 0.12.1 (September 18, 2024)
 
 ### :tada: **Improvements**
