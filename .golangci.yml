@@ -109,6 +109,9 @@ linters-settings:
     # Default: false
     extra-rules: true
 
+  gosec:
+    excludes:
+      - G115
 
   revive:
     ignore-generated-header: true

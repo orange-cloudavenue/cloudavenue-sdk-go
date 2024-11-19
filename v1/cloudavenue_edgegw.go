@@ -145,7 +145,8 @@ func (e *EdgeGateways) GetBandwidthCapacityRemaining(t0VrfName string) (response
 		}
 	}
 
-	if t0BandwidthCapacity < 0 {
+	// 5 Mbps is the minimum bandwidth capacity
+	if t0BandwidthCapacity < 5 {
 		return 0, fmt.Errorf("no bandwidth capacity remaining")
 	}
 
@@ -364,7 +365,7 @@ func (n NetworkType) GetEndAddress() string {
 	broadcast := numIPs - 1
 	end := make(net.IP, 4)
 	for i := 0; i < 4; i++ {
-		end[i] = start[i] + byte((broadcast>>uint(8*i))&0xff) //nolint:gosec //exclude: G115 directives
+		end[i] = start[i] + byte((broadcast>>uint(8*i))&0xff)
 	}
 
 	return end.String()
