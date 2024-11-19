@@ -1,4 +1,9 @@
 ## 0.13.0 (Unreleased)
+
+### :bug: **Bug Fixes**
+
+* `edge_gateway` - Fix a bug where the remaining bandwidth was not being calculated correctly. (GH-144)
+
 ## 0.12.2 (November  3, 2024)
 
 ### :dependabot: **Dependencies**
