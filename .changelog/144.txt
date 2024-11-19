@@ -1,0 +1,3 @@
+```release-note:bug
+`edge_gateway` - Fix a bug where the remaining bandwidth was not being calculated correctly.
+```
