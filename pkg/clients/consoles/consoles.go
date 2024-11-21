@@ -59,7 +59,7 @@ var consoles = map[Console]console{
 			},
 			Netbackup: Service{
 				Enabled:  true,
-				Endpoint: "https://backup1.cloudavenue.orange-business.com/NetBackupSelfServiceNetBackupPanels/Api",
+				Endpoint: "https://backup1.cloudavenue.orange-business.com/NetBackupSelfService/Api",
 			},
 		},
 	},
@@ -76,7 +76,7 @@ var consoles = map[Console]console{
 			},
 			Netbackup: Service{
 				Enabled:  true,
-				Endpoint: "https://backup2.cloudavenue.orange-business.com/NetBackupSelfServiceNetBackupPanels/Api",
+				Endpoint: "https://backup2.cloudavenue.orange-business.com/NetBackupSelfService/Api",
 			},
 		},
 	},
@@ -90,7 +90,7 @@ var consoles = map[Console]console{
 		Services: Services{
 			Netbackup: Service{
 				Enabled:  true,
-				Endpoint: "https://backup4.cloudavenue.orange-business.com/NetBackupSelfServiceNetBackupPanels/Api",
+				Endpoint: "https://backup4.cloudavenue.orange-business.com/NetBackupSelfService/Api",
 			},
 		},
 	},
@@ -103,7 +103,7 @@ var consoles = map[Console]console{
 		Services: Services{
 			Netbackup: Service{
 				Enabled:  true,
-				Endpoint: "https://backup5.cloudavenue-cha.itn.intraorange/NetBackupSelfServiceNetBackupPanels/Api",
+				Endpoint: "https://backup5.cloudavenue-cha.itn.intraorange/NetBackupSelfService/Api",
 			},
 		},
 	},
@@ -117,7 +117,7 @@ var consoles = map[Console]console{
 		Services: Services{
 			Netbackup: Service{
 				Enabled:  true,
-				Endpoint: "https://backup7.cloudavenue-vdr.itn.intraorange/NetBackupSelfServiceNetBackupPanels/Api",
+				Endpoint: "https://backup7.cloudavenue-vdr.itn.intraorange/NetBackupSelfService/Api",
 			},
 		},
 	},
@@ -130,7 +130,7 @@ var consoles = map[Console]console{
 		Services: Services{
 			Netbackup: Service{
 				Enabled:  true,
-				Endpoint: "https://backup8.cloudavenue-vdr.itn.intraorange/NetBackupSelfServiceNetBackupPanels/Api",
+				Endpoint: "https://backup8.cloudavenue-vdr.itn.intraorange/NetBackupSelfService/Api",
 			},
 		},
 	},
@@ -144,7 +144,7 @@ var consoles = map[Console]console{
 		Services: Services{
 			Netbackup: Service{
 				Enabled:  false,
-				Endpoint: "https://backup9.cloudavenue.orange-business.com/NetBackupSelfServiceNetBackupPanels/Api",
+				Endpoint: "https://backup9.cloudavenue.orange-business.com/NetBackupSelfService/Api",
 			},
 		},
 	},
