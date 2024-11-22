@@ -1,4 +1,13 @@
 ## 0.13.0 (Unreleased)
+
+### :bug: **Bug Fixes**
+
+* `netbackup` - Fixed a bug where Netbackup API URL changed. (GH-146)
+
+### :dependabot: **Dependencies**
+
+* deps: bumps github.com/go-resty/resty/v2 from 2.15.3 to 2.16.0 (GH-143)
+
 ## 0.12.3 (November 19, 2024)
 
 ### :bug: **Bug Fixes**
