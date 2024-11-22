@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/url"
+	"sync"
 
 	"github.com/go-resty/resty/v2"
 	"github.com/sethvargo/go-envconfig"
@@ -116,7 +117,9 @@ func Init(opts *Opts) (err error) {
 
 type Client struct {
 	*resty.Client
-	Vmware *govcd.VCDClient
+	Vmware   *govcd.VCDClient
+	Org      *govcd.Org
+	AdminOrg *govcd.AdminOrg
 }
 
 var cache *Client
@@ -159,7 +162,50 @@ func New() (*Client, error) {
 		Vmware: vmware,
 	}
 
-	return cache, nil
+	// wait group to wait for all goroutines to finish
+	var wg sync.WaitGroup
+
+	// channels
+	var (
+		errChan = make(chan error, 2)
+		done    = make(chan bool)
+	)
+
+	defer close(errChan)
+
+	// goroutine to get the VDC from the vmware
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		if err := cache.getOrg(); err != nil {
+			errChan <- err
+			return
+		}
+	}()
+
+	// goroutine to get the VDC from the infrapi
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		if err := cache.getAdminOrg(); err != nil {
+			errChan <- err
+			return
+		}
+	}()
+
+	go func() {
+		wg.Wait()
+		done <- true
+	}()
+
+	for {
+		select {
+		case err := <-errChan:
+			return nil, err
+		case <-done:
+			return cache, nil
+		}
+	}
 }
 
 // GetUsername - Returns the username
