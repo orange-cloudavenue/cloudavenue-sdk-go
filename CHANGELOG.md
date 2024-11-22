@@ -7,6 +7,7 @@
 ### :dependabot: **Dependencies**
 
 * deps: bumps github.com/go-resty/resty/v2 from 2.15.3 to 2.16.0 (GH-143)
+* deps: bumps github.com/hashicorp/terraform-plugin-sdk/v2 from 2.34.0 to 2.35.0 (GH-140)
 * deps: bumps golang.org/x/mod from 0.21.0 to 0.22.0 (GH-142)
 * deps: bumps golang.org/x/sync from 0.8.0 to 0.9.0 (GH-141)
 
