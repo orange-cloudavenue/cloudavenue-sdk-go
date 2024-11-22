@@ -1,4 +1,10 @@
 ## 0.13.0 (Unreleased)
+
+### :rocket: **New Features**
+
+* `client` - Add `org` and `adminorg` in the client. (GH-148)
+* `v1/vdc` - Add `GetVDC`/ `GetVDCGroup`/ `GetVDCOrVDCGroup` (GH-148)
+
 ## 0.12.5 (November 22, 2024)
 ## 0.12.4 (November 22, 2024)
 
