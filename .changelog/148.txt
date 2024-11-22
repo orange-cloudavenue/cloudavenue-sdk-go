@@ -1,0 +1,7 @@
+```release-note:feature
+`client` - Add `org` and `adminorg` in the client.
+```
+
+```release-note:feature
+`v1/vdc` - Add `GetVDC`/ `GetVDCGroup`/ `GetVDCOrVDCGroup`
+```

@@ -6,7 +6,10 @@ import (
 	"sync"
 
 	"github.com/vmware/go-vcloud-director/v2/govcd"
+	govcdtypes "github.com/vmware/go-vcloud-director/v2/types/v56"
 
+	clientcloudavenue "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/clients/cloudavenue"
+	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/uuid"
 	"github.com/orange-cloudavenue/cloudavenue-sdk-go/v1/infrapi"
 )
 
@@ -23,18 +26,6 @@ var (
 	ErrRetrievingVDCOrVDCGroup = fmt.Errorf("error retrieving VDC or VDC Group")
 )
 
-// *
-// * VDC
-// *
-
-type (
-	VDC struct {
-		vmware  *govcd.Vdc
-		infrapi *infrapi.CAVVirtualDataCenter
-		// netbackup
-	}
-)
-
 // Get retrieves the VDC (Virtual Data Center) by its name.
 // It returns a pointer to the VDC and an error if any.
 // The function performs concurrent requests to retrieve the VDC from both the VMware and the infrapi.
@@ -45,7 +36,7 @@ func (v *CAVVdc) GetVDC(vdcName string) (*VDC, error) {
 		return nil, fmt.Errorf("%w", ErrEmptyVDCNameProvided)
 	}
 
-	org, err := getOrg()
+	c, err := clientcloudavenue.New()
 	if err != nil {
 		return nil, err
 	}
@@ -69,7 +60,7 @@ func (v *CAVVdc) GetVDC(vdcName string) (*VDC, error) {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		vdc, err := org.GetVDCByNameOrId(vdcName, false)
+		vdc, err := c.Org.GetVDCByNameOrId(vdcName, false)
 		if err != nil {
 			errChan <- err
 			return
@@ -102,7 +93,7 @@ func (v *CAVVdc) GetVDC(vdcName string) (*VDC, error) {
 		case vdc := <-vdcChan:
 			switch x := vdc.(type) {
 			case *govcd.Vdc:
-				getVDC.vmware = x
+				getVDC.Vdc = x
 			case *infrapi.CAVVirtualDataCenter:
 				getVDC.infrapi = x
 			default:
@@ -117,7 +108,7 @@ func (v *CAVVdc) GetVDC(vdcName string) (*VDC, error) {
 }
 
 func (v *VDC) Vmware() *govcd.Vdc {
-	return v.vmware
+	return v.Vdc
 }
 
 // New creates a new VDC.
@@ -143,12 +134,12 @@ func (v *CAVVdc) List() (*infrapi.VDCs, error) {
 
 // GetName returns the name of the VDC.
 func (v *VDC) GetName() string {
-	return v.vmware.Vdc.Name
+	return v.Vdc.Vdc.Name
 }
 
 // GetID returns the ID of the VDC.
 func (v *VDC) GetID() string {
-	return v.vmware.Vdc.ID
+	return v.Vdc.Vdc.ID
 }
 
 // ? Infrapi
@@ -259,78 +250,75 @@ func (v *VDC) Update(ctx context.Context) (err error) {
 	return v.infrapi.Update(ctx)
 }
 
-// *
-// * VDCGroup
-// *
+// IsVDCGroup return true if the object is a VDC Group.
+func (v VDC) IsVDCGroup() bool {
+	return govcd.OwnerIsVdcGroup(v.GetID())
+}
 
-type (
-	VDCGroup struct {
-		vmware *govcd.VdcGroup
+// GetSecurityGroupByID return the NSX-T security group using the ID provided in the argument.
+func (v VDC) GetSecurityGroupByID(nsxtFirewallGroupID string) (*govcd.NsxtFirewallGroup, error) {
+	return v.Vdc.GetNsxtFirewallGroupById(nsxtFirewallGroupID)
+}
+
+// GetSecurityGroupByName return the NSX-T security group using the name provided in the argument.
+func (v VDC) GetSecurityGroupByName(nsxtFirewallGroupName string) (*govcd.NsxtFirewallGroup, error) {
+	return v.Vdc.GetNsxtFirewallGroupByName(nsxtFirewallGroupName, govcdtypes.FirewallGroupTypeSecurityGroup)
+}
+
+// GetSecurityGroupByNameOrID return the NSX-T security group using the name or ID provided in the argument.
+func (v VDC) GetSecurityGroupByNameOrID(nsxtFirewallGroupNameOrID string) (*govcd.NsxtFirewallGroup, error) {
+	if uuid.IsValid(nsxtFirewallGroupNameOrID) {
+		return v.GetSecurityGroupByID(nsxtFirewallGroupNameOrID)
 	}
-)
 
-// GetVDCGroup retrieves the VDC Group by its name.
-// It returns a pointer to the VDC Group and an error if any.
-func (v *CAVVdc) GetVDCGroup(vdcGroupName string) (*VDCGroup, error) {
-	if vdcGroupName == "" {
-		return nil, fmt.Errorf("%w", ErrEmptyVDCNameProvided)
+	return v.GetSecurityGroupByName(nsxtFirewallGroupNameOrID)
+}
+
+// GetIPSetByID return the NSX-T firewall group using the ID provided in the argument.
+func (v VDC) GetIPSetByID(id string) (*govcd.NsxtFirewallGroup, error) {
+	return v.Vdc.GetNsxtFirewallGroupById(id)
+}
+
+// GetIPSetByName return the NSX-T firewall group using the name provided in the argument.
+func (v VDC) GetIPSetByName(name string) (*govcd.NsxtFirewallGroup, error) {
+	return v.Vdc.GetNsxtFirewallGroupByName(name, govcdtypes.FirewallGroupTypeIpSet)
+}
+
+// GetIPSetByNameOrId return the NSX-T firewall group using the name or ID provided in the argument.
+func (v VDC) GetIPSetByNameOrID(nameOrID string) (*govcd.NsxtFirewallGroup, error) {
+	if uuid.IsValid(nameOrID) {
+		return v.GetIPSetByID(nameOrID)
 	}
 
-	adminOrg, err := getAdminOrg()
+	return v.GetIPSetByName(nameOrID)
+}
+
+// SetIPSet set the NSX-T firewall group using the name provided in the argument.
+func (v VDC) SetIPSet(ipSetConfig *govcdtypes.NsxtFirewallGroup) (*govcd.NsxtFirewallGroup, error) {
+	return v.Vdc.CreateNsxtFirewallGroup(ipSetConfig)
+}
+
+// GetDefaultPlacementPolicyID give you the ID of the default placement policy.
+func (v VDC) GetDefaultPlacementPolicyID() string {
+	return v.Vdc.Vdc.DefaultComputePolicy.ID
+}
+
+// GetVAPP give you the vApp using the name provided in the argument.
+func (v VDC) GetVAPP(nameOrID string, refresh bool) (*VAPP, error) {
+	vapp, err := v.Vdc.GetVAppByNameOrId(nameOrID, refresh)
 	if err != nil {
-		return nil, fmt.Errorf("%w: %w", ErrRetrievingOrgAdmin, err)
+		return nil, err
 	}
 
-	x, err := adminOrg.GetVdcGroupByName(vdcGroupName)
+	return &VAPP{vapp}, nil
+}
+
+// CreateVAPP create new vApp.
+func (v VDC) CreateVAPP(name, description string) (*VAPP, error) {
+	vapp, err := v.Vdc.CreateRawVApp(name, description)
 	if err != nil {
-		return nil, fmt.Errorf("%w: %s %w", ErrRetrievingVDC, vdcGroupName, err)
+		return nil, err
 	}
 
-	return &VDCGroup{
-		vmware: x,
-	}, nil
-}
-
-// GetName returns the name of the VDC Group.
-func (v *VDCGroup) GetName() string {
-	return v.vmware.VdcGroup.Name
-}
-
-// GetID returns the ID of the VDC Group.
-func (v *VDCGroup) GetID() string {
-	return v.vmware.VdcGroup.Id
-}
-
-// GetDescription returns the description of the VDC Group.
-func (v *VDCGroup) GetDescription() string {
-	return v.vmware.VdcGroup.Description
-}
-
-// *
-// * VDCOrVDCGroup
-// *
-
-type VDCOrVDCGroup interface {
-	// GetName returns the name of the VDC or VDC Group
-	GetName() string
-	// GetID returns the ID of the VDC or VDC Group
-	GetID() string
-	// GetDescription returns the description of the VDC or VDC Group
-	GetDescription() string
-}
-
-// GetVDCOrVDCGroup returns the VDC or VDC Group by its name.
-// It returns a pointer to the VDC or VDC Group and an error if any.
-func (v *CAVVdc) GetVDCOrVDCGroup(vdcOrVDCGroupName string) (VDCOrVDCGroup, error) {
-	xVDCGroup, err := v.GetVDCGroup(vdcOrVDCGroupName)
-	if err == nil {
-		return xVDCGroup, nil
-	}
-
-	xVDC, err := v.GetVDC(vdcOrVDCGroupName)
-	if err == nil {
-		return xVDC, nil
-	}
-
-	return nil, ErrRetrievingVDCOrVDCGroup
+	return &VAPP{vapp}, nil
 }

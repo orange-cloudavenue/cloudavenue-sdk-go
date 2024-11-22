@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"net"
 
+	"github.com/vmware/go-vcloud-director/v2/govcd"
+
 	clientcloudavenue "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/clients/cloudavenue"
 	commoncloudavenue "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/common/cloudavenue"
 )
@@ -75,6 +77,21 @@ func (e *EdgeGw) GetOwnerName() string {
 // GetDescription - Returns the Description
 func (e *EdgeGw) GetDescription() string {
 	return e.Description
+}
+
+// GetVmwareEdgeGateway - Returns the VMware Edge Gateway
+func (e *EdgeGw) GetVmwareEdgeGateway() (*govcd.NsxtEdgeGateway, error) {
+	c, err := clientcloudavenue.New()
+	if err != nil {
+		return nil, err
+	}
+
+	org, err := c.Vmware.GetOrgByNameOrId(e.OwnerName)
+	if err != nil {
+		return nil, err
+	}
+
+	return org.GetNsxtEdgeGatewayById(e.EdgeID)
 }
 
 // List - Returns the list of edge gateways
