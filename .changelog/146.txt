@@ -1,0 +1,3 @@
+```release-note:bug
+`netbackup` - Fixed a bug where Netbackup API URL changed.
+```
