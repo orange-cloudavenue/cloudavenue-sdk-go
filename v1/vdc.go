@@ -60,7 +60,7 @@ func (v *CAVVdc) GetVDC(vdcName string) (*VDC, error) {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		vdc, err := c.Org.GetVDCByNameOrId(vdcName, false)
+		vdc, err := c.Org.GetVDCByNameOrId(vdcName, true)
 		if err != nil {
 			errChan <- err
 			return

@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"log"
 	"net/url"
-	"sync"
 
 	"github.com/go-resty/resty/v2"
 	"github.com/sethvargo/go-envconfig"
 	"github.com/vmware/go-vcloud-director/v2/govcd"
 	"golang.org/x/mod/semver"
+	"golang.org/x/sync/errgroup"
 
 	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/clients/consoles"
 	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/clients/model"
@@ -134,12 +134,10 @@ func New() (*Client, error) {
 		return nil, err
 	}
 
-	// Setup InfrAPI client
-	x := resty.New().
-		SetDebug(c.token.debug).
-		SetHeader("Accept", "application/json;version="+c.token.vcdVersion).
-		SetBaseURL(c.token.GetEndpoint()).
-		SetAuthToken(c.token.GetToken())
+	// wait group to wait for all goroutines to finish
+	var wg errgroup.Group
+
+	cache = &Client{}
 
 	// Setup vmware client
 	vmwareURL, err := url.Parse(fmt.Sprintf("%s/api", c.token.GetEndpoint()))
@@ -147,65 +145,37 @@ func New() (*Client, error) {
 		return nil, fmt.Errorf("%s : %w", "Failed to parse vmware url", err)
 	}
 
-	vmware := govcd.NewVCDClient(
+	cache.Vmware = govcd.NewVCDClient(
 		*vmwareURL,
 		false,
 		govcd.WithAPIVersion(c.token.GetVCDVersion()),
 	)
 
-	if err := vmware.SetToken(c.token.GetOrganization(), govcd.AuthorizationHeader, c.token.GetToken()); err != nil {
+	if err := cache.Vmware.SetToken(c.token.GetOrganization(), govcd.AuthorizationHeader, c.token.GetToken()); err != nil {
 		return nil, fmt.Errorf("%w : %w", errors.ErrConfigureVmwareClient, err)
 	}
 
-	cache = &Client{
-		Client: x,
-		Vmware: vmware,
-	}
+	// goroutine to get the org from client
+	wg.Go(func() error {
+		return cache.getOrg()
+	})
 
-	// wait group to wait for all goroutines to finish
-	var wg sync.WaitGroup
+	// goroutine to get the admin org from client
+	wg.Go(func() error {
+		return cache.getAdminOrg()
+	})
 
-	// channels
-	var (
-		errChan = make(chan error, 2)
-		done    = make(chan bool)
-	)
+	// Setup InfrAPI client
+	wg.Go(func() error {
+		cache.Client = resty.New().
+			SetDebug(c.token.debug).
+			SetHeader("Accept", "application/json;version="+c.token.vcdVersion).
+			SetBaseURL(c.token.GetEndpoint()).
+			SetAuthToken(c.token.GetToken())
+		return nil
+	})
 
-	defer close(errChan)
-
-	// goroutine to get the VDC from the vmware
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		if err := cache.getOrg(); err != nil {
-			errChan <- err
-			return
-		}
-	}()
-
-	// goroutine to get the VDC from the infrapi
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		if err := cache.getAdminOrg(); err != nil {
-			errChan <- err
-			return
-		}
-	}()
-
-	go func() {
-		wg.Wait()
-		done <- true
-	}()
-
-	for {
-		select {
-		case err := <-errChan:
-			return nil, err
-		case <-done:
-			return cache, nil
-		}
-	}
+	return cache, wg.Wait()
 }
 
 // GetUsername - Returns the username

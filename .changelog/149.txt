@@ -1,0 +1,3 @@
+```release-note:feature
+`client` - Add `adminVDC` in the client.
+```
