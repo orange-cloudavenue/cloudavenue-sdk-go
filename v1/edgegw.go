@@ -3,11 +3,14 @@ package v1
 import (
 	"fmt"
 	"net"
+	"strings"
 
 	"github.com/vmware/go-vcloud-director/v2/govcd"
+	"golang.org/x/sync/errgroup"
 
 	clientcloudavenue "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/clients/cloudavenue"
 	commoncloudavenue "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/common/cloudavenue"
+	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/uuid"
 )
 
 type (
@@ -26,72 +29,14 @@ func (o OwnerType) IsVDCGROUP() bool {
 	return o == ownerVDCGROUP
 }
 
-const (
-	OwnerVDC      OwnerType = "vdc"
-	ownerVDCGROUP OwnerType = "vdc-group"
-)
-
-type (
-	EdgeGateways []EdgeGw
-	EdgeGw       struct {
-		Tier0VrfName string    `json:"tier0VrfId"`
-		EdgeID       string    `json:"edgeId"`
-		EdgeName     string    `json:"edgeName"`
-		OwnerType    OwnerType `json:"ownerType"`
-		OwnerName    string    `json:"ownerName"`
-		Description  string    `json:"description"`
-		Bandwidth    Bandwidth `json:"rateLimit"`
-	}
-)
-
-// GetTier0VrfID - Returns the Tier0VrfID
-func (e *EdgeGw) GetTier0VrfID() string {
-	return e.Tier0VrfName
-}
-
-// GetT0 - Returns the Tier0VrfID (alias)
-func (e *EdgeGw) GetT0() string {
-	return e.Tier0VrfName
-}
-
-// GetID - Returns the EdgeID
-func (e *EdgeGw) GetID() string {
-	return e.EdgeID
-}
-
-// GetName - Returns the EdgeName
-func (e *EdgeGw) GetName() string {
-	return e.EdgeName
-}
-
-// GetOwnerType - Returns the OwnerType
-func (e *EdgeGw) GetOwnerType() OwnerType {
-	return e.OwnerType
-}
-
-// GetOwnerName - Returns the OwnerName
-func (e *EdgeGw) GetOwnerName() string {
-	return e.OwnerName
-}
-
-// GetDescription - Returns the Description
-func (e *EdgeGw) GetDescription() string {
-	return e.Description
-}
-
 // GetVmwareEdgeGateway - Returns the VMware Edge Gateway
-func (e *EdgeGw) GetVmwareEdgeGateway() (*govcd.NsxtEdgeGateway, error) {
+func (e *EdgeClient) GetVmwareEdgeGateway() (*govcd.NsxtEdgeGateway, error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {
 		return nil, err
 	}
 
-	org, err := c.Vmware.GetOrgByNameOrId(e.OwnerName)
-	if err != nil {
-		return nil, err
-	}
-
-	return org.GetNsxtEdgeGatewayById(e.EdgeID)
+	return c.Org.GetNsxtEdgeGatewayById(uuid.Normalize(uuid.Gateway, e.GetID()).String())
 }
 
 // List - Returns the list of edge gateways
@@ -226,52 +171,90 @@ func (v *EdgeGateway) NewFromVDCGroup(vdcGroupName, tier0VrfName string) (job *c
 
 // * Get
 
-// Get - Returns the edge gateway
-func (v *EdgeGateway) GetByName(edgeGatewayName string) (response *EdgeGw, err error) {
+func (v *EdgeGateway) Get(edgeGatewayNameOrID string) (edgeClient *EdgeClient, err error) {
+	if edgeGatewayNameOrID == "" {
+		return nil, fmt.Errorf("edge gateway name or ID is empty")
+	}
+
+	c, err := clientcloudavenue.New()
+	if err != nil {
+		return nil, err
+	}
+
+	edgeClient = new(EdgeClient)
+
+	if uuid.IsUUIDV4(edgeGatewayNameOrID) || uuid.IsEdgeGateway(edgeGatewayNameOrID) {
+		nameOrID := uuid.Normalize(uuid.Gateway, edgeGatewayNameOrID)
+
+		// wait group to wait for all goroutines to finish
+		var wg errgroup.Group
+
+		wg.Go(func() error {
+			vmwareEdgeClient, err := c.Org.GetNsxtEdgeGatewayById(nameOrID.String())
+			if err != nil {
+				return err
+			}
+			edgeClient.EdgeVCDInterface = vmwareEdgeClient
+			return nil
+		})
+
+		wg.Go(func() error {
+			r, err := c.R().
+				SetResult(&EdgeGatewayType{}).
+				SetError(&commoncloudavenue.APIErrorResponse{}).
+				SetPathParams(map[string]string{
+					"EdgeID": strings.TrimPrefix(nameOrID.String(), uuid.Gateway.String()),
+				}).
+				Get("/api/customers/v2.0/edges/{EdgeID}")
+			if err != nil {
+				return err
+			}
+
+			if r.IsError() {
+				return fmt.Errorf("error on get edge gateway: %s", r.Error().(*commoncloudavenue.APIErrorResponse).FormatError())
+			}
+
+			edgeClient.EdgeGatewayType = r.Result().(*EdgeGatewayType)
+
+			return nil
+		})
+		return edgeClient, wg.Wait()
+	}
+
+	// * GetByName
 	edgeGateways, err := v.List()
 	if err != nil {
-		return
+		return nil, err
 	}
 
 	for _, edgeGateway := range *edgeGateways {
-		if edgeGateway.EdgeName == edgeGatewayName {
-			return &edgeGateway, nil
+		if edgeGateway.EdgeName == edgeGatewayNameOrID {
+			return v.Get(edgeGateway.EdgeID)
 		}
 	}
 
-	return response, fmt.Errorf("edge gateway %s not found", edgeGatewayName)
+	return nil, fmt.Errorf("%w: not found the edgegateway with name %s", govcd.ErrorEntityNotFound, edgeGatewayNameOrID)
+}
+
+// Get - Returns the edge gateway
+//
+// Deprecated: Use Get instead
+func (v *EdgeGateway) GetByName(edgeGatewayName string) (edgeClient *EdgeClient, err error) {
+	return v.Get(edgeGatewayName)
 }
 
 // GetByID - Returns the edge gateway ID
 // ID format is UUID
-func (v *EdgeGateway) GetByID(edgeGatewayID string) (response *EdgeGw, err error) {
-	c, err := clientcloudavenue.New()
-	if err != nil {
-		return
-	}
-
-	r, err := c.R().
-		SetResult(&EdgeGw{}).
-		SetError(&commoncloudavenue.APIErrorResponse{}).
-		SetPathParams(map[string]string{
-			"EdgeID": edgeGatewayID,
-		}).
-		Get("/api/customers/v2.0/edges/{EdgeID}")
-	if err != nil {
-		return
-	}
-
-	if r.IsError() {
-		return response, fmt.Errorf("error on get edge gateway: %s", r.Error().(*commoncloudavenue.APIErrorResponse).FormatError())
-	}
-
-	return r.Result().(*EdgeGw), nil
+//
+// Deprecated: Use Get instead
+func (v *EdgeGateway) GetByID(edgeGatewayID string) (edgeClient *EdgeClient, err error) {
+	return v.Get(edgeGatewayID)
 }
 
 // * Delete
 
 // Delete - Deletes the edge gateway
-func (e *EdgeGw) Delete() (job *commoncloudavenue.JobStatus, err error) {
+func (e *EdgeGatewayType) Delete() (job *commoncloudavenue.JobStatus, err error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {
 		return
@@ -298,12 +281,12 @@ func (e *EdgeGw) Delete() (job *commoncloudavenue.JobStatus, err error) {
 // * Bandwidth
 
 // GetBandwidth - Returns the rate limit
-func (e *EdgeGw) GetBandwidth() Bandwidth {
+func (e *EdgeGatewayType) GetBandwidth() Bandwidth {
 	return e.Bandwidth
 }
 
 // UpdateBandwidth - Updates the bandwidth
-func (e *EdgeGw) UpdateBandwidth(rateLimit int) (job *commoncloudavenue.JobStatus, err error) {
+func (e *EdgeGatewayType) UpdateBandwidth(rateLimit int) (job *commoncloudavenue.JobStatus, err error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {
 		return
@@ -433,7 +416,7 @@ func (n NetworkType) GetEndAddress() string {
 // }
 
 // ListNetworksType - Returns the list of networks by type configured on the edge gateway
-func (e *EdgeGw) ListNetworksType() (response *NetworkTypes, err error) {
+func (e *EdgeGatewayType) ListNetworksType() (response *NetworkTypes, err error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {
 		return
