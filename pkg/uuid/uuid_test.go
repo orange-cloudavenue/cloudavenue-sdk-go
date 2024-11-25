@@ -1286,3 +1286,202 @@ func TestIsToken(t *testing.T) {
 		})
 	}
 }
+
+// TestIsVAPPTemplate.
+func TestIsVAPPTemplate(t *testing.T) {
+	tests := []struct {
+		name     string
+		uuidType UUID
+		uuid     string
+		want     bool
+	}{
+		{ // IsVAPPTemplate
+			name: "IsVAPPTemplate",
+			uuid: UUID(VAPPTemplate.String() + validUUIDv4).String(),
+			want: true,
+		},
+		{ // IsNotVAPPTemplate
+			name: "IsNotVAPPTemplate",
+			uuid: UUID("urn:vcloud:user:f47ac10b-58cc-4372-a567-0e02b2c3d4791").String(),
+			want: false,
+		},
+		{ // EmptyString
+			name: "EmptyString",
+			uuid: UUID("").String(),
+			want: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := IsVAPPTemplate(tt.uuid); got != tt.want {
+				t.Errorf("IsVAPPTemplate() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+// TestIsCatalog
+func TestIsCatalog(t *testing.T) {
+	tests := []struct {
+		name     string
+		uuidType UUID
+		uuid     string
+		want     bool
+	}{
+		{ // IsCatalog
+			name: "IsCatalog",
+			uuid: UUID(Catalog.String() + validUUIDv4).String(),
+			want: true,
+		},
+		{ // IsNotCatalog
+			name: "IsNotCatalog",
+			uuid: UUID("urn:vcloud:user:f47ac10b-58cc-4372-a567-0e02b2c3d4791").String(),
+			want: false,
+		},
+		{ // EmptyString
+			name: "EmptyString",
+			uuid: UUID("").String(),
+			want: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := IsCatalog(tt.uuid); got != tt.want {
+				t.Errorf("IsCatalog() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+// TestIsVDCComputePolicy
+func TestIsVDCComputePolicy(t *testing.T) {
+	tests := []struct {
+		name     string
+		uuidType UUID
+		uuid     string
+		want     bool
+	}{
+		{ // IsVDCComputePolicy
+			name: "IsVDCComputePolicy",
+			uuid: UUID(VDCComputePolicy.String() + validUUIDv4).String(),
+			want: true,
+		},
+		{ // IsNotVDCComputePolicy
+			name: "IsNotVDCComputePolicy",
+			uuid: UUID("urn:vcloud:user:f47ac10b-58cc-4372-a567-0e02b2c3d4791").String(),
+			want: false,
+		},
+		{ // EmptyString
+			name: "EmptyString",
+			uuid: UUID("").String(),
+			want: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := IsVDCComputePolicy(tt.uuid); got != tt.want {
+				t.Errorf("IsVDCComputePolicy() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+// TestIsNetworkContextProfile
+func TestIsNetworkContextProfile(t *testing.T) {
+	tests := []struct {
+		name     string
+		uuidType UUID
+		uuid     string
+		want     bool
+	}{
+		{ // IsNetworkContextProfile
+			name: "IsNetworkContextProfile",
+			uuid: UUID(NetworkContextProfile.String() + validUUIDv4).String(),
+			want: true,
+		},
+		{ // IsNotNetworkContextProfile
+			name: "IsNotNetworkContextProfile",
+			uuid: UUID("urn:vcloud:user:f47ac10b-58cc-4372-a567-0e02b2c3d4791").String(),
+			want: false,
+		},
+		{ // EmptyString
+			name: "EmptyString",
+			uuid: UUID("").String(),
+			want: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := IsNetworkContextProfile(tt.uuid); got != tt.want {
+				t.Errorf("IsNetworkContextProfile() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestUUID_IsVDCComputePolicy(t *testing.T) {
+	tests := []struct {
+		name string
+		uuid UUID
+		want bool
+	}{
+		{
+			name: "IsVDCComputePolicy",
+			uuid: UUID(VDCComputePolicy.String() + validUUIDv4),
+			want: true,
+		},
+		{
+			name: "IsNotVDCComputePolicy",
+			uuid: UUID("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d4791"),
+			want: false,
+		},
+		{
+			name: "EmptyString",
+			uuid: UUID(""),
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.uuid.IsVDCComputePolicy(); got != tt.want {
+				t.Errorf("UUID.IsVDCComputePolicy() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+// IsNetworkContextProfile
+func TestUUID_IsNetworkContextProfile(t *testing.T) {
+	tests := []struct {
+		name string
+		uuid UUID
+		want bool
+	}{
+		{
+			name: "IsNetworkContextProfile",
+			uuid: UUID(NetworkContextProfile.String() + validUUIDv4),
+			want: true,
+		},
+		{
+			name: "IsNotNetworkContextProfile",
+			uuid: UUID("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d4791"),
+			want: false,
+		},
+		{
+			name: "EmptyString",
+			uuid: UUID(""),
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.uuid.IsNetworkContextProfile(); got != tt.want {
+				t.Errorf("UUID.IsNetworkContextProfile() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

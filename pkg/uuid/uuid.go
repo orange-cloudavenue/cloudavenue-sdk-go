@@ -14,23 +14,24 @@ const (
 	CloudAvenuePrefix = "urn:cloudavenue:"
 
 	// * VCD.
-	Org               = UUID(VcloudPrefix + "org:")
-	VM                = UUID(VcloudPrefix + "vm:")
-	User              = UUID(VcloudPrefix + "user:")
-	Group             = UUID(VcloudPrefix + "group:")
-	Gateway           = UUID(VcloudPrefix + "gateway:")
-	VDC               = UUID(VcloudPrefix + "vdc:")
-	VDCGroup          = UUID(VcloudPrefix + "vdcGroup:")
-	VDCComputePolicy  = UUID(VcloudPrefix + "vdcComputePolicy:")
-	Network           = UUID(VcloudPrefix + "network:")
-	LoadBalancerPool  = UUID(VcloudPrefix + "loadBalancerPool:")
-	VDCStorageProfile = UUID(VcloudPrefix + "vdcstorageProfile:")
-	VAPP              = UUID(VcloudPrefix + "vapp:")
-	VAPPTemplate      = UUID(VcloudPrefix + "vappTemplate:")
-	Disk              = UUID(VcloudPrefix + "disk:")
-	SecurityGroup     = UUID(VcloudPrefix + "firewallGroup:")
-	Catalog           = UUID(VcloudPrefix + "catalog:")
-	Token             = UUID(VcloudPrefix + "token:")
+	Org                   = UUID(VcloudPrefix + "org:")
+	VM                    = UUID(VcloudPrefix + "vm:")
+	User                  = UUID(VcloudPrefix + "user:")
+	Group                 = UUID(VcloudPrefix + "group:")
+	Gateway               = UUID(VcloudPrefix + "gateway:")
+	VDC                   = UUID(VcloudPrefix + "vdc:")
+	VDCGroup              = UUID(VcloudPrefix + "vdcGroup:")
+	VDCComputePolicy      = UUID(VcloudPrefix + "vdcComputePolicy:")
+	Network               = UUID(VcloudPrefix + "network:")
+	LoadBalancerPool      = UUID(VcloudPrefix + "loadBalancerPool:")
+	VDCStorageProfile     = UUID(VcloudPrefix + "vdcstorageProfile:")
+	VAPP                  = UUID(VcloudPrefix + "vapp:")
+	VAPPTemplate          = UUID(VcloudPrefix + "vappTemplate:")
+	Disk                  = UUID(VcloudPrefix + "disk:")
+	SecurityGroup         = UUID(VcloudPrefix + "firewallGroup:")
+	Catalog               = UUID(VcloudPrefix + "catalog:")
+	Token                 = UUID(VcloudPrefix + "token:")
+	NetworkContextProfile = UUID(VcloudPrefix + "networkContextProfile:")
 
 	// * CLOUDAVENUE.
 	VCDA = UUID(CloudAvenuePrefix + "vcda:")
@@ -54,6 +55,7 @@ var UUIDs = []UUID{
 	SecurityGroup,
 	Catalog,
 	Token,
+	NetworkContextProfile,
 }
 
 type (
@@ -219,6 +221,11 @@ func (uuid UUID) IsVDCComputePolicy() bool {
 	return uuid.IsType(VDCComputePolicy)
 }
 
+// IsNetworkContextProfile returns true if the UUID is a NetworkContextProfile UUID.
+func (uuid UUID) IsNetworkContextProfile() bool {
+	return uuid.IsType(NetworkContextProfile)
+}
+
 // * End Methods
 
 // IsOrg returns true if the UUID is an Org UUID.
@@ -309,6 +316,11 @@ func IsToken(uuid string) bool {
 // IsVDCComputePolicy returns true if the UUID is a VDCComputePolicy UUID.
 func IsVDCComputePolicy(uuid string) bool {
 	return UUID(uuid).IsType(VDCComputePolicy)
+}
+
+// IsNetworkContextProfile returns true if the UUID is a NetworkContextProfile UUID.
+func IsNetworkContextProfile(uuid string) bool {
+	return UUID(uuid).IsType(NetworkContextProfile)
 }
 
 // * End Functions

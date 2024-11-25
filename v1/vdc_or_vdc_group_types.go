@@ -31,4 +31,9 @@ type VDCOrVDCGroupInterface interface {
 	GetIPSetByName(name string) (*govcd.NsxtFirewallGroup, error)
 	GetIPSetByNameOrID(nameOrID string) (*govcd.NsxtFirewallGroup, error)
 	SetIPSet(ipSetConfig *govcdtypes.NsxtFirewallGroup) (*govcd.NsxtFirewallGroup, error)
+
+	// * NetworkConfig
+	GetNetworkContextProfileByNameOrID(nameOrID string, scope VDCOrVDCGroupNetworkContextProfileScope) (*VDCOrVDCGroupNetworkContextProfile, error)
+	// CreateNetworkContextProfile(name string, scope VDCOrVDCGroupNetworkContextProfileScope) (*VDCOrVDCGroupNetworkContextProfile, error)
+	ListNetworkContextProfilesAttributes() any
 }

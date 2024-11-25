@@ -13,6 +13,9 @@ import (
 	"github.com/orange-cloudavenue/cloudavenue-sdk-go/v1/infrapi"
 )
 
+// Contrain the VDC object.
+var _ VDCOrVDCGroupInterface = (*VDC)(nil)
+
 type (
 	CAVVdc struct{}
 )
@@ -321,4 +324,14 @@ func (v VDC) CreateVAPP(name, description string) (*VAPP, error) {
 	}
 
 	return &VAPP{vapp}, nil
+}
+
+// GetNetworkContextProfileByName retrieves a network context profile by name or ID
+func (v VDC) GetNetworkContextProfileByNameOrID(name string, scope VDCOrVDCGroupNetworkContextProfileScope) (*VDCOrVDCGroupNetworkContextProfile, error) {
+	return getNetworkContextProfile(name, v.GetID(), scope)
+}
+
+// ListNetworkContextProfilesAttributes retrieves all network context profiles attributes
+func (v VDC) ListNetworkContextProfilesAttributes() interface{} {
+	return listNetworkContextProfileAttributes()
 }

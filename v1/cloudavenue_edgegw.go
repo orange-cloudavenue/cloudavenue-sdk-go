@@ -8,6 +8,7 @@ import (
 
 	clientcloudavenue "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/clients/cloudavenue"
 	commoncloudavenue "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/common/cloudavenue"
+	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/uuid"
 )
 
 type (
@@ -86,12 +87,7 @@ func (e *EdgeGw) GetVmwareEdgeGateway() (*govcd.NsxtEdgeGateway, error) {
 		return nil, err
 	}
 
-	org, err := c.Vmware.GetOrgByNameOrId(e.OwnerName)
-	if err != nil {
-		return nil, err
-	}
-
-	return org.GetNsxtEdgeGatewayById(e.EdgeID)
+	return c.Org.GetNsxtEdgeGatewayById(uuid.Normalize(uuid.Gateway, e.GetID()).String())
 }
 
 // List - Returns the list of edge gateways

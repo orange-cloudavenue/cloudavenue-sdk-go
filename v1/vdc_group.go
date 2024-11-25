@@ -10,6 +10,9 @@ import (
 	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/uuid"
 )
 
+// Contrain the VDC Group object.
+var _ VDCOrVDCGroupInterface = (*VDCGroup)(nil)
+
 // GetVDCGroup retrieves the VDC Group by its name.
 // It returns a pointer to the VDC Group and an error if any.
 func (v *CAVVdc) GetVDCGroup(vdcGroupName string) (*VDCGroup, error) {
@@ -93,4 +96,14 @@ func (g VDCGroup) GetIPSetByNameOrID(nameOrID string) (*govcd.NsxtFirewallGroup,
 // SetIPSet set the NSX-T firewall group using the name provided in the argument.
 func (g VDCGroup) SetIPSet(ipSetConfig *govcdtypes.NsxtFirewallGroup) (*govcd.NsxtFirewallGroup, error) {
 	return g.VdcGroup.CreateNsxtFirewallGroup(ipSetConfig)
+}
+
+// GetNetworkContextProfileByName retrieves a network context profile by name or ID
+func (g VDCGroup) GetNetworkContextProfileByNameOrID(name string, scope VDCOrVDCGroupNetworkContextProfileScope) (*VDCOrVDCGroupNetworkContextProfile, error) {
+	return getNetworkContextProfile(name, g.GetID(), scope)
+}
+
+// ListNetworkContextProfilesAttributes retrieves all network context profiles attributes
+func (g VDCGroup) ListNetworkContextProfilesAttributes() interface{} {
+	return listNetworkContextProfileAttributes()
 }
