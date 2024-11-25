@@ -1,4 +1,9 @@
 ## 0.13.0 (Unreleased)
+
+### :rocket: **New Features**
+
+* `client` - Add `adminVDC` in the client. (GH-149)
+
 ## 0.12.6 (November 22, 2024)
 
 ### :rocket: **New Features**
