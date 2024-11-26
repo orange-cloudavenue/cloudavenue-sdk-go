@@ -1,4 +1,12 @@
 ## 0.13.0 (Unreleased)
+### :rotating_light: **Breaking Changes**
+
+* The struct `EdgeGw` has renamed to `EdgeGatewayType`. (GH-152)
+### :information_source: **Notes**
+
+* `edgateway/GetByID` - Now the function edgateway/GetByID is deprecated and will be removed in the next version. Use the function edgateway/Get instead. (GH-152)
+* `edgateway/GetByName` - Now the function edgateway/GetByName is deprecated and will be removed in the next version. Use the function edgateway/Get instead. (GH-152)
+
 ## 0.12.7 (November 25, 2024)
 
 ### :rocket: **New Features**
