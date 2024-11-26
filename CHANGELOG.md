@@ -1,4 +1,5 @@
-## 0.13.0 (Unreleased)
+## 0.14.0 (Unreleased)
+## 0.13.0 (November 26, 2024)
 ### :rotating_light: **Breaking Changes**
 
 * The struct `EdgeGw` has renamed to `EdgeGatewayType`. (GH-152)
