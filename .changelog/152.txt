@@ -1,0 +1,11 @@
+```release-note:note
+`edgateway/GetByID` - Now the function edgateway/GetByID is deprecated and will be removed in the next version. Use the function edgateway/Get instead.
+```
+
+```release-note:note
+`edgateway/GetByName` - Now the function edgateway/GetByName is deprecated and will be removed in the next version. Use the function edgateway/Get instead.
+```
+
+```release-note:breaking-change
+The struct `EdgeGw` has renamed to `EdgeGatewayType`.
+```
