@@ -1,0 +1,3 @@
+```release-note:feature
+`vdcGroup` - Add new fuctions to manage Firewall in VDC Group. (In VDCGroup object `CreateFirewall`, `GetFirewall`. In VdcGroupFirewall Object `GetRules`, `IsEnabled`, `UpdateFirewall`, `Delete`)
+```

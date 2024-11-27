@@ -28,23 +28,24 @@ func (v *CAVVdc) GetVDCGroup(vdcGroupName string) (*VDCGroup, error) {
 	}
 
 	return &VDCGroup{
-		VdcGroup: x,
+		vg:                x,
+		VDCGroupInterface: x,
 	}, nil
 }
 
 // GetName returns the name of the VDC Group.
 func (g VDCGroup) GetName() string {
-	return g.VdcGroup.VdcGroup.Name
+	return g.vg.VdcGroup.Name
 }
 
 // GetID returns the ID of the VDC Group.
 func (g VDCGroup) GetID() string {
-	return g.VdcGroup.VdcGroup.Id
+	return g.vg.VdcGroup.Id
 }
 
 // GetDescription returns the description of the VDC Group.
 func (g VDCGroup) GetDescription() string {
-	return g.VdcGroup.VdcGroup.Description
+	return g.vg.VdcGroup.Description
 }
 
 // IsVDCGroup return true if the object is a VDC Group.
@@ -54,12 +55,12 @@ func (g VDCGroup) IsVDCGroup() bool {
 
 // GetSecurityGroupByID return the NSX-T security group using the ID provided in the argument.
 func (g VDCGroup) GetSecurityGroupByID(nsxtFirewallGroupID string) (*govcd.NsxtFirewallGroup, error) {
-	return g.VdcGroup.GetNsxtFirewallGroupById(nsxtFirewallGroupID)
+	return g.vg.GetNsxtFirewallGroupById(nsxtFirewallGroupID)
 }
 
 // GetSecurityGroupByName return the NSX-T security group using the name provided in the argument.
 func (g VDCGroup) GetSecurityGroupByName(nsxtFirewallGroupName string) (*govcd.NsxtFirewallGroup, error) {
-	return g.VdcGroup.GetNsxtFirewallGroupByName(nsxtFirewallGroupName, govcdtypes.FirewallGroupTypeSecurityGroup)
+	return g.vg.GetNsxtFirewallGroupByName(nsxtFirewallGroupName, govcdtypes.FirewallGroupTypeSecurityGroup)
 }
 
 // GetSecurityGroupByNameOrID return the NSX-T security group using the name or ID provided in the argument.
@@ -73,12 +74,12 @@ func (g VDCGroup) GetSecurityGroupByNameOrID(nsxtFirewallGroupNameOrID string) (
 
 // GetIPSetByID return the NSX-T firewall group using the ID provided in the argument.
 func (g VDCGroup) GetIPSetByID(id string) (*govcd.NsxtFirewallGroup, error) {
-	return g.VdcGroup.GetNsxtFirewallGroupById(id)
+	return g.vg.GetNsxtFirewallGroupById(id)
 }
 
 // GetIPSetByName return the NSX-T firewall group using the name provided in the argument.
 func (g VDCGroup) GetIPSetByName(name string) (*govcd.NsxtFirewallGroup, error) {
-	return g.VdcGroup.GetNsxtFirewallGroupByName(name, govcdtypes.FirewallGroupTypeIpSet)
+	return g.vg.GetNsxtFirewallGroupByName(name, govcdtypes.FirewallGroupTypeIpSet)
 }
 
 // GetIPSetByNameOrID return the NSX-T firewall group using the name or ID provided in the argument.
@@ -92,5 +93,21 @@ func (g VDCGroup) GetIPSetByNameOrID(nameOrID string) (*govcd.NsxtFirewallGroup,
 
 // SetIPSet set the NSX-T firewall group using the name provided in the argument.
 func (g VDCGroup) SetIPSet(ipSetConfig *govcdtypes.NsxtFirewallGroup) (*govcd.NsxtFirewallGroup, error) {
-	return g.VdcGroup.CreateNsxtFirewallGroup(ipSetConfig)
+	return g.vg.CreateNsxtFirewallGroup(ipSetConfig)
+}
+
+// Refresh refreshes the VDC Group.
+func (g *VDCGroup) Refresh() error {
+	c, err := clientcloudavenue.New()
+	if err != nil {
+		return err
+	}
+
+	x, err := c.AdminOrg.GetVdcGroupByName(g.GetName())
+	if err != nil {
+		return fmt.Errorf("%w: %s %w", ErrRetrievingVDC, g.GetName(), err)
+	}
+
+	g.vg = x
+	return nil
 }
