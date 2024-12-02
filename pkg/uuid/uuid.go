@@ -31,6 +31,7 @@ const (
 	SecurityGroup     = UUID(VcloudPrefix + "firewallGroup:")
 	Catalog           = UUID(VcloudPrefix + "catalog:")
 	Token             = UUID(VcloudPrefix + "token:")
+	AppPortProfile    = UUID(VcloudPrefix + "applicationPortProfile:")
 
 	// * CLOUDAVENUE.
 	VCDA = UUID(CloudAvenuePrefix + "vcda:")
@@ -54,6 +55,7 @@ var UUIDs = []UUID{
 	SecurityGroup,
 	Catalog,
 	Token,
+	AppPortProfile,
 }
 
 type (
@@ -132,6 +134,11 @@ func Normalize(prefix UUID, uuid string) UUID {
 	}
 
 	return prefix + u
+}
+
+// IsAppPortProfile returns true if the UUID is a AppPortProfile UUID.
+func (uuid UUID) IsAppPortProfile() bool {
+	return uuid.IsType(AppPortProfile)
 }
 
 // IsOrg returns true if the UUID is an Org UUID.
@@ -220,6 +227,11 @@ func (uuid UUID) IsVDCComputePolicy() bool {
 }
 
 // * End Methods
+
+// IsAppPortProfile returns true if the UUID is a AppPortProfile UUID.
+func IsAppPortProfile(uuid string) bool {
+	return UUID(uuid).IsType(AppPortProfile)
+}
 
 // IsOrg returns true if the UUID is an Org UUID.
 func IsOrg(uuid string) bool {
