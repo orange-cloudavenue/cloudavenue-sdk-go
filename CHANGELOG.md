@@ -1,4 +1,5 @@
-## 0.14.0 (Unreleased)
+## 0.15.0 (Unreleased)
+## 0.14.0 (December  2, 2024)
 ### :rotating_light: **Breaking Changes**
 
 * `uuid` - The `uuid` package has been renamed to `urn` to better reflect its purpose. Replace your imports from `"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/uuid"` to `"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/urn"` to avoid breaking changes. (GH-154)
