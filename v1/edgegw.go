@@ -10,7 +10,7 @@ import (
 
 	clientcloudavenue "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/clients/cloudavenue"
 	commoncloudavenue "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/common/cloudavenue"
-	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/uuid"
+	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/urn"
 )
 
 type (
@@ -36,7 +36,7 @@ func (e *EdgeClient) GetVmwareEdgeGateway() (*govcd.NsxtEdgeGateway, error) {
 		return nil, err
 	}
 
-	return c.Org.GetNsxtEdgeGatewayById(uuid.Normalize(uuid.Gateway, e.GetID()).String())
+	return c.Org.GetNsxtEdgeGatewayById(urn.Normalize(urn.Gateway, e.GetID()).String())
 }
 
 // List - Returns the list of edge gateways
@@ -183,8 +183,8 @@ func (v *EdgeGateway) Get(edgeGatewayNameOrID string) (edgeClient *EdgeClient, e
 
 	edgeClient = new(EdgeClient)
 
-	if uuid.IsUUIDV4(edgeGatewayNameOrID) || uuid.IsEdgeGateway(edgeGatewayNameOrID) {
-		nameOrID := uuid.Normalize(uuid.Gateway, edgeGatewayNameOrID)
+	if urn.IsUUIDV4(edgeGatewayNameOrID) || urn.IsEdgeGateway(edgeGatewayNameOrID) {
+		nameOrID := urn.Normalize(urn.Gateway, edgeGatewayNameOrID)
 
 		// wait group to wait for all goroutines to finish
 		var wg errgroup.Group
@@ -203,7 +203,7 @@ func (v *EdgeGateway) Get(edgeGatewayNameOrID string) (edgeClient *EdgeClient, e
 				SetResult(&EdgeGatewayType{}).
 				SetError(&commoncloudavenue.APIErrorResponse{}).
 				SetPathParams(map[string]string{
-					"EdgeID": strings.TrimPrefix(nameOrID.String(), uuid.Gateway.String()),
+					"EdgeID": strings.TrimPrefix(nameOrID.String(), urn.Gateway.String()),
 				}).
 				Get("/api/customers/v2.0/edges/{EdgeID}")
 			if err != nil {

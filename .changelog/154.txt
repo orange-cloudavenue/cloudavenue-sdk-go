@@ -1,0 +1,3 @@
+```release-note:breaking-change
+`uuid` - The `uuid` package has been renamed to `urn` to better reflect its purpose. Replace your imports from `"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/uuid"` to `"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/urn"` to avoid breaking changes.
+```
