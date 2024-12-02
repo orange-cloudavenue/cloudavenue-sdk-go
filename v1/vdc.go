@@ -9,7 +9,7 @@ import (
 	govcdtypes "github.com/vmware/go-vcloud-director/v2/types/v56"
 
 	clientcloudavenue "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/clients/cloudavenue"
-	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/uuid"
+	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/urn"
 	"github.com/orange-cloudavenue/cloudavenue-sdk-go/v1/infrapi"
 )
 
@@ -267,7 +267,7 @@ func (v VDC) GetSecurityGroupByName(nsxtFirewallGroupName string) (*govcd.NsxtFi
 
 // GetSecurityGroupByNameOrID return the NSX-T security group using the name or ID provided in the argument.
 func (v VDC) GetSecurityGroupByNameOrID(nsxtFirewallGroupNameOrID string) (*govcd.NsxtFirewallGroup, error) {
-	if uuid.IsValid(nsxtFirewallGroupNameOrID) {
+	if urn.IsValid(nsxtFirewallGroupNameOrID) {
 		return v.GetSecurityGroupByID(nsxtFirewallGroupNameOrID)
 	}
 
@@ -286,7 +286,7 @@ func (v VDC) GetIPSetByName(name string) (*govcd.NsxtFirewallGroup, error) {
 
 // GetIPSetByNameOrId return the NSX-T firewall group using the name or ID provided in the argument.
 func (v VDC) GetIPSetByNameOrID(nameOrID string) (*govcd.NsxtFirewallGroup, error) {
-	if uuid.IsValid(nameOrID) {
+	if urn.IsValid(nameOrID) {
 		return v.GetIPSetByID(nameOrID)
 	}
 
