@@ -1,4 +1,9 @@
 ## 0.15.0 (Unreleased)
+
+### :rocket: **New Features**
+
+* `vdcGroup` - Add new fuctions to manage Firewall in VDC Group. (In VDCGroup object `CreateFirewall`, `GetFirewall`. In VdcGroupFirewall Object `GetRules`, `IsEnabled`, `UpdateFirewall`, `Delete`) (GH-153)
+
 ## 0.14.0 (December  2, 2024)
 ### :rotating_light: **Breaking Changes**
 
