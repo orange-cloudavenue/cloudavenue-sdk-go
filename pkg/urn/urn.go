@@ -11,24 +11,26 @@ const (
 	CloudAvenuePrefix = "urn:cloudavenue:"
 
 	// * VCD.
-	Org               = URN(VcloudPrefix + "org:")
-	VM                = URN(VcloudPrefix + "vm:")
-	User              = URN(VcloudPrefix + "user:")
-	Group             = URN(VcloudPrefix + "group:")
-	Gateway           = URN(VcloudPrefix + "gateway:")
-	VDC               = URN(VcloudPrefix + "vdc:")
-	VDCGroup          = URN(VcloudPrefix + "vdcGroup:")
-	VDCComputePolicy  = URN(VcloudPrefix + "vdcComputePolicy:")
-	Network           = URN(VcloudPrefix + "network:")
-	LoadBalancerPool  = URN(VcloudPrefix + "loadBalancerPool:")
-	VDCStorageProfile = URN(VcloudPrefix + "vdcstorageProfile:")
-	VAPP              = URN(VcloudPrefix + "vapp:")
-	VAPPTemplate      = URN(VcloudPrefix + "vappTemplate:")
-	Disk              = URN(VcloudPrefix + "disk:")
-	SecurityGroup     = URN(VcloudPrefix + "firewallGroup:")
-	Catalog           = URN(VcloudPrefix + "catalog:")
-	Token             = URN(VcloudPrefix + "token:")
-	AppPortProfile    = URN(VcloudPrefix + "applicationPortProfile:")
+	Org                        = URN(VcloudPrefix + "org:")
+	VM                         = URN(VcloudPrefix + "vm:")
+	User                       = URN(VcloudPrefix + "user:")
+	Group                      = URN(VcloudPrefix + "group:")
+	Gateway                    = URN(VcloudPrefix + "gateway:")
+	VDC                        = URN(VcloudPrefix + "vdc:")
+	VDCGroup                   = URN(VcloudPrefix + "vdcGroup:")
+	VDCComputePolicy           = URN(VcloudPrefix + "vdcComputePolicy:")
+	Network                    = URN(VcloudPrefix + "network:")
+	LoadBalancerPool           = URN(VcloudPrefix + "loadBalancerPool:")
+	VDCStorageProfile          = URN(VcloudPrefix + "vdcstorageProfile:")
+	VAPP                       = URN(VcloudPrefix + "vapp:")
+	VAPPTemplate               = URN(VcloudPrefix + "vappTemplate:")
+	Disk                       = URN(VcloudPrefix + "disk:")
+	SecurityGroup              = URN(VcloudPrefix + "firewallGroup:")
+	Catalog                    = URN(VcloudPrefix + "catalog:")
+	Token                      = URN(VcloudPrefix + "token:")
+	AppPortProfile             = URN(VcloudPrefix + "applicationPortProfile:")
+	CertificateLibraryItem     = URN(VcloudPrefix + "certificateLibraryItem:")
+	LoadBalancerVirtualService = URN(VcloudPrefix + "loadBalancerVirtualService:")
 
 	// * CLOUDAVENUE.
 	VCDA = URN(CloudAvenuePrefix + "vcda:")
@@ -53,6 +55,8 @@ var URNs = []URN{
 	Catalog,
 	Token,
 	AppPortProfile,
+	CertificateLibraryItem,
+	LoadBalancerVirtualService,
 }
 
 type (

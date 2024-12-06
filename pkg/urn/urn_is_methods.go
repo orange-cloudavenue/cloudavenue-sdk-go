@@ -89,3 +89,13 @@ func (urn URN) IsToken() bool {
 func (urn URN) IsVDCComputePolicy() bool {
 	return urn.IsType(VDCComputePolicy)
 }
+
+// IsCertificateLibraryItem returns true if the URN is a CertificateLibraryItem URN.
+func (urn URN) IsCertificateLibraryItem() bool {
+	return urn.IsType(CertificateLibraryItem)
+}
+
+// IsLoadBalancerVirtualService returns true if the URN is a LoadBalancerVirtualService URN.
+func (urn URN) IsLoadBalancerVirtualService() bool {
+	return urn.IsType(LoadBalancerVirtualService)
+}

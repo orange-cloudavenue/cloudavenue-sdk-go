@@ -642,3 +642,71 @@ func TestIsVAPPTemplate(t *testing.T) {
 		})
 	}
 }
+
+// TestIsCertificateLibraryItem.
+func TestIsCertificateLibraryItem(t *testing.T) {
+	tests := []struct {
+		name    string
+		urnType URN
+		urn     string
+		want    bool
+	}{
+		{ // IsCertificateLibraryItem
+			name: "IsCertificateLibraryItem",
+			urn:  URN(CertificateLibraryItem.String() + validUUIDv4).String(),
+			want: true,
+		},
+		{ // IsNotCertificateLibraryItem
+			name: "IsNotCertificateLibraryItem",
+			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d479").String(),
+			want: false,
+		},
+		{ // EmptyString
+			name: "EmptyString",
+			urn:  URN("").String(),
+			want: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := IsCertificateLibraryItem(tt.urn); got != tt.want {
+				t.Errorf("IsCertificateLibraryItem() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+// TestIsLoadBalancerVirtualService.
+func TestIsLoadBalancerVirtualService(t *testing.T) {
+	tests := []struct {
+		name    string
+		urnType URN
+		urn     string
+		want    bool
+	}{
+		{ // IsLoadBalancerVirtualService
+			name: "IsLoadBalancerVirtualService",
+			urn:  URN(LoadBalancerVirtualService.String() + validUUIDv4).String(),
+			want: true,
+		},
+		{ // IsNotLoadBalancerVirtualService
+			name: "IsNotLoadBalancerVirtualService",
+			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d479").String(),
+			want: false,
+		},
+		{ // EmptyString
+			name: "EmptyString",
+			urn:  URN("").String(),
+			want: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := IsLoadBalancerVirtualService(tt.urn); got != tt.want {
+				t.Errorf("IsLoadBalancerVirtualService() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
