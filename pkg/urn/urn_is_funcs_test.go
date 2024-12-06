@@ -710,3 +710,37 @@ func TestIsLoadBalancerVirtualService(t *testing.T) {
 		})
 	}
 }
+
+// TestIsServiceEngineGroup.
+func TestIsServiceEngineGroup(t *testing.T) {
+	tests := []struct {
+		name    string
+		urnType URN
+		urn     string
+		want    bool
+	}{
+		{ // IsServiceEngineGroup
+			name: "IsServiceEngineGroup",
+			urn:  URN(ServiceEngineGroup.String() + validUUIDv4).String(),
+			want: true,
+		},
+		{ // IsNotServiceEngineGroup
+			name: "IsNotServiceEngineGroup",
+			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d479").String(),
+			want: false,
+		},
+		{ // EmptyString
+			name: "EmptyString",
+			urn:  URN("").String(),
+			want: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := IsServiceEngineGroup(tt.urn); got != tt.want {
+				t.Errorf("IsServiceEngineGroup() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

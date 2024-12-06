@@ -671,3 +671,35 @@ func TestURN_IsCertificateLibraryItem(t *testing.T) {
 		})
 	}
 }
+
+// TestURN_IsServiceEngineGroup tests the URN.IsServiceEngineGroup function.
+func TestURN_IsServiceEngineGroup(t *testing.T) {
+	tests := []struct {
+		name string
+		urn  URN
+		want bool
+	}{
+		{ // IsServiceEngineGroup
+			name: "IsServiceEngineGroup",
+			urn:  URN(ServiceEngineGroup.String() + validUUIDv4),
+			want: true,
+		},
+		{ // IsNotServiceEngineGroup
+			name: "IsNotServiceEngineGroup",
+			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d4791"),
+			want: false,
+		},
+		{ // Empty string
+			name: "EmptyString",
+			urn:  URN(""),
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.urn.IsServiceEngineGroup(); got != tt.want {
+				t.Errorf("URN.IsServiceEngineGroup() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

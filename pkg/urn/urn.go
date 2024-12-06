@@ -31,6 +31,7 @@ const (
 	AppPortProfile             = URN(VcloudPrefix + "applicationPortProfile:")
 	CertificateLibraryItem     = URN(VcloudPrefix + "certificateLibraryItem:")
 	LoadBalancerVirtualService = URN(VcloudPrefix + "loadBalancerVirtualService:")
+	ServiceEngineGroup         = URN(VcloudPrefix + "serviceEngineGroup:")
 
 	// * CLOUDAVENUE.
 	VCDA = URN(CloudAvenuePrefix + "vcda:")
@@ -57,6 +58,7 @@ var URNs = []URN{
 	AppPortProfile,
 	CertificateLibraryItem,
 	LoadBalancerVirtualService,
+	ServiceEngineGroup,
 }
 
 type (

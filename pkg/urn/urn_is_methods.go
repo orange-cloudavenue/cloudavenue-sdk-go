@@ -99,3 +99,8 @@ func (urn URN) IsCertificateLibraryItem() bool {
 func (urn URN) IsLoadBalancerVirtualService() bool {
 	return urn.IsType(LoadBalancerVirtualService)
 }
+
+// IsServiceEngineGroup returns true if the URN is a ServiceEngineGroup URN.
+func (urn URN) IsServiceEngineGroup() bool {
+	return urn.IsType(ServiceEngineGroup)
+}
