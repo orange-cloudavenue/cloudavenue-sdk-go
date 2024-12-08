@@ -4,6 +4,10 @@
 
 * `vdcGroup` - Add new fuctions to manage Firewall in VDC Group. (In VDCGroup object `CreateFirewall`, `GetFirewall`. In VdcGroupFirewall Object `GetRules`, `IsEnabled`, `UpdateFirewall`, `Delete`) (GH-153)
 
+### :dependabot: **Dependencies**
+
+* deps: bumps github.com/go-resty/resty/v2 from 2.16.0 to 2.16.2 (GH-150)
+
 ## 0.14.0 (December  2, 2024)
 ### :rotating_light: **Breaking Changes**
 
