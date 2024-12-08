@@ -2,12 +2,74 @@ package urn
 
 import "testing"
 
-func TestIsGroup(t *testing.T) {
+func TestURN_IsVM(t *testing.T) {
 	tests := []struct {
-		name    string
-		urnType URN
-		urn     URN
-		want    bool
+		name string
+		urn  URN
+		want bool
+	}{
+		{
+			name: "IsVM",
+			urn:  URN(VM.String() + validUUIDv4),
+			want: true,
+		},
+		{
+			name: "IsNotVM",
+			urn:  URN("urn:vcloud:user:f47ac10b-58cc-4372-a567-0e02b2c3d479"),
+			want: false,
+		},
+		{ // Empty string
+			name: "EmptyString",
+			urn:  URN(""),
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.urn.IsVM(); got != tt.want {
+				t.Errorf("URN.IsVM() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestURN_IsUser(t *testing.T) {
+	tests := []struct {
+		name string
+		urn  URN
+		want bool
+	}{
+		{
+			name: "IsUser",
+			urn:  URN(User.String() + validUUIDv4),
+			want: true,
+		},
+		{
+			name: "IsNotUser",
+			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d479"),
+			want: false,
+		},
+		{ // Empty string
+			name: "EmptyString",
+			urn:  URN(""),
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.urn.IsUser(); got != tt.want {
+				t.Errorf("URN.IsUser() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+// IsGroup.
+func TestURN_IsGroup(t *testing.T) {
+	tests := []struct {
+		name string
+		urn  URN
+		want bool
 	}{
 		{
 			name: "IsGroup",
@@ -19,7 +81,7 @@ func TestIsGroup(t *testing.T) {
 			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d479"),
 			want: false,
 		},
-		{
+		{ // Empty string
 			name: "EmptyString",
 			urn:  URN(""),
 			want: false,
@@ -27,20 +89,19 @@ func TestIsGroup(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := IsGroup(tt.urn.String()); got != tt.want {
-				t.Errorf("IsGroup() = %v, want %v", got, tt.want)
+			if got := tt.urn.IsGroup(); got != tt.want {
+				t.Errorf("URN.IsGroup() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
 // IsGateway.
-func TestIsEdgeGateway(t *testing.T) {
+func TestURN_IsGateway(t *testing.T) {
 	tests := []struct {
-		name    string
-		urnType URN
-		urn     URN
-		want    bool
+		name string
+		urn  URN
+		want bool
 	}{
 		{
 			name: "IsGateway",
@@ -49,10 +110,10 @@ func TestIsEdgeGateway(t *testing.T) {
 		},
 		{
 			name: "IsNotGateway",
-			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d4791"),
+			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d479"),
 			want: false,
 		},
-		{
+		{ // Empty string
 			name: "EmptyString",
 			urn:  URN(""),
 			want: false,
@@ -60,20 +121,51 @@ func TestIsEdgeGateway(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := IsEdgeGateway(tt.urn.String()); got != tt.want {
-				t.Errorf("IsEdgeGateway() = %v, want %v", got, tt.want)
+			if got := tt.urn.IsGateway(); got != tt.want {
+				t.Errorf("URN.IsGateway() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+// IsAppPortProfile tests the IsAppProfile function.
+func TestURN_IsAppPortProfile(t *testing.T) {
+	tests := []struct {
+		name string
+		urn  URN
+		want bool
+	}{
+		{ // IsAppProfile
+			name: "IsAppProfile",
+			urn:  URN(AppPortProfile.String() + validUUIDv4),
+			want: true,
+		},
+		{ // IsNotAppProfile
+			name: "IsNotAppProfile",
+			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d4791"),
+			want: false,
+		},
+		{ // Empty string
+			name: "EmptyString",
+			urn:  URN(""),
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.urn.IsAppPortProfile(); got != tt.want {
+				t.Errorf("VcloudURN.IsAppPortProfile() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
 // IsVDC.
-func TestIsVDC(t *testing.T) {
+func TestURN_IsVDC(t *testing.T) {
 	tests := []struct {
-		name    string
-		urnType URN
-		urn     URN
-		want    bool
+		name string
+		urn  URN
+		want bool
 	}{
 		{
 			name: "IsVDC",
@@ -82,10 +174,10 @@ func TestIsVDC(t *testing.T) {
 		},
 		{
 			name: "IsNotVDC",
-			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d4791"),
+			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d479"),
 			want: false,
 		},
-		{
+		{ // Empty string
 			name: "EmptyString",
 			urn:  URN(""),
 			want: false,
@@ -93,32 +185,31 @@ func TestIsVDC(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := IsVDC(tt.urn.String()); got != tt.want {
-				t.Errorf("IsVDC() = %v, want %v", got, tt.want)
+			if got := tt.urn.IsVDC(); got != tt.want {
+				t.Errorf("URN.IsVDC() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
 // IsVDCGroup.
-func TestIsVDCGroup(t *testing.T) {
+func TestURN_IsVDCGroup(t *testing.T) {
 	tests := []struct {
-		name    string
-		urnType URN
-		urn     URN
-		want    bool
+		name string
+		urn  URN
+		want bool
 	}{
-		{
+		{ // IsVDCGroup
 			name: "IsVDCGroup",
 			urn:  URN(VDCGroup.String() + validUUIDv4),
 			want: true,
 		},
-		{
+		{ // IsNotVDCGroup
 			name: "IsNotVDCGroup",
-			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d4791"),
+			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d479"),
 			want: false,
 		},
-		{
+		{ // Empty string
 			name: "EmptyString",
 			urn:  URN(""),
 			want: false,
@@ -126,20 +217,19 @@ func TestIsVDCGroup(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := IsVDCGroup(tt.urn.String()); got != tt.want {
-				t.Errorf("IsVDCGroup() = %v, want %v", got, tt.want)
+			if got := tt.urn.IsVDCGroup(); got != tt.want {
+				t.Errorf("URN.IsVDCGroup() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
 // IsNetwork.
-func TestIsNetwork(t *testing.T) {
+func TestURN_IsNetwork(t *testing.T) {
 	tests := []struct {
-		name    string
-		urnType URN
-		urn     URN
-		want    bool
+		name string
+		urn  URN
+		want bool
 	}{
 		{
 			name: "IsNetwork",
@@ -148,496 +238,467 @@ func TestIsNetwork(t *testing.T) {
 		},
 		{
 			name: "IsNotNetwork",
-			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d4791"),
+			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d479"),
 			want: false,
 		},
-		{
+		{ // Empty string
 			name: "EmptyString",
 			urn:  URN(""),
 			want: false,
 		},
 	}
-
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := IsNetwork(tt.urn.String()); got != tt.want {
-				t.Errorf("IsNetwork() = %v, want %v", got, tt.want)
+			if got := tt.urn.IsNetwork(); got != tt.want {
+				t.Errorf("URN.IsNetwork() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
 // IsLoadBalancerPool.
-func TestIsLoadBalancerPool(t *testing.T) {
+func TestURN_IsLoadBalancerPool(t *testing.T) {
 	tests := []struct {
-		name    string
-		urnType URN
-		urn     URN
-		want    bool
+		name string
+		urn  URN
+		want bool
 	}{
-		{ // IsLoadBalancerPool
+		{
 			name: "IsLoadBalancerPool",
 			urn:  URN(LoadBalancerPool.String() + validUUIDv4),
 			want: true,
 		},
-		{ // IsNotLoadBalancerPool
+		{
 			name: "IsNotLoadBalancerPool",
-			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d4791"),
+			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d479"),
 			want: false,
 		},
-		{ // EmptyString
+		{ // Empty string
 			name: "EmptyString",
 			urn:  URN(""),
 			want: false,
 		},
 	}
-
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := IsLoadBalancerPool(tt.urn.String()); got != tt.want {
-				t.Errorf("IsLoadBalancerPool() = %v, want %v", got, tt.want)
+			if got := tt.urn.IsLoadBalancerPool(); got != tt.want {
+				t.Errorf("URN.IsLoadBalancerPool() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
 // IsVDCStorageProfile.
-func TestIsVDCStorageProfile(t *testing.T) {
+func TestURN_IsVDCStorageProfile(t *testing.T) {
 	tests := []struct {
-		name    string
-		urnType URN
-		urn     URN
-		want    bool
+		name string
+		urn  URN
+		want bool
 	}{
-		{ // IsVDCStorageProfile
+		{
 			name: "IsVDCStorageProfile",
 			urn:  URN(VDCStorageProfile.String() + validUUIDv4),
 			want: true,
 		},
-		{ // IsNotVDCStorageProfile
+		{
 			name: "IsNotVDCStorageProfile",
-			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d4791"),
+			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d479"),
 			want: false,
 		},
-		{ // EmptyString
+		{ // Empty string
 			name: "EmptyString",
 			urn:  URN(""),
 			want: false,
 		},
 	}
-
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := IsVDCStorageProfile(tt.urn.String()); got != tt.want {
-				t.Errorf("IsVDCStorageProfile() = %v, want %v", got, tt.want)
+			if got := tt.urn.IsVDCStorageProfile(); got != tt.want {
+				t.Errorf("URN.IsVDCStorageProfile() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
 // IsVAPP.
-func TestIsVAPP(t *testing.T) {
+func TestURN_IsVAPP(t *testing.T) {
 	tests := []struct {
-		name    string
-		urnType URN
-		urn     string
-		want    bool
+		name string
+		urn  URN
+		want bool
 	}{
-		{ // IsVAPP
+		{
 			name: "IsVAPP",
-			urn:  URN(VAPP.String() + validUUIDv4).String(),
+			urn:  URN(VAPP.String() + validUUIDv4),
 			want: true,
 		},
-		{ // IsNotVAPP
+		{
 			name: "IsNotVAPP",
-			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d4791").String(),
+			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d479"),
 			want: false,
 		},
-		{ // EmptyString
+		{ // Empty string
 			name: "EmptyString",
-			urn:  URN("").String(),
+			urn:  URN(""),
 			want: false,
 		},
 	}
-
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := IsVAPP(tt.urn); got != tt.want {
-				t.Errorf("IsVAPP() = %v, want %v", got, tt.want)
+			if got := tt.urn.IsVAPP(); got != tt.want {
+				t.Errorf("URN.IsVAPP() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
 // IsDisk.
-func TestIsDisk(t *testing.T) {
+func TestURN_IsDisk(t *testing.T) {
 	tests := []struct {
-		name    string
-		urnType URN
-		urn     string
-		want    bool
+		name string
+		urn  URN
+		want bool
 	}{
-		{ // IsDisk
+		{
 			name: "IsDisk",
-			urn:  URN(Disk.String() + validUUIDv4).String(),
+			urn:  URN(Disk.String() + validUUIDv4),
 			want: true,
 		},
-		{ // IsNotDisk
+		{
 			name: "IsNotDisk",
-			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d4791").String(),
+			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d479"),
 			want: false,
 		},
-		{ // EmptyString
+		{ // Empty string
 			name: "EmptyString",
-			urn:  URN("").String(),
+			urn:  URN(""),
 			want: false,
 		},
 	}
-
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := IsDisk(tt.urn); got != tt.want {
-				t.Errorf("IsDisk() = %v, want %v", got, tt.want)
+			if got := tt.urn.IsDisk(); got != tt.want {
+				t.Errorf("URN.IsDisk() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
 // IsSecurityGroup.
-func TestIsSecurityGroup(t *testing.T) {
+func TestURN_IsSecurityGroup(t *testing.T) {
 	tests := []struct {
-		name    string
-		urnType URN
-		urn     string
-		want    bool
+		name string
+		urn  URN
+		want bool
 	}{
-		{ // IsSecurityGroup
+		{
 			name: "IsSecurityGroup",
-			urn:  URN(SecurityGroup.String() + validUUIDv4).String(),
+			urn:  URN(SecurityGroup.String() + validUUIDv4),
 			want: true,
 		},
-		{ // IsNotSecurityGroup
+		{
 			name: "IsNotSecurityGroup",
-			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d4791").String(),
+			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d479"),
 			want: false,
 		},
-		{ // EmptyString
+		{ // Empty string
 			name: "EmptyString",
-			urn:  URN("").String(),
+			urn:  URN(""),
 			want: false,
 		},
 	}
-
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := IsSecurityGroup(tt.urn); got != tt.want {
-				t.Errorf("IsSecurityGroup() = %v, want %v", got, tt.want)
+			if got := tt.urn.IsSecurityGroup(); got != tt.want {
+				t.Errorf("URN.IsSecurityGroup() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-// TestIsVCDA.
-func TestIsVCDA(t *testing.T) {
+// IsVAPPTemplate.
+func TestURN_IsVAPPTemplate(t *testing.T) {
 	tests := []struct {
-		name    string
-		urnType URN
-		urn     string
-		want    bool
-	}{
-		{ // IsVCDA
-			name: "IsVCDA",
-			urn:  URN(VCDA.String() + validUUIDv4).String(),
-			want: true,
-		},
-		{ // IsNotVCDA
-			name: "IsNotVCDA",
-			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d4791").String(),
-			want: false,
-		},
-		{ // EmptyString
-			name: "EmptyString",
-			urn:  URN("").String(),
-			want: false,
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := IsVCDA(tt.urn); got != tt.want {
-				t.Errorf("IsVCDA() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-// TestIsVM.
-func TestIsVM(t *testing.T) {
-	tests := []struct {
-		name    string
-		urnType URN
-		urn     string
-		want    bool
-	}{
-		{ // IsVM
-			name: "IsVM",
-			urn:  URN(VM.String() + validUUIDv4).String(),
-			want: true,
-		},
-		{ // IsNotVM
-			name: "IsNotVM",
-			urn:  URN("urn:vcloud:user:f47ac10b-58cc-4372-a567-0e02b2c3d4791").String(),
-			want: false,
-		},
-		{ // EmptyString
-			name: "EmptyString",
-			urn:  URN("").String(),
-			want: false,
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := IsVM(tt.urn); got != tt.want {
-				t.Errorf("IsVM() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-// TestIsUser.
-func TestIsUser(t *testing.T) {
-	tests := []struct {
-		name    string
-		urnType URN
-		urn     string
-		want    bool
-	}{
-		{ // IsUser
-			name: "IsUser",
-			urn:  URN(User.String() + validUUIDv4).String(),
-			want: true,
-		},
-		{ // IsNotUser
-			name: "IsNotUser",
-			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d4791").String(),
-			want: false,
-		},
-		{ // EmptyString
-			name: "EmptyString",
-			urn:  URN("").String(),
-			want: false,
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := IsUser(tt.urn); got != tt.want {
-				t.Errorf("IsUser() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-// TestIsOrg
-func TestIsOrg(t *testing.T) {
-	tests := []struct {
-		name    string
-		urnType URN
-		urn     string
-		want    bool
-	}{
-		{ // IsOrg
-			name: "IsOrg",
-			urn:  URN(Org.String() + validUUIDv4).String(),
-			want: true,
-		},
-		{ // IsNotOrg
-			name: "IsNotOrg",
-			urn:  URN("urn:vcloud:user:f47ac10b-58cc-4372-a567-0e02b2c3d4791").String(),
-			want: false,
-		},
-		{ // EmptyString
-			name: "EmptyString",
-			urn:  URN("").String(),
-			want: false,
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := IsOrg(tt.urn); got != tt.want {
-				t.Errorf("IsOrg() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-// TestIsToken.
-func TestIsToken(t *testing.T) {
-	tests := []struct {
-		name    string
-		urnType URN
-		urn     string
-		want    bool
-	}{
-		{ // IsToken
-			name: "IsToken",
-			urn:  URN(Token.String() + validUUIDv4).String(),
-			want: true,
-		},
-		{ // IsNotToken
-			name: "IsNotToken",
-			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d4791").String(),
-			want: false,
-		},
-		{ // EmptyString
-			name: "EmptyString",
-			urn:  URN("").String(),
-			want: false,
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := IsToken(tt.urn); got != tt.want {
-				t.Errorf("IsToken() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-// TestIsAppPortProfile.
-func TestIsAppPortProfile(t *testing.T) {
-	tests := []struct {
-		name    string
-		urnType URN
-		urn     string
-		want    bool
-	}{
-		{ // IsAppPortProfile
-			name: "IsAppPortProfile",
-			urn:  URN(AppPortProfile.String() + validUUIDv4).String(),
-			want: true,
-		},
-		{ // IsNotAppPortProfile
-			name: "IsNotAppPortProfile",
-			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d479").String(),
-			want: false,
-		},
-		{ // EmptyString
-			name: "EmptyString",
-			urn:  URN("").String(),
-			want: false,
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := IsAppPortProfile(tt.urn); got != tt.want {
-				t.Errorf("IsAppPortProfile() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-// TestIsVDCComputePolicy.
-func TestIsVDCComputePolicy(t *testing.T) {
-	tests := []struct {
-		name    string
-		urnType URN
-		urn     string
-		want    bool
-	}{
-		{ // IsVDCComputePolicy
-			name: "IsVDCComputePolicy",
-			urn:  URN(VDCComputePolicy.String() + validUUIDv4).String(),
-			want: true,
-		},
-		{ // IsNotVDCComputePolicy
-			name: "IsNotVDCComputePolicy",
-			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d479").String(),
-			want: false,
-		},
-		{ // EmptyString
-			name: "EmptyString",
-			urn:  URN("").String(),
-			want: false,
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := IsVDCComputePolicy(tt.urn); got != tt.want {
-				t.Errorf("IsAppPortProfile() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-// TestIsCatalog.
-func TestIsCatalog(t *testing.T) {
-	tests := []struct {
-		name    string
-		urnType URN
-		urn     string
-		want    bool
-	}{
-		{ // IsCatalog
-			name: "IsCatalog",
-			urn:  URN(Catalog.String() + validUUIDv4).String(),
-			want: true,
-		},
-		{ // IsNotCatalog
-			name: "IsNotCatalog",
-			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d479").String(),
-			want: false,
-		},
-		{ // EmptyString
-			name: "EmptyString",
-			urn:  URN("").String(),
-			want: false,
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := IsCatalog(tt.urn); got != tt.want {
-				t.Errorf("IsCatalog() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-// TestIsVAPPTemplate.
-func TestIsVAPPTemplate(t *testing.T) {
-	tests := []struct {
-		name    string
-		urnType URN
-		urn     string
-		want    bool
+		name string
+		urn  URN
+		want bool
 	}{
 		{ // IsVAPPTemplate
 			name: "IsVAPPTemplate",
-			urn:  URN(VAPPTemplate.String() + validUUIDv4).String(),
+			urn:  URN(VAPPTemplate.String() + validUUIDv4),
 			want: true,
 		},
 		{ // IsNotVAPPTemplate
 			name: "IsNotVAPPTemplate",
-			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d479").String(),
+			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d4791"),
 			want: false,
 		},
-		{ // EmptyString
+		{ // Empty string
 			name: "EmptyString",
-			urn:  URN("").String(),
+			urn:  URN(""),
 			want: false,
 		},
 	}
-
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := IsVAPPTemplate(tt.urn); got != tt.want {
-				t.Errorf("IsVAPPTemplate() = %v, want %v", got, tt.want)
+			if got := tt.urn.IsVAPPTemplate(); got != tt.want {
+				t.Errorf("URN.IsVAPPTemplate() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+// IsCatalog.
+func TestURN_IsCatalog(t *testing.T) {
+	tests := []struct {
+		name string
+		urn  URN
+		want bool
+	}{
+		{ // IsCatalog
+			name: "IsCatalog",
+			urn:  URN(Catalog.String() + validUUIDv4),
+			want: true,
+		},
+		{ // IsNotCatalog
+			name: "IsNotCatalog",
+			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d4791"),
+			want: false,
+		},
+		{ // Empty string
+			name: "EmptyString",
+			urn:  URN(""),
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.urn.IsCatalog(); got != tt.want {
+				t.Errorf("URN.IsCatalog() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+// IsToken.
+func TestURN_IsToken(t *testing.T) {
+	tests := []struct {
+		name string
+		urn  URN
+		want bool
+	}{
+		{ // IsToken
+			name: "IsToken",
+			urn:  URN(Token.String() + validUUIDv4),
+			want: true,
+		},
+		{ // IsNotToken
+			name: "IsNotToken",
+			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d4791"),
+			want: false,
+		},
+		{ // Empty string
+			name: "EmptyString",
+			urn:  URN(""),
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.urn.IsToken(); got != tt.want {
+				t.Errorf("URN.IsToken() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+// IsCatalog.
+func TestVcloudURN_IsCatalog(t *testing.T) {
+	tests := []struct {
+		name string
+		urn  URN
+		want bool
+	}{
+		{ // IsCatalog
+			name: "IsCatalog",
+			urn:  URN(Catalog.String() + validUUIDv4),
+			want: true,
+		},
+		{ // IsNotCatalog
+			name: "IsNotCatalog",
+			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d4791"),
+			want: false,
+		},
+		{ // Empty string
+			name: "EmptyString",
+			urn:  URN(""),
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.urn.IsCatalog(); got != tt.want {
+				t.Errorf("VcloudURN.IsCatalog() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+// TestURN_IsOrg tests the URN.IsOrg function.
+func TestURN_IsOrg(t *testing.T) {
+	tests := []struct {
+		name string
+		urn  URN
+		want bool
+	}{
+		{ // IsOrg
+			name: "IsOrg",
+			urn:  URN(Org.String() + validUUIDv4),
+			want: true,
+		},
+		{ // IsNotOrg
+			name: "IsNotOrg",
+			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d4791"),
+			want: false,
+		},
+		{ // Empty string
+			name: "EmptyString",
+			urn:  URN(""),
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.urn.IsOrg(); got != tt.want {
+				t.Errorf("URN.IsOrg() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+// TestURN_IsVDCComputePolicy tests the URN.IsVDCComputePolicy function.
+func TestURN_IsVDCComputePolicy(t *testing.T) {
+	tests := []struct {
+		name string
+		urn  URN
+		want bool
+	}{
+		{ // IsVDCComputePolicy
+			name: "IsVDCComputePolicy",
+			urn:  URN(VDCComputePolicy.String() + validUUIDv4),
+			want: true,
+		},
+		{ // IsNotVDCComputePolicy
+			name: "IsNotVDCComputePolicy",
+			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d4791"),
+			want: false,
+		},
+		{ // Empty string
+			name: "EmptyString",
+			urn:  URN(""),
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.urn.IsVDCComputePolicy(); got != tt.want {
+				t.Errorf("URN.IsVDCComputePolicy() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+// TestURN_IsLoadBalancerVirtualService tests the URN.IsLoadBalancerVirtualService function.
+func TestURN_IsLoadBalancerVirtualService(t *testing.T) {
+	tests := []struct {
+		name string
+		urn  URN
+		want bool
+	}{
+		{ // IsLoadBalancerVirtualService
+			name: "IsLoadBalancerVirtualService",
+			urn:  URN(LoadBalancerVirtualService.String() + validUUIDv4),
+			want: true,
+		},
+		{ // IsNotLoadBalancerVirtualService
+			name: "IsNotLoadBalancerVirtualService",
+			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d4791"),
+			want: false,
+		},
+		{ // Empty string
+			name: "EmptyString",
+			urn:  URN(""),
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.urn.IsLoadBalancerVirtualService(); got != tt.want {
+				t.Errorf("URN.IsLoadBalancerVirtualService() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+// TestURN_IsCertificateLibraryItem tests the URN.IsCertificateLibraryItem function.
+func TestURN_IsCertificateLibraryItem(t *testing.T) {
+	tests := []struct {
+		name string
+		urn  URN
+		want bool
+	}{
+		{ // IsCertificateLibraryItem
+			name: "IsCertificateLibraryItem",
+			urn:  URN(CertificateLibraryItem.String() + validUUIDv4),
+			want: true,
+		},
+		{ // IsNotCertificateLibraryItem
+			name: "IsNotCertificateLibraryItem",
+			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d4791"),
+			want: false,
+		},
+		{ // Empty string
+			name: "EmptyString",
+			urn:  URN(""),
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.urn.IsCertificateLibraryItem(); got != tt.want {
+				t.Errorf("URN.IsCertificateLibraryItem() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+// TestURN_IsServiceEngineGroup tests the URN.IsServiceEngineGroup function.
+func TestURN_IsServiceEngineGroup(t *testing.T) {
+	tests := []struct {
+		name string
+		urn  URN
+		want bool
+	}{
+		{ // IsServiceEngineGroup
+			name: "IsServiceEngineGroup",
+			urn:  URN(ServiceEngineGroup.String() + validUUIDv4),
+			want: true,
+		},
+		{ // IsNotServiceEngineGroup
+			name: "IsNotServiceEngineGroup",
+			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d4791"),
+			want: false,
+		},
+		{ // Empty string
+			name: "EmptyString",
+			urn:  URN(""),
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.urn.IsServiceEngineGroup(); got != tt.want {
+				t.Errorf("URN.IsServiceEngineGroup() = %v, want %v", got, tt.want)
 			}
 		})
 	}
