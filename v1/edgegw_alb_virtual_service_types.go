@@ -7,7 +7,8 @@ import (
 
 type (
 
-	// EdgeGatewayALBVirtualService represents a virtual service on an NSX-T Edge Gateway
+	// EdgeGatewayALBVirtualService represents a virtual service on an NSX-T Edge Gateway.
+	// It contains the Edge Gateway Object, the Virtual Service Model and the NSX-T ALB Virtual Service.
 	EdgeGatewayALBVirtualService struct {
 		client         *EdgeClient
 		VirtualService *EdgeGatewayALBVirtualServiceModel
@@ -60,5 +61,3 @@ type (
 		DetailedHealthMessage string `json:"detailedHealthMessage,omitempty"`
 	}
 )
-
-// ! VirtualService

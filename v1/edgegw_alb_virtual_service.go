@@ -29,7 +29,7 @@ func (e *EdgeClient) GetALBVirtualService(nameOrID string) (*EdgeGatewayALBVirtu
 	// Get the ALB Virtual Service by name or ID
 	var nsxtALBVS *govcd.NsxtAlbVirtualService
 	if !urn.IsLoadBalancerVirtualService(nameOrID) {
-		nsxtALBVS, err = c.Vmware.GetAlbVirtualServiceByName(e.GetID(), nameOrID)
+		nsxtALBVS, err = c.Vmware.GetAlbVirtualServiceByName(e.vcdEdge.EdgeGateway.ID, nameOrID)
 	} else {
 		nsxtALBVS, err = c.Vmware.GetAlbVirtualServiceById(nameOrID)
 	}
@@ -75,7 +75,6 @@ func (e *EdgeClient) CreateALBVirtualService(vs *EdgeGatewayALBVirtualServiceMod
 	if err != nil {
 		return nil, err
 	}
-	// e.EdgeID = "urn:vcloud:gateway:" + e.GetID()
 
 	// Create the ALB Virtual Service
 	albNSXTVS, err := c.Vmware.CreateNsxtAlbVirtualService(&govcdtypes.NsxtAlbVirtualService{
@@ -83,7 +82,7 @@ func (e *EdgeClient) CreateALBVirtualService(vs *EdgeGatewayALBVirtualServiceMod
 		Description:           vs.Description,
 		ApplicationProfile:    vs.ApplicationProfile,
 		Enabled:               vs.Enabled,
-		GatewayRef:            govcdtypes.OpenApiReference{ID: e.GetID(), Name: e.GetName()},
+		GatewayRef:            govcdtypes.OpenApiReference{ID: e.vcdEdge.EdgeGateway.ID, Name: e.vcdEdge.EdgeGateway.Name},
 		LoadBalancerPoolRef:   vs.LoadBalancerPoolRef,
 		ServiceEngineGroupRef: vs.ServiceEngineGroupRef,
 		CertificateRef:        vs.CertificateRef,
@@ -116,22 +115,37 @@ func (e *EdgeGatewayALBVirtualService) UpdateALBVirtualService(vs *EdgeGatewayAL
 		return nil, fmt.Errorf("empty virtual service")
 	}
 
-	// Get the actual ALB Virtual Service
-	albVS, err := e.client.GetALBVirtualService(vs.Name)
+	// Update the ALB Virtual Service model
+	newvs := &govcdtypes.NsxtAlbVirtualService{
+		ID:                    vs.ID,
+		Name:                  vs.Name,
+		Description:           vs.Description,
+		ApplicationProfile:    vs.ApplicationProfile,
+		Enabled:               vs.Enabled,
+		GatewayRef:            govcdtypes.OpenApiReference{ID: e.client.vcdEdge.EdgeGateway.ID, Name: e.client.vcdEdge.EdgeGateway.Name},
+		LoadBalancerPoolRef:   vs.LoadBalancerPoolRef,
+		ServiceEngineGroupRef: vs.ServiceEngineGroupRef,
+		CertificateRef:        vs.CertificateRef,
+		ServicePorts:          vs.ServicePorts,
+		VirtualIpAddress:      vs.VirtualIPAddress,
+	}
+
+	// Update the ALB Virtual Service
+	albVS, err := e.nsxtALBVS.Update(newvs)
 	if err != nil {
 		return nil, err
 	}
 
-	// Update the ALB Virtual Service
-	_, err = e.nsxtALBVS.Update(albVS.nsxtALBVS.NsxtAlbVirtualService)
+	// Get the ALB Virtual Service updated
+	albVSRefreshed, err := e.client.GetALBVirtualService(vs.ID)
 	if err != nil {
 		return nil, err
 	}
 
 	return &EdgeGatewayALBVirtualService{
 		client:         e.client,
-		VirtualService: albVS.VirtualService,
-		nsxtALBVS:      albVS.nsxtALBVS,
+		VirtualService: albVSRefreshed.VirtualService,
+		nsxtALBVS:      albVS,
 	}, nil
 }
 
