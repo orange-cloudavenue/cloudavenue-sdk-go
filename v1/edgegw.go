@@ -195,6 +195,7 @@ func (v *EdgeGateway) Get(edgeGatewayNameOrID string) (edgeClient *EdgeClient, e
 				return err
 			}
 			edgeClient.EdgeVCDInterface = vmwareEdgeClient
+			edgeClient.vcdEdge = vmwareEdgeClient
 			return nil
 		})
 
