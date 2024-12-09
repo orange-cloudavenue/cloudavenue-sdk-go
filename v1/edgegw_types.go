@@ -25,9 +25,11 @@ type (
 	EdgeClient struct {
 		EdgeVCDInterface
 		*EdgeGatewayType
+		vcdEdge *govcd.NsxtEdgeGateway
 	}
 
 	// This interface contains all methods for the edge gateway in the CloudAvenue environment.
+	// This list of methods are directly inherited from the go-vcloud-director/v2/govcd package.
 	EdgeVCDInterface interface {
 		GetNsxtFirewall() (*govcd.NsxtFirewall, error)
 		UpdateNsxtFirewall(firewallRules *govcdtypes.NsxtFirewallRuleContainer) (*govcd.NsxtFirewall, error)
