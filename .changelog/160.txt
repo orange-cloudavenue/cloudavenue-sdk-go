@@ -1,0 +1,3 @@
+```release-note:feature
+`edgegateway` - Add new functions to manage ALB Virtual Service (Advanced Load Balancer). (In EdgeGateway object `CreateALBVirtualService`, `GetALBVirtualService`, `Update`, `Delete`)
+```
