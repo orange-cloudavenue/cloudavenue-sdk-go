@@ -30,7 +30,7 @@ func (v *CAVVdc) GetVDCGroup(vdcGroupNameOrID string) (*VDCGroup, error) {
 		vdcg, err = c.AdminOrg.GetVdcGroupByName(vdcGroupNameOrID)
 	}
 	if err != nil {
-		return nil, fmt.Errorf("%w: %s %w", ErrRetrievingVDC, vdcGroupNameOrID, err)
+		return nil, fmt.Errorf("%w: %s %w", ErrRetrievingVDCGroup, vdcGroupNameOrID, err)
 	}
 
 	return &VDCGroup{

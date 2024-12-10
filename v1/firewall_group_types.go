@@ -1,20 +1,19 @@
 package v1
 
 import (
-	"github.com/vmware/go-vcloud-director/v2/govcd"
 	govcdtypes "github.com/vmware/go-vcloud-director/v2/types/v56"
 )
 
 type (
 	FirewallGroupInterface interface {
-		CreateFirewallSecurityGroup(*FirewallGroupSecurityGroup) (*govcd.NsxtFirewallGroup, error)
-		GetFirewallSecurityGroup(string) (*govcd.NsxtFirewallGroup, error)
+		CreateFirewallSecurityGroup(*FirewallGroupSecurityGroupModel) (*FirewallGroupSecurityGroup, error)
+		GetFirewallSecurityGroup(nameOrID string) (*FirewallGroupSecurityGroup, error)
 	}
 )
 
 type (
 	// FirewallGroup contains the basic information of a firewall group.
-	FirewallGroup struct {
+	FirewallGroupModel struct {
 		// ID contains Firewall Group ID (URN format)
 		// e.g. urn:vcloud:firewallGroup:d7f4e0b4-b83f-4a07-9f22-d242c9c0987a
 		ID string `json:"id,omitempty"`
@@ -26,8 +25,8 @@ type (
 	}
 
 	// FirewallGroupIPSet contains the information of an IPSet firewall group.
-	FirewallGroupIPSet struct {
-		FirewallGroup `json:",inline"`
+	FirewallGroupIPSetModel struct {
+		FirewallGroupModel `json:",inline"`
 		// IP Addresses included in the group. This
 		// can support IPv4 and IPv6 addresses in single, range, and CIDR formats.
 		// E.g [
@@ -41,15 +40,15 @@ type (
 	}
 
 	// FirewallGroupSecurityGroup contains the information of a SecurityGroup firewall group.
-	FirewallGroupSecurityGroup struct {
-		FirewallGroup `json:",inline"`
+	FirewallGroupSecurityGroupModel struct {
+		FirewallGroupModel `json:",inline"`
 		// Members define list of Org VDC networks belonging to this Firewall Group
 		Members []govcdtypes.OpenApiReference `json:"members"`
 	}
 
 	// FirewallGroupDynamicSecurityGroup contains the information of a DynamicSecurityGroup firewall group.
-	FirewallGroupDynamicSecurityGroup struct {
-		FirewallGroup `json:",inline"`
+	FirewallGroupDynamicSecurityGroupModel struct {
+		FirewallGroupModel `json:",inline"`
 		// VmCriteria defines list of dynamic criteria that determines whether a VM belongs
 		// to a dynamic firewall group. A VM needs to meet at least one criteria to belong to the
 		// firewall group. In other words, the logical AND is used for rules within a single criteria
