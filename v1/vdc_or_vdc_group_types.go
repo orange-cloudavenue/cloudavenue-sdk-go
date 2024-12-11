@@ -18,7 +18,7 @@ type VDCOrVDCGroupInterface interface {
 	// IsVDCGroup returns true if the object is a VDC Group
 	IsVDCGroup() bool
 
-	// * Network
+	// * NetworkOLD
 	GetOpenApiOrgVdcNetworkByName(string) (*govcd.OpenApiOrgVdcNetwork, error)
 
 	// * Security Group
@@ -31,4 +31,9 @@ type VDCOrVDCGroupInterface interface {
 	GetIPSetByName(name string) (*govcd.NsxtFirewallGroup, error)
 	GetIPSetByNameOrID(nameOrID string) (*govcd.NsxtFirewallGroup, error)
 	SetIPSet(ipSetConfig *govcdtypes.NsxtFirewallGroup) (*govcd.NsxtFirewallGroup, error)
+
+	// * Network
+	// ? Isolated
+	GetNetworkIsolated(nameOrID string) (*VDCNetworkIsolated, error)
+	CreateNetworkIsolated(*VDCNetworkIsolatedModel) (*VDCNetworkIsolated, error)
 }
