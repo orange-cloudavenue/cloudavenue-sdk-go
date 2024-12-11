@@ -2,6 +2,7 @@
 
 ### :rocket: **New Features**
 
+* `edgegateway` - Add new functions to manage ALB Virtual Service (Advanced Load Balancer). (In EdgeGateway object `CreateALBVirtualService`, `GetALBVirtualService`, `Update`, `Delete`) (GH-160)
 * `vdcGroup` - Add new fuctions to manage Firewall in VDC Group. (In VDCGroup object `CreateFirewall`, `GetFirewall`. In VdcGroupFirewall Object `GetRules`, `IsEnabled`, `UpdateFirewall`, `Delete`) (GH-153)
 
 ### :dependabot: **Dependencies**
