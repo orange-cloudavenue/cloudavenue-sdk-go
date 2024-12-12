@@ -1,6 +1,8 @@
 package cloudavenue
 
 import (
+	"os"
+
 	clientcloudavenue "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/clients/cloudavenue"
 	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/clients/consoles"
 	clientnetbackup "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/clients/netbackup"
@@ -45,6 +47,10 @@ func New(opts *ClientOpts) (*Client, error) {
 	cavClient, err := clientcloudavenue.New()
 	if err != nil {
 		return nil, err
+	}
+
+	if os.Getenv("CLOUDAVENUE_DEV") == "true" {
+		return &Client{}, nil
 	}
 
 	console, err := consoles.FingByOrganizationName(cavClient.GetOrganization())
