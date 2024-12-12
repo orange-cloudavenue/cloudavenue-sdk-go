@@ -32,6 +32,7 @@ type Opts struct {
 	VDC        string `env:"VDC,overwrite"`
 	Debug      bool   `env:"DEBUG,overwrite"`
 	VCDVersion string `env:"VCD_VERSION,overwrite,default=37.2"`
+	Dev        bool   `env:"DEV,overwrite"` // Only for development
 }
 
 func (o *Opts) Validate() error {
@@ -59,26 +60,28 @@ func (o *Opts) Validate() error {
 		return fmt.Errorf("the organization is %w", errors.ErrEmpty)
 	}
 
-	// Check if Organization has a valid format
-	if ok := consoles.CheckOrganizationName(o.Org); !ok {
-		return fmt.Errorf("the organization has an %w", errors.ErrInvalidFormat)
-	}
-
-	if o.Endpoint == "" && o.URL == "" {
-		console, err := consoles.FingByOrganizationName(o.Org)
-		if err != nil {
-			return err
-		}
-		if o.Debug {
-			log.Default().Printf("Found console %s with URL %s", console.GetSiteID(), console.GetURL())
+	if !o.Dev {
+		// Check if Organization has a valid format
+		if ok := consoles.CheckOrganizationName(o.Org); !ok {
+			return fmt.Errorf("the organization has an %w", errors.ErrInvalidFormat)
 		}
 
-		o.URL = console.GetURL()
-		o.Endpoint = o.URL
-	}
+		if o.Endpoint == "" && o.URL == "" {
+			console, err := consoles.FingByOrganizationName(o.Org)
+			if err != nil {
+				return err
+			}
+			if o.Debug {
+				log.Default().Printf("Found console %s with URL %s", console.GetSiteID(), console.GetURL())
+			}
 
-	if o.URL == "" && o.Endpoint != "" {
-		o.URL = o.Endpoint
+			o.URL = console.GetURL()
+			o.Endpoint = o.URL
+		}
+
+		if o.URL == "" && o.Endpoint != "" {
+			o.URL = o.Endpoint
+		}
 	}
 
 	// Check if VDCVersion is not empty and semver format
