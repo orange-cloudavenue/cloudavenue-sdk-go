@@ -1,4 +1,10 @@
 ## 0.16.0 (Unreleased)
+
+### :rocket: **New Features**
+
+* `vdcGroup` - Add new functions to manage Network Isolated in VDC Group. (In VDCGroup object `CreateNetworkIsolated`, `GetNetworkIsolated`, `Update`, `Delete`) (GH-161)
+* `vdc` - Add new functions to manage Network Isolated in VDC. (In VDC object `CreateNetworkIsolated`, `GetNetworkIsolated`, `Update`, `Delete`) (GH-161)
+
 ## 0.15.1 (December 12, 2024)
 ## 0.15.0 (December 12, 2024)
 
