@@ -5,6 +5,7 @@ go 1.22.0
 toolchain go1.23.1
 
 require (
+	github.com/avast/retry-go v3.0.0+incompatible
 	github.com/aws/aws-sdk-go v1.55.5
 	github.com/fbiville/markdown-table-formatter v0.3.0
 	github.com/go-resty/resty/v2 v2.16.2
