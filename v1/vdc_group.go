@@ -10,10 +10,10 @@ import (
 	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/urn"
 )
 
-// GetVDCGroup retrieves the VDC Group by its name.
+// GetVDCGroup retrieves the VDC Group by name or ID.
 // It returns a pointer to the VDC Group and an error if any.
-func (v *CAVVdc) GetVDCGroup(vdcGroupName string) (*VDCGroup, error) {
-	if vdcGroupName == "" {
+func (v *CAVVdc) GetVDCGroup(vdcGroupNameOrID string) (*VDCGroup, error) {
+	if vdcGroupNameOrID == "" {
 		return nil, fmt.Errorf("%w", ErrEmptyVDCNameProvided)
 	}
 
@@ -22,14 +22,20 @@ func (v *CAVVdc) GetVDCGroup(vdcGroupName string) (*VDCGroup, error) {
 		return nil, err
 	}
 
-	x, err := c.AdminOrg.GetVdcGroupByName(vdcGroupName)
+	var vdcg *govcd.VdcGroup
+
+	if urn.IsVDCGroup(vdcGroupNameOrID) {
+		vdcg, err = c.AdminOrg.GetVdcGroupById(vdcGroupNameOrID)
+	} else {
+		vdcg, err = c.AdminOrg.GetVdcGroupByName(vdcGroupNameOrID)
+	}
 	if err != nil {
-		return nil, fmt.Errorf("%w: %s %w", ErrRetrievingVDC, vdcGroupName, err)
+		return nil, fmt.Errorf("%w: %s %w", ErrRetrievingVDC, vdcGroupNameOrID, err)
 	}
 
 	return &VDCGroup{
-		vg:                x,
-		VDCGroupInterface: x,
+		vg:                vdcg,
+		VDCGroupInterface: vdcg,
 	}, nil
 }
 
@@ -110,4 +116,19 @@ func (g *VDCGroup) Refresh() error {
 
 	g.vg = x
 	return nil
+}
+
+// getVdcNetworkById returns the VDC Network by its ID.
+func (g VDCGroup) getVDCNetworkByID(id string) (*govcd.OpenApiOrgVdcNetwork, error) {
+	return g.vg.GetOpenApiOrgVdcNetworkById(id)
+}
+
+// getVdcNetworkByName returns the VDC Network by its name.
+func (g VDCGroup) getVDCNetworkByName(name string) (*govcd.OpenApiOrgVdcNetwork, error) {
+	return g.vg.GetOpenApiOrgVdcNetworkByName(name)
+}
+
+// createVdcNetwork creates a VDC Network.
+func (g VDCGroup) createVDCNetwork(networkConfig *govcdtypes.OpenApiOrgVdcNetwork) (*govcd.OpenApiOrgVdcNetwork, error) {
+	return g.vg.CreateOpenApiOrgVdcNetwork(networkConfig)
 }

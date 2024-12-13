@@ -322,3 +322,18 @@ func (v VDC) CreateVAPP(name, description string) (*VAPP, error) {
 
 	return &VAPP{vapp}, nil
 }
+
+// getVDCNetworkById returns the VDC Network by its ID.
+func (v VDC) getVDCNetworkByID(id string) (*govcd.OpenApiOrgVdcNetwork, error) {
+	return v.GetOpenApiOrgVdcNetworkById(id)
+}
+
+// getVDCNetworkByName returns the VDC Network by its name.
+func (v VDC) getVDCNetworkByName(name string) (*govcd.OpenApiOrgVdcNetwork, error) {
+	return v.GetOpenApiOrgVdcNetworkByName(name)
+}
+
+// createVDCNetwork creates a VDC Network.
+func (v VDC) createVDCNetwork(networkConfig *govcdtypes.OpenApiOrgVdcNetwork) (*govcd.OpenApiOrgVdcNetwork, error) {
+	return v.CreateOpenApiOrgVdcNetwork(networkConfig)
+}
