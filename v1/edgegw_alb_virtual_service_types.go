@@ -20,6 +20,11 @@ const (
 	EdgeGatewayALBVirtualServiceModelApplicationProfileHTTPS EdgeGatewayALBVirtualServiceModelApplicationProfile = "HTTPS"
 	EdgeGatewayALBVirtualServiceModelApplicationProfileL4    EdgeGatewayALBVirtualServiceModelApplicationProfile = "L4"
 	EdgeGatewayALBVirtualServiceModelApplicationProfileL4TLS EdgeGatewayALBVirtualServiceModelApplicationProfile = "L4_TLS"
+
+	// Service Port Types
+	EdgeGatewayALBVirtualServiceModelServicePortTypeTCPProxy    EdgeGatewayALBVirtualServiceModelServicePortType = "TCP_PROXY"
+	EdgeGatewayALBVirtualServiceModelServicePortTypeTCPFastPath EdgeGatewayALBVirtualServiceModelServicePortType = "TCP_FAST_PATH"
+	EdgeGatewayALBVirtualServiceModelServicePortTypeUDPFastPath EdgeGatewayALBVirtualServiceModelServicePortType = "UDP_FAST_PATH"
 )
 
 var EdgeGatewayALBVirtualServiceModelApplicationProfiles = []struct {
@@ -34,6 +39,7 @@ var EdgeGatewayALBVirtualServiceModelApplicationProfiles = []struct {
 
 type (
 	EdgeGatewayALBVirtualServiceModelApplicationProfile string
+	EdgeGatewayALBVirtualServiceModelServicePortType    string
 
 	// EdgeGatewayALBVirtualService represents a virtual service, it's composed by:
 	// - client is the SDK EdgeClient object that manages EdgeGateway CAV.
@@ -101,9 +107,9 @@ type (
 	// If the port is SSL enabled, set PortSSL to true, needs to be have application profile set to HTTPS or L4_TLS.
 	// PortType can be set to "TCP_PROXY", "TCP_FAST_PATH" or "UDP_FAST_PATH".
 	EdgeGatewayALBVirtualServiceModelServicePort struct {
-		PortStart int    `json:"port_start"`
-		PortEnd   int    `json:"port_end,omitempty"`
-		PortSSL   bool   `json:"port_ssl,omitempty"`
-		PortType  string `json:"port_type"`
+		PortStart *int                                             `json:"port_start"`
+		PortEnd   *int                                             `json:"port_end,omitempty"`
+		PortSSL   *bool                                            `json:"port_ssl,omitempty"`
+		PortType  EdgeGatewayALBVirtualServiceModelServicePortType `json:"port_type"`
 	}
 )
