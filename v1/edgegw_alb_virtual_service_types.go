@@ -35,8 +35,10 @@ var EdgeGatewayALBVirtualServiceModelApplicationProfiles = []struct {
 type (
 	EdgeGatewayALBVirtualServiceModelApplicationProfile string
 
-	// EdgeGatewayALBVirtualService represents a virtual service on an NSX-T Edge Gateway.
-	// It contains the Edge Gateway Object, the Virtual Service Model and the NSX-T ALB Virtual Service.
+	// EdgeGatewayALBVirtualService represents a virtual service, it's composed by:
+	// - client is the SDK EdgeClient object that manages EdgeGateway CAV.
+	// - VirtualService is the SDK model of the virtual service.
+	// - nsxtALBVS is the NSX-T ALB Virtual Service object.
 	EdgeGatewayALBVirtualService struct {
 		client         *EdgeClient
 		VirtualService *EdgeGatewayALBVirtualServiceModel
@@ -56,7 +58,7 @@ type (
 		Enabled *bool `json:"enabled"`
 
 		// ApplicationProfile sets protocol for load balancing by using NsxtAlbVirtualServiceApplicationProfile
-		ApplicationProfile govcdtypes.NsxtAlbVirtualServiceApplicationProfile `json:"applicationProfile"`
+		ApplicationProfile string `json:"applicationProfile"`
 
 		// LoadBalancerPoolRef contains Pool reference
 		LoadBalancerPoolRef govcdtypes.OpenApiReference `json:"loadBalancerPoolRef"`
@@ -72,7 +74,7 @@ type (
 		CertificateRef *govcdtypes.OpenApiReference `json:"certificateRef,omitempty"`
 
 		// ServicePorts define one or more ports (or port ranges) of the virtual service
-		ServicePorts []govcdtypes.NsxtAlbVirtualServicePort `json:"servicePorts"`
+		ServicePorts []EdgeGatewayALBVirtualServiceModelServicePort `json:"servicePorts"`
 
 		// VirtualIpAddress to be used for exposing this virtual service
 		VirtualIPAddress string `json:"virtualIpAddress"`
@@ -90,5 +92,18 @@ type (
 
 		// DetailedHealthMessage contains a more in depth health message
 		DetailedHealthMessage string `json:"detailedHealthMessage,omitempty"`
+	}
+
+	// Type ServicePort represents a service port for the virtual service.
+	// It contains the port range, the port type and if the port is SSL enabled.
+	// To make a range of ports, set the first value in PortStart and end value in PortEnd.
+	// To make a single port, set the same value in PortStart and PortEnd.
+	// If the port is SSL enabled, set PortSSL to true, needs to be have application profile set to HTTPS or L4_TLS.
+	// PortType can be set to "TCP_PROXY", "TCP_FAST_PATH" or "UDP_FAST_PATH".
+	EdgeGatewayALBVirtualServiceModelServicePort struct {
+		PortStart int    `json:"port_start"`
+		PortEnd   int    `json:"port_end,omitempty"`
+		PortSSL   bool   `json:"port_ssl,omitempty"`
+		PortType  string `json:"port_type"`
 	}
 )

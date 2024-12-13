@@ -14,6 +14,7 @@ import (
 	"net/url"
 	"time"
 
+	"github.com/avast/retry-go"
 	"github.com/vmware/go-vcloud-director/v2/govcd"
 	govcdtypes "github.com/vmware/go-vcloud-director/v2/types/v56"
 
@@ -54,16 +55,17 @@ func (e *EdgeClient) GetALBVirtualService(nameOrID string) (*EdgeGatewayALBVirtu
 		Name:                  nsxtALBVS.NsxtAlbVirtualService.Name,
 		Description:           nsxtALBVS.NsxtAlbVirtualService.Description,
 		Enabled:               nsxtALBVS.NsxtAlbVirtualService.Enabled,
-		ApplicationProfile:    nsxtALBVS.NsxtAlbVirtualService.ApplicationProfile,
+		ApplicationProfile:    nsxtALBVS.NsxtAlbVirtualService.ApplicationProfile.Type,
 		LoadBalancerPoolRef:   nsxtALBVS.NsxtAlbVirtualService.LoadBalancerPoolRef,
 		ServiceEngineGroupRef: nsxtALBVS.NsxtAlbVirtualService.ServiceEngineGroupRef,
 		CertificateRef:        nsxtALBVS.NsxtAlbVirtualService.CertificateRef,
-		ServicePorts:          nsxtALBVS.NsxtAlbVirtualService.ServicePorts,
 		VirtualIPAddress:      nsxtALBVS.NsxtAlbVirtualService.VirtualIpAddress,
 		HealthStatus:          nsxtALBVS.NsxtAlbVirtualService.HealthStatus,
 		HealthMessage:         nsxtALBVS.NsxtAlbVirtualService.HealthMessage,
 		DetailedHealthMessage: nsxtALBVS.NsxtAlbVirtualService.DetailedHealthMessage,
 	}
+	// Populate Service Ports
+	vs.servicePortsFromGovcd(nsxtALBVS.NsxtAlbVirtualService.ServicePorts)
 
 	return &EdgeGatewayALBVirtualService{
 		client:         e,
@@ -87,6 +89,7 @@ func (e *EdgeClient) CreateALBVirtualService(vs *EdgeGatewayALBVirtualServiceMod
 		return nil, err
 	}
 
+	// TODO: Move in a new Func to avoid code duplication (same code as in Update)
 	// Add Service Engine Group if not provided
 	if vs.ServiceEngineGroupRef.Name == "" {
 		// Find the first service engine group
@@ -131,13 +134,13 @@ func (e *EdgeClient) CreateALBVirtualService(vs *EdgeGatewayALBVirtualServiceMod
 	albNSXTVS, err := c.Vmware.CreateNsxtAlbVirtualService(&govcdtypes.NsxtAlbVirtualService{
 		Name:                  vs.Name,
 		Description:           vs.Description,
-		ApplicationProfile:    vs.ApplicationProfile,
+		ApplicationProfile:    govcdtypes.NsxtAlbVirtualServiceApplicationProfile{Type: vs.ApplicationProfile},
 		Enabled:               vs.Enabled,
 		GatewayRef:            govcdtypes.OpenApiReference{ID: e.vcdEdge.EdgeGateway.ID}, // Set the Edge Gateway ID URN
 		LoadBalancerPoolRef:   vs.LoadBalancerPoolRef,
 		ServiceEngineGroupRef: vs.ServiceEngineGroupRef,
 		CertificateRef:        vs.CertificateRef,
-		ServicePorts:          vs.ServicePorts,
+		ServicePorts:          vs.servicePortsToGovcd(),
 		VirtualIpAddress:      vs.VirtualIPAddress,
 	})
 	if err != nil {
@@ -146,10 +149,22 @@ func (e *EdgeClient) CreateALBVirtualService(vs *EdgeGatewayALBVirtualServiceMod
 
 	// A workaround for the issue https://github.com/vmware/go-vcloud-director/issues/729
 	// Wait for 10 seconds before to get the ALB Virtual Service to retrieve the created model
-	time.Sleep(10 * time.Second)
-	newALBVS, err := e.GetALBVirtualService(albNSXTVS.NsxtAlbVirtualService.Name)
+	// time.Sleep(10 * time.Second)
+	var newALBVS *EdgeGatewayALBVirtualService
+	err = retry.Do(
+		func() error {
+			newALBVS, err = e.GetALBVirtualService(albNSXTVS.NsxtAlbVirtualService.Name)
+			if err != nil {
+				return fmt.Errorf("error to get ALB Virtual Service: %s", err.Error())
+			}
+			return nil
+		},
+		retry.RetryIf(govcd.ContainsNotFound),
+		retry.Attempts(3),
+		retry.Delay(5*time.Second),
+	)
 	if err != nil {
-		return nil, fmt.Errorf("error to get ALB Virtual Service: %s", err.Error())
+		return nil, err
 	}
 
 	return &EdgeGatewayALBVirtualService{
@@ -174,7 +189,7 @@ func (e *EdgeGatewayALBVirtualService) Update(vs *EdgeGatewayALBVirtualServiceMo
 		return nil, err
 	}
 
-	// TODO: Move in a new Resource/Datasource to avoid code duplication
+	// TODO: Move in a new Func to avoid code duplication (same code as in Create)
 	// Check if the ALB Virtual Service Engine Group is empty
 	if vs.ServiceEngineGroupRef.Name == "" {
 		// Find the first service engine group
@@ -220,13 +235,13 @@ func (e *EdgeGatewayALBVirtualService) Update(vs *EdgeGatewayALBVirtualServiceMo
 		ID:                    vs.ID,
 		Name:                  vs.Name,
 		Description:           vs.Description,
-		ApplicationProfile:    vs.ApplicationProfile,
+		ApplicationProfile:    govcdtypes.NsxtAlbVirtualServiceApplicationProfile{Type: vs.ApplicationProfile},
 		Enabled:               vs.Enabled,
 		GatewayRef:            govcdtypes.OpenApiReference{ID: e.client.vcdEdge.EdgeGateway.ID},
 		LoadBalancerPoolRef:   vs.LoadBalancerPoolRef,
 		ServiceEngineGroupRef: vs.ServiceEngineGroupRef,
 		CertificateRef:        vs.CertificateRef,
-		ServicePorts:          vs.ServicePorts,
+		ServicePorts:          vs.servicePortsToGovcd(),
 		VirtualIpAddress:      vs.VirtualIPAddress,
 	}
 
@@ -238,11 +253,20 @@ func (e *EdgeGatewayALBVirtualService) Update(vs *EdgeGatewayALBVirtualServiceMo
 
 	// A workaround for the issue https://github.com/vmware/go-vcloud-director/issues/729
 	// Wait for 10 seconds before to get the ALB Virtual Service to retrieve the updated model
-	time.Sleep(10 * time.Second)
-	newALBVS, err := e.client.GetALBVirtualService(albVS.NsxtAlbVirtualService.Name)
-	if err != nil {
-		return nil, err
-	}
+	// time.Sleep(10 * time.Second)
+	var newALBVS *EdgeGatewayALBVirtualService
+	err = retry.Do(
+		func() error {
+			newALBVS, err = e.client.GetALBVirtualService(albVS.NsxtAlbVirtualService.Name)
+			if err != nil {
+				return fmt.Errorf("error to get ALB Virtual Service: %s", err.Error())
+			}
+			return nil
+		},
+		retry.RetryIf(govcd.ContainsNotFound),
+		retry.Attempts(3),
+		retry.Delay(5*time.Second),
+	)
 
 	return &EdgeGatewayALBVirtualService{
 		client:         e.client,
@@ -256,4 +280,41 @@ func (e *EdgeGatewayALBVirtualService) Update(vs *EdgeGatewayALBVirtualServiceMo
 func (e *EdgeGatewayALBVirtualService) Delete() error {
 	// Delete the ALB Virtual Service
 	return e.nsxtALBVS.Delete()
+}
+
+// servicePortsFromGovcd set the SDK Model EdgeGatewayALBVirtualServiceModelServicePorts from govcdtypes.NsxtAlbVirtualServicePort.
+func (e *EdgeGatewayALBVirtualServiceModel) servicePortsFromGovcd(ports []govcdtypes.NsxtAlbVirtualServicePort) {
+	// Populate Service Ports
+	var sdkPorts []EdgeGatewayALBVirtualServiceModelServicePort
+	for _, svcPort := range ports {
+		x := EdgeGatewayALBVirtualServiceModelServicePort{
+			PortStart: *svcPort.PortStart,
+			PortEnd:   *svcPort.PortEnd,
+			PortSSL:   *svcPort.SslEnabled,
+			PortType:  svcPort.TcpUdpProfile.Type,
+		}
+		sdkPorts = append(sdkPorts, x)
+	}
+	e.ServicePorts = sdkPorts
+}
+
+// servicePortsToGovcd sets the govcdtypes.NsxtAlbVirtualServicePort from the SDK Model EdgeGatewayALBVirtualServiceModelServicePorts.
+func (e *EdgeGatewayALBVirtualServiceModel) servicePortsToGovcd() (govcdPorts []govcdtypes.NsxtAlbVirtualServicePort) {
+	// Populate Service Ports
+	x := govcdtypes.NsxtAlbVirtualServicePort{}
+	for _, svcPort := range e.ServicePorts {
+		x.PortStart = &svcPort.PortStart
+		// If PortEnd is not set, set it to PortStart
+		if svcPort.PortEnd < svcPort.PortStart && svcPort.PortEnd > 65535 {
+			x.PortEnd = &svcPort.PortStart
+		}
+		x.SslEnabled = &svcPort.PortSSL
+		x.TcpUdpProfile = &govcdtypes.NsxtAlbVirtualServicePortTcpUdpProfile{
+			SystemDefined: true,
+			Type:          svcPort.PortType,
+		}
+		govcdPorts = append(govcdPorts, x)
+	}
+
+	return
 }
