@@ -3,6 +3,10 @@
 
 * `client` - Now the `endpoint` parameter for client opts is removed. Use `url` instead. (GH-168)
 
+### :dependabot: **Dependencies**
+
+* deps: bumps github.com/vmware/go-vcloud-director/v2 from 2.26.0 to 2.26.1 (GH-158)
+
 ## 0.16.0 (December 13, 2024)
 
 ### :rocket: **New Features**
