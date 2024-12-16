@@ -1,0 +1,3 @@
+```release-note:feature
+`edgegw` - Add new functions to get informations for an ALB Service Engine Group. (In EdgeGateway object `GetALBServiceEngineGroup`, `GetALLALBServiceEngineGroups`)
+```
