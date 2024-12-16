@@ -24,7 +24,6 @@ var (
 
 // Opts - Is a struct that contains the options for the vmware client
 type Opts struct {
-	Endpoint   string `env:"ENDPOINT,overwrite"` // Deprecated - use URL instead
 	URL        string `env:"URL,overwrite"`      // Computed from Org if not provided
 	Username   string `env:"USERNAME,overwrite"` // Required
 	Password   string `env:"PASSWORD,overwrite"` // Required
@@ -66,7 +65,7 @@ func (o *Opts) Validate() error {
 			return fmt.Errorf("the organization has an %w", errors.ErrInvalidFormat)
 		}
 
-		if o.Endpoint == "" && o.URL == "" {
+		if o.URL == "" {
 			console, err := consoles.FingByOrganizationName(o.Org)
 			if err != nil {
 				return err
@@ -76,11 +75,6 @@ func (o *Opts) Validate() error {
 			}
 
 			o.URL = console.GetURL()
-			o.Endpoint = o.URL
-		}
-
-		if o.URL == "" && o.Endpoint != "" {
-			o.URL = o.Endpoint
 		}
 	}
 
@@ -110,7 +104,7 @@ func Init(opts *Opts) (err error) {
 	c.token.password = opts.Password
 	c.token.org = opts.Org
 	c.token.vdc = opts.VDC
-	c.token.endpoint = opts.Endpoint
+	c.token.endpoint = opts.URL
 	c.token.debug = opts.Debug
 	c.token.vcdVersion = opts.VCDVersion
 	c.token.endpoint = opts.URL
