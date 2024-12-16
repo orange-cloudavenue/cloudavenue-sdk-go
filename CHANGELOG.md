@@ -6,6 +6,7 @@
 ### :dependabot: **Dependencies**
 
 * deps: bumps github.com/vmware/go-vcloud-director/v2 from 2.26.0 to 2.26.1 (GH-158)
+* deps: bumps golang.org/x/sync from 0.9.0 to 0.10.0 (GH-157)
 
 ## 0.16.0 (December 13, 2024)
 
