@@ -1,4 +1,8 @@
 ## 0.17.0 (Unreleased)
+### :rotating_light: **Breaking Changes**
+
+* `client` - Now the `endpoint` parameter for client opts is removed. Use `url` instead. (GH-168)
+
 ## 0.16.0 (December 13, 2024)
 
 ### :rocket: **New Features**
