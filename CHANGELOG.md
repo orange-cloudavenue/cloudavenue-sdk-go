@@ -3,6 +3,7 @@
 ### :rocket: **New Features**
 
 * `edgeGateway` - Add funcs to for managing IPSet in EdgeGateway. (`CreateFirewallIPSet`, `GetFirewallIPSet`) (GH-169)
+* `edgegw` - Add new functions to get informations for an ALB Service Engine Group. (In EdgeGateway object `GetALBServiceEngineGroup`, `ListALBServiceEngineGroups`) (GH-167)
 * `vdcGroup` - Add funcs to for managing IPSet in VDCGroup. (`CreateFirewallIPSet`, `GetFirewallIPSet`) (GH-169)
 
 ## 0.17.1 (December 17, 2024)
