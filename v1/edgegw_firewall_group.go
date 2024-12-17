@@ -73,4 +73,66 @@ func (e *EdgeClient) GetFirewallSecurityGroup(nameOrID string) (*FirewallGroupSe
 	}, nil
 }
 
-// TODO: Add IPSet And DynamicSecurityGroup
+// * IPSet
+
+// CreateFirewallIPSet allow creating a new IPSet group.
+func (e *EdgeClient) CreateFirewallIPSet(ipSetConfig *FirewallGroupIPSetModel) (*FirewallGroupIPSet, error) {
+	ower := &govcdtypes.OpenApiReference{}
+
+	if e.OwnerType.IsVDCGROUP() {
+		ower.Name = e.OwnerName
+	} else {
+		ower.Name = e.vcdEdge.EdgeGateway.Name
+		ower.ID = e.vcdEdge.EdgeGateway.ID
+	}
+
+	ipSet, err := e.vcdEdge.CreateNsxtFirewallGroup(&govcdtypes.NsxtFirewallGroup{
+		Name:        ipSetConfig.Name,
+		Description: ipSetConfig.Description,
+		TypeValue:   govcdtypes.FirewallGroupTypeIpSet,
+		IpAddresses: ipSetConfig.IPAddresses,
+		OwnerRef:    ower,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	ipSetConfig.ID = ipSet.NsxtFirewallGroup.ID
+
+	return &FirewallGroupIPSet{
+		edgeClient:              e,
+		FirewallGroupIPSetModel: ipSetConfig,
+		fwGroup:                 ipSet,
+	}, nil
+}
+
+// GetFirewallIPSet retrieves the IPSet configuration for the Edge Gateway.
+func (e *EdgeClient) GetFirewallIPSet(nameOrID string) (*FirewallGroupIPSet, error) {
+	var (
+		values *govcd.NsxtFirewallGroup
+		err    error
+	)
+
+	if urn.IsSecurityGroup(nameOrID) {
+		values, err = e.vcdEdge.GetNsxtFirewallGroupById(nameOrID)
+	} else {
+		values, err = e.vcdEdge.GetNsxtFirewallGroupByName(nameOrID, govcdtypes.FirewallGroupTypeIpSet)
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &FirewallGroupIPSet{
+		fwGroup: values,
+		FirewallGroupIPSetModel: &FirewallGroupIPSetModel{
+			FirewallGroupModel: FirewallGroupModel{
+				ID:          values.NsxtFirewallGroup.ID,
+				Name:        values.NsxtFirewallGroup.Name,
+				Description: values.NsxtFirewallGroup.Description,
+			},
+			IPAddresses: values.NsxtFirewallGroup.IpAddresses,
+		},
+		edgeClient: e,
+	}, nil
+}

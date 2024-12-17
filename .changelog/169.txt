@@ -1,0 +1,7 @@
+```release-note:feature
+`vdcGroup` - Add funcs to for managing IPSet in VDCGroup. (`CreateFirewallIPSet`, `GetFirewallIPSet`)
+```
+
+```release-note:feature
+`edgeGateway` - Add funcs to for managing IPSet in EdgeGateway. (`CreateFirewallIPSet`, `GetFirewallIPSet`)
+```
