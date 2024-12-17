@@ -1,4 +1,10 @@
 ## 0.18.0 (Unreleased)
+
+### :rocket: **New Features**
+
+* `edgeGateway` - Add funcs to for managing IPSet in EdgeGateway. (`CreateFirewallIPSet`, `GetFirewallIPSet`) (GH-169)
+* `vdcGroup` - Add funcs to for managing IPSet in VDCGroup. (`CreateFirewallIPSet`, `GetFirewallIPSet`) (GH-169)
+
 ## 0.17.1 (December 17, 2024)
 
 ### :rocket: **New Features**
