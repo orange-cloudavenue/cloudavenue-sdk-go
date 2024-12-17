@@ -1,4 +1,10 @@
 ## 0.18.0 (Unreleased)
+
+### :rocket: **New Features**
+
+* `edgeGateway` - Add funcs to manage a security group `CreateFirewallSecurityGroup` and `GetFirewallSecurityGroup`. (GH-159)
+* `vdcGroup` - Add funcs to manage a security group `CreateFirewallSecurityGroup` and `GetFirewallSecurityGroup`. (GH-159)
+
 ## 0.17.0 (December 16, 2024)
 ### :rotating_light: **Breaking Changes**
 
