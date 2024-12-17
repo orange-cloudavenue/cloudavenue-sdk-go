@@ -6,8 +6,13 @@ import (
 
 type (
 	FirewallGroupInterface interface {
+		// * Security Group
 		CreateFirewallSecurityGroup(*FirewallGroupSecurityGroupModel) (*FirewallGroupSecurityGroup, error)
 		GetFirewallSecurityGroup(nameOrID string) (*FirewallGroupSecurityGroup, error)
+
+		// * IP Set
+		CreateFirewallIPSet(*FirewallGroupIPSetModel) (*FirewallGroupIPSet, error)
+		GetFirewallIPSet(nameOrID string) (*FirewallGroupIPSet, error)
 	}
 )
 
