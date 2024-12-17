@@ -23,6 +23,7 @@ var (
 	ErrRetrievingOrg           = fmt.Errorf("error retrieving org")
 	ErrRetrievingOrgAdmin      = fmt.Errorf("error retrieving org admin")
 	ErrRetrievingVDC           = fmt.Errorf("error retrieving VDC")
+	ErrRetrievingVDCGroup      = fmt.Errorf("error retrieving VDC Group")
 	ErrRetrievingVDCOrVDCGroup = fmt.Errorf("error retrieving VDC or VDC Group")
 )
 
