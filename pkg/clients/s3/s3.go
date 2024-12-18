@@ -3,16 +3,16 @@ package s3
 import (
 	"context"
 	"fmt"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/credentials"
 	"log"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/credentials"
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/s3"
-	"github.com/go-resty/resty/v2"
-	"github.com/sethvargo/go-envconfig"
+	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
 
+	"github.com/go-resty/resty/v2"
 	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/clients/consoles"
+	"github.com/sethvargo/go-envconfig"
 )
 
 var c = internalClient{}
@@ -68,7 +68,7 @@ func Init(opts Opts) (err error) {
 }
 
 type Client struct {
-	*s3.S3
+	*s3.Client
 }
 
 // New creates a new S3 client.
@@ -77,20 +77,30 @@ func New() (*Client, error) {
 		return nil, err
 	}
 
-	config := &aws.Config{}
-	config.WithRegion("region01")
-	config.WithCredentials(credentials.NewStaticCredentials(c.token.GetAccessKey(), c.token.GetSecretKey(), ""))
-	config.WithEndpoint(c.token.GetEndpointS3())
+	//config := &aws.Config{}
+	//config.WithRegion("region01")
+	//config.WithCredentials(credentials.NewStaticCredentialsProvider(c.token.GetAccessKey(), c.token.GetSecretKey(), ""))
+	//config.WithEndpoint(c.token.GetEndpointS3())
+	//if c.token.debug {
+	//	config.WithLogLevel(aws.LogDebugWithHTTPBody)
+	//}
+
+	log := aws.LogRequest
 	if c.token.debug {
-		config.WithLogLevel(aws.LogDebugWithHTTPBody)
+		log = aws.LogRequestWithBody
 	}
 
-	s, err := session.NewSession(config)
+	cfg, err := config.LoadDefaultConfig(context.TODO(),
+		config.WithRegion("region01"),
+		config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(c.token.GetAccessKey(), c.token.GetSecretKey(), "")),
+		config.WithBaseEndpoint(c.token.GetEndpointS3()),
+		config.WithClientLogMode(log),
+	)
 	if err != nil {
 		return nil, err
 	}
 
-	return &Client{s3.New(s)}, nil
+	return &Client{s3.NewFromConfig(cfg)}, nil
 }
 
 // NewOSE - Return a new OSE client
