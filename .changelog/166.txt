@@ -1,0 +1,3 @@
+```release-note:note
+`edgateway/virtualservice` - Now the struct `EdgeGatewayALBVirtualServiceModel` implement simplified struct EdgeGatewayALBVirtualServiceModelServicePort for a service port.
+```
