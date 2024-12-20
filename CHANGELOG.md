@@ -1,4 +1,9 @@
 ## 0.19.0 (Unreleased)
+
+### :rocket: **New Features**
+
+* `vdcg` - Add funcs for Dynamic security group. (GH-174)
+
 ## 0.18.0 (December 17, 2024)
 
 ### :rocket: **New Features**
