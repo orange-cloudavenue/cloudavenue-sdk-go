@@ -58,6 +58,121 @@ type (
 		// to a dynamic firewall group. A VM needs to meet at least one criteria to belong to the
 		// firewall group. In other words, the logical AND is used for rules within a single criteria
 		// and the logical OR is used in between each criteria.
-		VMCriteria []govcdtypes.NsxtFirewallGroupVmCriteria `json:"vmCriteria"`
+		Criteria FirewallGroupDynamicSecurityGroupModelCriterias `json:"Criteria"`
+	}
+
+	// FirewallGroupDynamicSecurityGroupModelCriterias defines list of dynamic criteria that determines whether a VM belongs to a dynamic firewall group.
+	// A VM needs to meet at least one criteria to belong to the firewall group.
+	// In other words, the logical AND is used for rules within a single criteria and the logical OR is used in between each criteria.
+	// Allowed max length of Criteria is 3.
+	FirewallGroupDynamicSecurityGroupModelCriterias []FirewallGroupDynamicSecurityGroupModelCriteria
+	FirewallGroupDynamicSecurityGroupModelCriteria  struct {
+		Rules FirewallGroupDynamicSecurityGroupModelCriteriaRules `json:"rules"`
+	}
+
+	// Allowed max length of Rules is 4.
+	FirewallGroupDynamicSecurityGroupModelCriteriaRules []FirewallGroupDynamicSecurityGroupModelCriteriaRule
+	FirewallGroupDynamicSecurityGroupModelCriteriaRule  struct {
+		RuleType FirewallGroupDynamicSecurityGroupModelCriteriaRuleType
+		Operator FirewallGroupDynamicSecurityGroupModelCriteriaRuleOperator
+		Value    string
+	}
+
+	FirewallGroupDynamicSecurityGroupModelCriteriaRuleType     string
+	FirewallGroupDynamicSecurityGroupModelCriteriaRuleOperator string
+)
+
+const (
+	FirewallGroupDynamicSecurityGroupModelCriteriaRuleTypeVMName FirewallGroupDynamicSecurityGroupModelCriteriaRuleType = "VM_NAME"
+	FirewallGroupDynamicSecurityGroupModelCriteriaRuleTypeVMTag  FirewallGroupDynamicSecurityGroupModelCriteriaRuleType = "VM_TAG"
+
+	FirewallGroupDynamicSecurityGroupModelCriteriaRuleOperatorEquals   FirewallGroupDynamicSecurityGroupModelCriteriaRuleOperator = "EQUALS"
+	FirewallGroupDynamicSecurityGroupModelCriteriaRuleOperatorContains FirewallGroupDynamicSecurityGroupModelCriteriaRuleOperator = "CONTAINS"
+	FirewallGroupDynamicSecurityGroupModelCriteriaRuleOperatorStarts   FirewallGroupDynamicSecurityGroupModelCriteriaRuleOperator = "STARTS_WITH"
+	FirewallGroupDynamicSecurityGroupModelCriteriaRuleOperatorEnds     FirewallGroupDynamicSecurityGroupModelCriteriaRuleOperator = "ENDS_WITH"
+)
+
+var (
+	FirewallGroupDynamicSecurityGroupModelCriteriaRuleTypes = []struct {
+		Type        FirewallGroupDynamicSecurityGroupModelCriteriaRuleType
+		Description string
+	}{
+		{FirewallGroupDynamicSecurityGroupModelCriteriaRuleTypeVMName, "The criteria is based on the VM name."},
+		{FirewallGroupDynamicSecurityGroupModelCriteriaRuleTypeVMTag, "The criteria is based on the VM tag."},
+	}
+
+	FirewallGroupDynamicSecurityGroupModelCriteriaRuleTypeVMTagOperator = []struct {
+		Operator    FirewallGroupDynamicSecurityGroupModelCriteriaRuleOperator
+		Description string
+	}{
+		{FirewallGroupDynamicSecurityGroupModelCriteriaRuleOperatorEquals, "The VM name must be equal to the `value`."},
+		{FirewallGroupDynamicSecurityGroupModelCriteriaRuleOperatorContains, "The `value` must be contained in the VM name."},
+		{FirewallGroupDynamicSecurityGroupModelCriteriaRuleOperatorStarts, "The VM name must start with the `value`."},
+		{FirewallGroupDynamicSecurityGroupModelCriteriaRuleOperatorEnds, "The VM name must end with the `value`."},
+	}
+
+	FirewallGroupDynamicSecurityGroupModelCriteriaRuleTypeVMNameOperator = []struct {
+		Operator    FirewallGroupDynamicSecurityGroupModelCriteriaRuleOperator
+		Description string
+	}{
+		{FirewallGroupDynamicSecurityGroupModelCriteriaRuleOperatorStarts, "The VM tag must start with the `value`."},
+		{FirewallGroupDynamicSecurityGroupModelCriteriaRuleOperatorContains, "The `value` must be contained in the VM tag."},
 	}
 )
+
+// toGovcdtypesNsxtFirewallGroup is a method to convert a FirewallGroupDynamicSecurityGroupModel to a go-vcd firewall group.
+func (fg *FirewallGroupDynamicSecurityGroupModel) toGovcdtypesNsxtFirewallGroup(ownerID, ownerName string) *govcdtypes.NsxtFirewallGroup {
+	nsxtFirewallGroup := &govcdtypes.NsxtFirewallGroup{
+		ID:          fg.ID,
+		Name:        fg.Name,
+		Description: fg.Description,
+		OwnerRef: &govcdtypes.OpenApiReference{
+			ID:   ownerID,
+			Name: ownerName,
+		},
+		TypeValue:  govcdtypes.FirewallGroupTypeVmCriteria,
+		VmCriteria: make([]govcdtypes.NsxtFirewallGroupVmCriteria, 0, len(fg.Criteria)),
+	}
+
+	for _, criteria := range fg.Criteria {
+		vmCriteria := govcdtypes.NsxtFirewallGroupVmCriteria{
+			VmCriteriaRule: make([]govcdtypes.NsxtFirewallGroupVmCriteriaRule, 0, len(criteria.Rules)),
+		}
+
+		for _, rule := range criteria.Rules {
+			vmCriteria.VmCriteriaRule = append(vmCriteria.VmCriteriaRule, govcdtypes.NsxtFirewallGroupVmCriteriaRule{
+				AttributeType:  string(rule.RuleType),
+				Operator:       string(rule.Operator),
+				AttributeValue: rule.Value,
+			})
+		}
+
+		nsxtFirewallGroup.VmCriteria = append(nsxtFirewallGroup.VmCriteria, vmCriteria)
+	}
+
+	return nsxtFirewallGroup
+}
+
+// fromGovcdtypesNsxtFirewallGroup is a method to convert a go-vcd firewall group to a FirewallGroupDynamicSecurityGroupModel.
+func (fg *FirewallGroupDynamicSecurityGroupModel) fromGovcdtypesNsxtFirewallGroup(nsxtFirewallGroup *govcdtypes.NsxtFirewallGroup) {
+	fg.ID = nsxtFirewallGroup.ID
+	fg.Name = nsxtFirewallGroup.Name
+	fg.Description = nsxtFirewallGroup.Description
+
+	fg.Criteria = make(FirewallGroupDynamicSecurityGroupModelCriterias, 0, len(nsxtFirewallGroup.VmCriteria))
+	for _, criteria := range nsxtFirewallGroup.VmCriteria {
+		vmCriteria := FirewallGroupDynamicSecurityGroupModelCriteria{
+			Rules: make(FirewallGroupDynamicSecurityGroupModelCriteriaRules, 0, len(criteria.VmCriteriaRule)),
+		}
+
+		for _, rule := range criteria.VmCriteriaRule {
+			vmCriteria.Rules = append(vmCriteria.Rules, FirewallGroupDynamicSecurityGroupModelCriteriaRule{
+				RuleType: FirewallGroupDynamicSecurityGroupModelCriteriaRuleType(rule.AttributeType),
+				Operator: FirewallGroupDynamicSecurityGroupModelCriteriaRuleOperator(rule.Operator),
+				Value:    rule.AttributeValue,
+			})
+		}
+
+		fg.Criteria = append(fg.Criteria, vmCriteria)
+	}
+}

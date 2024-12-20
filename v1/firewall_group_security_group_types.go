@@ -32,4 +32,19 @@ type (
 
 		*FirewallGroupIPSetModel
 	}
+
+	FirewallGroupDynamicSecurityGroup struct {
+		// vg is a unexported VDC Group Client
+		// used only for the vdcGroup
+		vg VDCGroup
+
+		// edgeClient is a unexported EdgeGateway Client
+		// used only for the EdgeGateway
+		edgeClient *EdgeClient
+
+		// fwGroup is a unexported NSX-T Firewall Group
+		fwGroup *govcd.NsxtFirewallGroup
+
+		*FirewallGroupDynamicSecurityGroupModel
+	}
 )
