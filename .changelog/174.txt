@@ -1,0 +1,3 @@
+```release-note:feature
+`vdcg` - Add funcs for Dynamic security group.
+```
