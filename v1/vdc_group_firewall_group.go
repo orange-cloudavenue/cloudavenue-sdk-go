@@ -232,3 +232,23 @@ func (g VDCGroup) GetFirewallDynamicSecurityGroup(nameOrID string) (*FirewallGro
 		vg:                                     g,
 	}, nil
 }
+
+// * App Port Profile
+
+// CreateFirewallAppPortProfile allow creating a new application port profile for the VDC Group.
+func (g *VDCGroup) CreateFirewallAppPortProfile(appPortProfileConfig *FirewallGroupAppPortProfileModel) (*FirewallGroupAppPortProfile, error) {
+	return createFirewallAppPortProfile(appPortProfileConfig, g)
+}
+
+// GetFirewallAppPortProfile retrieves the application port profile configuration for the VDC Group.
+// This function retrieves the application port profile created by the user.
+// For retrieving the application port profile created by the system, use FindFirewallAppPortProfile.
+func (g *VDCGroup) GetFirewallAppPortProfile(nameOrID string) (*FirewallGroupAppPortProfile, error) {
+	return getFirewallAppPortProfile(nameOrID, g)
+}
+
+// FindFirewallAppPortProfile retrieves the application port profile configuration for the VDC Group.
+// This function retrieves the application port profile created by the user, cloudavenue provider or the system.
+func (g *VDCGroup) FindFirewallAppPortProfile(nameOrID string) (*FirewallGroupAppPortProfiles, error) {
+	return findFirewallAppPortProfile(nameOrID, g)
+}

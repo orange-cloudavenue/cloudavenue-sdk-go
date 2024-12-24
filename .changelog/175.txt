@@ -1,0 +1,3 @@
+```release-note:feature
+`AppPortProfile` - Add for EdgeGateway and VDCGroup the support of Firewall Application Port Profile. Add funcs `CreateFirewallAppPortProfile`, `GetFirewallAppPortProfile`, `FindFirewallAppPortProfile`.
+```

@@ -136,3 +136,38 @@ func (e *EdgeClient) GetFirewallIPSet(nameOrID string) (*FirewallGroupIPSet, err
 		edgeClient: e,
 	}, nil
 }
+
+// * App Port Profile
+
+// CreateFirewallAppPortProfile allow creating a new application port profile for the Edge Gateway.
+func (e *EdgeClient) CreateFirewallAppPortProfile(appPortProfileConfig *FirewallGroupAppPortProfileModel) (*FirewallGroupAppPortProfile, error) {
+	vdcOrVDCGroup, err := (&CAVVdc{}).GetVDCOrVDCGroup(e.vcdEdge.EdgeGateway.OwnerRef.Name)
+	if err != nil {
+		return nil, err
+	}
+
+	return createFirewallAppPortProfile(appPortProfileConfig, vdcOrVDCGroup)
+}
+
+// GetFirewallAppPortProfile retrieves the application port profile configuration for the VDC Group.
+// This function retrieves the application port profile created by the user.
+// For retrieving the application port profile created by the system, use FindFirewallAppPortProfile.
+func (e *EdgeClient) GetFirewallAppPortProfile(nameOrID string) (*FirewallGroupAppPortProfile, error) {
+	vdcOrVDCGroup, err := (&CAVVdc{}).GetVDCOrVDCGroup(e.vcdEdge.EdgeGateway.OwnerRef.Name)
+	if err != nil {
+		return nil, err
+	}
+
+	return getFirewallAppPortProfile(nameOrID, vdcOrVDCGroup)
+}
+
+// FindFirewallAppPortProfile retrieves the application port profile configuration for the VDC Group.
+// This function retrieves the application port profile created by the user, cloudavenue provider or the system.
+func (e *EdgeClient) FindFirewallAppPortProfile(nameOrID string) (*FirewallGroupAppPortProfiles, error) {
+	vdcOrVDCGroup, err := (&CAVVdc{}).GetVDCOrVDCGroup(e.vcdEdge.EdgeGateway.OwnerRef.Name)
+	if err != nil {
+		return nil, err
+	}
+
+	return findFirewallAppPortProfile(nameOrID, vdcOrVDCGroup)
+}

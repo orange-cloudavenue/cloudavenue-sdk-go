@@ -21,4 +21,7 @@ var (
 	ErrInvalidFirewallRuleDirection  = fmt.Errorf("firewall rule direction has an %w", ErrInvalidFormat)
 	ErrInvalidFirewallRuleIPProtocol = fmt.Errorf("firewall rule ipProtocol has an %w", ErrInvalidFormat)
 	ErrInvalidFirewallRuleAction     = fmt.Errorf("firewall rule action has an %w", ErrInvalidFormat)
+
+	// * FirewallAppPortProfile
+	ErrInvalidFirewallAppPortProfileProtocol = fmt.Errorf("firewall app port profile protocol has an %w", ErrInvalidFormat)
 )

@@ -47,4 +47,27 @@ type (
 
 		*FirewallGroupDynamicSecurityGroupModel
 	}
+
+	FirewallGroupAppPortProfile struct {
+		// vdcOrVDCGroup is a unexported EdgeGateway Or VDC Group Interface
+		vdcOrVDCGroup idOrNameInterface
+
+		// org is a unexported Org Client
+		org *govcd.Org
+
+		// appProfile is a unexported NSX-T Application Port Profile
+		appProfile *govcd.NsxtAppPortProfile
+
+		*FirewallGroupAppPortProfileModelResponse
+	}
+
+	FirewallGroupAppPortProfiles struct {
+		// vdcOrVDCGroup is a unexported EdgeGateway Or VDC Group Interface
+		vdcOrVDCGroup idOrNameInterface
+
+		// org is a unexported Org Client
+		org *govcd.Org
+
+		AppPortProfiles []*FirewallGroupAppPortProfileModelResponse
+	}
 )
