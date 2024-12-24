@@ -1,4 +1,9 @@
 ## 0.19.0 (Unreleased)
+
+### :rocket: **New Features**
+
+* `AppPortProfile` - Add for EdgeGateway and VDCGroup the support of Firewall Application Port Profile. Add funcs `CreateFirewallAppPortProfile`, `GetFirewallAppPortProfile`, `FindFirewallAppPortProfile`. (GH-175)
+
 ## 0.18.1 (December 20, 2024)
 
 ### :rocket: **New Features**
