@@ -13,6 +13,11 @@ type (
 		// * IP Set
 		CreateFirewallIPSet(*FirewallGroupIPSetModel) (*FirewallGroupIPSet, error)
 		GetFirewallIPSet(nameOrID string) (*FirewallGroupIPSet, error)
+
+		// * App Port Profile
+		CreateFirewallAppPortProfile(*FirewallGroupAppPortProfileModel) (*FirewallGroupAppPortProfile, error)
+		GetFirewallAppPortProfile(nameOrID string) (*FirewallGroupAppPortProfile, error)
+		FindFirewallAppPortProfile(name string) (*FirewallGroupAppPortProfiles, error)
 	}
 )
 
@@ -80,6 +85,56 @@ type (
 
 	FirewallGroupDynamicSecurityGroupModelCriteriaRuleType     string
 	FirewallGroupDynamicSecurityGroupModelCriteriaRuleOperator string
+
+	FirewallGroupAppPortProfileModel struct {
+		// ID contains App Port Profile ID (URN format)
+		// e.g. urn:vcloud:applicationPortProfile::d7f4e0b4-b83f-4a07-9f22-d242c9c0987a
+		ID string `json:"id,omitempty"`
+
+		// Name contains App Port Profile name
+		// Name must be unique by scope.
+		Name        string `json:"name"`
+		Description string `json:"description,omitempty"`
+
+		// ApplicationPorts contains one or more protocol and port definitions
+		ApplicationPorts FirewallGroupAppPortProfileModelPorts `json:"applicationPorts"`
+	}
+
+	FirewallGroupAppPortProfileModelResponse struct {
+		FirewallGroupAppPortProfileModel
+
+		// Scope can be one of the following:
+		//  * "TENANT" - v1.FirewallGroupAppPortProfileModelScopeTenant
+		//  * "PROVIDER" - v1.FirewallGroupAppPortProfileModelScopeProvider
+		//  * "SYSTEM" - v1.FirewallGroupAppPortProfileModelScopeSystem
+		Scope FirewallGroupAppPortProfileModelScope `json:"scope"`
+	}
+
+	FirewallGroupAppPortProfileModelPorts []FirewallGroupAppPortProfileModelPort
+	FirewallGroupAppPortProfileModelPort  struct {
+		// Protocol can be one of the following:
+		//  * "ICMPv4" - v1.FirewallGroupAppPortProfileModelPortProtocolICMPv4
+		//  * "ICMPv6" - v1.FirewallGroupAppPortProfileModelPortProtocolICMPv6
+		//  * "TCP" - v1.FirewallGroupAppPortProfileModelPortProtocolTCP
+		//  * "UDP" - v1.FirewallGroupAppPortProfileModelPortProtocolUDP
+		Protocol FirewallGroupAppPortProfileModelPortProtocol `json:"protocol"`
+
+		// DestinationPorts is required when protocol is TCP or UDP , but can define list of ports ("1000", "1500") or port ranges ("1200-1400")
+		DestinationPorts []string `json:"destinationPorts"`
+	}
+
+	// Protocol can be one of the following:
+	//  * "ICMPv4" - v1.FirewallGroupAppPortProfileModelPortProtocolICMPv4
+	//  * "ICMPv6" - v1.FirewallGroupAppPortProfileModelPortProtocolICMPv6
+	//  * "TCP" - v1.FirewallGroupAppPortProfileModelPortProtocolTCP
+	//  * "UDP" - v1.FirewallGroupAppPortProfileModelPortProtocolUDP
+	FirewallGroupAppPortProfileModelPortProtocol string
+
+	// Scope can be one of the following:
+	//  * "TENANT" - v1.FirewallGroupAppPortProfileModelScopeTenant
+	//  * "PROVIDER" - v1.FirewallGroupAppPortProfileModelScopeProvider
+	//  * "SYSTEM" - v1.FirewallGroupAppPortProfileModelScopeSystem
+	FirewallGroupAppPortProfileModelScope string
 )
 
 const (
@@ -90,6 +145,15 @@ const (
 	FirewallGroupDynamicSecurityGroupModelCriteriaRuleOperatorContains FirewallGroupDynamicSecurityGroupModelCriteriaRuleOperator = "CONTAINS"
 	FirewallGroupDynamicSecurityGroupModelCriteriaRuleOperatorStarts   FirewallGroupDynamicSecurityGroupModelCriteriaRuleOperator = "STARTS_WITH"
 	FirewallGroupDynamicSecurityGroupModelCriteriaRuleOperatorEnds     FirewallGroupDynamicSecurityGroupModelCriteriaRuleOperator = "ENDS_WITH"
+
+	FirewallGroupAppPortProfileModelPortProtocolICMPv4 FirewallGroupAppPortProfileModelPortProtocol = "ICMPv4"
+	FirewallGroupAppPortProfileModelPortProtocolICMPv6 FirewallGroupAppPortProfileModelPortProtocol = "ICMPv6"
+	FirewallGroupAppPortProfileModelPortProtocolTCP    FirewallGroupAppPortProfileModelPortProtocol = "TCP"
+	FirewallGroupAppPortProfileModelPortProtocolUDP    FirewallGroupAppPortProfileModelPortProtocol = "UDP"
+
+	FirewallGroupAppPortProfileModelScopeTenant   FirewallGroupAppPortProfileModelScope = govcdtypes.ApplicationPortProfileScopeTenant
+	FirewallGroupAppPortProfileModelScopeProvider FirewallGroupAppPortProfileModelScope = govcdtypes.ApplicationPortProfileScopeProvider
+	FirewallGroupAppPortProfileModelScopeSystem   FirewallGroupAppPortProfileModelScope = govcdtypes.ApplicationPortProfileScopeSystem
 )
 
 var (
@@ -118,7 +182,22 @@ var (
 		{FirewallGroupDynamicSecurityGroupModelCriteriaRuleOperatorStarts, "The VM tag must start with the `value`."},
 		{FirewallGroupDynamicSecurityGroupModelCriteriaRuleOperatorContains, "The `value` must be contained in the VM tag."},
 	}
+
+	FirewallGroupAppPortProfileModelPortProtocols = []FirewallGroupAppPortProfileModelPortProtocol{
+		FirewallGroupAppPortProfileModelPortProtocolICMPv4,
+		FirewallGroupAppPortProfileModelPortProtocolICMPv6,
+		FirewallGroupAppPortProfileModelPortProtocolTCP,
+		FirewallGroupAppPortProfileModelPortProtocolUDP,
+	}
+
+	FirewallGroupAppPortProfileModelScopes = []FirewallGroupAppPortProfileModelScope{
+		FirewallGroupAppPortProfileModelScopeTenant,
+		FirewallGroupAppPortProfileModelScopeProvider,
+		FirewallGroupAppPortProfileModelScopeSystem,
+	}
 )
+
+// * Dynamic Security Group
 
 // toGovcdtypesNsxtFirewallGroup is a method to convert a FirewallGroupDynamicSecurityGroupModel to a go-vcd firewall group.
 func (fg *FirewallGroupDynamicSecurityGroupModel) toGovcdtypesNsxtFirewallGroup(ownerID, ownerName string) *govcdtypes.NsxtFirewallGroup {
@@ -174,5 +253,46 @@ func (fg *FirewallGroupDynamicSecurityGroupModel) fromGovcdtypesNsxtFirewallGrou
 		}
 
 		fg.Criteria = append(fg.Criteria, vmCriteria)
+	}
+}
+
+// * App Port Profile
+
+// toGovcdtypesNsxtAppPortProfile is a method to convert a FirewallGroupAppPortProfileModel to a go-vcd app port profile.
+func (appPortProfile *FirewallGroupAppPortProfileModel) toGovcdtypesNsxtAppPortProfile(orgID, vDCOrVDCGroupID string) *govcdtypes.NsxtAppPortProfile {
+	nsxtAppPortProfile := &govcdtypes.NsxtAppPortProfile{
+		ID:               appPortProfile.ID,
+		Name:             appPortProfile.Name,
+		Description:      appPortProfile.Description,
+		ApplicationPorts: make([]govcdtypes.NsxtAppPortProfilePort, 0, len(appPortProfile.ApplicationPorts)),
+		OrgRef: &govcdtypes.OpenApiReference{
+			ID: orgID,
+		},
+		ContextEntityId: vDCOrVDCGroupID,
+		Scope:           govcdtypes.ApplicationPortProfileScopeTenant,
+	}
+
+	for _, port := range appPortProfile.ApplicationPorts {
+		nsxtAppPortProfile.ApplicationPorts = append(nsxtAppPortProfile.ApplicationPorts, govcdtypes.NsxtAppPortProfilePort{
+			Protocol:         string(port.Protocol),
+			DestinationPorts: port.DestinationPorts,
+		})
+	}
+
+	return nsxtAppPortProfile
+}
+
+// fromGovcdtypesNsxtAppPortProfile is a method to convert a go-vcd app port profile to a FirewallGroupAppPortProfileModel.
+func (appPortProfile *FirewallGroupAppPortProfileModel) fromGovcdtypesNsxtAppPortProfile(nsxtAppPortProfile *govcdtypes.NsxtAppPortProfile) {
+	appPortProfile.ID = nsxtAppPortProfile.ID
+	appPortProfile.Name = nsxtAppPortProfile.Name
+	appPortProfile.Description = nsxtAppPortProfile.Description
+
+	appPortProfile.ApplicationPorts = make(FirewallGroupAppPortProfileModelPorts, 0, len(nsxtAppPortProfile.ApplicationPorts))
+	for _, port := range nsxtAppPortProfile.ApplicationPorts {
+		appPortProfile.ApplicationPorts = append(appPortProfile.ApplicationPorts, FirewallGroupAppPortProfileModelPort{
+			Protocol:         FirewallGroupAppPortProfileModelPortProtocol(port.Protocol),
+			DestinationPorts: port.DestinationPorts,
+		})
 	}
 }

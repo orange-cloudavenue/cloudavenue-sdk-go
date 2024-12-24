@@ -87,10 +87,15 @@ func (v *CAVVdc) GetVDC(vdcName string) (*VDC, error) {
 		done <- true
 	}()
 
+	errs := []error{}
+
 	for i := 0; i < 2; i++ {
 		select {
 		case err := <-errChan:
-			return nil, err
+			errs = append(errs, err)
+			if len(errs) == 2 {
+				return nil, fmt.Errorf("errors: %v", errs)
+			}
 		case vdc := <-vdcChan:
 			switch x := vdc.(type) {
 			case *govcd.Vdc:
