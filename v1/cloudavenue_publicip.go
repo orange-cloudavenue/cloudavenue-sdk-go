@@ -21,12 +21,12 @@ type IP struct {
 	EdgeGatewayName string `json:"edgeGatewayName"`
 }
 
-// GetIP - Returns the public IP
+// GetIP - Returns the public IP.
 func (i *IP) GetIP() string {
 	return i.UplinkIP
 }
 
-// GetIPs - Returns the list of public IPs
+// GetIPs - Returns the list of public IPs.
 func (v *PublicIP) GetIPs() (response *IPs, err error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {
@@ -48,7 +48,7 @@ func (v *PublicIP) GetIPs() (response *IPs, err error) {
 	return r.Result().(*IPs), nil
 }
 
-// GetIPsByEdgeGateway - Returns the list of public IPs by edge gateway
+// GetIPsByEdgeGateway - Returns the list of public IPs by edge gateway.
 func (v *PublicIP) GetIPsByEdgeGateway(edgeGatewayName string) (response *IPs, err error) {
 	ipS, err := v.GetIPs()
 	if err != nil {
@@ -65,7 +65,7 @@ func (v *PublicIP) GetIPsByEdgeGateway(edgeGatewayName string) (response *IPs, e
 	return &ipsByEdgeGateway, nil
 }
 
-// GetIP - Returns the public IP by edge gateway
+// GetIP - Returns the public IP by edge gateway.
 func (v *PublicIP) GetIP(publicIP string) (response *IP, err error) {
 	ipS, err := v.GetIPs()
 	if err != nil {
@@ -81,7 +81,7 @@ func (v *PublicIP) GetIP(publicIP string) (response *IP, err error) {
 	return nil, fmt.Errorf("public IP %s not found", publicIP)
 }
 
-// GetIPByJob - Returns the public IP by job
+// GetIPByJob - Returns the public IP by job.
 func (v *PublicIP) GetIPByJob(job *commoncloudavenue.JobStatus) (response *IP, err error) {
 	if job == nil {
 		return nil, fmt.Errorf("job is nil")
@@ -99,7 +99,7 @@ func (v *PublicIP) GetIPByJob(job *commoncloudavenue.JobStatus) (response *IP, e
 	return nil, fmt.Errorf("public IP not found")
 }
 
-// New - Returns a new PublicIP
+// New - Returns a new PublicIP.
 func (v *PublicIP) New(edgeGatewayName string) (job *commoncloudavenue.JobStatus, err error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {
@@ -126,7 +126,7 @@ func (v *PublicIP) New(edgeGatewayName string) (job *commoncloudavenue.JobStatus
 	return r.Result().(*commoncloudavenue.JobCreatedAPIResponse).GetJobStatus()
 }
 
-// Delete - Deletes a public IP
+// Delete - Deletes a public IP.
 func (i *IP) Delete() (job *commoncloudavenue.JobStatus, err error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {

@@ -23,7 +23,7 @@ type getProtectionLevelByIDRequest struct {
 }
 
 // GetProtectionLevel - Get a protection level by ID
-// Use GetProtectionLevelsRequest to specify the VAppID, VDCID or MachineID and the ProtectionLevelID
+// Use GetProtectionLevelsRequest to specify the VAppID, VDCID or MachineID and the ProtectionLevelID.
 func (p *ProtectionLevelClient) getProtectionLevelByID(req getProtectionLevelByIDRequest) (resp *ProtectionLevel, err error) {
 	c, err := clientnetbackup.New()
 	if err != nil {
@@ -88,7 +88,7 @@ type getProtectionLevelByNameRequest struct {
 }
 
 // GetProtectionLevelByName - Get a protection level by Name
-// Use GetProtectionLevelsRequest to specify the VAppID, VDCID or MachineID and the ProtectionLevelName
+// Use GetProtectionLevelsRequest to specify the VAppID, VDCID or MachineID and the ProtectionLevelName.
 func (p *ProtectionLevelClient) getProtectionLevelByName(req getProtectionLevelByNameRequest) (resp *ProtectionLevel, err error) {
 	if req.VAppID == nil && req.VDCID == nil && req.MachineID == nil {
 		return resp, fmt.Errorf("you must specify a VAppID, VDCID or MachineID")

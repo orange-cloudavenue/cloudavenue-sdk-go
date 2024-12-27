@@ -17,7 +17,7 @@ type (
 	CAVVdc struct{}
 )
 
-// ! Errors
+// ! Errors.
 var (
 	ErrEmptyVDCNameProvided    = fmt.Errorf("empty VDC name provided")
 	ErrRetrievingOrg           = fmt.Errorf("error retrieving org")
@@ -130,7 +130,7 @@ func (v *CAVVdc) New(ctx context.Context, object *infrapi.CAVVirtualDataCenter) 
 }
 
 // List returns the list of VDCs.
-// TODO - refacto to return a slice of VDC
+// TODO - refacto to return a slice of VDC.
 func (v *CAVVdc) List() (*infrapi.VDCs, error) {
 	infraPIVDC := infrapi.CAVVDC{}
 	return infraPIVDC.List()
@@ -196,7 +196,7 @@ func (v *VDC) GetStorageProfiles() []infrapi.StorageProfile {
 }
 
 // SetName set the name of the VDC.
-// Name respects the following regex: ^[a-zA-Z0-9-_]{1,64}$
+// Name respects the following regex: ^[a-zA-Z0-9-_]{1,64}$.
 func (v *VDC) SetName(name string) error {
 	return v.infrapi.SetName(name)
 }

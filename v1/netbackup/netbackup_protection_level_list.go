@@ -11,7 +11,7 @@ import (
 
 type ProtectionLevels []ProtectionLevel
 
-// append - Append a ProtectionLevel to the ProtectionLevels slice
+// append - Append a ProtectionLevel to the ProtectionLevels slice.
 func (p *ProtectionLevels) append(protectionLevel ProtectionLevel) {
 	*p = append(*p, protectionLevel)
 }
@@ -27,7 +27,7 @@ type listProtectionLevelsRequest struct {
 }
 
 // ListProtectionLevels - Get a list of protection levels
-// Use listProtectionLevelsRequest to specify the VAppID, VDCID or MachineID
+// Use listProtectionLevelsRequest to specify the VAppID, VDCID or MachineID.
 func (p *ProtectionLevelClient) ListProtectionLevels(req listProtectionLevelsRequest) (resp *ProtectionLevels, err error) {
 	c, err := clientnetbackup.New()
 	if err != nil {

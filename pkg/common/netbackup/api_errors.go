@@ -7,7 +7,7 @@ type APIError []struct {
 	Message      string `json:"Message"`
 }
 
-// Convert to Error
+// Convert to Error.
 func ToError(err *APIError) error {
 	return fmt.Errorf("API Error: %v", err)
 }

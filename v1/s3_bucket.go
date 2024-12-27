@@ -30,7 +30,7 @@ type (
 	}
 )
 
-// SyncBucket - Syncs a bucket
+// SyncBucket - Syncs a bucket.
 func (s S3Client) SyncBucket(bucketName string) (err error) {
 	r, err := clients3.NewOSE().R().
 		SetResult(&SyncBucketResponse{}).

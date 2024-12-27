@@ -5,7 +5,7 @@ type protectBody struct {
 	Paths             []string `json:"Paths,omitempty"`
 }
 
-// ProtectUnprotectRequest - Is the request structure for the Protects and Unprotects APIs
+// ProtectUnprotectRequest - Is the request structure for the Protects and Unprotects APIs.
 type ProtectUnprotectRequest struct {
 	// One of the following protection level settings must be specified
 	// The ID of the protection level in the netbackup system

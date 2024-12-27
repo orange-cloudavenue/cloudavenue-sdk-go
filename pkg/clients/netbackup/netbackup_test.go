@@ -32,14 +32,14 @@ func TestOpts_Validate(t *testing.T) {
 			name: "should not return an error if the endpoint or the url are not empty and the organization is provided",
 			opts: &Opts{
 				org:      "cav01ev01ocb0001234",
-				Endpoint: "https://backup4.cloudavenue.orange-business.com/NetBackupSelfServiceNetBackupPanels/Api",
+				Endpoint: "https://backup4.cloudavenue.orange-business.com/NetBackupSelfService/Api",
 			},
 			wantErr: nil,
 		},
 		{
 			name: "should not return an error if the endpoint or the url are not empty and the organization is empty",
 			opts: &Opts{
-				URL: "https://backup4.cloudavenue.orange-business.com/NetBackupSelfServiceNetBackupPanels/Api",
+				URL: "https://backup4.cloudavenue.orange-business.com/NetBackupSelfService/Api",
 			},
 			wantErr: nil,
 		},
@@ -100,7 +100,7 @@ func TestInit(t *testing.T) {
 			name: "should not set username, password, endpoint, and debug if not provided",
 			org:  "cav01ev01ocb0001234",
 			opts: &Opts{
-				Endpoint: "https://backup4.cloudavenue.orange-business.com/NetBackupSelfServiceNetBackupPanels/Api",
+				Endpoint: "https://backup4.cloudavenue.orange-business.com/NetBackupSelfService/Api",
 			},
 			expectedUser: "",
 			expectedPass: "",
@@ -116,7 +116,7 @@ func TestInit(t *testing.T) {
 			},
 			expectedUser: "testuser",
 			expectedPass: "testpass",
-			expectedURL:  "https://backup1.cloudavenue.orange-business.com/NetBackupSelfServiceNetBackupPanels/Api",
+			expectedURL:  "https://backup1.cloudavenue.orange-business.com/NetBackupSelfService/Api",
 		},
 	}
 

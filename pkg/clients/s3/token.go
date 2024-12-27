@@ -19,37 +19,37 @@ type token struct {
 	debug       bool
 }
 
-// GetEndpointOSE - Returns the OSE endpoint
+// GetEndpointOSE - Returns the OSE endpoint.
 func (t *token) GetEndpointOSE() string {
 	return t.oseEndpoint
 }
 
-// GetEndpointS3 - Returns the S3 endpoint
+// GetEndpointS3 - Returns the S3 endpoint.
 func (t *token) GetEndpointS3() string {
 	return t.s3Endpoint
 }
 
-// IsSet - Returns true if the accessKey and secretKey are set
+// IsSet - Returns true if the accessKey and secretKey are set.
 func (t *token) IsSet() bool {
 	return t.accessKey != "" && t.secretKey != ""
 }
 
-// GetToken - Returns the token
+// GetToken - Returns the token.
 func (t *token) GetToken() string {
 	return t.cavToken
 }
 
-// GetAccessKey - Returns the accessKey
+// GetAccessKey - Returns the accessKey.
 func (t *token) GetAccessKey() string {
 	return t.accessKey
 }
 
-// GetSecretKey - Returns the secretKey
+// GetSecretKey - Returns the secretKey.
 func (t *token) GetSecretKey() string {
 	return t.secretKey
 }
 
-// RefreshAccessKey - Refreshes the accessKey and secretKey
+// RefreshAccessKey - Refreshes the accessKey and secretKey.
 func (t *token) RefreshAccessKey() error {
 	if !t.IsSet() {
 		c := resty.New().

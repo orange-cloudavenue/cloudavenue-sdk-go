@@ -16,7 +16,7 @@ const (
 	JobStatusPending   JobStatus = "Pending"
 )
 
-// JobAPIResponse is the response structure for the Job API
+// JobAPIResponse is the response structure for the Job API.
 type JobAPIResponse struct {
 	Data struct {
 		ID     int    `json:"Id,omitempty"`
@@ -24,7 +24,7 @@ type JobAPIResponse struct {
 	} `json:"data,omitempty"`
 }
 
-// Refresh - Refreshes the job status
+// Refresh - Refreshes the job status.
 func (j *JobAPIResponse) Refresh() error {
 	c, err := clientnetbackup.New()
 	if err != nil {
@@ -51,14 +51,14 @@ func (j *JobAPIResponse) Refresh() error {
 	return nil
 }
 
-// IsDone - Returns true if the job is done with a success
+// IsDone - Returns true if the job is done with a success.
 func (j *JobAPIResponse) IsDone() bool {
 	return j.Data.Status == string(JobStatusCompleted)
 }
 
 // Wait - Waits for the job to be done
 // refreshInterval - The interval in seconds between each refresh
-// timeout - The timeout in seconds
+// timeout - The timeout in seconds.
 func (j *JobAPIResponse) Wait(refreshInterval, timeout int) error {
 	err := j.Refresh()
 	if err != nil {

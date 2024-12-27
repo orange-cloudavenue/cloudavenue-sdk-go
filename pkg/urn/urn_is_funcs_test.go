@@ -439,7 +439,7 @@ func TestIsUser(t *testing.T) {
 	}
 }
 
-// TestIsOrg
+// TestIsOrg.
 func TestIsOrg(t *testing.T) {
 	tests := []struct {
 		name    string

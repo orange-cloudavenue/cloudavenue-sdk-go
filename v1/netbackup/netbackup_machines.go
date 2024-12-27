@@ -13,7 +13,7 @@ import (
 
 type MachineClient struct{}
 
-// Machine - Is the response structure for the Machines APIs
+// Machine - Is the response structure for the Machines APIs.
 type Machine struct {
 	IsVisibleToAllUsers       bool      `json:"IsVisibleToAllUsers,omitempty"`
 	NetBackupClientName       string    `json:"NetBackupClientName,omitempty"`
@@ -43,151 +43,151 @@ type Machine struct {
 	Location                  string    `json:"Location,omitempty"`
 }
 
-// GetID returns the ID field of Machine
+// GetID returns the ID field of Machine.
 func (m *Machine) GetID() int {
 	return m.ID
 }
 
-// GetIDPtr returns a pointer to the ID field of Machine
+// GetIDPtr returns a pointer to the ID field of Machine.
 func (m *Machine) GetIDPtr() *int {
 	return &m.ID
 }
 
-// GetIsVisibleToAllUsers returns the IsVisibleToAllUsers field of Machine
+// GetIsVisibleToAllUsers returns the IsVisibleToAllUsers field of Machine.
 func (m *Machine) GetIsVisibleToAllUsers() bool {
 	return m.IsVisibleToAllUsers
 }
 
-// GetNetBackupClientName returns the NetBackupClientName field of Machine
+// GetNetBackupClientName returns the NetBackupClientName field of Machine.
 func (m *Machine) GetNetBackupClientName() string {
 	return m.NetBackupClientName
 }
 
-// GetLastUpdatedDateTime returns the LastUpdatedDateTime field of Machine
+// GetLastUpdatedDateTime returns the LastUpdatedDateTime field of Machine.
 func (m *Machine) GetLastUpdatedDateTime() time.Time {
 	return m.LastUpdatedDateTime
 }
 
-// GetMachineCode returns the MachineCode field of Machine
+// GetMachineCode returns the MachineCode field of Machine.
 func (m *Machine) GetMachineCode() string {
 	return m.MachineCode
 }
 
-// GetDisplayName returns the DisplayName field of Machine
+// GetDisplayName returns the DisplayName field of Machine.
 func (m *Machine) GetDisplayName() string {
 	return m.DisplayName
 }
 
-// GetName returns the DisplayName field of Machine
+// GetName returns the DisplayName field of Machine.
 func (m *Machine) GetName() string {
 	return m.DisplayName
 }
 
-// GetProtectionTypeName returns the ProtectionTypeName field of Machine
+// GetProtectionTypeName returns the ProtectionTypeName field of Machine.
 func (m *Machine) GetProtectionTypeName() string {
 	return m.ProtectionTypeName
 }
 
-// GetHardware returns the Hardware field of Machine
+// GetHardware returns the Hardware field of Machine.
 func (m *Machine) GetHardware() string {
 	return m.Hardware
 }
 
-// GetTrafficLightStatus returns the TrafficLightStatus field of Machine
+// GetTrafficLightStatus returns the TrafficLightStatus field of Machine.
 func (m *Machine) GetTrafficLightStatus() string {
 	return m.TrafficLightStatus
 }
 
-// GetIsSyncingNetBackupData returns the IsSyncingNetBackupData field of Machine
+// GetIsSyncingNetBackupData returns the IsSyncingNetBackupData field of Machine.
 func (m *Machine) GetIsSyncingNetBackupData() bool {
 	return m.IsSyncingNetBackupData
 }
 
-// GetPolicyAppendix returns the PolicyAppendix field of Machine
+// GetPolicyAppendix returns the PolicyAppendix field of Machine.
 func (m *Machine) GetPolicyAppendix() string {
 	return m.PolicyAppendix
 }
 
-// GetAdditionalData returns the AdditionalData field of Machine
+// GetAdditionalData returns the AdditionalData field of Machine.
 func (m *Machine) GetAdditionalData() string {
 	return m.AdditionalData
 }
 
-// GetOs returns the Os field of Machine
+// GetOs returns the Os field of Machine.
 func (m *Machine) GetOs() string {
 	return m.Os
 }
 
-// GetImportSource returns the ImportSource field of Machine
+// GetImportSource returns the ImportSource field of Machine.
 func (m *Machine) GetImportSource() string {
 	return m.ImportSource
 }
 
-// GetCustomerCode returns the CustomerCode field of Machine
+// GetCustomerCode returns the CustomerCode field of Machine.
 func (m *Machine) GetCustomerCode() string {
 	return m.CustomerCode
 }
 
-// GetProviderAssetType returns the ProviderAssetType field of Machine
+// GetProviderAssetType returns the ProviderAssetType field of Machine.
 func (m *Machine) GetProviderAssetType() string {
 	return m.ProviderAssetType
 }
 
-// GetIsDeletedFromImportSource returns the IsDeletedFromImportSource field of Machine
+// GetIsDeletedFromImportSource returns the IsDeletedFromImportSource field of Machine.
 func (m *Machine) GetIsDeletedFromImportSource() bool {
 	return m.IsDeletedFromImportSource
 }
 
-// GetVAppID returns the VAppID field of Machine
+// GetVAppID returns the VAppID field of Machine.
 func (m *Machine) GetVAppID() int {
 	return m.VAppID
 }
 
-// GetLastSuccessfulBackupDate returns the LastSuccessfulBackupDate field of Machine
+// GetLastSuccessfulBackupDate returns the LastSuccessfulBackupDate field of Machine.
 func (m *Machine) GetLastSuccessfulBackupDate() time.Time {
 	return m.LastSuccessfulBackupDate
 }
 
-// GetSyncLastError returns the SyncLastError field of Machine
+// GetSyncLastError returns the SyncLastError field of Machine.
 func (m *Machine) GetSyncLastError() string {
 	return m.SyncLastError
 }
 
-// GetProtectionTypeID returns the ProtectionTypeID field of Machine
+// GetProtectionTypeID returns the ProtectionTypeID field of Machine.
 func (m *Machine) GetProtectionTypeID() int {
 	return m.ProtectionTypeID
 }
 
-// GetIsInVCloud returns the IsInVCloud field of Machine
+// GetIsInVCloud returns the IsInVCloud field of Machine.
 func (m *Machine) GetIsInVCloud() bool {
 	return m.IsInVCloud
 }
 
-// GetCatalogName returns the CatalogName field of Machine
+// GetCatalogName returns the CatalogName field of Machine.
 func (m *Machine) GetCatalogName() string {
 	return m.CatalogName
 }
 
-// GetVMDisplayName returns the VMDisplayName field of Machine
+// GetVMDisplayName returns the VMDisplayName field of Machine.
 func (m *Machine) GetVMDisplayName() string {
 	return m.VMDisplayName
 }
 
-// GetCreatedDateTime returns the CreatedDateTime field of Machine
+// GetCreatedDateTime returns the CreatedDateTime field of Machine.
 func (m *Machine) GetCreatedDateTime() time.Time {
 	return m.CreatedDateTime
 }
 
-// GetLocation returns the Location field of Machine
+// GetLocation returns the Location field of Machine.
 func (m *Machine) GetLocation() string {
 	return m.Location
 }
 
 // * Machines
-// Machines - Is the response structure for the GetMachines API
+// Machines - Is the response structure for the GetMachines API.
 type Machines []Machine
 
-// append - Append a Machine to the Machines slice
+// append - Append a Machine to the Machines slice.
 func (m *Machines) append(machine Machine) { //nolint:unused
 	*m = append(*m, machine)
 }
@@ -196,7 +196,7 @@ type machinesResponse struct {
 	Data Machines `json:"data,omitempty"`
 }
 
-// GetMachines - Get a list of NetBackup Machines
+// GetMachines - Get a list of NetBackup Machines.
 func (m *MachineClient) GetMachines() (resp *Machines, err error) {
 	c, err := clientnetbackup.New()
 	if err != nil {
@@ -222,7 +222,7 @@ type machineResponse struct {
 	Data Machine `json:"data,omitempty"`
 }
 
-// GetMachineByID - Get a NetBackup Machine by ID
+// GetMachineByID - Get a NetBackup Machine by ID.
 func (m *MachineClient) GetMachineByID(id int) (resp *Machine, err error) {
 	c, err := clientnetbackup.New()
 	if err != nil {
@@ -245,7 +245,7 @@ func (m *MachineClient) GetMachineByID(id int) (resp *Machine, err error) {
 	return &r.Result().(*machineResponse).Data, nil
 }
 
-// GetMachineByName - Get a NetBackup Machine by Name
+// GetMachineByName - Get a NetBackup Machine by Name.
 func (m *MachineClient) GetMachineByName(name string) (resp *Machine, err error) {
 	machines, err := m.GetMachines()
 	if err != nil {
@@ -261,7 +261,7 @@ func (m *MachineClient) GetMachineByName(name string) (resp *Machine, err error)
 	return resp, fmt.Errorf("Machine with name %s not found", name)
 }
 
-// GetMachineByIdentifier - Get a NetBackup Machine by Identifier
+// GetMachineByIdentifier - Get a NetBackup Machine by Identifier.
 func (m *MachineClient) GetMachineByIdentifier(identifier string) (resp *Machine, err error) {
 	machines, err := m.GetMachines()
 	if err != nil {
@@ -277,7 +277,7 @@ func (m *MachineClient) GetMachineByIdentifier(identifier string) (resp *Machine
 	return resp, fmt.Errorf("Machine with identifier %s not found", identifier)
 }
 
-// GetMachineByNameOrIdentifier - Get a NetBackup Machine by Name or Identifier
+// GetMachineByNameOrIdentifier - Get a NetBackup Machine by Name or Identifier.
 func (m *MachineClient) GetMachineByNameOrIdentifier(nameOrIdentifier string) (resp *Machine, err error) {
 	machines, err := m.GetMachines()
 	if err != nil {
@@ -295,7 +295,7 @@ func (m *MachineClient) GetMachineByNameOrIdentifier(nameOrIdentifier string) (r
 
 // * Protection Level
 
-// ListProtectionLevelsAvailable - List the protection levels available for a Machine
+// ListProtectionLevelsAvailable - List the protection levels available for a Machine.
 func (m *Machine) ListProtectionLevelsAvailable() (resp *ProtectionLevels, err error) {
 	pL := ProtectionLevelClient{}
 	return pL.ListProtectionLevels(listProtectionLevelsRequest{
@@ -303,7 +303,7 @@ func (m *Machine) ListProtectionLevelsAvailable() (resp *ProtectionLevels, err e
 	})
 }
 
-// GetProtectionLevelAvailableByName - Get a protection level available for a Machine by Name
+// GetProtectionLevelAvailableByName - Get a protection level available for a Machine by Name.
 func (m *Machine) GetProtectionLevelAvailableByName(name string) (resp *ProtectionLevel, err error) {
 	pL := ProtectionLevelClient{}
 	return pL.getProtectionLevelByName(getProtectionLevelByNameRequest{
@@ -312,7 +312,7 @@ func (m *Machine) GetProtectionLevelAvailableByName(name string) (resp *Protecti
 	})
 }
 
-// GetProtectionLevelAvailableByID - Get a protection level available for a Machine by ID
+// GetProtectionLevelAvailableByID - Get a protection level available for a Machine by ID.
 func (m *Machine) GetProtectionLevelAvailableByID(id int) (resp *ProtectionLevel, err error) {
 	pL := ProtectionLevelClient{}
 	return pL.getProtectionLevelByID(getProtectionLevelByIDRequest{
@@ -321,7 +321,7 @@ func (m *Machine) GetProtectionLevelAvailableByID(id int) (resp *ProtectionLevel
 	})
 }
 
-// ListProtectionLevels - List the protection levels applied to a Machine
+// ListProtectionLevels - List the protection levels applied to a Machine.
 func (m *Machine) ListProtectionLevels() (resp *ProtectionLevels, err error) {
 	c, err := clientnetbackup.New()
 	if err != nil {
@@ -355,7 +355,7 @@ func (m *Machine) ListProtectionLevels() (resp *ProtectionLevels, err error) {
 
 // * Protect Machine
 
-// Protect - Protect a Machine
+// Protect - Protect a Machine.
 func (m *Machine) Protect(req ProtectUnprotectRequest) (job *commonnetbackup.JobAPIResponse, err error) {
 	c, err := clientnetbackup.New()
 	if err != nil {
@@ -407,7 +407,7 @@ func (m *Machine) Protect(req ProtectUnprotectRequest) (job *commonnetbackup.Job
 
 // * Unprotect Machine
 
-// Unprotect - Unprotect a Machine
+// Unprotect - Unprotect a Machine.
 func (m *Machine) Unprotect(req ProtectUnprotectRequest) (job *commonnetbackup.JobAPIResponse, err error) {
 	c, err := clientnetbackup.New()
 	if err != nil {

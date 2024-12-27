@@ -24,48 +24,48 @@ type token struct {
 	debug bool
 }
 
-// GetOrganization - Returns the organization
+// GetOrganization - Returns the organization.
 func (t *token) GetOrganization() string {
 	return t.org
 }
 
-// GetVCDVersion - Returns the VCD version
+// GetVCDVersion - Returns the VCD version.
 func (t *token) GetVCDVersion() string {
 	return t.vcdVersion
 }
 
-// GetEndpoint - Returns the API endpoint
+// GetEndpoint - Returns the API endpoint.
 func (t *token) GetEndpoint() string {
 	return t.endpoint
 }
 
-// GetEndpointURL - Returns the API endpoint URL
+// GetEndpointURL - Returns the API endpoint URL.
 func (t *token) GetEndpointURL() url.URL {
 	u, _ := url.Parse(t.endpoint)
 	return *u
 }
 
-// IsExpired - Returns true if the token is expired
+// IsExpired - Returns true if the token is expired.
 func (t *token) IsExpired() bool {
 	return t.expiresAt.Before(time.Now())
 }
 
-// IsSet - Returns true if the token is set
+// IsSet - Returns true if the token is set.
 func (t *token) IsSet() bool {
 	return t.baererToken != ""
 }
 
-// GetToken - Returns the token
+// GetToken - Returns the token.
 func (t *token) GetToken() string {
 	return t.baererToken
 }
 
-// GetOrgID - Returns the organization ID
+// GetOrgID - Returns the organization ID.
 func (t *token) GetOrgID() string {
 	return t.orgID
 }
 
-// RefreshToken - Refreshes the token
+// RefreshToken - Refreshes the token.
 func (t *token) RefreshToken() error {
 	if !t.IsSet() || t.IsExpired() {
 		c := resty.New().SetBaseURL(t.endpoint)
@@ -122,12 +122,12 @@ type APIErrorResponse struct {
 	Message string `json:"message"`
 }
 
-// FormatError - Formats the error
+// FormatError - Formats the error.
 func (e *APIErrorResponse) FormatError() string {
 	return fmt.Sprintf("ErrorCode:%s - ErrorReason:%s - ErrorMessage:%s", e.Code, e.Reason, e.Message)
 }
 
-// ToError - Converts an APIErrorResponse to an error
+// ToError - Converts an APIErrorResponse to an error.
 func ToError(e *APIErrorResponse) error {
 	return fmt.Errorf("error on API call: %s", e.FormatError())
 }

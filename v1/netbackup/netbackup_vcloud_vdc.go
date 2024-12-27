@@ -10,7 +10,7 @@ import (
 	commonnetbackup "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/common/netbackup"
 )
 
-// VDC - Is the response structure for the GetVdc API
+// VDC - Is the response structure for the GetVdc API.
 type VDC struct {
 	ID               int    `json:"Id,omitempty"`
 	Name             string `json:"Name,omitempty"`
@@ -19,41 +19,41 @@ type VDC struct {
 	ProtectionTypeID int    `json:"ProtectionTypeId,omitempty"`
 }
 
-// GetID returns the ID field of VDC
+// GetID returns the ID field of VDC.
 func (vdc *VDC) GetID() int {
 	return vdc.ID
 }
 
-// GetIDPtr returns a pointer to the ID field of VDC
+// GetIDPtr returns a pointer to the ID field of VDC.
 func (vdc *VDC) GetIDPtr() *int {
 	return &vdc.ID
 }
 
-// GetName returns the Name field of VDC
+// GetName returns the Name field of VDC.
 func (vdc *VDC) GetName() string {
 	return vdc.Name
 }
 
-// GetIdentifier returns the Identifier field of VDC
+// GetIdentifier returns the Identifier field of VDC.
 func (vdc *VDC) GetIdentifier() string {
 	return vdc.Identifier
 }
 
-// GetVOrgID returns the VOrgID field of VDC
+// GetVOrgID returns the VOrgID field of VDC.
 func (vdc *VDC) GetVOrgID() int {
 	return vdc.VOrgID
 }
 
-// GetProtectionTypeID returns the ProtectionTypeID field of VDC
+// GetProtectionTypeID returns the ProtectionTypeID field of VDC.
 func (vdc *VDC) GetProtectionTypeID() int {
 	return vdc.ProtectionTypeID
 }
 
 // * VDCs
-// VDCs - Is the response structure for the GetVdcs API
+// VDCs - Is the response structure for the GetVdcs API.
 type VDCs []VDC
 
-// append - Append a VDC to the VDCs slice
+// append - Append a VDC to the VDCs slice.
 func (v *VDCs) append(vdc VDC) {
 	*v = append(*v, vdc)
 }
@@ -62,7 +62,7 @@ type vdcsResponse struct {
 	Data VDCs `json:"data,omitempty"`
 }
 
-// GetVdcs - Get a list of vCloud Director Virtual Data Centers
+// GetVdcs - Get a list of vCloud Director Virtual Data Centers.
 func (v *VcloudClient) GetVdcs() (resp *VDCs, err error) {
 	c, err := clientnetbackup.New()
 	if err != nil {
@@ -85,7 +85,7 @@ func (v *VcloudClient) GetVdcs() (resp *VDCs, err error) {
 }
 
 // GetVdcsByOrgID - Get a list of vCloud Director Virtual Data Centers by Org ID
-// orgID - The ID of the org in the netbackup system
+// orgID - The ID of the org in the netbackup system.
 func (v *VcloudClient) GetVdcsByOrgID(orgID int) (resp *VDCs, err error) {
 	vdcs, err := v.GetVdcs()
 	if err != nil {
@@ -106,7 +106,7 @@ type vdcResponse struct {
 }
 
 // GetVDCByID - Get a vCloud Director Virtual Data Center by ID
-// id - The ID of the vdc in the netbackup system
+// id - The ID of the vdc in the netbackup system.
 func (v *VcloudClient) GetVDCByID(id int) (resp *VDC, err error) {
 	c, err := clientnetbackup.New()
 	if err != nil {
@@ -132,7 +132,7 @@ func (v *VcloudClient) GetVDCByID(id int) (resp *VDC, err error) {
 }
 
 // GetVDCByIdentifier - Get a vCloud Director Virtual Data Center by Identifier
-// identifier - The Identifier of the vdc in the vmware system (URN)
+// identifier - The Identifier of the vdc in the vmware system (URN).
 func (v *VcloudClient) GetVDCByIdentifier(identifier string) (resp *VDC, err error) {
 	vdcs, err := v.GetVdcs()
 	if err != nil {
@@ -149,7 +149,7 @@ func (v *VcloudClient) GetVDCByIdentifier(identifier string) (resp *VDC, err err
 }
 
 // GetVDCByName - Get a vCloud Director Virtual Data Center by Name
-// name - The Name of the vdc in the vmware system
+// name - The Name of the vdc in the vmware system.
 func (v *VcloudClient) GetVDCByName(name string) (resp *VDC, err error) {
 	vdcs, err := v.GetVdcs()
 	if err != nil {
@@ -166,7 +166,7 @@ func (v *VcloudClient) GetVDCByName(name string) (resp *VDC, err error) {
 }
 
 // GetVDCByNameOrIdentifier - Get a vCloud Director Virtual Data Center by Name or Identifier
-// nameOrIdentifier - The Name or Identifier of the vdc in the vmware system
+// nameOrIdentifier - The Name or Identifier of the vdc in the vmware system.
 func (v *VcloudClient) GetVDCByNameOrIdentifier(nameOrIdentifier string) (resp *VDC, err error) {
 	vdcs, err := v.GetVdcs()
 	if err != nil {
@@ -182,7 +182,7 @@ func (v *VcloudClient) GetVDCByNameOrIdentifier(nameOrIdentifier string) (resp *
 	return resp, fmt.Errorf("VDC with name or identifier %s not found", nameOrIdentifier)
 }
 
-// ListProtectionLevelsAvailable - List the protection levels available for a vCloud Director Virtual Application
+// ListProtectionLevelsAvailable - List the protection levels available for a vCloud Director Virtual Application.
 func (vdc *VDC) ListProtectionLevelsAvailable() (resp *ProtectionLevels, err error) {
 	pL := ProtectionLevelClient{}
 	return pL.ListProtectionLevels(listProtectionLevelsRequest{
@@ -190,7 +190,7 @@ func (vdc *VDC) ListProtectionLevelsAvailable() (resp *ProtectionLevels, err err
 	})
 }
 
-// GetProtectionLevelAvailableByName - Get a protection level by name for a vCloud Director Virtual Application
+// GetProtectionLevelAvailableByName - Get a protection level by name for a vCloud Director Virtual Application.
 func (vdc *VDC) GetProtectionLevelAvailableByName(name string) (resp *ProtectionLevel, err error) {
 	pL := ProtectionLevelClient{}
 	return pL.getProtectionLevelByName(getProtectionLevelByNameRequest{
@@ -199,7 +199,7 @@ func (vdc *VDC) GetProtectionLevelAvailableByName(name string) (resp *Protection
 	})
 }
 
-// GetProtectionLevelAvailableByID - Get a protection level by ID for a vCloud Director Virtual Application
+// GetProtectionLevelAvailableByID - Get a protection level by ID for a vCloud Director Virtual Application.
 func (vdc *VDC) GetProtectionLevelAvailableByID(id int) (resp *ProtectionLevel, err error) {
 	pL := ProtectionLevelClient{}
 	return pL.getProtectionLevelByID(getProtectionLevelByIDRequest{
@@ -208,7 +208,7 @@ func (vdc *VDC) GetProtectionLevelAvailableByID(id int) (resp *ProtectionLevel, 
 	})
 }
 
-// ListProtectionLevels - List the protection levels applied to a vCloud Director Virtual Application
+// ListProtectionLevels - List the protection levels applied to a vCloud Director Virtual Application.
 func (vdc *VDC) ListProtectionLevels() (resp *ProtectionLevels, err error) {
 	c, err := clientnetbackup.New()
 	if err != nil {
@@ -242,7 +242,7 @@ func (vdc *VDC) ListProtectionLevels() (resp *ProtectionLevels, err error) {
 
 // * ProtectVdc
 
-// ProtectVdc - Protect a vCloud Director Virtual Data Center
+// ProtectVdc - Protect a vCloud Director Virtual Data Center.
 func (vdc *VDC) Protect(req ProtectUnprotectRequest) (job *commonnetbackup.JobAPIResponse, err error) {
 	c, err := clientnetbackup.New()
 	if err != nil {
@@ -294,7 +294,7 @@ func (vdc *VDC) Protect(req ProtectUnprotectRequest) (job *commonnetbackup.JobAP
 
 // * UnprotectVdc
 
-// UnprotectVdc - Unprotect a vCloud Director Virtual Data Center
+// UnprotectVdc - Unprotect a vCloud Director Virtual Data Center.
 func (vdc *VDC) Unprotect(req ProtectUnprotectRequest) (job *commonnetbackup.JobAPIResponse, err error) {
 	c, err := clientnetbackup.New()
 	if err != nil {

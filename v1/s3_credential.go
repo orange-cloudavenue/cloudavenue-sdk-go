@@ -93,7 +93,7 @@ func (c *S3Credential) IsProviderOwner() bool {
 	return c.ProviderOwner
 }
 
-// GetCredentials - Get a list of credentials
+// GetCredentials - Get a list of credentials.
 func (s *S3User) GetCredentials() (resp *S3Credentials, err error) {
 	type allCredentials struct {
 		Items S3Credentials `json:"items"`
@@ -117,7 +117,7 @@ func (s *S3User) GetCredentials() (resp *S3Credentials, err error) {
 	return &r.Result().(*allCredentials).Items, nil
 }
 
-// GetCredential - Get a credential by access key
+// GetCredential - Get a credential by access key.
 func (s *S3User) GetCredential(accessKey string) (resp *S3Credential, err error) {
 	r, err := clients3.NewOSE().R().
 		SetResult(&S3Credential{}).
@@ -138,7 +138,7 @@ func (s *S3User) GetCredential(accessKey string) (resp *S3Credential, err error)
 	return r.Result().(*S3Credential), nil
 }
 
-// NewCredential - Create a new credential
+// NewCredential - Create a new credential.
 func (s *S3User) NewCredential() (resp *S3Credential, err error) {
 	r, err := clients3.NewOSE().R().
 		SetResult(&S3Credential{}).
@@ -158,7 +158,7 @@ func (s *S3User) NewCredential() (resp *S3Credential, err error) {
 	return r.Result().(*S3Credential), nil
 }
 
-// DeleteCredential - Delete a credential
+// DeleteCredential - Delete a credential.
 func (c *S3Credential) Delete() (err error) {
 	r, err := clients3.NewOSE().R().
 		SetPathParams(map[string]string{

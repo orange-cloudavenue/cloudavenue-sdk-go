@@ -8,9 +8,10 @@ import (
 
 	"github.com/go-resty/resty/v2"
 	"github.com/sethvargo/go-envconfig"
-	"github.com/vmware/go-vcloud-director/v2/govcd"
 	"golang.org/x/mod/semver"
 	"golang.org/x/sync/errgroup"
+
+	"github.com/vmware/go-vcloud-director/v2/govcd"
 
 	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/clients/consoles"
 	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/clients/model"
@@ -22,7 +23,7 @@ var (
 	c                  = &internalClient{}
 )
 
-// Opts - Is a struct that contains the options for the vmware client
+// Opts - Is a struct that contains the options for the vmware client.
 type Opts struct {
 	URL        string `env:"URL,overwrite"`      // Computed from Org if not provided
 	Username   string `env:"USERNAME,overwrite"` // Required
@@ -94,7 +95,7 @@ type internalClient struct {
 	token token
 }
 
-// Init - Initializes the client
+// Init - Initializes the client.
 func Init(opts *Opts) (err error) {
 	if err := opts.Validate(); err != nil {
 		return err
@@ -175,37 +176,37 @@ func New() (*Client, error) {
 	return cache, wg.Wait()
 }
 
-// GetUsername - Returns the username
+// GetUsername - Returns the username.
 func (v *Client) GetUsername() string {
 	return c.token.username
 }
 
-// GetOrganization - Returns the organization
+// GetOrganization - Returns the organization.
 func (v *Client) GetOrganization() string {
 	return c.token.GetOrganization()
 }
 
-// GetOrganizationID - Returns the organization ID
+// GetOrganizationID - Returns the organization ID.
 func (v *Client) GetOrganizationID() string {
 	return c.token.GetOrgID()
 }
 
-// GetEndpoint - Returns the API endpoint
+// GetEndpoint - Returns the API endpoint.
 func (v *Client) GetEndpoint() string {
 	return c.token.GetEndpoint()
 }
 
-// GetDebug - Returns the debug
+// GetDebug - Returns the debug.
 func (v *Client) GetDebug() bool {
 	return c.token.debug
 }
 
-// GetURL - Returns the API endpoint
+// GetURL - Returns the API endpoint.
 func (v *Client) GetURL() string {
 	return c.token.GetEndpoint()
 }
 
-// GetBearerToken - Returns the bearer token
+// GetBearerToken - Returns the bearer token.
 func GetBearerToken() string {
 	return c.token.GetToken()
 }

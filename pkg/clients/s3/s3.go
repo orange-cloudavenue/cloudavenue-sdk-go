@@ -17,7 +17,7 @@ import (
 
 var c = internalClient{}
 
-// Opts - Is a struct that contains the options for the S3 client
+// Opts - Is a struct that contains the options for the S3 client.
 type Opts struct {
 	OSEEndpoint      string `env:"ENDPOINT"`
 	S3Endpoint       string `env:"S3_ENDPOINT,default=https://s3-region01.cloudavenue.orange-business.com"`
@@ -31,7 +31,7 @@ type internalClient struct {
 	token token
 }
 
-// Init - Initializes the client
+// Init - Initializes the client.
 func Init(opts Opts) (err error) {
 	l := envconfig.PrefixLookuper("S3_", envconfig.OsLookuper())
 	config := &envconfig.Config{
@@ -93,7 +93,7 @@ func New() (*Client, error) {
 	return &Client{s3.New(s)}, nil
 }
 
-// NewOSE - Return a new OSE client
+// NewOSE - Return a new OSE client.
 func NewOSE() *resty.Client {
 	return resty.New().
 		SetDebug(GetDebug()).
@@ -101,27 +101,27 @@ func NewOSE() *resty.Client {
 		SetAuthToken(GetOSEToken())
 }
 
-// GetDebug - Returns the debug flag
+// GetDebug - Returns the debug flag.
 func GetDebug() bool {
 	return c.token.debug
 }
 
-// GetOrganizationName - Returns the organization name
+// GetOrganizationName - Returns the organization name.
 func GetOrganizationName() string {
 	return c.token.organizationName
 }
 
-// GetOrganizationID - Returns the organization ID
+// GetOrganizationID - Returns the organization ID.
 func GetOrganizationID() string {
 	return c.token.organizationID
 }
 
-// GetOSEEndpoint - Returns the OSE endpoint
+// GetOSEEndpoint - Returns the OSE endpoint.
 func GetOSEEndpoint() string {
 	return c.token.oseEndpoint
 }
 
-// GetOSEToken - Returns the OSE token
+// GetOSEToken - Returns the OSE token.
 func GetOSEToken() string {
 	return c.token.cavToken
 }

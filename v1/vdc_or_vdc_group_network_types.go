@@ -29,7 +29,7 @@ type (
 		data T
 	}
 
-	// * VDC Or VDCGroup Isolated Network
+	// * VDC Or VDCGroup Isolated Network.
 
 	VDCNetworkIsolated struct {
 		VDCNetwork[*VDCNetworkIsolatedModel]
@@ -38,7 +38,7 @@ type (
 
 	VDCNetworkIsolatedModel = VDCNetworkModel
 
-	// * Common Data structs
+	// * Common Data structs.
 	VDCNetworkModel struct {
 		ID                      string                `json:"id,omitempty"`
 		Name                    string                `json:"name"`
