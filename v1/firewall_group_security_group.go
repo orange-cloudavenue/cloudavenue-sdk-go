@@ -9,7 +9,7 @@ import (
 
 // * Security Group
 
-// Update updates the security group
+// Update updates the security group.
 func (fwgsg *FirewallGroupSecurityGroup) Update(securityGroupConfig *FirewallGroupSecurityGroupModel) error {
 	if securityGroupConfig == nil {
 		return fmt.Errorf("securityGroupConfig is nil")
@@ -50,14 +50,14 @@ func (fwgsg *FirewallGroupSecurityGroup) Update(securityGroupConfig *FirewallGro
 	return nil
 }
 
-// Delete removes the security group
+// Delete removes the security group.
 func (fwgsg *FirewallGroupSecurityGroup) Delete() error {
 	return fwgsg.fwGroup.Delete()
 }
 
 // * IP Set
 
-// Update updates the IP set
+// Update updates the IP set.
 func (fwgip *FirewallGroupIPSet) Update(ipSetConfig *FirewallGroupIPSetModel) error {
 	if ipSetConfig == nil {
 		return fmt.Errorf("ipSetConfig is nil")
@@ -98,14 +98,14 @@ func (fwgip *FirewallGroupIPSet) Update(ipSetConfig *FirewallGroupIPSetModel) er
 	return nil
 }
 
-// Delete removes the IP set
+// Delete removes the IP set.
 func (fwgip *FirewallGroupIPSet) Delete() error {
 	return fwgip.fwGroup.Delete()
 }
 
 // * Dynamic Security Group
 
-// Update updates the dynamic security group
+// Update updates the dynamic security group.
 func (fwgdsg *FirewallGroupDynamicSecurityGroup) Update(dynamicSecurityGroupConfig *FirewallGroupDynamicSecurityGroupModel) error {
 	if dynamicSecurityGroupConfig == nil {
 		return fmt.Errorf("dynamicSecurityGroupConfig is nil")
@@ -136,12 +136,12 @@ func (fwgdsg *FirewallGroupDynamicSecurityGroup) Update(dynamicSecurityGroupConf
 	return nil
 }
 
-// Delete removes the dynamic security group
+// Delete removes the dynamic security group.
 func (fwgdsg *FirewallGroupDynamicSecurityGroup) Delete() error {
 	return fwgdsg.fwGroup.Delete()
 }
 
-// validate validates the firewall group model
+// validate validates the firewall group model.
 func (fg *FirewallGroupDynamicSecurityGroupModel) Validate() error {
 	if fg.Name == "" {
 		return fmt.Errorf("name is empty")
@@ -198,7 +198,7 @@ func (fg *FirewallGroupDynamicSecurityGroupModel) Validate() error {
 
 // * Application Port Profile
 
-// validate validates the application port profile model
+// validate validates the application port profile model.
 func (appPortProfile *FirewallGroupAppPortProfileModel) Validate() error {
 	// This regex validate the conformity of a TCP Port (1-65535) or/and a TCP port range (8080-8090)
 	re := regexp.MustCompile(`(?m)^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])(-([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5]))?$`)
@@ -240,7 +240,7 @@ func (appPortProfile *FirewallGroupAppPortProfileModel) Validate() error {
 	return nil
 }
 
-// Update updates the application port profile
+// Update updates the application port profile.
 func (fwgap *FirewallGroupAppPortProfile) Update(appPortProfileConfig *FirewallGroupAppPortProfileModel) error {
 	if appPortProfileConfig == nil {
 		return fmt.Errorf("appPortProfileConfig is nil")
@@ -263,7 +263,7 @@ func (fwgap *FirewallGroupAppPortProfile) Update(appPortProfileConfig *FirewallG
 	return nil
 }
 
-// Delete removes the application port profile
+// Delete removes the application port profile.
 func (fwgap *FirewallGroupAppPortProfile) Delete() error {
 	return fwgap.appProfile.Delete()
 }

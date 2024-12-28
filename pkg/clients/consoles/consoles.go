@@ -150,7 +150,7 @@ var consoles = map[Console]console{
 	},
 }
 
-// FindBySiteID - Returns the console by its siteID
+// FindBySiteID - Returns the console by its siteID.
 func FindBySiteID(siteID string) (Console, bool) {
 	for c, console := range consoles {
 		if console.SiteID == Console(siteID) {
@@ -161,7 +161,7 @@ func FindBySiteID(siteID string) (Console, bool) {
 	return "", false
 }
 
-// FindByURL - Returns the console by its URL
+// FindByURL - Returns the console by its URL.
 func FindByURL(url string) (Console, bool) {
 	for c, console := range consoles {
 		if console.URL == url {
@@ -172,7 +172,7 @@ func FindByURL(url string) (Console, bool) {
 	return "", false
 }
 
-// FingByOrganizationName - Returns the console by its organization name
+// FingByOrganizationName - Returns the console by its organization name.
 func FingByOrganizationName(organizationName string) (Console, error) {
 	for c, console := range consoles {
 		if console.OrganizationPattern.MatchString(organizationName) {
@@ -183,7 +183,7 @@ func FingByOrganizationName(organizationName string) (Console, error) {
 	return "", errors.ErrOrganizationFormatIsInvalid
 }
 
-// CheckOrganizationName - Returns true if the organization name is valid
+// CheckOrganizationName - Returns true if the organization name is valid.
 func CheckOrganizationName(organizationName string) bool {
 	for _, console := range consoles {
 		if console.OrganizationPattern.MatchString(organizationName) {
@@ -194,37 +194,37 @@ func CheckOrganizationName(organizationName string) bool {
 	return false
 }
 
-// Services - Returns the Services
+// Services - Returns the Services.
 func (c Console) Services() Services {
 	return consoles[c].Services
 }
 
-// Enabled - Returns true if the service is enabled
+// Enabled - Returns true if the service is enabled.
 func (ss Service) IsEnabled() bool {
 	return ss.Enabled
 }
 
-// GetEndpoint - Returns the endpoint
+// GetEndpoint - Returns the endpoint.
 func (ss Service) GetEndpoint() string {
 	return ss.Endpoint
 }
 
-// GetSiteName - Returns the site name
+// GetSiteName - Returns the site name.
 func (c Console) GetSiteName() string {
 	return consoles[c].SiteName
 }
 
-// GetLocationCode - Returns the location code
+// GetLocationCode - Returns the location code.
 func (c Console) GetLocationCode() LocationCode {
 	return consoles[c].LocationCode
 }
 
-// GetSiteID - Returns the site ID
+// GetSiteID - Returns the site ID.
 func (c Console) GetSiteID() Console {
 	return consoles[c].SiteID
 }
 
-// GetURL - Returns the URL
+// GetURL - Returns the URL.
 func (c Console) GetURL() string {
 	return consoles[c].URL
 }

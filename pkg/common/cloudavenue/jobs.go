@@ -26,13 +26,13 @@ const (
 	ERROR JobStatusMessage = "ERROR"
 )
 
-// JobCreatedAPIResponse - This is the response structure for the JobCreatedAPIResponse
+// JobCreatedAPIResponse - This is the response structure for the JobCreatedAPIResponse.
 type JobCreatedAPIResponse struct {
 	Message string `json:"message"`
 	JobID   string `json:"jobId"`
 }
 
-// JobStatus - This is the response structure for the JobStatus
+// JobStatus - This is the response structure for the JobStatus.
 type JobStatus struct {
 	JobID   string `json:"jobId,omitempty"`
 	Actions []struct {
@@ -45,7 +45,7 @@ type JobStatus struct {
 	Status      JobStatusMessage `json:"status"`
 }
 
-// GetJobStatus - Returns the status of a job
+// GetJobStatus - Returns the status of a job.
 func (j *JobCreatedAPIResponse) GetJobStatus() (response *JobStatus, err error) {
 	response = new(JobStatus)
 	response.JobID = j.JobID
@@ -56,7 +56,7 @@ func (j *JobCreatedAPIResponse) GetJobStatus() (response *JobStatus, err error) 
 	return response, response.Refresh()
 }
 
-// Refresh - Refreshes the job status
+// Refresh - Refreshes the job status.
 func (j *JobStatus) Refresh() error {
 	jobID := j.JobID
 
@@ -91,19 +91,19 @@ func (j *JobStatus) Refresh() error {
 	return nil
 }
 
-// IsDone - Returns true if the job is done with a success
+// IsDone - Returns true if the job is done with a success.
 func (j *JobStatus) IsDone() bool {
 	return j.Status == DONE
 }
 
-// OnError - Returns true if the job is done with an error
+// OnError - Returns true if the job is done with an error.
 func (j *JobStatus) OnError() bool {
 	return j.Status == FAILED || j.Status == ERROR
 }
 
 // Wait - Waits for the job to be done
 // refreshInterval - The interval in seconds between each refresh
-// timeout - The timeout in seconds
+// timeout - The timeout in seconds.
 func (j *JobStatus) Wait(refreshInterval, timeout int) error {
 	err := j.Refresh()
 	if err != nil {
@@ -121,7 +121,7 @@ func (j *JobStatus) Wait(refreshInterval, timeout int) error {
 }
 
 // WaitWithContext - Waits for the job to be done
-// refreshInterval - The interval in seconds between each refresh
+// refreshInterval - The interval in seconds between each refresh.
 func (j *JobStatus) WaitWithContext(ctx context.Context, refreshInterval int) error {
 	if _, deadlineSet := ctx.Deadline(); !deadlineSet {
 		return j.Wait(refreshInterval, 90)

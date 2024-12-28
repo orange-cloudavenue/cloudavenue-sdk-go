@@ -37,7 +37,7 @@ const (
 	typeEdgeGW objectType = "edgeGateway"
 )
 
-// getUUIDFromHref
+// getUUIDFromHref.
 func getUUIDFromHref(href string, idAtEnd bool) (string, error) {
 	regex := `^https:\/\/.+([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})`
 
@@ -56,7 +56,7 @@ func getUUIDFromHref(href string, idAtEnd bool) (string, error) {
 	return matchList[0][1], nil
 }
 
-// queryList
+// queryList.
 func queryList(objectType objectType) (govcd.Results, error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {
@@ -68,7 +68,7 @@ func queryList(objectType objectType) (govcd.Results, error) {
 	})
 }
 
-// queryListWithOptionalFilter
+// queryListWithOptionalFilter.
 func queryListWithOptionalFilter(objectType objectType, filters map[string]string) (govcd.Results, error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {
@@ -79,7 +79,7 @@ func queryListWithOptionalFilter(objectType objectType, filters map[string]strin
 	return c.Vmware.Query(filters)
 }
 
-// queryget
+// queryget.
 func queryGet(objectType objectType, name string) (govcd.Results, error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {
@@ -92,8 +92,8 @@ func queryGet(objectType objectType, name string) (govcd.Results, error) {
 	})
 }
 
-// queryGetWithOptionalFilter
-func queryGetWithOptionalFilter(objectType objectType, name string, filters map[string]string) (govcd.Results, error) {
+// queryGetWithOptionalFilter.
+func queryGetWithOptionalFilter(objectType objectType, _ string, filters map[string]string) (govcd.Results, error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {
 		panic(err)
@@ -103,13 +103,13 @@ func queryGetWithOptionalFilter(objectType objectType, name string, filters map[
 	return c.Vmware.Query(filters)
 }
 
-// VDC list all vdc informations
+// VDC list all vdc informations.
 func (q *List) VDC() ([]*types.QueryResultOrgVdcRecordType, error) {
 	r, err := queryList(typeVDC)
 	return r.Results.OrgVdcRecord, err
 }
 
-// VDC get a vdc informations by name
+// VDC get a vdc informations by name.
 func (q *Get) VDC(vdcName string) (*types.QueryResultOrgVdcRecordType, error) {
 	r, err := queryGet(typeVDC, vdcName)
 	if r.Results.OrgVdcRecord == nil {
@@ -118,13 +118,13 @@ func (q *Get) VDC(vdcName string) (*types.QueryResultOrgVdcRecordType, error) {
 	return r.Results.OrgVdcRecord[0], err
 }
 
-// VAPP list all vapp informations
+// VAPP list all vapp informations.
 func (q *List) VAPP() ([]*types.QueryResultVAppRecordType, error) {
 	r, err := queryList(typeVAPP)
 	return r.Results.VAppRecord, err
 }
 
-// VAPP get a vapp informations by name
+// VAPP get a vapp informations by name.
 func (q *Get) VAPP(vappName string) (*types.QueryResultVAppRecordType, error) {
 	r, err := queryGet(typeVAPP, vappName)
 	if r.Results.VAppRecord == nil {
@@ -133,7 +133,7 @@ func (q *Get) VAPP(vappName string) (*types.QueryResultVAppRecordType, error) {
 	return r.Results.VAppRecord[0], err
 }
 
-// VM list all vm informations
+// VM list all vm informations.
 func (q *List) VM(vAppName string) ([]*types.QueryResultVMRecordType, error) {
 	r, err := queryListWithOptionalFilter(typeVM, map[string]string{
 		"filter": "containerName==" + vAppName,
@@ -151,7 +151,7 @@ func (q *List) VM(vAppName string) ([]*types.QueryResultVMRecordType, error) {
 	return r.Results.VMRecord, err
 }
 
-// VM get a vm informations by name
+// VM get a vm informations by name.
 func (q *Get) VM(vmName, vAppName string) (*types.QueryResultVMRecordType, error) {
 	r, err := queryGetWithOptionalFilter(typeVM, vmName, map[string]string{
 		"filter": "containerName==" + vAppName,
@@ -169,13 +169,13 @@ func (q *Get) VM(vmName, vAppName string) (*types.QueryResultVMRecordType, error
 	return r.Results.VMRecord[0], err
 }
 
-// EdgeGW list all edgegw informations
+// EdgeGW list all edgegw informations.
 func (q *List) EdgeGW() ([]*types.QueryResultEdgeGatewayRecordType, error) {
 	r, err := queryList(typeEdgeGW)
 	return r.Results.EdgeGatewayRecord, err
 }
 
-// EdgeGW get a edgegw informations by name
+// EdgeGW get a edgegw informations by name.
 func (q *Get) EdgeGW(edgeGWName string) (*types.QueryResultEdgeGatewayRecordType, error) {
 	r, err := queryGet(typeEdgeGW, edgeGWName)
 	if r.Results.EdgeGatewayRecord == nil {

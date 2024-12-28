@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	// Application Profile Types
+	// Application Profile Types.
 	EdgeGatewayALBVirtualServiceModelApplicationProfileHTTP  EdgeGatewayALBVirtualServiceModelApplicationProfile = "HTTP"
 	EdgeGatewayALBVirtualServiceModelApplicationProfileHTTPS EdgeGatewayALBVirtualServiceModelApplicationProfile = "HTTPS"
 	EdgeGatewayALBVirtualServiceModelApplicationProfileL4    EdgeGatewayALBVirtualServiceModelApplicationProfile = "L4"

@@ -15,7 +15,7 @@ type Client struct {
 	// TODO add config
 }
 
-// Opts - Is a struct that contains the options for the SDK
+// Opts - Is a struct that contains the options for the SDK.
 type ClientOpts struct {
 	CloudAvenue *clientcloudavenue.Opts
 	Netbackup   *clientnetbackup.Opts

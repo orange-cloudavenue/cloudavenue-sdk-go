@@ -5,8 +5,9 @@ import (
 	"net"
 	"strings"
 
-	"github.com/vmware/go-vcloud-director/v2/govcd"
 	"golang.org/x/sync/errgroup"
+
+	"github.com/vmware/go-vcloud-director/v2/govcd"
 
 	clientcloudavenue "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/clients/cloudavenue"
 	commoncloudavenue "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/common/cloudavenue"
@@ -19,17 +20,17 @@ type (
 	OwnerType   string
 )
 
-// IsOwnerVDC - Returns true if the owner type is VDC
+// IsOwnerVDC - Returns true if the owner type is VDC.
 func (o OwnerType) IsVDC() bool {
 	return o == OwnerVDC
 }
 
-// IsVDCGROUP - Returns true if the owner type is VDCGROUP
+// IsVDCGROUP - Returns true if the owner type is VDCGROUP.
 func (o OwnerType) IsVDCGROUP() bool {
 	return o == ownerVDCGROUP
 }
 
-// GetVmwareEdgeGateway - Returns the VMware Edge Gateway
+// GetVmwareEdgeGateway - Returns the VMware Edge Gateway.
 func (e *EdgeClient) GetVmwareEdgeGateway() (*govcd.NsxtEdgeGateway, error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {
@@ -39,7 +40,7 @@ func (e *EdgeClient) GetVmwareEdgeGateway() (*govcd.NsxtEdgeGateway, error) {
 	return c.Org.GetNsxtEdgeGatewayById(urn.Normalize(urn.Gateway, e.GetID()).String())
 }
 
-// List - Returns the list of edge gateways
+// List - Returns the list of edge gateways.
 func (v *EdgeGateway) List() (response *EdgeGateways, err error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {
@@ -68,7 +69,7 @@ var (
 	allowedRateLimitVRFDedicatedLarge  = append(allowedRateLimitVRFDedicatedMedium, []int{3000, 4000, 5000, 6000}...)      // 5, 25, 50, 75, 100, 150, 200, 250, 300, 400, 500, 600, 700, 800, 900, 1000, 2000, 3000, 4000, 5000, 6000
 )
 
-// GetAllowedBandwidthValues - Returns the allowed rate limit value
+// GetAllowedBandwidthValues - Returns the allowed rate limit value.
 func (v *EdgeGateway) GetAllowedBandwidthValues(t0VrfName string) (allowedValues []int, err error) {
 	t0, err := (&Tier0{}).GetT0(t0VrfName)
 	if err != nil {
@@ -89,7 +90,7 @@ func (v *EdgeGateway) GetAllowedBandwidthValues(t0VrfName string) (allowedValues
 	return
 }
 
-// GetBandwidthCapacityRemaining - Returns the bandwidth capacity remaining in Mbps
+// GetBandwidthCapacityRemaining - Returns the bandwidth capacity remaining in Mbps.
 func (e *EdgeGateways) GetBandwidthCapacityRemaining(t0VrfName string) (response int, err error) {
 	t0, err := (&Tier0{}).GetT0(t0VrfName)
 	if err != nil {
@@ -117,7 +118,7 @@ func (e *EdgeGateways) GetBandwidthCapacityRemaining(t0VrfName string) (response
 
 // * New
 
-// New - Creates a new edge gateway
+// New - Creates a new edge gateway.
 func (v *EdgeGateway) New(vdcName, tier0VrfName string) (job *commoncloudavenue.JobStatus, err error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {
@@ -143,7 +144,7 @@ func (v *EdgeGateway) New(vdcName, tier0VrfName string) (job *commoncloudavenue.
 	return r.Result().(*commoncloudavenue.JobStatus), nil
 }
 
-// NewFromVDCGroup - Creates a new edge gateway from a VDC Group
+// NewFromVDCGroup - Creates a new edge gateway from a VDC Group.
 func (v *EdgeGateway) NewFromVDCGroup(vdcGroupName, tier0VrfName string) (job *commoncloudavenue.JobStatus, err error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {
@@ -239,7 +240,7 @@ func (v *EdgeGateway) Get(edgeGatewayNameOrID string) (edgeClient *EdgeClient, e
 
 // Get - Returns the edge gateway
 //
-// Deprecated: Use Get instead
+// Deprecated: Use Get instead.
 func (v *EdgeGateway) GetByName(edgeGatewayName string) (edgeClient *EdgeClient, err error) {
 	return v.Get(edgeGatewayName)
 }
@@ -247,14 +248,14 @@ func (v *EdgeGateway) GetByName(edgeGatewayName string) (edgeClient *EdgeClient,
 // GetByID - Returns the edge gateway ID
 // ID format is UUID
 //
-// Deprecated: Use Get instead
+// Deprecated: Use Get instead.
 func (v *EdgeGateway) GetByID(edgeGatewayID string) (edgeClient *EdgeClient, err error) {
 	return v.Get(edgeGatewayID)
 }
 
 // * Delete
 
-// Delete - Deletes the edge gateway
+// Delete - Deletes the edge gateway.
 func (e *EdgeGatewayType) Delete() (job *commoncloudavenue.JobStatus, err error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {
@@ -281,12 +282,12 @@ func (e *EdgeGatewayType) Delete() (job *commoncloudavenue.JobStatus, err error)
 
 // * Bandwidth
 
-// GetBandwidth - Returns the rate limit
+// GetBandwidth - Returns the rate limit.
 func (e *EdgeGatewayType) GetBandwidth() Bandwidth {
 	return e.Bandwidth
 }
 
-// UpdateBandwidth - Updates the bandwidth
+// UpdateBandwidth - Updates the bandwidth.
 func (e *EdgeGatewayType) UpdateBandwidth(rateLimit int) (job *commoncloudavenue.JobStatus, err error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {
@@ -331,22 +332,22 @@ type (
 	}
 )
 
-// IsServiceZone - Returns true if the network type is ServiceZone
+// IsServiceZone - Returns true if the network type is ServiceZone.
 func (n NetworkType) IsServiceZone() bool {
 	return n.Type == NetworkTypeServiceZone
 }
 
-// GetStartAddress - Returns the StartAddress
+// GetStartAddress - Returns the StartAddress.
 func (n NetworkType) GetStartAddress() string {
 	return n.StartAddress
 }
 
-// GetPrefixLength - Returns the PrefixLength
+// GetPrefixLength - Returns the PrefixLength.
 func (n NetworkType) GetPrefixLength() int {
 	return n.PrefixLength
 }
 
-// GetEndAddress - Returns the EndAddress
+// GetEndAddress - Returns the EndAddress.
 func (n NetworkType) GetEndAddress() string {
 	// determine the end address from the start address and the prefix length
 	// StartAddress is a IPv4 address
@@ -416,7 +417,7 @@ func (n NetworkType) GetEndAddress() string {
 // 	}
 // }
 
-// ListNetworksType - Returns the list of networks by type configured on the edge gateway
+// ListNetworksType - Returns the list of networks by type configured on the edge gateway.
 func (e *EdgeGatewayType) ListNetworksType() (response *NetworkTypes, err error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {

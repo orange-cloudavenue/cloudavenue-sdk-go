@@ -41,7 +41,7 @@ type (
 )
 
 // ! BMS
-// Return a Slice of BMS struct
+// Return a Slice of BMS struct.
 func (v *BMS) List() (response *[]BMS, err error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {

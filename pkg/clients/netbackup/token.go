@@ -20,22 +20,22 @@ type token struct {
 	debug bool
 }
 
-// IsExpired - Returns true if the token is expired
+// IsExpired - Returns true if the token is expired.
 func (t *token) IsExpired() bool {
 	return t.expiresAt.Before(time.Now())
 }
 
-// IsSet - Returns true if the token is set
+// IsSet - Returns true if the token is set.
 func (t *token) IsSet() bool {
 	return t.baererToken != ""
 }
 
-// GetToken - Returns the token
+// GetToken - Returns the token.
 func (t *token) GetToken() string {
 	return t.baererToken
 }
 
-// RefreshToken - Refreshes the token
+// RefreshToken - Refreshes the token.
 func (t *token) RefreshToken() error {
 	if !t.IsSet() || t.IsExpired() {
 		c := resty.New().SetBaseURL(t.endpoint)

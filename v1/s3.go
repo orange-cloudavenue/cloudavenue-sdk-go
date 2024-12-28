@@ -44,7 +44,7 @@ func (e *OSEError) GetMessage() string {
 	return e.Message
 }
 
-// IsNotFountError returns true if the error is a 404 error
+// IsNotFountError returns true if the error is a 404 error.
 func (e *OSEError) IsNotFountError() bool {
 	return e.Status == 404
 }

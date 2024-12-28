@@ -11,7 +11,7 @@ import (
 	commonnetbackup "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/common/netbackup"
 )
 
-// VApp - Is the response structure for the GetVApp API
+// VApp - Is the response structure for the GetVApp API.
 type VApp struct {
 	ID               int    `json:"Id,omitempty"`
 	Identifier       string `json:"Identifier,omitempty"`
@@ -20,36 +20,36 @@ type VApp struct {
 	Name             string `json:"Name,omitempty"`
 }
 
-// GetID returns the ID field of VApp
+// GetID returns the ID field of VApp.
 func (vApp *VApp) GetID() int {
 	return vApp.ID
 }
 
-// GetIDPtr returns a pointer to the ID field of VApp
+// GetIDPtr returns a pointer to the ID field of VApp.
 func (vApp *VApp) GetIDPtr() *int {
 	return &vApp.ID
 }
 
-// GetName returns the Name field of VApp
+// GetName returns the Name field of VApp.
 func (vApp *VApp) GetName() string {
 	return vApp.Name
 }
 
-// GetIdentifier returns the Identifier field of VApp
+// GetIdentifier returns the Identifier field of VApp.
 func (vApp *VApp) GetIdentifier() string {
 	return vApp.Identifier
 }
 
-// GetProtectionTypeID returns the ProtectionTypeID field of VApp
+// GetProtectionTypeID returns the ProtectionTypeID field of VApp.
 func (vApp *VApp) GetProtectionTypeID() int {
 	return vApp.ProtectionTypeID
 }
 
 // * VApps
-// VApps - Is the response structure for the GetVApps API
+// VApps - Is the response structure for the GetVApps API.
 type VApps []VApp
 
-// append - Append a VApp to the VApps slice
+// append - Append a VApp to the VApps slice.
 func (v *VApps) append(vapp VApp) { //nolint:unused
 	*v = append(*v, vapp)
 }
@@ -58,7 +58,7 @@ type VAppsResponse struct {
 	Data VApps `json:"data,omitempty"`
 }
 
-// GetVApps - Get a list of vCloud Director Virtual Applications
+// GetVApps - Get a list of vCloud Director Virtual Applications.
 func (v *VcloudClient) GetVApps() (resp *VApps, err error) {
 	c, err := clientnetbackup.New()
 	if err != nil {
@@ -87,7 +87,7 @@ type VAppResponse struct {
 }
 
 // GetVAppByID - Get a vCloud Director Virtual Application by ID
-// id - The ID of the vapp in the netbackup system
+// id - The ID of the vapp in the netbackup system.
 func (v *VcloudClient) GetVAppByID(id int) (resp *VApp, err error) {
 	c, err := clientnetbackup.New()
 	if err != nil {
@@ -113,7 +113,7 @@ func (v *VcloudClient) GetVAppByID(id int) (resp *VApp, err error) {
 }
 
 // GetVAppByName - Get a vCloud Director Virtual Application by Name
-// name - The name of the vapp in the netbackup system
+// name - The name of the vapp in the netbackup system.
 func (v *VcloudClient) GetVAppByName(name string) (resp *VApp, err error) {
 	vapps, err := v.GetVApps()
 	if err != nil {
@@ -130,7 +130,7 @@ func (v *VcloudClient) GetVAppByName(name string) (resp *VApp, err error) {
 }
 
 // GetVAppByIdentifier - Get a vCloud Director Virtual Application by Identifier
-// identifier - The Identifier of the vapp in the vmware system (URN)
+// identifier - The Identifier of the vapp in the vmware system (URN).
 func (v *VcloudClient) GetVAppByIdentifier(identifier string) (resp *VApp, err error) {
 	vapps, err := v.GetVApps()
 	if err != nil {
@@ -147,7 +147,7 @@ func (v *VcloudClient) GetVAppByIdentifier(identifier string) (resp *VApp, err e
 }
 
 // GetVdcByNameOrIdentifier - Get a vCloud Director Virtual Application by Name or Identifier
-// nameOrIdentifier - The Name or Identifier of the vapp in the vmware system
+// nameOrIdentifier - The Name or Identifier of the vapp in the vmware system.
 func (v *VcloudClient) GetVAppByNameOrIdentifier(nameOrIdentifier string) (resp *VApp, err error) {
 	vapps, err := v.GetVApps()
 	if err != nil {
@@ -165,7 +165,7 @@ func (v *VcloudClient) GetVAppByNameOrIdentifier(nameOrIdentifier string) (resp 
 
 // * VApp Machines
 
-// GetVAppMachinesResponse - Is the response structure for the GetVAppMachines API
+// GetVAppMachinesResponse - Is the response structure for the GetVAppMachines API.
 type GetVAppMachinesResponse struct {
 	Data []struct {
 		IsVisibleToAllUsers       bool      `json:"IsVisibleToAllUsers,omitempty"`
@@ -202,7 +202,7 @@ type GetVAppMachinesResponse struct {
 	} `json:"Data,omitempty"`
 }
 
-// GetVAppMachines - Get a list of vCloud Director Virtual Application Machines
+// GetVAppMachines - Get a list of vCloud Director Virtual Application Machines.
 func (v *VcloudClient) GetVAppMachines(vAppID int) (resp *GetVAppMachinesResponse, err error) {
 	c, err := clientnetbackup.New()
 	if err != nil {
@@ -229,7 +229,7 @@ func (v *VcloudClient) GetVAppMachines(vAppID int) (resp *GetVAppMachinesRespons
 
 // * Protection Level
 
-// ListProtectionLevelsAvailable - List the protection levels available for a vCloud Director Virtual Application
+// ListProtectionLevelsAvailable - List the protection levels available for a vCloud Director Virtual Application.
 func (vApp *VApp) ListProtectionLevelsAvailable() (resp *ProtectionLevels, err error) {
 	pL := ProtectionLevelClient{}
 	return pL.ListProtectionLevels(listProtectionLevelsRequest{
@@ -237,7 +237,7 @@ func (vApp *VApp) ListProtectionLevelsAvailable() (resp *ProtectionLevels, err e
 	})
 }
 
-// GetProtectionLevelAvailableByName - Get a protection level by name for a vCloud Director Virtual Application
+// GetProtectionLevelAvailableByName - Get a protection level by name for a vCloud Director Virtual Application.
 func (vApp *VApp) GetProtectionLevelAvailableByName(name string) (resp *ProtectionLevel, err error) {
 	pL := ProtectionLevelClient{}
 	return pL.getProtectionLevelByName(getProtectionLevelByNameRequest{
@@ -246,7 +246,7 @@ func (vApp *VApp) GetProtectionLevelAvailableByName(name string) (resp *Protecti
 	})
 }
 
-// GetProtectionLevelAvailableByID - Get a protection level by ID for a vCloud Director Virtual Application
+// GetProtectionLevelAvailableByID - Get a protection level by ID for a vCloud Director Virtual Application.
 func (vApp *VApp) GetProtectionLevelAvailableByID(id int) (resp *ProtectionLevel, err error) {
 	pL := ProtectionLevelClient{}
 	return pL.getProtectionLevelByID(getProtectionLevelByIDRequest{
@@ -255,7 +255,7 @@ func (vApp *VApp) GetProtectionLevelAvailableByID(id int) (resp *ProtectionLevel
 	})
 }
 
-// ListProtectionLevels - List the protection levels applied to a vCloud Director Virtual Application
+// ListProtectionLevels - List the protection levels applied to a vCloud Director Virtual Application.
 func (vApp *VApp) ListProtectionLevels() (resp *ProtectionLevels, err error) {
 	c, err := clientnetbackup.New()
 	if err != nil {
@@ -289,7 +289,7 @@ func (vApp *VApp) ListProtectionLevels() (resp *ProtectionLevels, err error) {
 
 // * ProtectVApp
 
-// ProtectVApp - Protect a vCloud Director Virtual Application
+// ProtectVApp - Protect a vCloud Director Virtual Application.
 func (vApp *VApp) Protect(req ProtectUnprotectRequest) (job *commonnetbackup.JobAPIResponse, err error) {
 	c, err := clientnetbackup.New()
 	if err != nil {
@@ -341,7 +341,7 @@ func (vApp *VApp) Protect(req ProtectUnprotectRequest) (job *commonnetbackup.Job
 
 // * UnprotectVApp
 
-// UnprotectVApp - Unprotect a vCloud Director Virtual Application
+// UnprotectVApp - Unprotect a vCloud Director Virtual Application.
 func (vApp *VApp) Unprotect(req ProtectUnprotectRequest) (job *commonnetbackup.JobAPIResponse, err error) {
 	c, err := clientnetbackup.New()
 	if err != nil {

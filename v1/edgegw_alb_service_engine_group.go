@@ -10,7 +10,7 @@ import (
 	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/urn"
 )
 
-// GetALLALBServiceEngineGroups return an array of ALB Service Engine Group assignment For an Edge Gateway
+// GetALLALBServiceEngineGroups return an array of ALB Service Engine Group assignment For an Edge Gateway.
 func (e *EdgeClient) ListALBServiceEngineGroups() ([]*EdgeGatewayALBServiceEngineGroupModel, error) {
 	// Initialize the CloudAvenue client to call the CloudAvenue API or vmware API
 	c, err := clientcloudavenue.New()
@@ -46,7 +46,7 @@ func (e *EdgeClient) ListALBServiceEngineGroups() ([]*EdgeGatewayALBServiceEngin
 }
 
 // GetALBServiceEngineGroup return an ALB Service Engine Group For an Edge Gateway
-// The nameOrID can be either the name or the ID of the service engine group
+// The nameOrID can be either the name or the ID of the service engine group.
 func (e *EdgeClient) GetALBServiceEngineGroup(nameOrID string) (*EdgeGatewayALBServiceEngineGroupModel, error) {
 	var govcdSEG *govcd.NsxtAlbServiceEngineGroupAssignment
 

@@ -863,7 +863,7 @@ func Validate(data ValidateData, isUpdate bool) error {
 // - DisponibilityClass
 // - VCPUInMhz
 // - CPUAllocated
-// - MemoryAllocated
+// - MemoryAllocated.
 func (r Rule) GetRuleDetails() string {
 	rules := [][]string{}
 
@@ -908,7 +908,7 @@ func GetRulesDetails() string {
 // - SizeLimit
 // - IOPSLimit
 // - BillingModels
-// - DisponibilityClasses
+// - DisponibilityClasses.
 func (r Rule) GetStorageProfileDetails() string {
 	rules := [][]string{}
 

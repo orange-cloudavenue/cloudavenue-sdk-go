@@ -27,85 +27,85 @@ type (
 )
 
 const (
-	// ClassServiceVRFStandard - VRF Standard
+	// ClassServiceVRFStandard - VRF Standard.
 	ClassServiceVRFStandard ClassService = "VRF_STANDARD"
-	// ClassServiceVRFPremium - VRF Premium
+	// ClassServiceVRFPremium - VRF Premium.
 	ClassServiceVRFPremium ClassService = "VRF_PREMIUM"
-	// ClassServiceVRFDedicatedMedium - VRF Dedicated Medium
+	// ClassServiceVRFDedicatedMedium - VRF Dedicated Medium.
 	ClassServiceVRFDedicatedMedium ClassService = "VRF_DEDICATED_MEDIUM"
-	// ClassServiceVRFDedicatedLarge - VRF Dedicated Large
+	// ClassServiceVRFDedicatedLarge - VRF Dedicated Large.
 	ClassServiceVRFDedicatedLarge ClassService = "VRF_DEDICATED_LARGE"
 )
 
 // * T0
 
-// GetTier0ClassService - Returns the Tier0ClassService
+// GetTier0ClassService - Returns the Tier0ClassService.
 func (t *T0) GetTier0ClassService() string {
 	return t.Tier0ClassService
 }
 
-// GetName - Returns the Tier0Vrf
+// GetName - Returns the Tier0Vrf.
 func (t *T0) GetName() string {
 	return t.Tier0Vrf
 }
 
-// GetTier0Vrf - Returns the Tier0Vrf
+// GetTier0Vrf - Returns the Tier0Vrf.
 func (t *T0) GetTier0Vrf() string {
 	return t.Tier0Vrf
 }
 
-// GetTier0Provider - Returns the Tier0Provider
+// GetTier0Provider - Returns the Tier0Provider.
 func (t *T0) GetTier0Provider() string {
 	return t.Tier0Provider
 }
 
-// GetClassService - Returns the ClassService
+// GetClassService - Returns the ClassService.
 func (t *T0) GetClassService() ClassService {
 	return t.ClassService
 }
 
-// GetServices - Returns the Services
+// GetServices - Returns the Services.
 func (t *T0) GetServices() T0Services {
 	return t.Services
 }
 
 // * T0Service
 
-// GetService - Returns the Service
+// GetService - Returns the Service.
 func (t *T0Service) GetService() string {
 	return t.Service
 }
 
-// GetVLANID - Returns the VLANID
+// GetVLANID - Returns the VLANID.
 func (t *T0Service) GetVLANID() any {
 	return t.VLANID
 }
 
 // * ClassService
 
-// IsVRFStandard - Returns true if the ClassService is VRFStandard
+// IsVRFStandard - Returns true if the ClassService is VRFStandard.
 func (c ClassService) IsVRFStandard() bool {
 	return c == ClassServiceVRFStandard
 }
 
-// IsVRFPremium - Returns true if the ClassService is VRFPremium
+// IsVRFPremium - Returns true if the ClassService is VRFPremium.
 func (c ClassService) IsVRFPremium() bool {
 	return c == ClassServiceVRFPremium
 }
 
-// IsVRFDedicatedMedium - Returns true if the ClassService is VRFDedicatedMedium
+// IsVRFDedicatedMedium - Returns true if the ClassService is VRFDedicatedMedium.
 func (c ClassService) IsVRFDedicatedMedium() bool {
 	return c == ClassServiceVRFDedicatedMedium
 }
 
-// IsVRFDedicatedLarge - Returns true if the ClassService is VRFDedicatedLarge
+// IsVRFDedicatedLarge - Returns true if the ClassService is VRFDedicatedLarge.
 func (c ClassService) IsVRFDedicatedLarge() bool {
 	return c == ClassServiceVRFDedicatedLarge
 }
 
 // * List
 
-// GetT0s - Returns the list of T0s
+// GetT0s - Returns the list of T0s.
 func (t *Tier0) GetT0s() (listOfT0s *T0s, err error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {
@@ -138,7 +138,7 @@ func (t *Tier0) GetT0s() (listOfT0s *T0s, err error) {
 	return listOfT0s, nil
 }
 
-// GetT0 - Returns the T0
+// GetT0 - Returns the T0.
 func (t *Tier0) GetT0(t0 string) (response *T0, err error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {
@@ -161,7 +161,7 @@ func (t *Tier0) GetT0(t0 string) (response *T0, err error) {
 	return r.Result().(*T0), nil
 }
 
-// GetBandwidthCapacity - Returns the Bandwidth Capacity of the T0 in Mbps
+// GetBandwidthCapacity - Returns the Bandwidth Capacity of the T0 in Mbps.
 func (t *T0) GetBandwidthCapacity() (bandwidthCapacity int, err error) {
 	switch t.GetClassService() {
 	case ClassServiceVRFStandard:

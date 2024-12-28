@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/avast/retry-go/v4"
+
 	"github.com/vmware/go-vcloud-director/v2/govcd"
 	govcdtypes "github.com/vmware/go-vcloud-director/v2/types/v56"
 

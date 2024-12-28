@@ -6,7 +6,7 @@ import (
 	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/urn"
 )
 
-// getOrg returns the org object from the vCloud Director API
+// getOrg returns the org object from the vCloud Director API.
 func (v *Client) getOrg() (err error) {
 	if !urn.IsOrg(v.GetOrganizationID()) {
 		return fmt.Errorf("invalid organization ID format: %s", v.GetOrganizationID())
@@ -17,7 +17,7 @@ func (v *Client) getOrg() (err error) {
 	return err
 }
 
-// getAdminOrg returns the admin org object from the vCloud Director API
+// getAdminOrg returns the admin org object from the vCloud Director API.
 func (v *Client) getAdminOrg() (err error) {
 	if !urn.IsOrg(v.GetOrganizationID()) {
 		return fmt.Errorf("invalid organization ID format: %s", v.GetOrganizationID())

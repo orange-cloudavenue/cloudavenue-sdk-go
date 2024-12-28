@@ -5,7 +5,7 @@ import (
 )
 
 type (
-	// EdgeGatewayALBServiceEngineGroupModel represents an ALB Service Engine Group to an Edge Gateway
+	// EdgeGatewayALBServiceEngineGroupModel represents an ALB Service Engine Group to an Edge Gateway.
 	EdgeGatewayALBServiceEngineGroupModel struct {
 		ID string `json:"id,omitempty"` // urn format of the service engine group
 

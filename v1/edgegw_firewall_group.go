@@ -11,7 +11,7 @@ var _ FirewallGroupInterface = (*EdgeClient)(nil)
 
 // * SecurityGroup
 
-// CreateFirewallSecurityGroup allow creating a new security group. T
+// CreateFirewallSecurityGroup allow creating a new security group. T.
 func (e *EdgeClient) CreateFirewallSecurityGroup(securityGroupConfig *FirewallGroupSecurityGroupModel) (*FirewallGroupSecurityGroup, error) {
 	ower := &govcdtypes.OpenApiReference{}
 

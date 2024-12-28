@@ -124,7 +124,7 @@ func (s *S3User) GetSourceTenant() string {
 
 // * user
 
-// GetUser - Get a S3 user by username
+// GetUser - Get a S3 user by username.
 func (s S3Client) GetUser(username string) (resp *S3User, err *OSEError) {
 	r, errA := clients3.NewOSE().R().
 		SetResult(&S3User{}).
@@ -149,7 +149,7 @@ func (s S3Client) GetUser(username string) (resp *S3User, err *OSEError) {
 	return r.Result().(*S3User), nil
 }
 
-// GetCanonicalID - Get a S3 user canonical ID by username
+// GetCanonicalID - Get a S3 user canonical ID by username.
 func (s *S3User) GetCanonicalID() (resp string, err error) {
 	if s.CanoncialID == "" {
 		r, err := clients3.NewOSE().R().
@@ -175,7 +175,7 @@ func (s *S3User) GetCanonicalID() (resp string, err error) {
 
 // * users
 
-// GetUsers - Get all S3 users
+// GetUsers - Get all S3 users.
 func (s S3Client) GetUsers() (resp *S3Users, err error) {
 	type allUsers struct {
 		Items S3Users `json:"items"`
@@ -198,7 +198,7 @@ func (s S3Client) GetUsers() (resp *S3Users, err error) {
 	return &r.Result().(*allUsers).Items, nil
 }
 
-// UserExists - Check if a user exists
+// UserExists - Check if a user exists.
 func (s *S3Users) UserExists(username string) (exist bool, user *S3User) {
 	for _, user := range *s {
 		if user.Name == username {

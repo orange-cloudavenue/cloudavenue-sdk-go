@@ -16,50 +16,50 @@ type Org struct {
 	Location     string `json:"Location"`
 }
 
-// GetID returns the ID field of Org
+// GetID returns the ID field of Org.
 func (r *Org) GetID() int {
 	return r.ID
 }
 
-// GetIDPtr returns a pointer to the ID field of Org
+// GetIDPtr returns a pointer to the ID field of Org.
 func (r *Org) GetIDPtr() *int {
 	return &r.ID
 }
 
-// GetName returns the Name field of Org
+// GetName returns the Name field of Org.
 func (r *Org) GetName() string {
 	return r.Name
 }
 
-// GetDisplayName returns the DisplayName field of Org
+// GetDisplayName returns the DisplayName field of Org.
 func (r *Org) GetDisplayName() string {
 	return r.DisplayName
 }
 
-// GetCustomerCode returns the CustomerCode field of Org
+// GetCustomerCode returns the CustomerCode field of Org.
 func (r *Org) GetCustomerCode() string {
 	return r.CustomerCode
 }
 
-// GetImportSource returns the ImportSource field of Org
+// GetImportSource returns the ImportSource field of Org.
 func (r *Org) GetImportSource() string {
 	return r.ImportSource
 }
 
-// GetLocation returns the Location field of Org
+// GetLocation returns the Location field of Org.
 func (r *Org) GetLocation() string {
 	return r.Location
 }
 
 // * Orgs
-// Orgs - Is the response structure for the GetOrgs API
+// Orgs - Is the response structure for the GetOrgs API.
 type Orgs []Org
 
 type orgsResponse struct {
 	Data Orgs `json:"data"`
 }
 
-// GetOrgs - Get a list of vCloud Director Organizations
+// GetOrgs - Get a list of vCloud Director Organizations.
 func (v *VcloudClient) GetOrgs() (resp *Orgs, err error) {
 	c, err := clientnetbackup.New()
 	if err != nil {
@@ -87,7 +87,7 @@ type orgResponse struct {
 	Data Org `json:"data"`
 }
 
-// GetOrg - Get a vCloud Director Organization
+// GetOrg - Get a vCloud Director Organization.
 func (v *VcloudClient) GetOrg(id int) (resp *Org, err error) {
 	c, err := clientnetbackup.New()
 	if err != nil {
@@ -112,7 +112,7 @@ func (v *VcloudClient) GetOrg(id int) (resp *Org, err error) {
 	return &r.Result().(*orgResponse).Data, nil
 }
 
-// GetOrgByName - Get a vCloud Director Organization by name
+// GetOrgByName - Get a vCloud Director Organization by name.
 func (v *VcloudClient) GetOrgByName(name string) (resp *Org, err error) {
 	orgs, err := v.GetOrgs()
 	if err != nil {

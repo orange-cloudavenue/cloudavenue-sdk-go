@@ -14,7 +14,7 @@ import (
 
 var c = &internalClient{}
 
-// Opts - Is a struct that contains the options for the netbackup client
+// Opts - Is a struct that contains the options for the netbackup client.
 type Opts struct {
 	org      string
 	Endpoint string `env:"ENDPOINT,overwrite"` // Deprecated - use URL instead
@@ -28,7 +28,7 @@ type internalClient struct {
 	token token
 }
 
-// Init - Initializes the netbackup client
+// Init - Initializes the netbackup client.
 func Init(opts *Opts, organizationName string) error {
 	opts.org = organizationName
 	if err := opts.Validate(); err != nil {
@@ -111,7 +111,7 @@ func New() (*Client, error) {
 	return &Client{x}, nil
 }
 
-// isCredentialProvider - Returns true if the client is a credential provider
+// isCredentialProvider - Returns true if the client is a credential provider.
 func isCredentialProvider() bool {
 	return c.token.username != "" && c.token.password != "" && c.token.endpoint != ""
 }

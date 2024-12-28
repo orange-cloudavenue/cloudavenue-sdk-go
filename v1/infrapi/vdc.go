@@ -44,63 +44,63 @@ type (
 	StorageProfileClass = rules.StorageProfileClass
 )
 
-// GetName - Return the VDC name
+// GetName - Return the VDC name.
 func (v *CAVVirtualDataCenter) GetName() string {
 	return v.VDC.Name
 }
 
-// GetDescription - Return the VDC description
+// GetDescription - Return the VDC description.
 func (v *CAVVirtualDataCenter) GetDescription() string {
 	return v.VDC.Description
 }
 
-// GetServiceClass - Return the VDC service class
+// GetServiceClass - Return the VDC service class.
 func (v *CAVVirtualDataCenter) GetServiceClass() ServiceClass {
 	return v.VDC.ServiceClass
 }
 
-// GetDisponibilityClass - Return the VDC disponibility class
+// GetDisponibilityClass - Return the VDC disponibility class.
 func (v *CAVVirtualDataCenter) GetDisponibilityClass() DisponibilityClass {
 	return v.VDC.DisponibilityClass
 }
 
-// GetBillingModel - Return the VDC billing model
+// GetBillingModel - Return the VDC billing model.
 func (v *CAVVirtualDataCenter) GetBillingModel() BillingModel {
 	return v.VDC.BillingModel
 }
 
-// GetVCPUInMhz - Return the VDC vcpu in mhz2
+// GetVCPUInMhz - Return the VDC vcpu in mhz2.
 func (v *CAVVirtualDataCenter) GetVCPUInMhz() int {
 	return v.VDC.VCPUInMhz
 }
 
-// GetCPUAllocated - Return the VDC cpu allocated
+// GetCPUAllocated - Return the VDC cpu allocated.
 func (v *CAVVirtualDataCenter) GetCPUAllocated() int {
 	return v.VDC.CPUAllocated
 }
 
-// GetMemoryAllocated - Return the VDC memory allocated
+// GetMemoryAllocated - Return the VDC memory allocated.
 func (v *CAVVirtualDataCenter) GetMemoryAllocated() int {
 	return v.VDC.MemoryAllocated
 }
 
-// GetStorageBillingModel - Return the VDC storage billing model
+// GetStorageBillingModel - Return the VDC storage billing model.
 func (v *CAVVirtualDataCenter) GetStorageBillingModel() BillingModel {
 	return v.VDC.StorageBillingModel
 }
 
-// GetStorageProfiles - Return the VDC storage profiles
+// GetStorageProfiles - Return the VDC storage profiles.
 func (v *CAVVirtualDataCenter) GetStorageProfiles() []StorageProfile {
 	return v.VDC.StorageProfiles
 }
 
-// GetVdcGroup - Return the VDC vdc group
+// GetVdcGroup - Return the VDC vdc group.
 func (v *CAVVirtualDataCenter) GetVDCGroup() string {
 	return v.VDCGroup
 }
 
 // SetName - Set the VDC name
-// Name respects the following regex: ^[a-zA-Z0-9-_]{1,64}$
+// Name respects the following regex: ^[a-zA-Z0-9-_]{1,64}$.
 func (v *CAVVirtualDataCenter) SetName(name string) error {
 	// check if the name respects the regex
 	re := regexp.MustCompile(`^[a-zA-Z0-9-_]{1,64}$`)
@@ -111,27 +111,27 @@ func (v *CAVVirtualDataCenter) SetName(name string) error {
 	return nil
 }
 
-// SetDescription - Set the VDC description
+// SetDescription - Set the VDC description.
 func (v *CAVVirtualDataCenter) SetDescription(description string) {
 	v.VDC.Description = description
 }
 
-// SetCPUAllocated - Set the VDC cpu allocated
+// SetCPUAllocated - Set the VDC cpu allocated.
 func (v *CAVVirtualDataCenter) SetCPUAllocated(cpuAllocated int) {
 	v.VDC.CPUAllocated = cpuAllocated
 }
 
-// SetMemoryAllocated - Set the VDC memory allocated
+// SetMemoryAllocated - Set the VDC memory allocated.
 func (v *CAVVirtualDataCenter) SetMemoryAllocated(memoryAllocated int) {
 	v.VDC.MemoryAllocated = memoryAllocated
 }
 
-// AddStorageProfile - Add a storage profile
+// AddStorageProfile - Add a storage profile.
 func (v *CAVVirtualDataCenter) AddStorageProfile(storageProfile StorageProfile) {
 	v.VDC.StorageProfiles = append(v.VDC.StorageProfiles, storageProfile)
 }
 
-// RemoveStorageProfile - Remove a storage profile
+// RemoveStorageProfile - Remove a storage profile.
 func (v *CAVVirtualDataCenter) RemoveStorageProfile(storageProfile StorageProfile) {
 	for i, storageProfileToRemove := range v.VDC.StorageProfiles {
 		if storageProfileToRemove.Class == storageProfile.Class {
@@ -140,22 +140,22 @@ func (v *CAVVirtualDataCenter) RemoveStorageProfile(storageProfile StorageProfil
 	}
 }
 
-// SetStorageProfiles - Set the VDC storage profiles
+// SetStorageProfiles - Set the VDC storage profiles.
 func (v *CAVVirtualDataCenter) SetStorageProfiles(storageProfiles []StorageProfile) {
 	v.VDC.StorageProfiles = storageProfiles
 }
 
-// SetVCPUInMhz - Set the VDC vcpu in mhz
+// SetVCPUInMhz - Set the VDC vcpu in mhz.
 func (v *CAVVirtualDataCenter) SetVCPUInMhz(vcpuInMhz int) {
 	v.VDC.VCPUInMhz = vcpuInMhz
 }
 
-// Set - Set the VDC
+// Set - Set the VDC.
 func (v *CAVVirtualDataCenter) Set(vdc *CAVVirtualDataCenter) {
 	v.VDC = vdc.VDC
 }
 
-// IsValid - Check if everythings is valid
+// IsValid - Check if everythings is valid.
 func (v *CAVVirtualDataCenter) IsValid(isUpdate bool) error {
 	return rules.Validate(rules.ValidateData{
 		ServiceClass:        v.VDC.ServiceClass,
@@ -184,7 +184,7 @@ func (v *CAVVirtualDataCenter) IsValid(isUpdate bool) error {
 	}, isUpdate)
 }
 
-// Get VDC - Return the VDC Object
+// Get VDC - Return the VDC Object.
 func (v *CAVVDC) Get(vdcName string) (*CAVVirtualDataCenter, error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {
@@ -207,7 +207,7 @@ func (v *CAVVDC) Get(vdcName string) (*CAVVirtualDataCenter, error) {
 	return r.Result().(*CAVVirtualDataCenter), nil
 }
 
-// List - Return the list of VDCs
+// List - Return the list of VDCs.
 func (v *CAVVDC) List() (*VDCs, error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {
@@ -246,7 +246,7 @@ func (v *CAVVDC) List() (*VDCs, error) {
 	return vdcS, nil
 }
 
-// Delete - Delete the VDC
+// Delete - Delete the VDC.
 func (v *CAVVirtualDataCenter) Delete(ctx context.Context) (err error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {
@@ -269,7 +269,7 @@ func (v *CAVVirtualDataCenter) Delete(ctx context.Context) (err error) {
 	return r.Result().(*commoncloudavenue.JobStatus).WaitWithContext(ctx, 5)
 }
 
-// Update - Update the VDC
+// Update - Update the VDC.
 func (v *CAVVirtualDataCenter) Update(ctx context.Context) (err error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {
@@ -293,7 +293,7 @@ func (v *CAVVirtualDataCenter) Update(ctx context.Context) (err error) {
 	return r.Result().(*commoncloudavenue.JobStatus).WaitWithContext(ctx, 5)
 }
 
-// New - Create a new VDC
+// New - Create a new VDC.
 func (v *CAVVDC) New(ctx context.Context, value *CAVVirtualDataCenter) (vdc *CAVVirtualDataCenter, err error) {
 	if err := value.IsValid(false); err != nil {
 		return nil, fmt.Errorf("error on create VDC: %w", err)
@@ -324,7 +324,7 @@ func (v *CAVVDC) New(ctx context.Context, value *CAVVirtualDataCenter) (vdc *CAV
 	return v.Get(value.VDC.Name)
 }
 
-// GetVMwareObject - Return the VMware object
+// GetVMwareObject - Return the VMware object.
 func (v *CAVVirtualDataCenter) GetVMwareObject() (*govcd.Vdc, error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {

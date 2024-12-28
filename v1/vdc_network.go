@@ -2,6 +2,7 @@ package v1
 
 import (
 	"github.com/avast/retry-go/v4"
+
 	"github.com/vmware/go-vcloud-director/v2/govcd"
 
 	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/urn"

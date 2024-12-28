@@ -38,37 +38,37 @@ type (
 
 // * Getters
 
-// GetTier0VrfID - Returns the Tier0VrfID
+// GetTier0VrfID - Returns the Tier0VrfID.
 func (e *EdgeGatewayType) GetTier0VrfID() string {
 	return e.Tier0VrfName
 }
 
-// GetT0 - Returns the Tier0VrfID (alias)
+// GetT0 - Returns the Tier0VrfID (alias).
 func (e *EdgeGatewayType) GetT0() string {
 	return e.Tier0VrfName
 }
 
-// GetID - Returns the EdgeID
+// GetID - Returns the EdgeID.
 func (e *EdgeGatewayType) GetID() string {
 	return e.EdgeID
 }
 
-// GetName - Returns the EdgeName
+// GetName - Returns the EdgeName.
 func (e *EdgeGatewayType) GetName() string {
 	return e.EdgeName
 }
 
-// GetOwnerType - Returns the OwnerType
+// GetOwnerType - Returns the OwnerType.
 func (e *EdgeGatewayType) GetOwnerType() OwnerType {
 	return e.OwnerType
 }
 
-// GetOwnerName - Returns the OwnerName
+// GetOwnerName - Returns the OwnerName.
 func (e *EdgeGatewayType) GetOwnerName() string {
 	return e.OwnerName
 }
 
-// GetDescription - Returns the Description
+// GetDescription - Returns the Description.
 func (e *EdgeGatewayType) GetDescription() string {
 	return e.Description
 }

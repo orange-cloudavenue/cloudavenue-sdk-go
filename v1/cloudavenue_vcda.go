@@ -15,7 +15,7 @@ type (
 	VDCAIP  string
 )
 
-// List of on premise IP addresses allowed for this organization's draas offer
+// List of on premise IP addresses allowed for this organization's draas offer.
 func (v *VCDA) List() (VDCAIps, error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {
@@ -37,12 +37,12 @@ func (v *VCDA) List() (VDCAIps, error) {
 	return *r.Result().(*VDCAIps), nil
 }
 
-// IsIPExists - Returns true if the IP exists
+// IsIPExists - Returns true if the IP exists.
 func (v *VDCAIps) IsIPExists(ip string) bool {
 	return slices.Contains(*v, ip)
 }
 
-// RegisterIP - Registers a new IP to the list
+// RegisterIP - Registers a new IP to the list.
 func (v *VCDA) RegisterIP(ip string) error {
 	c, err := clientcloudavenue.New()
 	if err != nil {
@@ -64,7 +64,7 @@ func (v *VCDA) RegisterIP(ip string) error {
 	return nil
 }
 
-// DeleteIP - Deletes an IP from the list
+// DeleteIP - Deletes an IP from the list.
 func (v *VDCAIps) DeleteIP(ip string) error {
 	c, err := clientcloudavenue.New()
 	if err != nil {
@@ -92,7 +92,7 @@ func (v *VDCAIps) DeleteIP(ip string) error {
 	return nil
 }
 
-// DeleteAllIPs - Deletes all IPs from the list
+// DeleteAllIPs - Deletes all IPs from the list.
 func (v *VDCAIps) DeleteAllIPs() error {
 	for _, ip := range *v {
 		err := v.DeleteIP(ip)
