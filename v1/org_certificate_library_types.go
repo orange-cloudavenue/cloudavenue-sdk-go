@@ -1,8 +1,10 @@
 package v1
 
 type (
-	// CertificateLibraryModel represents a certificate library in Cloud Avenue
-	CertificateLibraryModel struct {
+	CertificateLibrary struct{}
+
+	// CertificatesLibraryModel represents a certificate library in Cloud Avenue
+	CertificatesLibraryModel struct {
 		ID string `json:"id,omitempty"` // urn format of the service engine group
 
 		// Name of the certificate
