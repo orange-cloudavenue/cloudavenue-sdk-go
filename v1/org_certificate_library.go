@@ -11,8 +11,8 @@ import (
 	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/urn"
 )
 
-// ListOrgCertificateLibrary returns an array of CertificateLibraryModel
-func (o *Org) ListOrgCertificateLibrary() ([]*CertificateLibraryModel, error) {
+// ListCertificateLibrary returns an array of CertificateLibraryModel
+func (o *Org) ListCertificateLibrary() ([]*CertificateLibraryModel, error) {
 	// Initialize the CloudAvenue client to call the CloudAvenue API or vmware API
 	c, err := clientcloudavenue.New()
 	if err != nil {
@@ -42,8 +42,8 @@ func (o *Org) ListOrgCertificateLibrary() ([]*CertificateLibraryModel, error) {
 	return x, nil
 }
 
-// GetOrgCertificateLibrary returns a CertificateLibraryModel
-func (o *Org) GetOrgCertificateLibrary(nameOrID string) (*CertificateLibraryModel, error) {
+// GetCertificateLibrary returns a CertificateLibraryModel
+func (o *Org) GetCertificateLibrary(nameOrID string) (*CertificateLibraryModel, error) {
 	// Initialize the CloudAvenue client to call the CloudAvenue API or vmware API
 	c, err := clientcloudavenue.New()
 	if err != nil {
@@ -69,8 +69,8 @@ func (o *Org) GetOrgCertificateLibrary(nameOrID string) (*CertificateLibraryMode
 	}, nil
 }
 
-// CreateOrgCertificateLibrary creates a CertificateLibraryModel
-func (o *Org) CreateOrgCertificateLibrary(certificate *CertificateLibraryModel) (*CertificateLibraryModel, error) {
+// CreateCertificateLibrary creates a CertificateLibraryModel
+func (o *Org) CreateCertificateLibrary(certificate *CertificateLibraryModel) (*CertificateLibraryModel, error) {
 	// Initialize the CloudAvenue client to call the CloudAvenue API or vmware API
 	c, err := clientcloudavenue.New()
 	if err != nil {
