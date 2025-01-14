@@ -131,9 +131,20 @@ type Client struct {
 
 var cache *Client
 
+// Refresh - Refreshes the client.
+func (v *Client) Refresh() error {
+	x, err := New()
+	if err != nil {
+		return err
+	}
+
+	*v = *x
+	return nil
+}
+
 // New creates a new cloudavenue client.
 func New() (*Client, error) {
-	if cache != nil {
+	if cache != nil && !c.token.IsExpired() {
 		return cache, nil
 	}
 
