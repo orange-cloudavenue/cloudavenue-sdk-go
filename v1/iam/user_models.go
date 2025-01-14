@@ -1,3 +1,12 @@
+/*
+ * SPDX-FileCopyrightText: Copyright (c) 2025 Orange
+ * SPDX-License-Identifier: Mozilla Public License 2.0
+ *
+ * This software is distributed under the MPL-2.0 license.
+ * the text of which is available at https://www.mozilla.org/en-US/MPL/2.0/
+ * or see the "LICENSE" file for more details.
+ */
+
 package iam
 
 import (
@@ -20,7 +29,7 @@ type (
 		govcdUser     *govcd.OrgUser
 
 		// Data
-		User *User
+		User User
 	}
 
 	userInterface interface {
@@ -53,7 +62,7 @@ type (
 		User `validate:"required"`
 
 		// REQUIRED: The password of the user.
-		Password string `validate:"required,gte=6"`
+		Password string `validate:"required,min=6"`
 	}
 
 	SAMLUser struct {
@@ -88,42 +97,49 @@ func toGoVCDTypeUser(user any, roleReference *govcdtypes.Reference) *govcdtypes.
 	}
 
 	u := &govcdtypes.User{}
+
+	sw := func(fieldName string, fieldValue any) {
+		switch fieldName {
+		case "Name":
+			u.Name = fieldValue.(string)
+		case "RoleName":
+			u.Role = roleReference
+		case "Description":
+			u.Description = fieldValue.(string)
+		case "FullName":
+			u.FullName = fieldValue.(string)
+		case "Email":
+			u.EmailAddress = fieldValue.(string)
+		case "Telephone":
+			u.Telephone = fieldValue.(string)
+		case "Enabled":
+			u.IsEnabled = fieldValue.(bool)
+		case "DeployedVMQuota":
+			u.DeployedVmQuota = fieldValue.(int)
+		case "StoredVMQuota":
+			u.StoredVmQuota = fieldValue.(int)
+		case "ID":
+			u.ID = fieldValue.(string)
+		case "Password":
+			u.Password = fieldValue.(string)
+		}
+	}
+
 	for i := 0; i < x.NumField(); i++ {
 		field := x.Type().Field(i)
 		value := x.Field(i).Interface()
-		if field.Name == "User" {
-			// If the field is a User struct, iterate over its fields
-			for j := 0; j < reflect.ValueOf(value).NumField(); j++ {
-				userField := reflect.ValueOf(value).Type().Field(j)
-				userValue := reflect.ValueOf(value).Field(j).Interface()
 
-				switch userField.Name {
-				case "Name":
-					u.Name = userValue.(string)
-				case "RoleName":
-					u.Role = roleReference
-				case "Description":
-					u.Description = userValue.(string)
-				case "FullName":
-					u.FullName = userValue.(string)
-				case "Email":
-					u.EmailAddress = userValue.(string)
-				case "Telephone":
-					u.Telephone = userValue.(string)
-				case "Enabled":
-					u.IsEnabled = userValue.(bool)
-				case "DeployedVMQuota":
-					u.DeployedVmQuota = userValue.(int)
-				case "StoredVMQuota":
-					u.StoredVmQuota = userValue.(int)
-				case "ID":
-					u.ID = userValue.(string)
-				}
+		switch field.Name {
+		case "User":
+			userValue := reflect.ValueOf(value)
+			for j := 0; j < userValue.NumField(); j++ {
+				userField := userValue.Type().Field(j)
+				userFieldValue := userValue.Field(j).Interface()
+
+				sw(userField.Name, userFieldValue)
 			}
-		}
-
-		if field.Name == "Password" {
-			u.Password = value.(string)
+		default:
+			sw(field.Name, value)
 		}
 	}
 
@@ -138,47 +154,32 @@ func toGoVCDTypeUser(user any, roleReference *govcdtypes.Reference) *govcdtypes.
 		u.IsExternal = true
 	}
 
+	u.Xmlns = govcdtypes.XMLNamespaceVCloud
+	u.Type = govcdtypes.MimeAdminUser
+
 	return u
 }
 
-func toSDKTypeUser[toUser any](user *govcdtypes.User) *toUser {
-	u := new(toUser)
-
-	// toSDKTypeUser converts a go-vcd user to a user by reflecting.
-	x := reflect.ValueOf(u).Elem()
-	for i := 0; i < x.NumField(); i++ {
-		field := x.Type().Field(i)
-
-		switch field.Name {
-		case "Name":
-			x.Field(i).SetString(user.Name)
-		case "RoleName":
-			x.Field(i).SetString(user.Role.Name)
-		case "Description":
-			x.Field(i).SetString(user.Description)
-		case "FullName":
-			x.Field(i).SetString(user.FullName)
-		case "Email":
-			x.Field(i).SetString(user.EmailAddress)
-		case "Telephone":
-			x.Field(i).SetString(user.Telephone)
-		case "Enabled":
-			x.Field(i).SetBool(user.IsEnabled)
-		case "DeployedVMQuota":
-			x.Field(i).SetInt(int64(user.DeployedVmQuota))
-		case "StoredVMQuota":
-			x.Field(i).SetInt(int64(user.StoredVmQuota))
-		case "ID":
-			x.Field(i).SetString(user.ID)
-		}
+func toSDKTypeUser(user *govcdtypes.User) User {
+	u := User{
+		Name:            user.Name,
+		RoleName:        user.Role.Name,
+		Description:     user.Description,
+		FullName:        user.FullName,
+		Email:           user.EmailAddress,
+		Telephone:       user.Telephone,
+		Enabled:         user.IsEnabled,
+		DeployedVMQuota: user.DeployedVmQuota,
+		StoredVMQuota:   user.StoredVmQuota,
+		ID:              user.ID,
 	}
 
 	// Set specific fields based on the ProviderType
 	switch user.ProviderType {
 	case govcd.OrgUserProviderIntegrated:
-		x.FieldByName("Type").SetString(string(UserTypeLocal))
+		u.Type = UserTypeLocal
 	case govcd.OrgUserProviderSAML:
-		x.FieldByName("Type").SetString(string(UserTypeSAML))
+		u.Type = UserTypeSAML
 	}
 
 	return u

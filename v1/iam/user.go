@@ -1,3 +1,12 @@
+/*
+ * SPDX-FileCopyrightText: Copyright (c) 2025 Orange
+ * SPDX-License-Identifier: Mozilla Public License 2.0
+ *
+ * This software is distributed under the MPL-2.0 license.
+ * the text of which is available at https://www.mozilla.org/en-US/MPL/2.0/
+ * or see the "LICENSE" file for more details.
+ */
+
 package iam
 
 import (
@@ -33,7 +42,7 @@ func (c *Client) CreateSAMLUser(user SAMLUser) (*UserClient, error) {
 
 func (c *Client) createGenericUser(user userInterface) (*UserClient, error) {
 	// Refresh the client if needed
-	if err := c.Refresh(); err != nil {
+	if err := c.clientCloudavenue.Refresh(); err != nil {
 		return nil, err
 	}
 
@@ -43,13 +52,13 @@ func (c *Client) createGenericUser(user userInterface) (*UserClient, error) {
 	}
 
 	// Get Role HREF
-	roleRef, err := c.GetRoleReference(user.GetRoleName())
+	roleRef, err := c.clientGoVCDAdminOrg.GetRoleReference(user.GetRoleName())
 	if err != nil {
 		return nil, err
 	}
 
 	// Create the user in the system
-	userCreated, err := c.CreateUser(toGoVCDTypeUser(user, roleRef))
+	userCreated, err := c.clientGoVCDAdminOrg.CreateUser(toGoVCDTypeUser(user, roleRef))
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +66,7 @@ func (c *Client) createGenericUser(user userInterface) (*UserClient, error) {
 	return &UserClient{
 		govcdAdminOrg: c.clientGoVCDAdminOrg,
 		govcdUser:     userCreated,
-		User:          toSDKTypeUser[User](userCreated.User),
+		User:          toSDKTypeUser(userCreated.User),
 	}, nil
 }
 
@@ -70,11 +79,11 @@ func (c *Client) createGenericUser(user userInterface) (*UserClient, error) {
 // Returns:
 //   - A pointer to the User object if found, or an error if any issues occur during the process.
 func (c *Client) GetUser(nameOrID string) (*UserClient, error) {
-	if err := c.Refresh(); err != nil {
+	if err := c.clientCloudavenue.Refresh(); err != nil {
 		return nil, err
 	}
 
-	user, err := c.GetUserByNameOrId(nameOrID, true)
+	user, err := c.clientGoVCDAdminOrg.GetUserByNameOrId(nameOrID, true)
 	if err != nil {
 		return nil, err
 	}
@@ -82,7 +91,7 @@ func (c *Client) GetUser(nameOrID string) (*UserClient, error) {
 	return &UserClient{
 		govcdAdminOrg: c.clientGoVCDAdminOrg,
 		govcdUser:     user,
-		User:          toSDKTypeUser[User](user.User),
+		User:          toSDKTypeUser(user.User),
 	}, nil
 }
 
@@ -103,6 +112,9 @@ func (u *UserClient) Update() error {
 
 	u.govcdUser.User = toGoVCDTypeUser(u.User, roleRef)
 	u.govcdUser.User.Href = old.Href
+	u.govcdUser.User.ProviderType = old.ProviderType
+	u.govcdUser.User.IsExternal = old.IsExternal
+	u.govcdUser.User.ID = old.ID
 
 	// Update the user
 	return u.govcdUser.Update()
