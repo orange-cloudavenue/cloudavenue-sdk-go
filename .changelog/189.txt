@@ -1,0 +1,3 @@
+```release-note:feature
+`iam` - Add `iam` client for managing IAM Users Local and SAML.
+```
