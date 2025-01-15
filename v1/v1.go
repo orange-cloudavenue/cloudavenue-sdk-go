@@ -15,6 +15,7 @@ import (
 	"github.com/vmware/go-vcloud-director/v2/govcd"
 
 	clientcloudavenue "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/clients/cloudavenue"
+	"github.com/orange-cloudavenue/cloudavenue-sdk-go/v1/iam"
 	"github.com/orange-cloudavenue/cloudavenue-sdk-go/v1/netbackup"
 )
 
@@ -69,4 +70,8 @@ func (v *V1) AdminOrg() (*AdminOrg, error) {
 	return &AdminOrg{
 		AdminOrg: c.AdminOrg,
 	}, nil
+}
+
+func (v *V1) IAM() (*iam.Client, error) {
+	return iam.NewClient()
 }
