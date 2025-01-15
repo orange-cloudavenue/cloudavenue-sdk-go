@@ -1,5 +1,9 @@
 ## 0.20.0 (Unreleased)
 
+### :rocket: **New Features**
+
+* `iam` - Add `iam` client for managing IAM Users Local and SAML. (GH-189)
+
 ### :dependabot: **Dependencies**
 
 * deps: bumps github.com/go-resty/resty/v2 from 2.16.2 to 2.16.3 (GH-187)
