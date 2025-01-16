@@ -37,7 +37,19 @@ func (c *Client) CreateLocalUser(user LocalUser) (*UserClient, error) {
 //   - *User: Pointer to the created User object.
 //   - error: Error, if any occurred during the creation process.
 func (c *Client) CreateSAMLUser(user SAMLUser) (*UserClient, error) {
-	return c.createGenericUser(user)
+	userCreated, err := c.createGenericUser(user)
+	if err != nil {
+		return nil, err
+	}
+
+	// Force update after create because in the SAML user creation, the Quotas are not set
+	userCreated.User.DeployedVMQuota = user.DeployedVMQuota
+	userCreated.User.StoredVMQuota = user.StoredVMQuota
+	if err := userCreated.Update(); err != nil {
+		return nil, err
+	}
+
+	return userCreated, nil
 }
 
 func (c *Client) createGenericUser(user userInterface) (*UserClient, error) {

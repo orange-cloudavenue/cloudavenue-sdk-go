@@ -1,0 +1,3 @@
+```release-note:bug
+`iam` - Fix issue when `deployed_vm_quota` and `stored_vm_quota` are not set in the creation of the IAM user.
+```
