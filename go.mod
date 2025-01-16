@@ -6,7 +6,7 @@ toolchain go1.23.1
 
 require (
 	github.com/avast/retry-go/v4 v4.6.0
-	github.com/aws/aws-sdk-go v1.55.5
+	github.com/aws/aws-sdk-go v1.55.6
 	github.com/fbiville/markdown-table-formatter v0.3.0
 	github.com/go-playground/validator/v10 v10.24.0
 	github.com/go-resty/resty/v2 v2.16.3
