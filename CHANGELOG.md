@@ -1,4 +1,9 @@
 ## 0.21.0 (Unreleased)
+
+### :bug: **Bug Fixes**
+
+* `iam` - Fix issue when `deployed_vm_quota` and `stored_vm_quota` are not set in the creation of the IAM user. (GH-193)
+
 ## 0.20.0 (January 15, 2025)
 
 ### :rocket: **New Features**
