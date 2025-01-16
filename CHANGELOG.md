@@ -3,6 +3,9 @@
 ### :bug: **Bug Fixes**
 
 * `iam` - Fix issue when `deployed_vm_quota` and `stored_vm_quota` are not set in the creation of the IAM user. (GH-193)
+### :information_source: **Notes**
+
+* `vdc` - Changed the `vdc` storage profile size rules to allow for a minimum size of 100GB and a maximum size of 80TB. (GH-192)
 
 ## 0.20.0 (January 15, 2025)
 
