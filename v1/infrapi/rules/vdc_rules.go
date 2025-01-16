@@ -95,8 +95,8 @@ const (
 	StorageProfileClassPlatinum7kR2 StorageProfileClass = "platinum7k_r2"
 	StorageProfileClassPlatinum7kHm StorageProfileClass = "platinum7k_hm"
 
-	storageProfileMinMemoryGib = 500
-	storageProfileMaxMemoryGib = 50000
+	StorageProfileMinSizeStorageProfileGo = 100
+	StorageProfileMaxSizeStorageProfileGo = 81920
 
 	storageProfileSilverIOPSLimit = 600
 	storageProfileGoldIOPSLimit   = 1000
@@ -154,8 +154,8 @@ var (
 var (
 	defaultStorageProfileRuleSizeLimit = RuleValues{
 		Editable: true,
-		Min:      utils.ToPTR(storageProfileMinMemoryGib),
-		Max:      utils.ToPTR(storageProfileMaxMemoryGib),
+		Min:      utils.ToPTR(StorageProfileMinSizeStorageProfileGo),
+		Max:      utils.ToPTR(StorageProfileMaxSizeStorageProfileGo),
 	}
 
 	storageProfilesIOPSLimits = map[StorageProfileClass]RuleValues{
@@ -931,7 +931,7 @@ func (r Rule) GetStorageProfileDetails() string {
 
 	prettyPrintedTable, err := markdown.NewTableFormatterBuilder().
 		WithPrettyPrint().
-		Build("StorageProfileClass", "SizeLimit (Gb)", "IOPSLimit", "BillingModels", "DisponibilityClasses").
+		Build("StorageProfileClass", "SizeLimit (Go)", "IOPSLimit", "BillingModels", "DisponibilityClasses").
 		Format(rules)
 	if err != nil {
 		panic(err)

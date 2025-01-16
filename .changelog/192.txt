@@ -1,0 +1,3 @@
+```release-note:note
+`vdc` - Changed the `vdc` storage profile size rules to allow for a minimum size of 100GB and a maximum size of 80TB.
+```
