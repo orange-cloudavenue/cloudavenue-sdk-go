@@ -7,6 +7,10 @@
 
 * `vdc` - Changed the `vdc` storage profile size rules to allow for a minimum size of 100GB and a maximum size of 80TB. (GH-192)
 
+### :dependabot: **Dependencies**
+
+* deps: bumps github.com/aws/aws-sdk-go from 1.55.5 to 1.55.6 (GH-196)
+
 ## 0.20.0 (January 15, 2025)
 
 ### :rocket: **New Features**
