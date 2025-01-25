@@ -1,4 +1,9 @@
 ## 0.21.0 (Unreleased)
+
+### :dependabot: **Dependencies**
+
+* deps: bumps github.com/go-resty/resty/v2 from 2.16.3 to 2.16.5 (GH-198)
+
 ## 0.20.1 (January 16, 2025)
 
 ### :bug: **Bug Fixes**
