@@ -1,4 +1,5 @@
 ## 0.22.0 (Unreleased)
+## 0.21.1 (January 27, 2025)
 
 ### :bug: **Bug Fixes**
 
