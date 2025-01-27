@@ -12,10 +12,13 @@ package v1
 import (
 	"github.com/vmware/go-vcloud-director/v2/govcd"
 	govcdtypes "github.com/vmware/go-vcloud-director/v2/types/v56"
+
+	"github.com/orange-cloudavenue/cloudavenue-sdk-go/v1/org"
 )
 
 type Org struct {
 	*govcd.Org
+	*org.Client
 }
 
 // Returns the name of the organization.
