@@ -1,4 +1,9 @@
 ## 0.22.0 (Unreleased)
+
+### :bug: **Bug Fixes**
+
+* `org` - Fix org client creation. (GH-199)
+
 ## 0.21.0 (January 27, 2025)
 
 ### :rocket: **New Features**
