@@ -1,4 +1,5 @@
-## 0.21.0 (Unreleased)
+## 0.22.0 (Unreleased)
+## 0.21.0 (January 27, 2025)
 
 ### :rocket: **New Features**
 
