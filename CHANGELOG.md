@@ -1,5 +1,9 @@
 ## 0.21.0 (Unreleased)
 
+### :rocket: **New Features**
+
+* `org` - Add `org` client with new functions to manage certificates in the organization. (GH-173)
+
 ### :dependabot: **Dependencies**
 
 * deps: bumps github.com/go-resty/resty/v2 from 2.16.3 to 2.16.5 (GH-198)
