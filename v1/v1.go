@@ -17,6 +17,7 @@ import (
 	clientcloudavenue "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/clients/cloudavenue"
 	"github.com/orange-cloudavenue/cloudavenue-sdk-go/v1/iam"
 	"github.com/orange-cloudavenue/cloudavenue-sdk-go/v1/netbackup"
+	"github.com/orange-cloudavenue/cloudavenue-sdk-go/v1/org"
 )
 
 type V1 struct {
@@ -52,8 +53,14 @@ func (v *V1) Org() (*Org, error) {
 		return nil, err
 	}
 
+	o, err := org.NewClient()
+	if err != nil {
+		return nil, err
+	}
+
 	return &Org{
-		Org: c.Org,
+		Org:    c.Org,
+		Client: o,
 	}, nil
 }
 
