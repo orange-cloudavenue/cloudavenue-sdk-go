@@ -1,4 +1,9 @@
 ## 0.22.0 (Unreleased)
+
+### :dependabot: **Dependencies**
+
+* deps: bumps github.com/stretchr/testify from 1.9.0 to 1.10.0 (GH-201)
+
 ## 0.21.1 (January 27, 2025)
 
 ### :bug: **Bug Fixes**
