@@ -28,7 +28,7 @@ type (
 		OwnerType    OwnerType `json:"ownerType"`
 		OwnerName    string    `json:"ownerName"`
 		Description  string    `json:"description"`
-		Bandwidth    Bandwidth `json:"rateLimit"`
+		Bandwidth    int       `json:"rateLimit"`
 	}
 
 	EdgeClient struct {
