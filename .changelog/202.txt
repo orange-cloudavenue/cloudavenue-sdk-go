@@ -1,0 +1,3 @@
+```release-note:enhancement
+`edgegateway` - Add array var of supported bandwidth values depending on the service class of the Tier0.
+```
