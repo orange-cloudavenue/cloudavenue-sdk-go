@@ -1,0 +1,3 @@
+```release-note:feature
+`org` - Added `GetProperties` and `UpdateProperties` methods to the `org` client. These methods allow you to get and update the properties of an organization.
+```
