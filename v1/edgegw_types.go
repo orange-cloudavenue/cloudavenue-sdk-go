@@ -28,7 +28,7 @@ type (
 		OwnerType    OwnerType `json:"ownerType"`
 		OwnerName    string    `json:"ownerName"`
 		Description  string    `json:"description"`
-		Bandwidth    Bandwidth `json:"rateLimit"`
+		Bandwidth    int       `json:"rateLimit"`
 	}
 
 	EdgeClient struct {
@@ -43,6 +43,36 @@ type (
 		GetNsxtFirewall() (*govcd.NsxtFirewall, error)
 		UpdateNsxtFirewall(firewallRules *govcdtypes.NsxtFirewallRuleContainer) (*govcd.NsxtFirewall, error)
 	}
+)
+
+var (
+	// Source : https://wiki.cloudavenue.orange-business.com/wiki/Network
+	EdgeGatewayAllowedBandwidth = map[ClassService]struct {
+		T0TotalBandwidth   int
+		T1AllowedBandwidth []int
+	}{
+		T0ClassServiceVRFStandard: {
+			T0TotalBandwidth:   T0ClassesServices[T0ClassServiceVRFStandard].TotalBandwidth,
+			T1AllowedBandwidth: allowedBandwidthVRFStandard,
+		},
+		T0ClassServiceVRFPremium: {
+			T0TotalBandwidth:   T0ClassesServices[T0ClassServiceVRFPremium].TotalBandwidth,
+			T1AllowedBandwidth: allowedBandwidthVRFPremium,
+		},
+		T0ClassServiceVRFDedicatedMedium: {
+			T0TotalBandwidth:   T0ClassesServices[T0ClassServiceVRFDedicatedMedium].TotalBandwidth,
+			T1AllowedBandwidth: allowedBandwidthVRFDedicatedMedium,
+		},
+		T0ClassServiceVRFDedicatedLarge: {
+			T0TotalBandwidth:   T0ClassesServices[T0ClassServiceVRFDedicatedLarge].TotalBandwidth,
+			T1AllowedBandwidth: allowedBandwidthVRFDedicatedLarge,
+		},
+	}
+
+	allowedBandwidthVRFStandard        = []int{5, 25, 50, 75, 100, 150, 200, 250, 300}                                     // 5, 25, 50, 75, 100, 150, 200, 250, 300
+	allowedBandwidthVRFPremium         = append(allowedBandwidthVRFStandard, []int{400, 500, 600, 700, 800, 900, 1000}...) // 5, 25, 50, 75, 100, 150, 200, 250, 300, 400, 500, 600, 700, 800, 900, 1000
+	allowedBandwidthVRFDedicatedMedium = append(allowedBandwidthVRFPremium, []int{2000}...)                                // 5, 25, 50, 75, 100, 150, 200, 250, 300, 400, 500, 600, 700, 800, 900, 1000, 2000
+	allowedBandwidthVRFDedicatedLarge  = append(allowedBandwidthVRFDedicatedMedium, []int{3000, 4000, 5000, 6000}...)      // 5, 25, 50, 75, 100, 150, 200, 250, 300, 400, 500, 600, 700, 800, 900, 1000, 2000, 3000, 4000, 5000, 6000
 )
 
 // * Getters

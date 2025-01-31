@@ -25,7 +25,6 @@ import (
 
 type (
 	EdgeGateway struct{}
-	Bandwidth   int
 	OwnerType   string
 )
 
@@ -71,13 +70,6 @@ func (v *EdgeGateway) List() (response *EdgeGateways, err error) {
 	return r.Result().(*EdgeGateways), nil
 }
 
-var (
-	allowedRateLimitVRFStandard        = []int{5, 25, 50, 75, 100, 150, 200, 250, 300}                                     // 5, 25, 50, 75, 100, 150, 200, 250, 300
-	allowedRateLimitVRFPremium         = append(allowedRateLimitVRFStandard, []int{400, 500, 600, 700, 800, 900, 1000}...) // 5, 25, 50, 75, 100, 150, 200, 250, 300, 400, 500, 600, 700, 800, 900, 1000
-	allowedRateLimitVRFDedicatedMedium = append(allowedRateLimitVRFPremium, []int{2000}...)                                // 5, 25, 50, 75, 100, 150, 200, 250, 300, 400, 500, 600, 700, 800, 900, 1000, 2000
-	allowedRateLimitVRFDedicatedLarge  = append(allowedRateLimitVRFDedicatedMedium, []int{3000, 4000, 5000, 6000}...)      // 5, 25, 50, 75, 100, 150, 200, 250, 300, 400, 500, 600, 700, 800, 900, 1000, 2000, 3000, 4000, 5000, 6000
-)
-
 // GetAllowedBandwidthValues - Returns the allowed rate limit value.
 func (v *EdgeGateway) GetAllowedBandwidthValues(t0VrfName string) (allowedValues []int, err error) {
 	t0, err := (&Tier0{}).GetT0(t0VrfName)
@@ -85,18 +77,11 @@ func (v *EdgeGateway) GetAllowedBandwidthValues(t0VrfName string) (allowedValues
 		return
 	}
 
-	switch t0.GetClassService() {
-	case ClassServiceVRFPremium:
-		allowedValues = allowedRateLimitVRFPremium
-	case ClassServiceVRFStandard:
-		allowedValues = allowedRateLimitVRFStandard
-	case ClassServiceVRFDedicatedMedium:
-		allowedValues = allowedRateLimitVRFDedicatedMedium
-	case ClassServiceVRFDedicatedLarge:
-		allowedValues = allowedRateLimitVRFDedicatedLarge
+	if v, ok := EdgeGatewayAllowedBandwidth[t0.GetClassService()]; ok {
+		return v.T1AllowedBandwidth, nil
 	}
 
-	return
+	return nil, fmt.Errorf("failed to get allowed bandwidth values. The service class %s does not exist", t0.GetClassService())
 }
 
 // GetBandwidthCapacityRemaining - Returns the bandwidth capacity remaining in Mbps.
@@ -113,7 +98,7 @@ func (e *EdgeGateways) GetBandwidthCapacityRemaining(t0VrfName string) (response
 
 	for _, edgeGateway := range *e {
 		if edgeGateway.GetT0() == t0VrfName {
-			t0BandwidthCapacity -= int(edgeGateway.GetBandwidth())
+			t0BandwidthCapacity -= edgeGateway.GetBandwidth()
 		}
 	}
 
@@ -292,7 +277,7 @@ func (e *EdgeGatewayType) Delete() (job *commoncloudavenue.JobStatus, err error)
 // * Bandwidth
 
 // GetBandwidth - Returns the rate limit.
-func (e *EdgeGatewayType) GetBandwidth() Bandwidth {
+func (e *EdgeGatewayType) GetBandwidth() int {
 	return e.Bandwidth
 }
 

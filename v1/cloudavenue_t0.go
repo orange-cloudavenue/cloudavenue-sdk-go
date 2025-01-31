@@ -36,15 +36,32 @@ type (
 )
 
 const (
-	// ClassServiceVRFStandard - VRF Standard.
-	ClassServiceVRFStandard ClassService = "VRF_STANDARD"
-	// ClassServiceVRFPremium - VRF Premium.
-	ClassServiceVRFPremium ClassService = "VRF_PREMIUM"
-	// ClassServiceVRFDedicatedMedium - VRF Dedicated Medium.
-	ClassServiceVRFDedicatedMedium ClassService = "VRF_DEDICATED_MEDIUM"
-	// ClassServiceVRFDedicatedLarge - VRF Dedicated Large.
-	ClassServiceVRFDedicatedLarge ClassService = "VRF_DEDICATED_LARGE"
+	// TOClassServiceVRFStandard - VRF Standard.
+	T0ClassServiceVRFStandard ClassService = "VRF_STANDARD"
+	// T0ClassServiceVRFPremium - VRF Premium.
+	T0ClassServiceVRFPremium ClassService = "VRF_PREMIUM"
+	// T0ClassServiceVRFDedicatedMedium - VRF Dedicated Medium.
+	T0ClassServiceVRFDedicatedMedium ClassService = "VRF_DEDICATED_MEDIUM"
+	// T0ClassServiceVRFDedicatedLarge - VRF Dedicated Large.
+	T0ClassServiceVRFDedicatedLarge ClassService = "VRF_DEDICATED_LARGE"
 )
+
+var T0ClassesServices = map[ClassService]struct {
+	TotalBandwidth int
+}{
+	T0ClassServiceVRFStandard: {
+		TotalBandwidth: 300,
+	},
+	T0ClassServiceVRFPremium: {
+		TotalBandwidth: 1000,
+	},
+	T0ClassServiceVRFDedicatedMedium: {
+		TotalBandwidth: 3500,
+	},
+	T0ClassServiceVRFDedicatedLarge: {
+		TotalBandwidth: 10000,
+	},
+}
 
 // * T0
 
@@ -94,22 +111,22 @@ func (t *T0Service) GetVLANID() any {
 
 // IsVRFStandard - Returns true if the ClassService is VRFStandard.
 func (c ClassService) IsVRFStandard() bool {
-	return c == ClassServiceVRFStandard
+	return c == T0ClassServiceVRFStandard
 }
 
 // IsVRFPremium - Returns true if the ClassService is VRFPremium.
 func (c ClassService) IsVRFPremium() bool {
-	return c == ClassServiceVRFPremium
+	return c == T0ClassServiceVRFPremium
 }
 
 // IsVRFDedicatedMedium - Returns true if the ClassService is VRFDedicatedMedium.
 func (c ClassService) IsVRFDedicatedMedium() bool {
-	return c == ClassServiceVRFDedicatedMedium
+	return c == T0ClassServiceVRFDedicatedMedium
 }
 
 // IsVRFDedicatedLarge - Returns true if the ClassService is VRFDedicatedLarge.
 func (c ClassService) IsVRFDedicatedLarge() bool {
-	return c == ClassServiceVRFDedicatedLarge
+	return c == T0ClassServiceVRFDedicatedLarge
 }
 
 // * List
@@ -172,13 +189,9 @@ func (t *Tier0) GetT0(t0 string) (response *T0, err error) {
 
 // GetBandwidthCapacity - Returns the Bandwidth Capacity of the T0 in Mbps.
 func (t *T0) GetBandwidthCapacity() (bandwidthCapacity int, err error) {
-	switch t.GetClassService() {
-	case ClassServiceVRFStandard:
-		bandwidthCapacity = 300
-	case ClassServiceVRFPremium:
-		bandwidthCapacity = 1000
-	default:
-		err = fmt.Errorf("unknown class service: %s", t.GetClassService())
+	if v, ok := T0ClassesServices[t.GetClassService()]; ok {
+		return v.TotalBandwidth, nil
 	}
-	return
+
+	return 0, fmt.Errorf("unknown class service: %s", t.GetClassService())
 }
