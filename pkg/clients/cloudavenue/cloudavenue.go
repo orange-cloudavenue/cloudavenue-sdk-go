@@ -230,3 +230,17 @@ func (v *Client) GetURL() string {
 func GetBearerToken() string {
 	return c.token.GetToken()
 }
+
+// MockClient - Returns the mock client.
+func MockClient() *Client {
+	if cache == nil {
+		cache = &Client{
+			Client: resty.New().
+				SetHeader("Accept", "application/json;version="+c.token.vcdVersion).
+				SetBaseURL("http://local.test").
+				SetAuthToken(""),
+		}
+	}
+
+	return cache
+}

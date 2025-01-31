@@ -10,6 +10,7 @@
 package org
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/vmware/go-vcloud-director/v2/govcd"
@@ -19,7 +20,7 @@ import (
 	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/urn"
 )
 
-func (c *Client) ListCertificatesInLibrary() (CertificatesModel, error) {
+func (c *client) ListCertificatesInLibrary(_ context.Context) (CertificatesModel, error) {
 	if err := c.clientCloudavenue.Refresh(); err != nil {
 		return nil, err
 	}
@@ -45,11 +46,25 @@ func (c *Client) ListCertificatesInLibrary() (CertificatesModel, error) {
 	return x, nil
 }
 
-func (c *Client) GetCertificateFromLibrary(nameOrID string) (*CertificateClient, error) {
+func (c *client) GetCertificateFromLibrary(ctx context.Context, nameOrID string) (*CertificateModel, error) {
 	if err := c.clientCloudavenue.Refresh(); err != nil {
 		return nil, err
 	}
 
+	certificate, err := c.getCertificateFromLibrary(ctx, nameOrID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &CertificateModel{
+		ID:          certificate.CertificateLibrary.Id,
+		Name:        certificate.CertificateLibrary.Alias,
+		Description: certificate.CertificateLibrary.Description,
+		Certificate: certificate.CertificateLibrary.Certificate,
+	}, nil
+}
+
+func (c *client) getCertificateFromLibrary(_ context.Context, nameOrID string) (*govcd.Certificate, error) {
 	var (
 		certificate *govcd.Certificate
 		err         error
@@ -60,25 +75,12 @@ func (c *Client) GetCertificateFromLibrary(nameOrID string) (*CertificateClient,
 	} else {
 		certificate, err = c.clientGoVCDAdminOrg.GetCertificateFromLibraryByName(nameOrID)
 	}
-	if err != nil {
-		return nil, err
-	}
 
-	return &CertificateClient{
-		govcdAdminOrg: c.clientGoVCDAdminOrg,
-		certVCD:       certificate,
-
-		Certificate: CertificateModel{
-			ID:          certificate.CertificateLibrary.Id,
-			Name:        certificate.CertificateLibrary.Alias,
-			Description: certificate.CertificateLibrary.Description,
-			Certificate: certificate.CertificateLibrary.Certificate,
-		},
-	}, nil
+	return certificate, err
 }
 
 // CreateCertificateLibrary creates a new certificate library.
-func (c *Client) CreateCertificateInLibrary(cert CertificateModel) (*CertificateClient, error) {
+func (c *client) CreateCertificateInLibrary(_ context.Context, cert *CertificateCreateRequest) (*CertificateModel, error) {
 	if err := c.clientCloudavenue.Refresh(); err != nil {
 		return nil, err
 	}
@@ -101,41 +103,63 @@ func (c *Client) CreateCertificateInLibrary(cert CertificateModel) (*Certificate
 		return nil, fmt.Errorf("error while creating certificate library: %s", err.Error())
 	}
 
-	return &CertificateClient{
-		govcdAdminOrg: c.clientGoVCDAdminOrg,
-		certVCD:       certCreated,
-
-		Certificate: CertificateModel{
-			ID:          certCreated.CertificateLibrary.Id,
-			Name:        certCreated.CertificateLibrary.Alias,
-			Description: certCreated.CertificateLibrary.Description,
-			Certificate: certCreated.CertificateLibrary.Certificate,
-		},
+	return &CertificateModel{
+		ID:          certCreated.CertificateLibrary.Id,
+		Name:        certCreated.CertificateLibrary.Alias,
+		Description: certCreated.CertificateLibrary.Description,
+		Certificate: certCreated.CertificateLibrary.Certificate,
 	}, nil
 }
 
-// Update updates a certificate in the library.
-// Only the Name and Description can be updated.
-func (c *CertificateClient) Update() error {
-	if err := validators.New().Struct(c.Certificate); err != nil {
+// UpdateCertificateInLibrary updates a certificate in the library.
+func (c *client) UpdateCertificateInLibrary(ctx context.Context, certificateID string, cert *CertificateUpdateRequest) (*CertificateModel, error) {
+	if err := c.clientCloudavenue.Refresh(); err != nil {
+		return nil, err
+	}
+
+	if err := validators.New().Struct(cert); err != nil {
+		return nil, err
+	}
+
+	certificate, err := c.getCertificateFromLibrary(ctx, certificateID)
+	if err != nil {
+		return nil, err
+	}
+
+	certificate.CertificateLibrary.Alias = cert.Name
+	certificate.CertificateLibrary.Description = cert.Description
+
+	certUpdated, err := updateCertificateInLibrary(certificate)
+	if err != nil {
+		return nil, fmt.Errorf("error while updating certificate library: %s", err.Error())
+	}
+
+	return &CertificateModel{
+		ID:          certUpdated.CertificateLibrary.Id,
+		Name:        certUpdated.CertificateLibrary.Alias,
+		Description: certUpdated.CertificateLibrary.Description,
+		Certificate: certUpdated.CertificateLibrary.Certificate,
+	}, nil
+}
+
+var updateCertificateInLibrary = func(cert internalCertificateClient) (*govcd.Certificate, error) {
+	return cert.Update()
+}
+
+// DeleteCertificateFromLibrary deletes a certificate from the library.
+func (c *client) DeleteCertificateFromLibrary(ctx context.Context, certificateID string) error {
+	if err := c.clientCloudavenue.Refresh(); err != nil {
 		return err
 	}
 
-	c.certVCD.CertificateLibrary.Alias = c.Certificate.Name
-	c.certVCD.CertificateLibrary.Description = c.Certificate.Description
-
-	certUpdated, err := c.certVCD.Update()
+	certificate, err := c.getCertificateFromLibrary(ctx, certificateID)
 	if err != nil {
-		return fmt.Errorf("error while updating certificate library: %s", err.Error())
+		return err
 	}
 
-	c.Certificate.Name = certUpdated.CertificateLibrary.Alias
-	c.Certificate.Description = certUpdated.CertificateLibrary.Description
-
-	return nil
+	return deleteCertificateFromLibrary(certificate)
 }
 
-// Delete deletes a certificate from the library.
-func (c *CertificateClient) Delete() error {
-	return c.certVCD.Delete()
+var deleteCertificateFromLibrary = func(cert internalCertificateClient) error {
+	return cert.Delete()
 }

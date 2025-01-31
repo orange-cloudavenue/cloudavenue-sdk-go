@@ -18,7 +18,7 @@ import (
 
 type Org struct {
 	*govcd.Org
-	*org.Client
+	org.Client
 }
 
 // Returns the name of the organization.

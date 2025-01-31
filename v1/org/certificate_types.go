@@ -11,22 +11,18 @@ package org
 
 import "github.com/vmware/go-vcloud-director/v2/govcd"
 
-type (
-	CertificateClient struct {
-		govcdAdminOrg clientGoVCDAdminOrg
-		certVCD       *govcd.Certificate
+//go:generate mockgen -source=certificate_types.go -destination=zz_generated_client_certificate_test.go -self_package github.com/orange-cloudavenue/cloudavenue-sdk-go/v1/org -package org -copyright_file "../../mock_header.txt"
 
-		// Data
-		Certificate CertificateModel
+type (
+	internalCertificateClient interface {
+		Update() (*govcd.Certificate, error)
+		Delete() error
 	}
 
 	// CertificatesModel represents a certificate in the certificate library.
 	CertificatesModel []*CertificateModel
 
-	// CertificateModel represents a certificate in the certificate library.
-	CertificateModel struct {
-		ID string
-
+	CertificateCreateRequest struct {
 		// Name of the certificate
 		Name string `validate:"required"`
 
@@ -41,5 +37,27 @@ type (
 
 		// Passphrase for the private key
 		Passphrase string `validate:"omitempty"`
+	}
+
+	CertificateUpdateRequest struct {
+		// Name of the certificate
+		Name string `validate:"required"`
+
+		// Description of the certificate
+		Description string `validate:"omitempty"`
+	}
+
+	// CertificateModel represents a certificate in the certificate library.
+	CertificateModel struct {
+		ID string `validate:"required"`
+
+		// Name of the certificate
+		Name string `validate:"required"`
+
+		// Description of the certificate
+		Description string `validate:"omitempty"`
+
+		// Certificate content
+		Certificate string `validate:"required"`
 	}
 )
