@@ -1,5 +1,9 @@
 ## 0.22.0 (Unreleased)
 
+### :tada: **Improvements**
+
+* `edgegateway` - Add array var of supported bandwidth values depending on the service class of the Tier0. (GH-202)
+
 ### :dependabot: **Dependencies**
 
 * deps: bumps github.com/stretchr/testify from 1.9.0 to 1.10.0 (GH-201)
