@@ -12,6 +12,7 @@ require (
 	github.com/go-resty/resty/v2 v2.16.5
 	github.com/google/uuid v1.6.0
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.35.0
+	github.com/jarcoal/httpmock v1.3.1
 	github.com/sethvargo/go-envconfig v1.1.0
 	github.com/stretchr/testify v1.10.0
 	github.com/vmware/go-vcloud-director/v2 v2.26.1

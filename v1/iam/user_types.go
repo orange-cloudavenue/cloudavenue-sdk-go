@@ -21,7 +21,7 @@ var (
 	_ userInterface = SAMLUser{}
 )
 
-//go:generate mockgen -source=user_models.go -destination=mock/zz_generated_user_client.go
+//go:generate mockgen -source=user_types.go -destination=mock/zz_generated_user_client.go
 
 type (
 	UserClient struct {
