@@ -1,5 +1,9 @@
 ## 0.22.0 (Unreleased)
 
+### :rocket: **New Features**
+
+* `org` - Added `GetProperties` and `UpdateProperties` methods to the `org` client. These methods allow you to get and update the properties of an organization. (GH-203)
+
 ### :tada: **Improvements**
 
 * `edgegateway` - Add array var of supported bandwidth values depending on the service class of the Tier0. (GH-202)
