@@ -74,7 +74,7 @@ func NewClient() (Client, error) {
 	}, nil
 }
 
-// NesFakeClient creates a new fake Org client used for testing.
+// NewFakeClient creates a new fake Org client used for testing.
 func NewFakeClient(i internalClient) (Client, error) {
 	return &client{
 		clientCloudavenue:   i,
