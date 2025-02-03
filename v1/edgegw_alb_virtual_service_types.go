@@ -21,7 +21,7 @@ const (
 	EdgeGatewayALBVirtualServiceModelApplicationProfileL4    EdgeGatewayALBVirtualServiceModelApplicationProfile = "L4"
 	EdgeGatewayALBVirtualServiceModelApplicationProfileL4TLS EdgeGatewayALBVirtualServiceModelApplicationProfile = "L4_TLS"
 
-	// Service Port Types
+	// Service Port Types.
 	EdgeGatewayALBVirtualServiceModelServicePortTypeTCPProxy    EdgeGatewayALBVirtualServiceModelServicePortType = "TCP_PROXY"
 	EdgeGatewayALBVirtualServiceModelServicePortTypeTCPFastPath EdgeGatewayALBVirtualServiceModelServicePortType = "TCP_FAST_PATH"
 	EdgeGatewayALBVirtualServiceModelServicePortTypeUDPFastPath EdgeGatewayALBVirtualServiceModelServicePortType = "UDP_FAST_PATH"

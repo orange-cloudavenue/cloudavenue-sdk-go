@@ -15,6 +15,7 @@ import (
 	"time"
 
 	"github.com/avast/retry-go/v4"
+
 	"github.com/vmware/go-vcloud-director/v2/govcd"
 	govcdtypes "github.com/vmware/go-vcloud-director/v2/types/v56"
 
@@ -197,7 +198,7 @@ func (e *EdgeGatewayALBVirtualServiceModel) servicePortsFromGovcd(ports []govcdt
 	}
 }
 
-// func NsxtAlbVirtualService Set data in govcdtypes.NsxtAlbVirtualService
+// func NsxtAlbVirtualService Set data in govcdtypes.NsxtAlbVirtualService.
 func (e *EdgeGatewayALBVirtualServiceModel) setNsxtAlbVirtualService(edgwid string) *govcdtypes.NsxtAlbVirtualService {
 	govcdVS := &govcdtypes.NsxtAlbVirtualService{
 		ID:                    e.ID,
@@ -237,7 +238,7 @@ func (e *EdgeGatewayALBVirtualServiceModel) setNsxtAlbVirtualService(edgwid stri
 	return govcdVS
 }
 
-// func findServiceEngineGroup find the service engine group
+// func findServiceEngineGroup find the service engine group.
 func (e *EdgeGatewayALBVirtualServiceModel) findServiceEngineGroup(edgeID, edgeName string) error {
 	// Check if the edge name or ID is empty
 	if edgeID == "" || edgeName == "" {
