@@ -1,0 +1,3 @@
+```release-note:note
+`org/properties` - Now the `internet_billing_model` is optional.
+```
