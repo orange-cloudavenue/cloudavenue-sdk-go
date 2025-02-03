@@ -1,4 +1,5 @@
 ## 0.22.0 (Unreleased)
+## 0.21.3 (February  3, 2025)
 ### :information_source: **Notes**
 
 * `org/properties` - Now the `internet_billing_model` is optional. (GH-206)
