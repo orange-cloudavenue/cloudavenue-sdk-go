@@ -189,7 +189,9 @@ func TestClient_UpdateProperties(t *testing.T) {
 			mockFunc: func() {
 				clientCAV.EXPECT().Refresh().Return(nil)
 			},
-			properties:  PropertiesRequest{},
+			properties: PropertiesRequest{
+				BillingModel: "PAYC",
+			},
 			expectedErr: true,
 		},
 		{
