@@ -23,12 +23,19 @@ import (
 //go:generate mockgen -source=client.go -destination=zz_generated_client_test.go -self_package github.com/orange-cloudavenue/cloudavenue-sdk-go/v1/edgeloadbalancer -package edgeloadbalancer -copyright_file "../../mock_header.txt"
 
 type (
+	// Exposed client interface.
 	Client interface {
+		// * Service Engine Groups
 		ListServiceEngineGroups(ctx context.Context, edgeGatewayID string) ([]*ServiceEngineGroupModel, error)
 		GetServiceEngineGroup(ctx context.Context, edgeGatewayID, nameOrID string) (*ServiceEngineGroupModel, error)
+
+		// * Pools
+		ListPools(ctx context.Context, edgeGatewayID string) ([]*PoolModel, error)
+		GetPool(ctx context.Context, edgeGatewayID, poolNameOrID string) (*PoolModel, error)
 	}
 
-	internalClient interface {
+	// Internal client interfaces.
+	clientFake interface {
 		clientGoVCD
 		clientCloudavenue
 	}
@@ -40,6 +47,9 @@ type (
 
 	clientGoVCD interface {
 		GetAllAlbServiceEngineGroupAssignments(queryParameters url.Values) ([]*govcd.NsxtAlbServiceEngineGroupAssignment, error)
+		GetAlbPoolById(id string) (*govcd.NsxtAlbPool, error)
+		GetAlbPoolByName(edgeGatewayID, name string) (*govcd.NsxtAlbPool, error)
+		GetAllAlbPoolSummaries(edgeGatewayID string, queryParameters url.Values) ([]*govcd.NsxtAlbPool, error)
 	}
 
 	clientCloudavenue interface {
@@ -62,7 +72,7 @@ func NewClient() (Client, error) {
 }
 
 // NewFakeClient creates a new fake Org client used for testing.
-func NewFakeClient(i internalClient) (Client, error) {
+func NewFakeClient(i clientFake) (Client, error) {
 	return &client{
 		clientCloudavenue: i,
 		clientGoVCD:       i,

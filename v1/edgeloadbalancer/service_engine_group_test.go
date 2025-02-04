@@ -33,7 +33,7 @@ func TestClient_ListServiceEngineGroups(t *testing.T) {
 	defer ctrl.Finish()
 
 	// Mock client for cloudavenue.
-	clientCAV := NewMockinternalClient(ctrl)
+	clientCAV := NewMockclientFake(ctrl)
 
 	c, _ := NewFakeClient(clientCAV)
 
@@ -175,7 +175,7 @@ func TestClient_GetServiceEngineGroup(t *testing.T) {
 	defer ctrl.Finish()
 
 	// Mock client for cloudavenue.
-	clientCAV := NewMockinternalClient(ctrl)
+	clientCAV := NewMockclientFake(ctrl)
 
 	c, _ := NewFakeClient(clientCAV)
 
