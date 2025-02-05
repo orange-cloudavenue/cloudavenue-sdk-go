@@ -16,6 +16,7 @@ import (
 	"github.com/go-resty/resty/v2"
 
 	"github.com/vmware/go-vcloud-director/v2/govcd"
+	govcdtypes "github.com/vmware/go-vcloud-director/v2/types/v56"
 
 	clientcloudavenue "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/clients/cloudavenue"
 )
@@ -30,8 +31,11 @@ type (
 		GetServiceEngineGroup(ctx context.Context, edgeGatewayID, nameOrID string) (*ServiceEngineGroupModel, error)
 
 		// * Pools
+		CreatePool(ctx context.Context, pool PoolModelRequest) (*PoolModel, error)
 		ListPools(ctx context.Context, edgeGatewayID string) ([]*PoolModel, error)
 		GetPool(ctx context.Context, edgeGatewayID, poolNameOrID string) (*PoolModel, error)
+		UpdatePool(ctx context.Context, poolID string, pool PoolModelRequest) (*PoolModel, error)
+		DeletePool(ctx context.Context, poolID string) error
 	}
 
 	// Internal client interfaces.
@@ -50,6 +54,7 @@ type (
 		GetAlbPoolById(id string) (*govcd.NsxtAlbPool, error)
 		GetAlbPoolByName(edgeGatewayID, name string) (*govcd.NsxtAlbPool, error)
 		GetAllAlbPoolSummaries(edgeGatewayID string, queryParameters url.Values) ([]*govcd.NsxtAlbPool, error)
+		CreateNsxtAlbPool(albPoolConfig *govcdtypes.NsxtAlbPool) (*govcd.NsxtAlbPool, error)
 	}
 
 	clientCloudavenue interface {

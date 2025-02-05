@@ -23,6 +23,7 @@ import (
 
 	resty "github.com/go-resty/resty/v2"
 	govcd "github.com/vmware/go-vcloud-director/v2/govcd"
+	types "github.com/vmware/go-vcloud-director/v2/types/v56"
 	gomock "go.uber.org/mock/gomock"
 )
 
@@ -48,6 +49,35 @@ func NewMockClient(ctrl *gomock.Controller) *MockClient {
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockClient) EXPECT() *MockClientMockRecorder {
 	return m.recorder
+}
+
+// CreatePool mocks base method.
+func (m *MockClient) CreatePool(ctx context.Context, pool PoolModelRequest) (*PoolModel, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreatePool", ctx, pool)
+	ret0, _ := ret[0].(*PoolModel)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreatePool indicates an expected call of CreatePool.
+func (mr *MockClientMockRecorder) CreatePool(ctx, pool any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreatePool", reflect.TypeOf((*MockClient)(nil).CreatePool), ctx, pool)
+}
+
+// DeletePool mocks base method.
+func (m *MockClient) DeletePool(ctx context.Context, poolID string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeletePool", ctx, poolID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeletePool indicates an expected call of DeletePool.
+func (mr *MockClientMockRecorder) DeletePool(ctx, poolID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeletePool", reflect.TypeOf((*MockClient)(nil).DeletePool), ctx, poolID)
 }
 
 // GetPool mocks base method.
@@ -80,6 +110,21 @@ func (mr *MockClientMockRecorder) GetServiceEngineGroup(ctx, edgeGatewayID, name
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetServiceEngineGroup", reflect.TypeOf((*MockClient)(nil).GetServiceEngineGroup), ctx, edgeGatewayID, nameOrID)
 }
 
+// ListPools mocks base method.
+func (m *MockClient) ListPools(ctx context.Context, edgeGatewayID string) ([]*PoolModel, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListPools", ctx, edgeGatewayID)
+	ret0, _ := ret[0].([]*PoolModel)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListPools indicates an expected call of ListPools.
+func (mr *MockClientMockRecorder) ListPools(ctx, edgeGatewayID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListPools", reflect.TypeOf((*MockClient)(nil).ListPools), ctx, edgeGatewayID)
+}
+
 // ListServiceEngineGroups mocks base method.
 func (m *MockClient) ListServiceEngineGroups(ctx context.Context, edgeGatewayID string) ([]*ServiceEngineGroupModel, error) {
 	m.ctrl.T.Helper()
@@ -93,6 +138,21 @@ func (m *MockClient) ListServiceEngineGroups(ctx context.Context, edgeGatewayID 
 func (mr *MockClientMockRecorder) ListServiceEngineGroups(ctx, edgeGatewayID any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListServiceEngineGroups", reflect.TypeOf((*MockClient)(nil).ListServiceEngineGroups), ctx, edgeGatewayID)
+}
+
+// UpdatePool mocks base method.
+func (m *MockClient) UpdatePool(ctx context.Context, poolID string, pool PoolModelRequest) (*PoolModel, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdatePool", ctx, poolID, pool)
+	ret0, _ := ret[0].(*PoolModel)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdatePool indicates an expected call of UpdatePool.
+func (mr *MockClientMockRecorder) UpdatePool(ctx, poolID, pool any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdatePool", reflect.TypeOf((*MockClient)(nil).UpdatePool), ctx, poolID, pool)
 }
 
 // MockclientFake is a mock of clientFake interface.
@@ -117,6 +177,21 @@ func NewMockclientFake(ctrl *gomock.Controller) *MockclientFake {
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockclientFake) EXPECT() *MockclientFakeMockRecorder {
 	return m.recorder
+}
+
+// CreateNsxtAlbPool mocks base method.
+func (m *MockclientFake) CreateNsxtAlbPool(albPoolConfig *types.NsxtAlbPool) (*govcd.NsxtAlbPool, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateNsxtAlbPool", albPoolConfig)
+	ret0, _ := ret[0].(*govcd.NsxtAlbPool)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateNsxtAlbPool indicates an expected call of CreateNsxtAlbPool.
+func (mr *MockclientFakeMockRecorder) CreateNsxtAlbPool(albPoolConfig any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateNsxtAlbPool", reflect.TypeOf((*MockclientFake)(nil).CreateNsxtAlbPool), albPoolConfig)
 }
 
 // GetAlbPoolById mocks base method.
@@ -150,18 +225,18 @@ func (mr *MockclientFakeMockRecorder) GetAlbPoolByName(edgeGatewayID, name any) 
 }
 
 // GetAllAlbPoolSummaries mocks base method.
-func (m *MockclientFake) GetAllAlbPoolSummaries(edgeGatewayId string, queryParameters url.Values) ([]*govcd.NsxtAlbPool, error) {
+func (m *MockclientFake) GetAllAlbPoolSummaries(edgeGatewayID string, queryParameters url.Values) ([]*govcd.NsxtAlbPool, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetAllAlbPoolSummaries", edgeGatewayId, queryParameters)
+	ret := m.ctrl.Call(m, "GetAllAlbPoolSummaries", edgeGatewayID, queryParameters)
 	ret0, _ := ret[0].([]*govcd.NsxtAlbPool)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetAllAlbPoolSummaries indicates an expected call of GetAllAlbPoolSummaries.
-func (mr *MockclientFakeMockRecorder) GetAllAlbPoolSummaries(edgeGatewayId, queryParameters any) *gomock.Call {
+func (mr *MockclientFakeMockRecorder) GetAllAlbPoolSummaries(edgeGatewayID, queryParameters any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAllAlbPoolSummaries", reflect.TypeOf((*MockclientFake)(nil).GetAllAlbPoolSummaries), edgeGatewayId, queryParameters)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAllAlbPoolSummaries", reflect.TypeOf((*MockclientFake)(nil).GetAllAlbPoolSummaries), edgeGatewayID, queryParameters)
 }
 
 // GetAllAlbServiceEngineGroupAssignments mocks base method.
@@ -231,6 +306,21 @@ func (m *MockclientGoVCD) EXPECT() *MockclientGoVCDMockRecorder {
 	return m.recorder
 }
 
+// CreateNsxtAlbPool mocks base method.
+func (m *MockclientGoVCD) CreateNsxtAlbPool(albPoolConfig *types.NsxtAlbPool) (*govcd.NsxtAlbPool, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateNsxtAlbPool", albPoolConfig)
+	ret0, _ := ret[0].(*govcd.NsxtAlbPool)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateNsxtAlbPool indicates an expected call of CreateNsxtAlbPool.
+func (mr *MockclientGoVCDMockRecorder) CreateNsxtAlbPool(albPoolConfig any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateNsxtAlbPool", reflect.TypeOf((*MockclientGoVCD)(nil).CreateNsxtAlbPool), albPoolConfig)
+}
+
 // GetAlbPoolById mocks base method.
 func (m *MockclientGoVCD) GetAlbPoolById(id string) (*govcd.NsxtAlbPool, error) {
 	m.ctrl.T.Helper()
@@ -262,18 +352,18 @@ func (mr *MockclientGoVCDMockRecorder) GetAlbPoolByName(edgeGatewayID, name any)
 }
 
 // GetAllAlbPoolSummaries mocks base method.
-func (m *MockclientGoVCD) GetAllAlbPoolSummaries(edgeGatewayId string, queryParameters url.Values) ([]*govcd.NsxtAlbPool, error) {
+func (m *MockclientGoVCD) GetAllAlbPoolSummaries(edgeGatewayID string, queryParameters url.Values) ([]*govcd.NsxtAlbPool, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetAllAlbPoolSummaries", edgeGatewayId, queryParameters)
+	ret := m.ctrl.Call(m, "GetAllAlbPoolSummaries", edgeGatewayID, queryParameters)
 	ret0, _ := ret[0].([]*govcd.NsxtAlbPool)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetAllAlbPoolSummaries indicates an expected call of GetAllAlbPoolSummaries.
-func (mr *MockclientGoVCDMockRecorder) GetAllAlbPoolSummaries(edgeGatewayId, queryParameters any) *gomock.Call {
+func (mr *MockclientGoVCDMockRecorder) GetAllAlbPoolSummaries(edgeGatewayID, queryParameters any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAllAlbPoolSummaries", reflect.TypeOf((*MockclientGoVCD)(nil).GetAllAlbPoolSummaries), edgeGatewayId, queryParameters)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAllAlbPoolSummaries", reflect.TypeOf((*MockclientGoVCD)(nil).GetAllAlbPoolSummaries), edgeGatewayID, queryParameters)
 }
 
 // GetAllAlbServiceEngineGroupAssignments mocks base method.

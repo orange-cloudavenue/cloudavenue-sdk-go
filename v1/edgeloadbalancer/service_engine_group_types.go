@@ -30,7 +30,7 @@ type (
 		// MinVirtualServices is the minimum number (reserved) of virtual services that can be deployed
 		MinVirtualServices *int
 
-		// NumDeployedVirtualServices is a deployed virtual services
+		// NumDeployedVirtualServices is a number of deployed virtual services
 		NumDeployedVirtualServices int
 	}
 )

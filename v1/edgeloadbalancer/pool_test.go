@@ -40,15 +40,15 @@ func TestClient_GetPool(t *testing.T) {
 	poolID := urn.LoadBalancerPool.String() + uuid.New().String()
 
 	tests := []struct {
-		name              string
-		mockFunc          func()
-		expectedCertValue *PoolModel
-		expectedErr       bool
-		edgeGatewayID     string
-		byNameOrID        string
-		poolID            string
-		poolName          string
-		err               error
+		name          string
+		mockFunc      func()
+		expectedValue *PoolModel
+		expectedErr   bool
+		edgeGatewayID string
+		byNameOrID    string
+		poolID        string
+		poolName      string
+		err           error
 	}{
 		{
 			name:          "success-http-by-name",
@@ -107,7 +107,7 @@ func TestClient_GetPool(t *testing.T) {
 					},
 				}, nil)
 			},
-			expectedCertValue: &PoolModel{
+			expectedValue: &PoolModel{
 				ID:                       poolID,
 				Name:                     "pool1",
 				Description:              "pool1 description",
@@ -209,7 +209,7 @@ func TestClient_GetPool(t *testing.T) {
 					},
 				}, nil)
 			},
-			expectedCertValue: &PoolModel{
+			expectedValue: &PoolModel{
 				ID:                       poolID,
 				Name:                     "pool1",
 				Description:              "pool1 description",
@@ -262,9 +262,9 @@ func TestClient_GetPool(t *testing.T) {
 			mockFunc: func() {
 				clientCAV.EXPECT().Refresh().Return(errors.New("error"))
 			},
-			expectedCertValue: nil,
-			expectedErr:       true,
-			err:               errors.New("error"),
+			expectedValue: nil,
+			expectedErr:   true,
+			err:           errors.New("error"),
 		},
 		{
 			name:          "error-get",
@@ -276,9 +276,9 @@ func TestClient_GetPool(t *testing.T) {
 				clientCAV.EXPECT().Refresh().Return(nil)
 				clientCAV.EXPECT().GetAlbPoolById(poolID).Return(nil, errors.New("error"))
 			},
-			expectedCertValue: &PoolModel{},
-			expectedErr:       true,
-			err:               errors.New("error"),
+			expectedValue: &PoolModel{},
+			expectedErr:   true,
+			err:           errors.New("error"),
 		},
 		{
 			name:          "param-edgeGatewayID-empty",
@@ -288,9 +288,9 @@ func TestClient_GetPool(t *testing.T) {
 			byNameOrID:    "id",
 			mockFunc: func() {
 			},
-			expectedCertValue: &PoolModel{},
-			expectedErr:       true,
-			err:               errors.New("edgeGatewayID is empty. Please provide a valid edgeGatewayID"),
+			expectedValue: &PoolModel{},
+			expectedErr:   true,
+			err:           errors.New("edgeGatewayID is empty. Please provide a valid edgeGatewayID"),
 		},
 		{
 			name:          "param-edgeGatewayID-invalid-id",
@@ -300,9 +300,9 @@ func TestClient_GetPool(t *testing.T) {
 			byNameOrID:    "id",
 			mockFunc: func() {
 			},
-			expectedCertValue: &PoolModel{},
-			expectedErr:       true,
-			err:               errors.New("edgeGatewayID has invalid format. Please provide a valid edgeGatewayID"),
+			expectedValue: &PoolModel{},
+			expectedErr:   true,
+			err:           errors.New("edgeGatewayID has invalid format. Please provide a valid edgeGatewayID"),
 		},
 		{
 			name:          "param-poolNameOrID-empty",
@@ -311,9 +311,9 @@ func TestClient_GetPool(t *testing.T) {
 			byNameOrID:    "name",
 			mockFunc: func() {
 			},
-			expectedCertValue: &PoolModel{},
-			expectedErr:       true,
-			err:               errors.New("poolNameOrID is empty. Please provide a valid poolNameOrID"),
+			expectedValue: &PoolModel{},
+			expectedErr:   true,
+			err:           errors.New("poolNameOrID is empty. Please provide a valid poolNameOrID"),
 		},
 	}
 
@@ -337,7 +337,7 @@ func TestClient_GetPool(t *testing.T) {
 			}
 
 			assert.NoError(t, err)
-			assert.Equal(t, tc.expectedCertValue, pool)
+			assert.Equal(t, tc.expectedValue, pool)
 		})
 	}
 }
@@ -357,12 +357,12 @@ func TestClient_ListPools(t *testing.T) {
 	poolID2 := urn.LoadBalancerPool.String() + uuid.New().String()
 
 	tests := []struct {
-		name              string
-		mockFunc          func()
-		expectedCertValue []*PoolModel
-		expectedErr       bool
-		edgeGatewayID     string
-		err               error
+		name          string
+		mockFunc      func()
+		expectedValue []*PoolModel
+		expectedErr   bool
+		edgeGatewayID string
+		err           error
 	}{
 		{
 			name:          "success",
@@ -484,7 +484,7 @@ func TestClient_ListPools(t *testing.T) {
 					},
 				}, nil)
 			},
-			expectedCertValue: []*PoolModel{
+			expectedValue: []*PoolModel{
 				{
 					ID:                       poolID,
 					Name:                     "pool1",
@@ -586,18 +586,18 @@ func TestClient_ListPools(t *testing.T) {
 			edgeGatewayID: "",
 			mockFunc: func() {
 			},
-			expectedCertValue: []*PoolModel{},
-			expectedErr:       true,
-			err:               errors.New("edgeGatewayID is empty. Please provide a valid edgeGatewayID"),
+			expectedValue: []*PoolModel{},
+			expectedErr:   true,
+			err:           errors.New("edgeGatewayID is empty. Please provide a valid edgeGatewayID"),
 		},
 		{
 			name:          "param-edgeGatewayID-invalid-id",
 			edgeGatewayID: "1234",
 			mockFunc: func() {
 			},
-			expectedCertValue: []*PoolModel{},
-			expectedErr:       true,
-			err:               errors.New("edgeGatewayID has invalid format. Please provide a valid edgeGatewayID"),
+			expectedValue: []*PoolModel{},
+			expectedErr:   true,
+			err:           errors.New("edgeGatewayID has invalid format. Please provide a valid edgeGatewayID"),
 		},
 		{
 			name:          "refresh-error",
@@ -605,9 +605,9 @@ func TestClient_ListPools(t *testing.T) {
 			mockFunc: func() {
 				clientCAV.EXPECT().Refresh().Return(errors.New("error"))
 			},
-			expectedCertValue: nil,
-			expectedErr:       true,
-			err:               errors.New("error"),
+			expectedValue: nil,
+			expectedErr:   true,
+			err:           errors.New("error"),
 		},
 		{
 			name:          "error-get-all-pools",
@@ -616,12 +616,12 @@ func TestClient_ListPools(t *testing.T) {
 				clientCAV.EXPECT().Refresh().Return(nil)
 				clientCAV.EXPECT().GetAllAlbPoolSummaries(urnEdgeGateway, gomock.AssignableToTypeOf(url.Values{})).Return(nil, errors.New("error"))
 			},
-			expectedCertValue: []*PoolModel{},
-			expectedErr:       true,
-			err:               errors.New("error retrieving all ALB Pool summaries: error"),
+			expectedValue: []*PoolModel{},
+			expectedErr:   true,
+			err:           errors.New("error retrieving all ALB Pool summaries: error"),
 		},
 		{
-			name:          "success",
+			name:          "error-list-pool",
 			edgeGatewayID: urnEdgeGateway,
 			mockFunc: func() {
 				clientCAV.EXPECT().Refresh().Return(nil).Times(3)
@@ -693,9 +693,9 @@ func TestClient_ListPools(t *testing.T) {
 				}, nil)
 				clientCAV.EXPECT().GetAlbPoolById(poolID2).Return(nil, errors.New("error"))
 			},
-			expectedCertValue: []*PoolModel{},
-			expectedErr:       true,
-			err:               errors.New("error retrieving complete ALB Pool: error"),
+			expectedValue: []*PoolModel{},
+			expectedErr:   true,
+			err:           errors.New("error retrieving complete ALB Pool: error"),
 		},
 	}
 
@@ -716,11 +716,1066 @@ func TestClient_ListPools(t *testing.T) {
 			assert.NoError(t, err)
 
 			for i := range pools {
-				for j := range tc.expectedCertValue {
-					if pools[i].ID == tc.expectedCertValue[j].ID {
-						assert.Equal(t, tc.expectedCertValue[j], pools[i])
+				for j := range tc.expectedValue {
+					if pools[i].ID == tc.expectedValue[j].ID {
+						assert.Equal(t, tc.expectedValue[j], pools[i])
 					}
 				}
+			}
+		})
+	}
+}
+
+func TestClient_CreatePool(t *testing.T) {
+	// Mock controller.
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	// Mock client for cloudavenue.
+	clientCAV := NewMockclientFake(ctrl)
+
+	c, _ := NewFakeClient(clientCAV)
+
+	urnEdgeGateway := urn.Gateway.String() + uuid.New().String()
+	urnPool := urn.LoadBalancerPool.String() + uuid.New().String()
+	urnIPSet := urn.SecurityGroup.String() + uuid.New().String()
+
+	tests := []struct {
+		name          string
+		mockFunc      func()
+		expectedValue *PoolModel
+		pool          PoolModelRequest
+		expectedErr   bool
+		err           error
+	}{
+		{
+			name: "success",
+			pool: PoolModelRequest{
+				Name:                     "pool1",
+				Description:              "pool1 description",
+				EdgeGatewayID:            urnEdgeGateway,
+				Enabled:                  utils.ToPTR(true),
+				Algorithm:                "LEAST_CONNECTIONS",
+				DefaultPort:              utils.ToPTR(80),
+				GracefulTimeoutPeriod:    utils.ToPTR(10),
+				PassiveMonitoringEnabled: utils.ToPTR(true),
+				HealthMonitors: []PoolModelHealthMonitor{
+					{
+						Name: "monitor HTTP",
+						Type: PoolHealthMonitorTypeHTTP,
+					},
+					{
+						Name: "monitor TCP",
+						Type: PoolHealthMonitorTypeTCP,
+					},
+				},
+				Members: []PoolModelMember{
+					{
+						Enabled:               true,
+						IPAddress:             "192.168.0.1",
+						Port:                  80,
+						Ratio:                 utils.ToPTR(1),
+						MarkedDownBy:          nil,
+						HealthStatus:          "UP",
+						DetailedHealthMessage: "",
+					},
+				},
+				MemberGroupRef:         nil, // Only one of MemberGroupRef or Members should be set.
+				CaCertificateRefs:      nil,
+				CommonNameCheckEnabled: utils.ToPTR(false), // false because CaCertificateRefs is nil.
+				DomainNames:            nil,                // nil because CommonNameCheckEnabled is false.
+				PersistenceProfile: &PoolModelPersistenceProfile{
+					Name:  "persistence profile",
+					Type:  PoolPersistenceProfileTypeClientIP,
+					Value: "",
+				},
+			},
+			mockFunc: func() {
+				clientCAV.EXPECT().Refresh().Return(nil)
+				clientCAV.EXPECT().CreateNsxtAlbPool(gomock.AssignableToTypeOf(&govcdtypes.NsxtAlbPool{})).Return(&govcd.NsxtAlbPool{
+					NsxtAlbPool: &govcdtypes.NsxtAlbPool{
+						ID:                       urnPool,
+						Name:                     "pool1",
+						Description:              "pool1 description",
+						GatewayRef:               govcdtypes.OpenApiReference{ID: urnEdgeGateway},
+						Enabled:                  utils.ToPTR(true),
+						Algorithm:                "LEAST_CONNECTIONS",
+						DefaultPort:              utils.ToPTR(80),
+						GracefulTimeoutPeriod:    utils.ToPTR(10),
+						PassiveMonitoringEnabled: utils.ToPTR(true),
+						HealthMonitors: []govcdtypes.NsxtAlbPoolHealthMonitor{
+							{
+								Name: "monitor HTTP",
+								Type: "HTTP",
+							},
+							{
+								Name: "monitor TCP",
+								Type: "TCP",
+							},
+						},
+						Members: []govcdtypes.NsxtAlbPoolMember{
+							{
+								Enabled:               true,
+								IpAddress:             "192.168.0.1",
+								Port:                  80,
+								Ratio:                 utils.ToPTR(1),
+								MarkedDownBy:          nil,
+								HealthStatus:          "UP",
+								DetailedHealthMessage: "",
+							},
+						},
+						MemberGroupRef:         nil, // Only one of MemberGroupRef or Members should be set.
+						CaCertificateRefs:      nil,
+						CommonNameCheckEnabled: utils.ToPTR(false), // false because CaCertificateRefs is nil.
+						DomainNames:            nil,                // nil because CommonNameCheckEnabled is false.
+						PersistenceProfile: &govcdtypes.NsxtAlbPoolPersistenceProfile{
+							Name:  "persistence profile",
+							Type:  "CLIENT_IP",
+							Value: "",
+						},
+						MemberCount:        1,
+						UpMemberCount:      1,
+						HealthMessage:      "All members are up",
+						VirtualServiceRefs: nil,
+						SslEnabled:         utils.ToPTR(false),
+					},
+				}, nil)
+			},
+			expectedValue: &PoolModel{
+				ID:                       urnPool,
+				Name:                     "pool1",
+				Description:              "pool1 description",
+				GatewayRef:               govcdtypes.OpenApiReference{ID: urnEdgeGateway},
+				Enabled:                  utils.ToPTR(true),
+				Algorithm:                "LEAST_CONNECTIONS",
+				DefaultPort:              utils.ToPTR(80),
+				GracefulTimeoutPeriod:    utils.ToPTR(10),
+				PassiveMonitoringEnabled: utils.ToPTR(true),
+				HealthMonitors: []PoolModelHealthMonitor{
+					{
+						Name: "monitor HTTP",
+						Type: PoolHealthMonitorTypeHTTP,
+					},
+					{
+						Name: "monitor TCP",
+						Type: PoolHealthMonitorTypeTCP,
+					},
+				},
+				Members: []PoolModelMember{
+					{
+						Enabled:               true,
+						IPAddress:             "192.168.0.1",
+						Port:                  80,
+						Ratio:                 utils.ToPTR(1),
+						MarkedDownBy:          nil,
+						HealthStatus:          "UP",
+						DetailedHealthMessage: "",
+					},
+				},
+				MemberGroupRef:         nil, // Only one of MemberGroupRef or Members should be set.
+				CaCertificateRefs:      nil,
+				CommonNameCheckEnabled: utils.ToPTR(false), // false because CaCertificateRefs is nil.
+				DomainNames:            nil,                // nil because CommonNameCheckEnabled is false.
+				PersistenceProfile: &PoolModelPersistenceProfile{
+					Name:  "persistence profile",
+					Type:  PoolPersistenceProfileTypeClientIP,
+					Value: "",
+				},
+				MemberCount:        1,
+				UpMemberCount:      1,
+				HealthMessage:      "All members are up",
+				VirtualServiceRefs: nil,
+				SSLEnabled:         utils.ToPTR(false),
+			},
+			expectedErr: false,
+			err:         nil,
+		},
+		{
+			name: "success-member-ref-and-no-persistence-profile",
+			pool: PoolModelRequest{
+				Name:                     "pool1",
+				Description:              "pool1 description",
+				EdgeGatewayID:            urnEdgeGateway,
+				Enabled:                  utils.ToPTR(true),
+				Algorithm:                "LEAST_CONNECTIONS",
+				DefaultPort:              utils.ToPTR(80),
+				GracefulTimeoutPeriod:    utils.ToPTR(10),
+				PassiveMonitoringEnabled: utils.ToPTR(true),
+				HealthMonitors: []PoolModelHealthMonitor{
+					{
+						Name: "monitor HTTP",
+						Type: PoolHealthMonitorTypeHTTP,
+					},
+					{
+						Name: "monitor TCP",
+						Type: PoolHealthMonitorTypeTCP,
+					},
+				},
+				Members:                nil,
+				MemberGroupRef:         &govcdtypes.OpenApiReference{ID: urnIPSet},
+				CaCertificateRefs:      nil,
+				CommonNameCheckEnabled: utils.ToPTR(false), // false because CaCertificateRefs is nil.
+				DomainNames:            nil,                // nil because CommonNameCheckEnabled is false.
+				PersistenceProfile:     nil,
+			},
+			mockFunc: func() {
+				clientCAV.EXPECT().Refresh().Return(nil)
+				clientCAV.EXPECT().CreateNsxtAlbPool(gomock.AssignableToTypeOf(&govcdtypes.NsxtAlbPool{})).Return(&govcd.NsxtAlbPool{
+					NsxtAlbPool: &govcdtypes.NsxtAlbPool{
+						ID:                       urnPool,
+						Name:                     "pool1",
+						Description:              "pool1 description",
+						GatewayRef:               govcdtypes.OpenApiReference{ID: urnEdgeGateway},
+						Enabled:                  utils.ToPTR(true),
+						Algorithm:                "LEAST_CONNECTIONS",
+						DefaultPort:              utils.ToPTR(80),
+						GracefulTimeoutPeriod:    utils.ToPTR(10),
+						PassiveMonitoringEnabled: utils.ToPTR(true),
+						HealthMonitors: []govcdtypes.NsxtAlbPoolHealthMonitor{
+							{
+								Name: "monitor HTTP",
+								Type: "HTTP",
+							},
+							{
+								Name: "monitor TCP",
+								Type: "TCP",
+							},
+						},
+						Members:                nil,
+						MemberGroupRef:         &govcdtypes.OpenApiReference{ID: urnIPSet},
+						CaCertificateRefs:      nil,
+						CommonNameCheckEnabled: utils.ToPTR(false), // false because CaCertificateRefs is nil.
+						DomainNames:            nil,                // nil because CommonNameCheckEnabled is false.
+						PersistenceProfile: &govcdtypes.NsxtAlbPoolPersistenceProfile{
+							Name:  "persistence profile",
+							Type:  "CLIENT_IP",
+							Value: "",
+						},
+						MemberCount:        1,
+						UpMemberCount:      1,
+						HealthMessage:      "All members are up",
+						VirtualServiceRefs: nil,
+						SslEnabled:         utils.ToPTR(false),
+					},
+				}, nil)
+			},
+			expectedValue: &PoolModel{
+				ID:                       urnPool,
+				Name:                     "pool1",
+				Description:              "pool1 description",
+				GatewayRef:               govcdtypes.OpenApiReference{ID: urnEdgeGateway},
+				Enabled:                  utils.ToPTR(true),
+				Algorithm:                "LEAST_CONNECTIONS",
+				DefaultPort:              utils.ToPTR(80),
+				GracefulTimeoutPeriod:    utils.ToPTR(10),
+				PassiveMonitoringEnabled: utils.ToPTR(true),
+				HealthMonitors: []PoolModelHealthMonitor{
+					{
+						Name: "monitor HTTP",
+						Type: PoolHealthMonitorTypeHTTP,
+					},
+					{
+						Name: "monitor TCP",
+						Type: PoolHealthMonitorTypeTCP,
+					},
+				},
+				Members:                nil,
+				MemberGroupRef:         &govcdtypes.OpenApiReference{ID: urnIPSet},
+				CaCertificateRefs:      nil,
+				CommonNameCheckEnabled: utils.ToPTR(false), // false because CaCertificateRefs is nil.
+				DomainNames:            nil,                // nil because CommonNameCheckEnabled is false.
+				PersistenceProfile: &PoolModelPersistenceProfile{
+					Name:  "persistence profile",
+					Type:  PoolPersistenceProfileTypeClientIP,
+					Value: "",
+				},
+				MemberCount:        1,
+				UpMemberCount:      1,
+				HealthMessage:      "All members are up",
+				VirtualServiceRefs: nil,
+				SSLEnabled:         utils.ToPTR(false),
+			},
+			expectedErr: false,
+			err:         nil,
+		},
+		{
+			name: "bad-validation-algorithm",
+			pool: PoolModelRequest{
+				// Invalid field
+				Algorithm: "LEAST CONNECTIONS", // LEAST CONNECTIONS instead of LEAST_CONNECTIONS
+
+				// Valid fields
+				Name:                     "pool1",
+				Description:              "pool1 description",
+				EdgeGatewayID:            urnEdgeGateway,
+				Enabled:                  utils.ToPTR(true),
+				DefaultPort:              utils.ToPTR(80),
+				GracefulTimeoutPeriod:    utils.ToPTR(10),
+				PassiveMonitoringEnabled: utils.ToPTR(true),
+				HealthMonitors: []PoolModelHealthMonitor{
+					{
+						Name: "monitor HTTP",
+						Type: PoolHealthMonitorTypeHTTP,
+					},
+					{
+						Name: "monitor TCP",
+						Type: PoolHealthMonitorTypeTCP,
+					},
+				},
+				Members: []PoolModelMember{
+					{
+						Enabled:               true,
+						IPAddress:             "192.168.0.1",
+						Port:                  80,
+						Ratio:                 utils.ToPTR(1),
+						MarkedDownBy:          nil,
+						HealthStatus:          "UP",
+						DetailedHealthMessage: "",
+					},
+				},
+				MemberGroupRef:         nil, // Only one of MemberGroupRef or Members should be set.
+				CaCertificateRefs:      nil,
+				CommonNameCheckEnabled: utils.ToPTR(false), // false because CaCertificateRefs is nil.
+				DomainNames:            nil,                // nil because CommonNameCheckEnabled is false.
+				PersistenceProfile: &PoolModelPersistenceProfile{
+					Name:  "persistence profile",
+					Type:  PoolPersistenceProfileTypeClientIP,
+					Value: "",
+				},
+			},
+			mockFunc:      func() {},
+			expectedValue: nil,
+			expectedErr:   true,
+			err:           errors.New("Field validation for 'Algorithm' failed on the 'oneof'"),
+		},
+		{
+			name: "bad-validation-Members",
+			pool: PoolModelRequest{
+				// Invalid field
+				// Only one of MemberGroupRef or Members should be set.
+				Members: []PoolModelMember{
+					{
+						Enabled:               true,
+						IPAddress:             "192.168.0.1",
+						Port:                  80,
+						Ratio:                 utils.ToPTR(1),
+						MarkedDownBy:          nil,
+						HealthStatus:          "UP",
+						DetailedHealthMessage: "",
+					},
+				},
+				MemberGroupRef: &govcdtypes.OpenApiReference{ID: urnIPSet},
+
+				// Valid fields
+				Name:                     "pool1",
+				Description:              "pool1 description",
+				EdgeGatewayID:            urnEdgeGateway,
+				Enabled:                  utils.ToPTR(true),
+				DefaultPort:              utils.ToPTR(80),
+				Algorithm:                "LEAST_CONNECTIONS", // LEAST CONNECTIONS instead of LEAST_CONNECTIONS
+				GracefulTimeoutPeriod:    utils.ToPTR(10),
+				PassiveMonitoringEnabled: utils.ToPTR(true),
+				HealthMonitors: []PoolModelHealthMonitor{
+					{
+						Name: "monitor HTTP",
+						Type: PoolHealthMonitorTypeHTTP,
+					},
+					{
+						Name: "monitor TCP",
+						Type: PoolHealthMonitorTypeTCP,
+					},
+				},
+				CaCertificateRefs:      nil,
+				CommonNameCheckEnabled: utils.ToPTR(false), // false because CaCertificateRefs is nil.
+				DomainNames:            nil,                // nil because CommonNameCheckEnabled is false.
+				PersistenceProfile: &PoolModelPersistenceProfile{
+					Name:  "persistence profile",
+					Type:  PoolPersistenceProfileTypeClientIP,
+					Value: "",
+				},
+			},
+			mockFunc:      func() {},
+			expectedValue: nil,
+			expectedErr:   true,
+			err:           errors.New("Error:Field validation for 'Members' failed on the 'excluded_with'"),
+		},
+		{
+			name: "error-create-pool",
+			pool: PoolModelRequest{
+				Name:                     "pool1",
+				Description:              "pool1 description",
+				EdgeGatewayID:            urnEdgeGateway,
+				Enabled:                  utils.ToPTR(true),
+				Algorithm:                "LEAST_CONNECTIONS",
+				DefaultPort:              utils.ToPTR(80),
+				GracefulTimeoutPeriod:    utils.ToPTR(10),
+				PassiveMonitoringEnabled: utils.ToPTR(true),
+				HealthMonitors: []PoolModelHealthMonitor{
+					{
+						Name: "monitor HTTP",
+						Type: PoolHealthMonitorTypeHTTP,
+					},
+					{
+						Name: "monitor TCP",
+						Type: PoolHealthMonitorTypeTCP,
+					},
+				},
+				Members: []PoolModelMember{
+					{
+						Enabled:               true,
+						IPAddress:             "192.168.0.1",
+						Port:                  80,
+						Ratio:                 utils.ToPTR(1),
+						MarkedDownBy:          nil,
+						HealthStatus:          "UP",
+						DetailedHealthMessage: "",
+					},
+				},
+				MemberGroupRef:         nil, // Only one of MemberGroupRef or Members should be set.
+				CaCertificateRefs:      nil,
+				CommonNameCheckEnabled: utils.ToPTR(false), // false because CaCertificateRefs is nil.
+				DomainNames:            nil,                // nil because CommonNameCheckEnabled is false.
+				PersistenceProfile: &PoolModelPersistenceProfile{
+					Name:  "persistence profile",
+					Type:  PoolPersistenceProfileTypeClientIP,
+					Value: "",
+				},
+			},
+			mockFunc: func() {
+				clientCAV.EXPECT().Refresh().Return(nil)
+				clientCAV.EXPECT().CreateNsxtAlbPool(gomock.AssignableToTypeOf(&govcdtypes.NsxtAlbPool{})).Return(nil, errors.New("error"))
+			},
+			expectedValue: nil,
+			expectedErr:   true,
+			err:           errors.New("error"),
+		},
+		{
+			name: "refresh-error",
+			pool: PoolModelRequest{
+				Name:                     "pool1",
+				Description:              "pool1 description",
+				EdgeGatewayID:            urnEdgeGateway,
+				Enabled:                  utils.ToPTR(true),
+				Algorithm:                "LEAST_CONNECTIONS",
+				DefaultPort:              utils.ToPTR(80),
+				GracefulTimeoutPeriod:    utils.ToPTR(10),
+				PassiveMonitoringEnabled: utils.ToPTR(true),
+				HealthMonitors: []PoolModelHealthMonitor{
+					{
+						Name: "monitor HTTP",
+						Type: PoolHealthMonitorTypeHTTP,
+					},
+					{
+						Name: "monitor TCP",
+						Type: PoolHealthMonitorTypeTCP,
+					},
+				},
+				Members: []PoolModelMember{
+					{
+						Enabled:               true,
+						IPAddress:             "192.168.0.1",
+						Port:                  80,
+						Ratio:                 utils.ToPTR(1),
+						MarkedDownBy:          nil,
+						HealthStatus:          "UP",
+						DetailedHealthMessage: "",
+					},
+				},
+				MemberGroupRef:         nil, // Only one of MemberGroupRef or Members should be set.
+				CaCertificateRefs:      nil,
+				CommonNameCheckEnabled: utils.ToPTR(false), // false because CaCertificateRefs is nil.
+				DomainNames:            nil,                // nil because CommonNameCheckEnabled is false.
+				PersistenceProfile: &PoolModelPersistenceProfile{
+					Name:  "persistence profile",
+					Type:  PoolPersistenceProfileTypeClientIP,
+					Value: "",
+				},
+			},
+			mockFunc: func() {
+				clientCAV.EXPECT().Refresh().Return(errors.New("error"))
+			},
+			expectedErr: true,
+			err:         errors.New("error"),
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			tc.mockFunc()
+
+			pool, err := c.CreatePool(context.Background(), tc.pool)
+			if !tc.expectedErr {
+				assert.NoError(t, err)
+				assert.NotNil(t, pool)
+			} else {
+				assert.Error(t, err)
+				assert.Nil(t, pool)
+				assert.Contains(t, err.Error(), tc.err.Error())
+				return
+			}
+
+			assert.NoError(t, err)
+			assert.Equal(t, tc.expectedValue, pool)
+		})
+	}
+}
+
+func TestClient_UpdatePool(t *testing.T) {
+	// Mock controller.
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	// Mock client for cloudavenue.
+	clientCAV := NewMockclientFake(ctrl)
+
+	c, _ := NewFakeClient(clientCAV)
+
+	urnEdgeGateway := urn.Gateway.String() + uuid.New().String()
+	urnPool := urn.LoadBalancerPool.String() + uuid.New().String()
+
+	tests := []struct {
+		name          string
+		mockFunc      func()
+		expectedValue *PoolModel
+		pool          PoolModelRequest
+		poolID        string
+		expectedErr   bool
+		err           error
+	}{
+		{
+			name:   "success",
+			poolID: urnPool,
+			pool: PoolModelRequest{
+				Name:                     "poule 2",
+				Description:              "poule description",
+				EdgeGatewayID:            urnEdgeGateway,
+				Enabled:                  utils.ToPTR(true),
+				Algorithm:                "LEAST_CONNECTIONS",
+				DefaultPort:              utils.ToPTR(80),
+				GracefulTimeoutPeriod:    utils.ToPTR(10),
+				PassiveMonitoringEnabled: utils.ToPTR(true),
+				HealthMonitors: []PoolModelHealthMonitor{
+					{
+						Name: "monitor HTTP",
+						Type: PoolHealthMonitorTypeHTTP,
+					},
+					{
+						Name: "monitor TCP",
+						Type: PoolHealthMonitorTypeTCP,
+					},
+				},
+				Members: []PoolModelMember{
+					{
+						Enabled:               true,
+						IPAddress:             "192.168.0.1",
+						Port:                  80,
+						Ratio:                 utils.ToPTR(1),
+						MarkedDownBy:          nil,
+						HealthStatus:          "UP",
+						DetailedHealthMessage: "",
+					},
+				},
+				MemberGroupRef:         nil, // Only one of MemberGroupRef or Members should be set.
+				CaCertificateRefs:      nil,
+				CommonNameCheckEnabled: utils.ToPTR(false), // false because CaCertificateRefs is nil.
+				DomainNames:            nil,                // nil because CommonNameCheckEnabled is false.
+				PersistenceProfile: &PoolModelPersistenceProfile{
+					Name:  "persistence profile",
+					Type:  PoolPersistenceProfileTypeClientIP,
+					Value: "",
+				},
+			},
+			mockFunc: func() {
+				clientCAV.EXPECT().Refresh().Return(nil)
+				clientCAV.EXPECT().GetAlbPoolById(urnPool).Return(&govcd.NsxtAlbPool{
+					NsxtAlbPool: &govcdtypes.NsxtAlbPool{
+						ID:                       urnPool,
+						Name:                     "pool1",
+						Description:              "pool1 description",
+						GatewayRef:               govcdtypes.OpenApiReference{ID: urnEdgeGateway},
+						Enabled:                  utils.ToPTR(true),
+						Algorithm:                "LEAST_CONNECTIONS",
+						DefaultPort:              utils.ToPTR(80),
+						GracefulTimeoutPeriod:    utils.ToPTR(10),
+						PassiveMonitoringEnabled: utils.ToPTR(true),
+						HealthMonitors: []govcdtypes.NsxtAlbPoolHealthMonitor{
+							{
+								Name: "monitor HTTP",
+								Type: "HTTP",
+							},
+							{
+								Name: "monitor TCP",
+								Type: "TCP",
+							},
+						},
+						Members: []govcdtypes.NsxtAlbPoolMember{
+							{
+								Enabled:               true,
+								IpAddress:             "192.168.0.1",
+								Port:                  80,
+								Ratio:                 utils.ToPTR(1),
+								MarkedDownBy:          nil,
+								HealthStatus:          "UP",
+								DetailedHealthMessage: "",
+							},
+						},
+						MemberGroupRef:         nil, // Only one of MemberGroupRef or Members should be set.
+						CaCertificateRefs:      nil,
+						CommonNameCheckEnabled: utils.ToPTR(false), // false because CaCertificateRefs is nil.
+						DomainNames:            nil,                // nil because CommonNameCheckEnabled is false.
+						PersistenceProfile:     nil,
+						MemberCount:            1,
+						UpMemberCount:          1,
+						HealthMessage:          "All members are up",
+						VirtualServiceRefs:     nil,
+						SslEnabled:             utils.ToPTR(false),
+					},
+				}, nil)
+
+				updatePool = func(_ fakePoolClient, _ *govcdtypes.NsxtAlbPool) (*govcd.NsxtAlbPool, error) {
+					return &govcd.NsxtAlbPool{
+						NsxtAlbPool: &govcdtypes.NsxtAlbPool{
+							ID:                       urnPool,
+							Name:                     "poule 2",
+							Description:              "poule description",
+							GatewayRef:               govcdtypes.OpenApiReference{ID: urnEdgeGateway},
+							Enabled:                  utils.ToPTR(true),
+							Algorithm:                "LEAST_CONNECTIONS",
+							DefaultPort:              utils.ToPTR(80),
+							GracefulTimeoutPeriod:    utils.ToPTR(10),
+							PassiveMonitoringEnabled: utils.ToPTR(true),
+							HealthMonitors: []govcdtypes.NsxtAlbPoolHealthMonitor{
+								{
+									Name: "monitor HTTP",
+									Type: "HTTP",
+								},
+								{
+									Name: "monitor TCP",
+									Type: "TCP",
+								},
+							},
+							Members: []govcdtypes.NsxtAlbPoolMember{
+								{
+									Enabled:               true,
+									IpAddress:             "192.168.0.1",
+									Port:                  80,
+									Ratio:                 utils.ToPTR(1),
+									MarkedDownBy:          nil,
+									HealthStatus:          "UP",
+									DetailedHealthMessage: "",
+								},
+							},
+							MemberGroupRef:         nil, // Only one of MemberGroupRef or Members should be set.
+							CaCertificateRefs:      nil,
+							CommonNameCheckEnabled: utils.ToPTR(false), // false because CaCertificateRefs is nil.
+							DomainNames:            nil,                // nil because CommonNameCheckEnabled is false.
+							PersistenceProfile:     nil,
+							MemberCount:            1,
+							UpMemberCount:          1,
+							HealthMessage:          "All members are up",
+							VirtualServiceRefs:     nil,
+							SslEnabled:             utils.ToPTR(false),
+						},
+					}, nil
+				}
+			},
+			expectedValue: &PoolModel{
+				ID:                       urnPool,
+				Name:                     "poule 2",
+				Description:              "poule description",
+				GatewayRef:               govcdtypes.OpenApiReference{ID: urnEdgeGateway},
+				Enabled:                  utils.ToPTR(true),
+				Algorithm:                "LEAST_CONNECTIONS",
+				DefaultPort:              utils.ToPTR(80),
+				GracefulTimeoutPeriod:    utils.ToPTR(10),
+				PassiveMonitoringEnabled: utils.ToPTR(true),
+				HealthMonitors: []PoolModelHealthMonitor{
+					{
+						Name: "monitor HTTP",
+						Type: PoolHealthMonitorTypeHTTP,
+					},
+					{
+						Name: "monitor TCP",
+						Type: PoolHealthMonitorTypeTCP,
+					},
+				},
+				Members: []PoolModelMember{
+					{
+						Enabled:               true,
+						IPAddress:             "192.168.0.1",
+						Port:                  80,
+						Ratio:                 utils.ToPTR(1),
+						MarkedDownBy:          nil,
+						HealthStatus:          "UP",
+						DetailedHealthMessage: "",
+					},
+				},
+				MemberGroupRef:         nil, // Only one of MemberGroupRef or Members should be set.
+				CaCertificateRefs:      nil,
+				CommonNameCheckEnabled: utils.ToPTR(false), // false because CaCertificateRefs is nil.
+				DomainNames:            nil,                // nil because CommonNameCheckEnabled is false.
+				PersistenceProfile: &PoolModelPersistenceProfile{
+					Name:  "persistence profile",
+					Type:  PoolPersistenceProfileTypeClientIP,
+					Value: "",
+				},
+				MemberCount:        1,
+				UpMemberCount:      1,
+				HealthMessage:      "All members are up",
+				VirtualServiceRefs: nil,
+				SSLEnabled:         utils.ToPTR(false),
+			},
+			expectedErr: false,
+			err:         nil,
+		},
+		{
+			name:   "error-empty-poolID",
+			poolID: "",
+			pool:   PoolModelRequest{},
+			mockFunc: func() {
+			},
+			expectedValue: &PoolModel{},
+			expectedErr:   true,
+			err:           errors.New("poolID is empty. Please provide a valid poolID"),
+		},
+		{
+			name:   "error-invalid-poolID",
+			poolID: "1234",
+			pool:   PoolModelRequest{},
+			mockFunc: func() {
+			},
+			expectedValue: &PoolModel{},
+			expectedErr:   true,
+			err:           errors.New("poolID has invalid format. Please provide a valid poolID"),
+		},
+		{
+			name:   "error-validation",
+			poolID: urnPool,
+			pool:   PoolModelRequest{},
+			mockFunc: func() {
+			},
+			expectedValue: &PoolModel{},
+			expectedErr:   true,
+			err:           errors.New("Error:Field validation for 'Name' failed on the 'required'"),
+		},
+		{
+			name:   "refresh-error",
+			poolID: urnPool,
+			pool: PoolModelRequest{
+				Name:                     "pool1",
+				Description:              "pool1 description",
+				EdgeGatewayID:            urnEdgeGateway,
+				Enabled:                  utils.ToPTR(true),
+				Algorithm:                "LEAST_CONNECTIONS",
+				DefaultPort:              utils.ToPTR(80),
+				GracefulTimeoutPeriod:    utils.ToPTR(10),
+				PassiveMonitoringEnabled: utils.ToPTR(true),
+				HealthMonitors: []PoolModelHealthMonitor{
+					{
+						Name: "monitor HTTP",
+						Type: PoolHealthMonitorTypeHTTP,
+					},
+					{
+						Name: "monitor TCP",
+						Type: PoolHealthMonitorTypeTCP,
+					},
+				},
+				Members: []PoolModelMember{
+					{
+						Enabled:               true,
+						IPAddress:             "192.168.0.1",
+						Port:                  80,
+						Ratio:                 utils.ToPTR(1),
+						MarkedDownBy:          nil,
+						HealthStatus:          "UP",
+						DetailedHealthMessage: "",
+					},
+				},
+				MemberGroupRef:         nil, // Only one of MemberGroupRef or Members should be set.
+				CaCertificateRefs:      nil,
+				CommonNameCheckEnabled: utils.ToPTR(false), // false because CaCertificateRefs is nil.
+				DomainNames:            nil,                // nil because CommonNameCheckEnabled is false.
+				PersistenceProfile: &PoolModelPersistenceProfile{
+					Name:  "persistence profile",
+					Type:  PoolPersistenceProfileTypeClientIP,
+					Value: "",
+				},
+			},
+			mockFunc: func() {
+				clientCAV.EXPECT().Refresh().Return(errors.New("error"))
+			},
+			expectedErr: true,
+			err:         errors.New("error"),
+		},
+		{
+			name:   "get-pool-error",
+			poolID: urnPool,
+			pool: PoolModelRequest{
+				Name:                     "poule 2",
+				Description:              "poule description",
+				EdgeGatewayID:            urnEdgeGateway,
+				Enabled:                  utils.ToPTR(true),
+				Algorithm:                "LEAST_CONNECTIONS",
+				DefaultPort:              utils.ToPTR(80),
+				GracefulTimeoutPeriod:    utils.ToPTR(10),
+				PassiveMonitoringEnabled: utils.ToPTR(true),
+				HealthMonitors: []PoolModelHealthMonitor{
+					{
+						Name: "monitor HTTP",
+						Type: PoolHealthMonitorTypeHTTP,
+					},
+					{
+						Name: "monitor TCP",
+						Type: PoolHealthMonitorTypeTCP,
+					},
+				},
+				Members: []PoolModelMember{
+					{
+						Enabled:               true,
+						IPAddress:             "192.168.0.1",
+						Port:                  80,
+						Ratio:                 utils.ToPTR(1),
+						MarkedDownBy:          nil,
+						HealthStatus:          "UP",
+						DetailedHealthMessage: "",
+					},
+				},
+				MemberGroupRef:         nil, // Only one of MemberGroupRef or Members should be set.
+				CaCertificateRefs:      nil,
+				CommonNameCheckEnabled: utils.ToPTR(false), // false because CaCertificateRefs is nil.
+				DomainNames:            nil,                // nil because CommonNameCheckEnabled is false.
+				PersistenceProfile: &PoolModelPersistenceProfile{
+					Name:  "persistence profile",
+					Type:  PoolPersistenceProfileTypeClientIP,
+					Value: "",
+				},
+			},
+			mockFunc: func() {
+				clientCAV.EXPECT().Refresh().Return(nil)
+				clientCAV.EXPECT().GetAlbPoolById(urnPool).Return(nil, errors.New("error"))
+			},
+			expectedErr: true,
+			err:         errors.New("error"),
+		},
+		{
+			name:   "error-update-pool",
+			poolID: urnPool,
+			pool: PoolModelRequest{
+				Name:                     "poule 2",
+				Description:              "poule description",
+				EdgeGatewayID:            urnEdgeGateway,
+				Enabled:                  utils.ToPTR(true),
+				Algorithm:                "LEAST_CONNECTIONS",
+				DefaultPort:              utils.ToPTR(80),
+				GracefulTimeoutPeriod:    utils.ToPTR(10),
+				PassiveMonitoringEnabled: utils.ToPTR(true),
+				HealthMonitors: []PoolModelHealthMonitor{
+					{
+						Name: "monitor HTTP",
+						Type: PoolHealthMonitorTypeHTTP,
+					},
+					{
+						Name: "monitor TCP",
+						Type: PoolHealthMonitorTypeTCP,
+					},
+				},
+				Members: []PoolModelMember{
+					{
+						Enabled:               true,
+						IPAddress:             "192.168.0.1",
+						Port:                  80,
+						Ratio:                 utils.ToPTR(1),
+						MarkedDownBy:          nil,
+						HealthStatus:          "UP",
+						DetailedHealthMessage: "",
+					},
+				},
+				MemberGroupRef:         nil, // Only one of MemberGroupRef or Members should be set.
+				CaCertificateRefs:      nil,
+				CommonNameCheckEnabled: utils.ToPTR(false), // false because CaCertificateRefs is nil.
+				DomainNames:            nil,                // nil because CommonNameCheckEnabled is false.
+				PersistenceProfile: &PoolModelPersistenceProfile{
+					Name:  "persistence profile",
+					Type:  PoolPersistenceProfileTypeClientIP,
+					Value: "",
+				},
+			},
+			mockFunc: func() {
+				clientCAV.EXPECT().Refresh().Return(nil)
+				clientCAV.EXPECT().GetAlbPoolById(urnPool).Return(&govcd.NsxtAlbPool{
+					NsxtAlbPool: &govcdtypes.NsxtAlbPool{
+						ID:                       urnPool,
+						Name:                     "pool1",
+						Description:              "pool1 description",
+						GatewayRef:               govcdtypes.OpenApiReference{ID: urnEdgeGateway},
+						Enabled:                  utils.ToPTR(true),
+						Algorithm:                "LEAST_CONNECTIONS",
+						DefaultPort:              utils.ToPTR(80),
+						GracefulTimeoutPeriod:    utils.ToPTR(10),
+						PassiveMonitoringEnabled: utils.ToPTR(true),
+						HealthMonitors: []govcdtypes.NsxtAlbPoolHealthMonitor{
+							{
+								Name: "monitor HTTP",
+								Type: "HTTP",
+							},
+							{
+								Name: "monitor TCP",
+								Type: "TCP",
+							},
+						},
+						Members: []govcdtypes.NsxtAlbPoolMember{
+							{
+								Enabled:               true,
+								IpAddress:             "192.168.0.1",
+								Port:                  80,
+								Ratio:                 utils.ToPTR(1),
+								MarkedDownBy:          nil,
+								HealthStatus:          "UP",
+								DetailedHealthMessage: "",
+							},
+						},
+						MemberGroupRef:         nil, // Only one of MemberGroupRef or Members should be set.
+						CaCertificateRefs:      nil,
+						CommonNameCheckEnabled: utils.ToPTR(false), // false because CaCertificateRefs is nil.
+						DomainNames:            nil,                // nil because CommonNameCheckEnabled is false.
+						PersistenceProfile:     nil,
+						MemberCount:            1,
+						UpMemberCount:          1,
+						HealthMessage:          "All members are up",
+						VirtualServiceRefs:     nil,
+						SslEnabled:             utils.ToPTR(false),
+					},
+				}, nil)
+
+				updatePool = func(_ fakePoolClient, _ *govcdtypes.NsxtAlbPool) (*govcd.NsxtAlbPool, error) {
+					return nil, errors.New("error")
+				}
+			},
+			expectedErr: true,
+			err:         errors.New("error"),
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			tc.mockFunc()
+
+			pool, err := c.UpdatePool(context.Background(), tc.poolID, tc.pool)
+			if !tc.expectedErr {
+				assert.NoError(t, err)
+				assert.NotNil(t, pool)
+			} else {
+				assert.Error(t, err)
+				assert.Nil(t, pool)
+				assert.Contains(t, err.Error(), tc.err.Error())
+				return
+			}
+
+			assert.NoError(t, err)
+		})
+	}
+}
+
+func TestClient_DeletePool(t *testing.T) {
+	// Mock controller.
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	// Mock client for cloudavenue.
+	clientCAV := NewMockclientFake(ctrl)
+
+	c, _ := NewFakeClient(clientCAV)
+
+	urnPool := urn.LoadBalancerPool.String() + uuid.New().String()
+
+	tests := []struct {
+		name        string
+		mockFunc    func()
+		poolID      string
+		expectedErr bool
+		err         error
+	}{
+		{
+			name:   "success",
+			poolID: urnPool,
+			mockFunc: func() {
+				clientCAV.EXPECT().Refresh().Return(nil)
+				clientCAV.EXPECT().GetAlbPoolById(urnPool).Return(&govcd.NsxtAlbPool{
+					NsxtAlbPool: &govcdtypes.NsxtAlbPool{
+						ID: urnPool,
+					},
+				}, nil)
+
+				deletePool = func(_ fakePoolClient) error {
+					return nil
+				}
+			},
+			expectedErr: false,
+			err:         nil,
+		},
+		{
+			name:   "refresh-error",
+			poolID: urnPool,
+			mockFunc: func() {
+				clientCAV.EXPECT().Refresh().Return(errors.New("error"))
+			},
+			expectedErr: true,
+			err:         errors.New("error"),
+		},
+		{
+			name:   "error-get-pool",
+			poolID: urnPool,
+			mockFunc: func() {
+				clientCAV.EXPECT().Refresh().Return(nil)
+				clientCAV.EXPECT().GetAlbPoolById(urnPool).Return(nil, errors.New("error"))
+			},
+			expectedErr: true,
+			err:         errors.New("error retrieving Load Balancer Pool: error"),
+		},
+		{
+			name:   "error-delete-pool",
+			poolID: urnPool,
+			mockFunc: func() {
+				clientCAV.EXPECT().Refresh().Return(nil)
+				clientCAV.EXPECT().GetAlbPoolById(urnPool).Return(&govcd.NsxtAlbPool{
+					NsxtAlbPool: &govcdtypes.NsxtAlbPool{
+						ID: urnPool,
+					},
+				}, nil)
+				deletePool = func(_ fakePoolClient) error {
+					return errors.New("error")
+				}
+			},
+			expectedErr: true,
+			err:         errors.New("error"),
+		},
+		{
+			name:        "param-poolID-empty",
+			poolID:      "",
+			mockFunc:    func() {},
+			expectedErr: true,
+			err:         errors.New("poolID is empty. Please provide a valid poolID"),
+		},
+		{
+			name:   "param-poolID-invalid-id",
+			poolID: "1234",
+			mockFunc: func() {
+			},
+			expectedErr: true,
+			err:         errors.New("poolID has invalid format. Please provide a valid poolID"),
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			tc.mockFunc()
+
+			err := c.DeletePool(context.Background(), tc.poolID)
+			if !tc.expectedErr {
+				assert.NoError(t, err)
+			} else {
+				assert.Error(t, err)
+				assert.Contains(t, err.Error(), tc.err.Error())
 			}
 		})
 	}

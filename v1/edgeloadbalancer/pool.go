@@ -15,8 +15,10 @@ import (
 	"net/url"
 
 	"github.com/vmware/go-vcloud-director/v2/govcd"
+	govcdtypes "github.com/vmware/go-vcloud-director/v2/types/v56"
 
 	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/errors"
+	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/helpers/validators"
 	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/urn"
 )
 
@@ -68,74 +70,103 @@ func (c *client) GetPool(ctx context.Context, edgeGatewayID, poolNameOrID string
 		return nil, err
 	}
 
+	albPool, err := c.getpool(ctx, edgeGatewayID, poolNameOrID)
+	if err != nil {
+		return nil, fmt.Errorf("error retrieving Load Balancer Pool: %w", err)
+	}
+
+	return fromVCDNsxtALBPoolToModel(albPool.NsxtAlbPool), nil
+}
+
+func (c *client) getpool(_ context.Context, edgeGatewayID, nameOrID string) (*govcd.NsxtAlbPool, error) {
 	var (
 		albPool *govcd.NsxtAlbPool
 		err     error
 	)
 
-	if urn.IsLoadBalancerPool(poolNameOrID) {
-		albPool, err = c.clientGoVCD.GetAlbPoolById(poolNameOrID)
+	if urn.IsLoadBalancerPool(nameOrID) {
+		albPool, err = c.clientGoVCD.GetAlbPoolById(nameOrID)
 	} else {
-		albPool, err = c.clientGoVCD.GetAlbPoolByName(edgeGatewayID, poolNameOrID)
+		albPool, err = c.clientGoVCD.GetAlbPoolByName(edgeGatewayID, nameOrID)
 	}
-	if err != nil {
+
+	return albPool, err
+}
+
+func (c *client) CreatePool(ctx context.Context, pool PoolModelRequest) (*PoolModel, error) {
+	if err := validators.New().Struct(pool); err != nil {
 		return nil, err
 	}
 
-	return &PoolModel{
-		ID:                       albPool.NsxtAlbPool.ID,
-		Name:                     albPool.NsxtAlbPool.Name,
-		Description:              albPool.NsxtAlbPool.Description,
-		GatewayRef:               albPool.NsxtAlbPool.GatewayRef,
-		Enabled:                  albPool.NsxtAlbPool.Enabled,
-		Algorithm:                PoolAlgorithm(albPool.NsxtAlbPool.Algorithm),
-		DefaultPort:              albPool.NsxtAlbPool.DefaultPort,
-		GracefulTimeoutPeriod:    albPool.NsxtAlbPool.GracefulTimeoutPeriod,
-		PassiveMonitoringEnabled: albPool.NsxtAlbPool.PassiveMonitoringEnabled,
-		HealthMonitors: func() []PoolModelHealthMonitor {
-			monitors := make([]PoolModelHealthMonitor, len(albPool.NsxtAlbPool.HealthMonitors))
-			for i, monitor := range albPool.NsxtAlbPool.HealthMonitors {
-				monitors[i] = PoolModelHealthMonitor{
-					Name: monitor.Name,
-					Type: PoolHealthMonitorType(monitor.Type),
-				}
-			}
-			return monitors
-		}(),
-		Members: func() []PoolModelMember {
-			members := make([]PoolModelMember, len(albPool.NsxtAlbPool.Members))
-			for i, member := range albPool.NsxtAlbPool.Members {
-				members[i] = PoolModelMember{
-					Enabled:               member.Enabled,
-					IPAddress:             member.IpAddress,
-					Port:                  member.Port,
-					Ratio:                 member.Ratio,
-					MarkedDownBy:          member.MarkedDownBy,
-					HealthStatus:          member.HealthStatus,
-					DetailedHealthMessage: member.DetailedHealthMessage,
-				}
-			}
-			return members
-		}(),
-		MemberGroupRef:         albPool.NsxtAlbPool.MemberGroupRef,
-		CaCertificateRefs:      albPool.NsxtAlbPool.CaCertificateRefs,
-		CommonNameCheckEnabled: albPool.NsxtAlbPool.CommonNameCheckEnabled,
-		DomainNames:            albPool.NsxtAlbPool.DomainNames,
-		PersistenceProfile: func() *PoolModelPersistenceProfile {
-			if albPool.NsxtAlbPool.PersistenceProfile == nil {
-				return nil
-			}
-			return &PoolModelPersistenceProfile{
-				Name:  albPool.NsxtAlbPool.PersistenceProfile.Name,
-				Type:  PoolPersistenceProfileType(albPool.NsxtAlbPool.PersistenceProfile.Type),
-				Value: albPool.NsxtAlbPool.PersistenceProfile.Value,
-			}
-		}(),
-		MemberCount:        albPool.NsxtAlbPool.MemberCount,
-		EnabledMemberCount: albPool.NsxtAlbPool.EnabledMemberCount,
-		UpMemberCount:      albPool.NsxtAlbPool.UpMemberCount,
-		HealthMessage:      albPool.NsxtAlbPool.HealthMessage,
-		VirtualServiceRefs: albPool.NsxtAlbPool.VirtualServiceRefs,
-		SSLEnabled:         albPool.NsxtAlbPool.SslEnabled,
-	}, nil
+	if err := c.clientCloudavenue.Refresh(); err != nil {
+		return nil, err
+	}
+
+	poolCreated, err := c.clientGoVCD.CreateNsxtAlbPool(fromModelToGoVCDNsxtALBPool("", pool))
+	if err != nil {
+		return nil, fmt.Errorf("error creating Load Balancer Pool: %w", err)
+	}
+
+	return fromVCDNsxtALBPoolToModel(poolCreated.NsxtAlbPool), nil
+}
+
+var updatePool = func(poolClient fakePoolClient, pool *govcdtypes.NsxtAlbPool) (*govcd.NsxtAlbPool, error) {
+	return poolClient.Update(pool)
+}
+
+func (c *client) UpdatePool(ctx context.Context, poolID string, pool PoolModelRequest) (*PoolModel, error) {
+	if poolID == "" {
+		return nil, fmt.Errorf("poolID is %w. Please provide a valid poolID", errors.ErrEmpty)
+	}
+
+	if !urn.IsLoadBalancerPool(poolID) {
+		return nil, fmt.Errorf("poolID has %w. Please provide a valid poolID", errors.ErrInvalidFormat)
+	}
+
+	if err := validators.New().Struct(pool); err != nil {
+		return nil, err
+	}
+
+	if err := c.clientCloudavenue.Refresh(); err != nil {
+		return nil, err
+	}
+
+	// edgegatewayID is not needed for retreiving the pool by ID
+	poolToUpdate, err := c.getpool(ctx, "", poolID)
+	if err != nil {
+		return nil, fmt.Errorf("error retrieving Load Balancer Pool: %w", err)
+	}
+
+	poolUpdated, err := updatePool(poolToUpdate, fromModelToGoVCDNsxtALBPool(poolToUpdate.NsxtAlbPool.ID, pool))
+	if err != nil {
+		return nil, fmt.Errorf("error updating Load Balancer Pool: %w", err)
+	}
+
+	return fromVCDNsxtALBPoolToModel(poolUpdated.NsxtAlbPool), nil
+}
+
+var deletePool = func(poolClient fakePoolClient) error {
+	return poolClient.Delete()
+}
+
+func (c *client) DeletePool(ctx context.Context, poolID string) error {
+	if poolID == "" {
+		return fmt.Errorf("poolID is %w. Please provide a valid poolID", errors.ErrEmpty)
+	}
+
+	if !urn.IsLoadBalancerPool(poolID) {
+		return fmt.Errorf("poolID has %w. Please provide a valid poolID", errors.ErrInvalidFormat)
+	}
+
+	if err := c.clientCloudavenue.Refresh(); err != nil {
+		return err
+	}
+
+	// edgegatewayID is not needed for retreiving the pool by ID
+	poolToDelete, err := c.getpool(ctx, "", poolID)
+	if err != nil {
+		return fmt.Errorf("error retrieving Load Balancer Pool: %w", err)
+	}
+
+	return deletePool(poolToDelete)
 }

@@ -9,9 +9,17 @@
 
 package edgeloadbalancer
 
-import govcdtypes "github.com/vmware/go-vcloud-director/v2/types/v56"
+import (
+	"github.com/vmware/go-vcloud-director/v2/govcd"
+	govcdtypes "github.com/vmware/go-vcloud-director/v2/types/v56"
+)
 
 type (
+	fakePoolClient interface {
+		Update(*govcdtypes.NsxtAlbPool) (*govcd.NsxtAlbPool, error)
+		Delete() error
+	}
+
 	// PoolModel represents an ALB Pool to an Edge Gateway.
 	PoolModel struct {
 		ID          string
@@ -174,6 +182,79 @@ type (
 	PoolAlgorithm              string
 	PoolHealthMonitorType      string
 	PoolPersistenceProfileType string
+
+	// * ------------------------------------
+	// * PoolModelRequest.
+
+	// PoolModelRequest represents a request to create a Load Balancer Pool.
+	PoolModelRequest struct {
+		Name          string `validate:"required"`
+		Description   string `validate:"omitempty"`
+		EdgeGatewayID string `validate:"required"`
+		Enabled       *bool  `validate:"required"`
+
+		// The heart of a load balancer is its ability to effectively distribute traffic across healthy servers. If persistence is enabled, only the first connection from a client is load balanced. While the persistence remains in effect, subsequent connections or requests from a client are directed to the same server.
+		// Default value is PoolAlgorithmLeastConnections.
+		// Supported algorithms are:
+		// * PoolAlgorithmLeastConnections
+		// * PoolAlgorithmRoundRobin
+		// * PoolAlgorithmConsistentHash
+		// * PoolAlgorithmFastestResponse
+		// * PoolAlgorithmLeastLoad
+		// * PoolAlgorithmFewestServers
+		// * PoolAlgorithmRandom
+		// * PoolAlgorithmFewestTasks
+		// * PoolAlgorithmCoreAffinity
+		Algorithm PoolAlgorithm `validate:"required,oneof=LEAST_CONNECTIONS ROUND_ROBIN CONSISTENT_HASH FASTEST_RESPONSE LEAST_LOAD FEWEST_SERVERS RANDOM FEWEST_TASKS CORE_AFFINITY"`
+
+		// DefaultPort defines destination server port used by the traffic sent to the member.
+		DefaultPort *int `validate:"omitempty"`
+
+		// GracefulTimeoutPeriod sets maximum time (in minutes) to gracefully disable a member. Virtual service waits for the
+		// specified time before terminating the existing connections to the pool members that are disabled.
+		//
+		// Special values: 0 represents Immediate, -1 represents Infinite.
+		GracefulTimeoutPeriod *int `validate:"omitempty"`
+
+		// PassiveMonitoringEnabled sets if client traffic should be used to check if pool member is up or down.
+		PassiveMonitoringEnabled *bool `validate:"omitempty"`
+
+		// HealthMonitors check member servers health. It can be monitored by using one or more health monitors. Active
+		// monitors generate synthetic traffic and mark a server up or down based on the response.
+		HealthMonitors []PoolModelHealthMonitor `validate:"omitempty"`
+
+		// Members field defines list of destination servers which are used by the Load Balancer Pool to direct load balanced
+		// traffic.
+		//
+		// Note. Only one of Members or MemberGroupRef can be specified
+		Members []PoolModelMember `validate:"omitempty,excluded_with=MemberGroupRef"`
+
+		// MemberGroupRef contains reference to the Edge Firewall Group Static Group or IP Set
+		// representing destination servers which are used by the Load Balancer Pool to direct load
+		// balanced traffic.
+		//
+		// Note. Only one of Members or MemberGroupRef can be specified
+		MemberGroupRef *govcdtypes.OpenApiReference `validate:"omitempty,excluded_with=Members"`
+
+		// CaCertificateRefs point to root certificates to use when validating certificates presented by the pool members.
+		CaCertificateRefs []govcdtypes.OpenApiReference `validate:"omitempty"`
+
+		// CommonNameCheckEnabled specifies whether to check the common name of the certificate presented by the pool member.
+		// This cannot be enabled if no caCertificateRefs are specified.
+		CommonNameCheckEnabled *bool `validate:"omitempty,required_with=CaCertificateRefs"`
+
+		// DomainNames holds a list of domain names which will be used to verify the common names or subject alternative
+		// names presented by the pool member certificates. It is performed only when common name check
+		// (CommonNameCheckEnabled) is enabled. If common name check is enabled, but domain names are not specified then the
+		// incoming host header will be used to check the certificate.
+		DomainNames []string `validate:"omitempty"`
+
+		// PersistenceProfile of a Load Balancer Pool. Persistence profile will ensure that the same user sticks to the same
+		// server for a desired duration of time. If the persistence profile is unmanaged by Cloud Director, updates that
+		// leave the values unchanged will continue to use the same unmanaged profile. Any changes made to the persistence
+		// profile will cause Cloud Director to switch the pool to a profile managed by Cloud Director.
+		PersistenceProfile *PoolModelPersistenceProfile `validate:"omitempty"`
+	}
 )
 
 var (
@@ -205,3 +286,116 @@ var (
 		PoolPersistenceProfileTypeTLS:              "Information is embedded in the client's SSL/TLS ticket ID. This will use default system profile System-Persistence-TLS.",
 	}
 )
+
+func fromVCDNsxtALBPoolToModel(pool *govcdtypes.NsxtAlbPool) *PoolModel {
+	return &PoolModel{
+		ID:                       pool.ID,
+		Name:                     pool.Name,
+		Description:              pool.Description,
+		GatewayRef:               pool.GatewayRef,
+		Enabled:                  pool.Enabled,
+		Algorithm:                PoolAlgorithm(pool.Algorithm),
+		DefaultPort:              pool.DefaultPort,
+		GracefulTimeoutPeriod:    pool.GracefulTimeoutPeriod,
+		PassiveMonitoringEnabled: pool.PassiveMonitoringEnabled,
+		HealthMonitors: func() []PoolModelHealthMonitor {
+			monitors := make([]PoolModelHealthMonitor, len(pool.HealthMonitors))
+			for i, monitor := range pool.HealthMonitors {
+				monitors[i] = PoolModelHealthMonitor{
+					Name: monitor.Name,
+					Type: PoolHealthMonitorType(monitor.Type),
+				}
+			}
+			return monitors
+		}(),
+		Members: func() []PoolModelMember {
+			if pool.Members == nil {
+				return nil
+			}
+			members := make([]PoolModelMember, len(pool.Members))
+			for i, member := range pool.Members {
+				members[i] = PoolModelMember{
+					Enabled:               member.Enabled,
+					IPAddress:             member.IpAddress,
+					Port:                  member.Port,
+					Ratio:                 member.Ratio,
+					MarkedDownBy:          member.MarkedDownBy,
+					HealthStatus:          member.HealthStatus,
+					DetailedHealthMessage: member.DetailedHealthMessage,
+				}
+			}
+			return members
+		}(),
+		MemberGroupRef:         pool.MemberGroupRef,
+		CaCertificateRefs:      pool.CaCertificateRefs,
+		CommonNameCheckEnabled: pool.CommonNameCheckEnabled,
+		DomainNames:            pool.DomainNames,
+		PersistenceProfile: func() *PoolModelPersistenceProfile {
+			if pool.PersistenceProfile == nil {
+				return nil
+			}
+			return &PoolModelPersistenceProfile{
+				Name:  pool.PersistenceProfile.Name,
+				Type:  PoolPersistenceProfileType(pool.PersistenceProfile.Type),
+				Value: pool.PersistenceProfile.Value,
+			}
+		}(),
+		MemberCount:        pool.MemberCount,
+		EnabledMemberCount: pool.EnabledMemberCount,
+		UpMemberCount:      pool.UpMemberCount,
+		HealthMessage:      pool.HealthMessage,
+		VirtualServiceRefs: pool.VirtualServiceRefs,
+		SSLEnabled:         pool.SslEnabled,
+	}
+}
+
+func fromModelToGoVCDNsxtALBPool(poolID string, pool PoolModelRequest) *govcdtypes.NsxtAlbPool {
+	return &govcdtypes.NsxtAlbPool{
+		ID:                       poolID,
+		Name:                     pool.Name,
+		Description:              pool.Description,
+		GatewayRef:               govcdtypes.OpenApiReference{ID: pool.EdgeGatewayID},
+		Enabled:                  pool.Enabled,
+		Algorithm:                string(pool.Algorithm),
+		DefaultPort:              pool.DefaultPort,
+		GracefulTimeoutPeriod:    pool.GracefulTimeoutPeriod,
+		PassiveMonitoringEnabled: pool.PassiveMonitoringEnabled,
+		HealthMonitors: func() []govcdtypes.NsxtAlbPoolHealthMonitor {
+			monitors := make([]govcdtypes.NsxtAlbPoolHealthMonitor, len(pool.HealthMonitors))
+			for i, monitor := range pool.HealthMonitors {
+				monitors[i] = govcdtypes.NsxtAlbPoolHealthMonitor{
+					Name: monitor.Name,
+					Type: string(monitor.Type),
+				}
+			}
+			return monitors
+		}(),
+		Members: func() []govcdtypes.NsxtAlbPoolMember {
+			members := make([]govcdtypes.NsxtAlbPoolMember, len(pool.Members))
+			for i, member := range pool.Members {
+				members[i] = govcdtypes.NsxtAlbPoolMember{
+					Enabled:      member.Enabled,
+					IpAddress:    member.IPAddress,
+					Port:         member.Port,
+					Ratio:        member.Ratio,
+					MarkedDownBy: member.MarkedDownBy,
+				}
+			}
+			return members
+		}(),
+		MemberGroupRef:         pool.MemberGroupRef,
+		CaCertificateRefs:      pool.CaCertificateRefs,
+		CommonNameCheckEnabled: pool.CommonNameCheckEnabled,
+		DomainNames:            pool.DomainNames,
+		PersistenceProfile: func() *govcdtypes.NsxtAlbPoolPersistenceProfile {
+			if pool.PersistenceProfile == nil {
+				return nil
+			}
+			return &govcdtypes.NsxtAlbPoolPersistenceProfile{
+				Name:  pool.PersistenceProfile.Name,
+				Type:  string(pool.PersistenceProfile.Type),
+				Value: pool.PersistenceProfile.Value,
+			}
+		}(),
+	}
+}
