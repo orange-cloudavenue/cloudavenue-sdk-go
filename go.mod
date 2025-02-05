@@ -18,7 +18,7 @@ require (
 	github.com/vmware/go-vcloud-director/v2 v2.26.1
 	go.uber.org/mock v0.5.0
 	golang.org/x/exp v0.0.0-20240119083558-1b970713d09a
-	golang.org/x/mod v0.22.0
+	golang.org/x/mod v0.23.0
 	golang.org/x/sync v0.10.0
 )
 
