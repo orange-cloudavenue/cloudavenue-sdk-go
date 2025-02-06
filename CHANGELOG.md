@@ -1,4 +1,8 @@
 ## 0.22.0 (Unreleased)
+### :information_source: **Notes**
+
+* `edgateway/virtualservice` - Now the struct `EdgeGatewayALBVirtualServiceModel` implement simplified struct EdgeGatewayALBVirtualServiceModelServicePort for a service port. (GH-166)
+
 ## 0.21.3 (February  3, 2025)
 ### :information_source: **Notes**
 
