@@ -14,6 +14,8 @@ import (
 	"net/url"
 	"time"
 
+	"github.com/avast/retry-go/v4"
+
 	"github.com/vmware/go-vcloud-director/v2/govcd"
 	govcdtypes "github.com/vmware/go-vcloud-director/v2/types/v56"
 
@@ -54,16 +56,17 @@ func (e *EdgeClient) GetALBVirtualService(nameOrID string) (*EdgeGatewayALBVirtu
 		Name:                  nsxtALBVS.NsxtAlbVirtualService.Name,
 		Description:           nsxtALBVS.NsxtAlbVirtualService.Description,
 		Enabled:               nsxtALBVS.NsxtAlbVirtualService.Enabled,
-		ApplicationProfile:    nsxtALBVS.NsxtAlbVirtualService.ApplicationProfile,
+		ApplicationProfile:    nsxtALBVS.NsxtAlbVirtualService.ApplicationProfile.Type,
 		LoadBalancerPoolRef:   nsxtALBVS.NsxtAlbVirtualService.LoadBalancerPoolRef,
 		ServiceEngineGroupRef: nsxtALBVS.NsxtAlbVirtualService.ServiceEngineGroupRef,
 		CertificateRef:        nsxtALBVS.NsxtAlbVirtualService.CertificateRef,
-		ServicePorts:          nsxtALBVS.NsxtAlbVirtualService.ServicePorts,
 		VirtualIPAddress:      nsxtALBVS.NsxtAlbVirtualService.VirtualIpAddress,
 		HealthStatus:          nsxtALBVS.NsxtAlbVirtualService.HealthStatus,
 		HealthMessage:         nsxtALBVS.NsxtAlbVirtualService.HealthMessage,
 		DetailedHealthMessage: nsxtALBVS.NsxtAlbVirtualService.DetailedHealthMessage,
 	}
+	// Populate Service Ports
+	vs.servicePortsFromGovcd(nsxtALBVS.NsxtAlbVirtualService.ServicePorts)
 
 	return &EdgeGatewayALBVirtualService{
 		client:         e,
@@ -87,69 +90,35 @@ func (e *EdgeClient) CreateALBVirtualService(vs *EdgeGatewayALBVirtualServiceMod
 		return nil, err
 	}
 
-	// Add Service Engine Group if not provided
-	if vs.ServiceEngineGroupRef.Name == "" {
-		// Find the first service engine group
-		queryParams := url.Values{}
-		queryParams.Add("filter", fmt.Sprintf("gatewayRef.id==%s", e.vcdEdge.EdgeGateway.ID)) // Filter by edge gateway ID URN
-		x, err := c.Vmware.GetAllAlbServiceEngineGroupAssignments(queryParams)
-		if err != nil {
-			return nil, fmt.Errorf("error while fetching service engine group: %s", err.Error())
-		}
-		if len(x) == 0 {
-			return nil, fmt.Errorf("no service engine group found for edge gateway %s", e.EdgeName)
-		}
-		if len(x) > 1 {
-			return nil, fmt.Errorf("multiple service engine group found for edge gateway %s, please precise which one to use", e.EdgeName)
-		}
-		vs.ServiceEngineGroupRef = govcdtypes.OpenApiReference{Name: x[0].NsxtAlbServiceEngineGroupAssignment.ServiceEngineGroupRef.Name, ID: x[0].NsxtAlbServiceEngineGroupAssignment.ServiceEngineGroupRef.ID}
-	} else {
-		// Find the service engine group by name
-		queryParams := url.Values{}
-		queryParams.Add("filter", fmt.Sprintf("gatewayRef.id==%s", e.vcdEdge.EdgeGateway.ID)) // Filter by edge gateway ID URN
-		x, err := c.Vmware.GetAllAlbServiceEngineGroupAssignments(queryParams)
-		if err != nil {
-			return nil, fmt.Errorf("error while fetching service engine group: %s", err.Error())
-		}
-		if len(x) == 0 {
-			return nil, fmt.Errorf("no service engine group found for edge gateway %s", e.EdgeName)
-		}
-		var found bool
-		for _, seGroup := range x {
-			if seGroup.NsxtAlbServiceEngineGroupAssignment.ServiceEngineGroupRef.Name == vs.ServiceEngineGroupRef.Name {
-				vs.ServiceEngineGroupRef = govcdtypes.OpenApiReference{Name: seGroup.NsxtAlbServiceEngineGroupAssignment.ServiceEngineGroupRef.Name, ID: seGroup.NsxtAlbServiceEngineGroupAssignment.ServiceEngineGroupRef.ID}
-				found = true
-				break
-			}
-		}
-		if !found {
-			return nil, fmt.Errorf("service engine group %s not found for edge gateway %s", vs.ServiceEngineGroupRef.Name, e.EdgeName)
-		}
+	// Find the service engine group
+	err = vs.findServiceEngineGroup(e.vcdEdge.EdgeGateway.ID, e.EdgeName)
+	if err != nil {
+		return nil, err
 	}
 
 	// Create the ALB Virtual Service
-	albNSXTVS, err := c.Vmware.CreateNsxtAlbVirtualService(&govcdtypes.NsxtAlbVirtualService{
-		Name:                  vs.Name,
-		Description:           vs.Description,
-		ApplicationProfile:    vs.ApplicationProfile,
-		Enabled:               vs.Enabled,
-		GatewayRef:            govcdtypes.OpenApiReference{ID: e.vcdEdge.EdgeGateway.ID}, // Set the Edge Gateway ID URN
-		LoadBalancerPoolRef:   vs.LoadBalancerPoolRef,
-		ServiceEngineGroupRef: vs.ServiceEngineGroupRef,
-		CertificateRef:        vs.CertificateRef,
-		ServicePorts:          vs.ServicePorts,
-		VirtualIpAddress:      vs.VirtualIPAddress,
-	})
+	albNSXTVS, err := c.Vmware.CreateNsxtAlbVirtualService(vs.setNsxtAlbVirtualService(e.vcdEdge.EdgeGateway.ID))
 	if err != nil {
 		return nil, fmt.Errorf("error to Create ALB Virtual Service: %s", err.Error())
 	}
 
 	// A workaround for the issue https://github.com/vmware/go-vcloud-director/issues/729
-	// Wait for 10 seconds before to get the ALB Virtual Service to retrieve the created model
-	time.Sleep(10 * time.Second)
-	newALBVS, err := e.GetALBVirtualService(albNSXTVS.NsxtAlbVirtualService.Name)
+	// Use retry to get the ALB Virtual Service
+	var newALBVS *EdgeGatewayALBVirtualService
+	err = retry.Do(
+		func() error {
+			newALBVS, err = e.GetALBVirtualService(albNSXTVS.NsxtAlbVirtualService.Name)
+			if err != nil {
+				return fmt.Errorf("error to get ALB Virtual Service: %w", err)
+			}
+			return err
+		},
+		retry.RetryIf(govcd.ContainsNotFound),
+		retry.Attempts(3),
+		retry.Delay(5*time.Second),
+	)
 	if err != nil {
-		return nil, fmt.Errorf("error to get ALB Virtual Service: %s", err.Error())
+		return nil, err
 	}
 
 	return &EdgeGatewayALBVirtualService{
@@ -163,85 +132,42 @@ func (e *EdgeClient) CreateALBVirtualService(vs *EdgeGatewayALBVirtualServiceMod
 // It returns an EdgeGatewayALBVirtualService instance containing the ALB Virtual Service model,
 // or an error if the ALB Virtual Service is not updated.
 func (e *EdgeGatewayALBVirtualService) Update(vs *EdgeGatewayALBVirtualServiceModel) (*EdgeGatewayALBVirtualService, error) {
+	var err error
+
 	// Check if the ALB Virtual Service is empty
 	if vs == nil {
 		return nil, fmt.Errorf("empty virtual service")
 	}
 
-	// Initialize the CloudAvenue client to call the CloudAvenue API or vmware API
-	c, err := clientcloudavenue.New()
+	// Find the service engine group
+	err = vs.findServiceEngineGroup(e.client.vcdEdge.EdgeGateway.ID, e.client.EdgeName)
 	if err != nil {
 		return nil, err
 	}
 
-	// TODO: Move in a new Resource/Datasource to avoid code duplication
-	// Check if the ALB Virtual Service Engine Group is empty
-	if vs.ServiceEngineGroupRef.Name == "" {
-		// Find the first service engine group
-		queryParams := url.Values{}
-		queryParams.Add("filter", fmt.Sprintf("gatewayRef.id==%s", e.client.vcdEdge.EdgeGateway.ID)) // Filter by edge gateway ID URN
-		x, err := c.Vmware.GetAllAlbServiceEngineGroupAssignments(queryParams)
-		if err != nil {
-			return nil, fmt.Errorf("error while fetching service engine group: %s", err.Error())
-		}
-		if len(x) == 0 {
-			return nil, fmt.Errorf("no service engine group found for edge gateway %s", e.client.EdgeName)
-		}
-		if len(x) > 1 {
-			return nil, fmt.Errorf("multiple service engine group found for edge gateway %s, please precise which one to use", e.client.EdgeName)
-		}
-		vs.ServiceEngineGroupRef = govcdtypes.OpenApiReference{Name: x[0].NsxtAlbServiceEngineGroupAssignment.ServiceEngineGroupRef.Name, ID: x[0].NsxtAlbServiceEngineGroupAssignment.ServiceEngineGroupRef.ID}
-	} else {
-		// Find the service engine group by name
-		queryParams := url.Values{}
-		queryParams.Add("filter", fmt.Sprintf("gatewayRef.id==%s", e.client.vcdEdge.EdgeGateway.ID)) // Filter by edge gateway ID URN
-		x, err := c.Vmware.GetAllAlbServiceEngineGroupAssignments(queryParams)
-		if err != nil {
-			return nil, fmt.Errorf("error while fetching service engine group: %s", err.Error())
-		}
-		if len(x) == 0 {
-			return nil, fmt.Errorf("no service engine group found for edge gateway %s", e.client.EdgeName)
-		}
-		var found bool
-		for _, seGroup := range x {
-			if seGroup.NsxtAlbServiceEngineGroupAssignment.ServiceEngineGroupRef.Name == vs.ServiceEngineGroupRef.Name {
-				vs.ServiceEngineGroupRef = govcdtypes.OpenApiReference{Name: seGroup.NsxtAlbServiceEngineGroupAssignment.ServiceEngineGroupRef.Name, ID: seGroup.NsxtAlbServiceEngineGroupAssignment.ServiceEngineGroupRef.ID}
-				found = true
-				break
-			}
-		}
-		if !found {
-			return nil, fmt.Errorf("service engine group %s not found for edge gateway %s", vs.ServiceEngineGroupRef.Name, e.client.EdgeName)
-		}
-	}
-
-	// Update the ALB Virtual Service model
-	newvs := &govcdtypes.NsxtAlbVirtualService{
-		ID:                    vs.ID,
-		Name:                  vs.Name,
-		Description:           vs.Description,
-		ApplicationProfile:    vs.ApplicationProfile,
-		Enabled:               vs.Enabled,
-		GatewayRef:            govcdtypes.OpenApiReference{ID: e.client.vcdEdge.EdgeGateway.ID},
-		LoadBalancerPoolRef:   vs.LoadBalancerPoolRef,
-		ServiceEngineGroupRef: vs.ServiceEngineGroupRef,
-		CertificateRef:        vs.CertificateRef,
-		ServicePorts:          vs.ServicePorts,
-		VirtualIpAddress:      vs.VirtualIPAddress,
-	}
+	// Set the govcdtypes.NsxtAlbVirtualService
+	newvs := vs.setNsxtAlbVirtualService(e.client.vcdEdge.EdgeGateway.ID)
 
 	// Update the ALB Virtual Service
-	albVS, err := e.nsxtALBVS.Update(newvs)
+	_, err = e.nsxtALBVS.Update(newvs)
 	if err != nil {
 		return nil, err
 	}
 
 	// A workaround for the issue https://github.com/vmware/go-vcloud-director/issues/729
-	// Wait for 10 seconds before to get the ALB Virtual Service to retrieve the updated model
-	time.Sleep(10 * time.Second)
-	newALBVS, err := e.client.GetALBVirtualService(albVS.NsxtAlbVirtualService.Name)
+	// Use retry to get the ALB Virtual Service
+	var newALBVS *EdgeGatewayALBVirtualService
+	err = retry.Do(
+		func() error {
+			newALBVS, err = e.client.GetALBVirtualService(e.VirtualService.ID)
+			return err
+		},
+		retry.RetryIf(govcd.ContainsNotFound),
+		retry.Attempts(3),
+		retry.Delay(5*time.Second),
+	)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error to get ALB Virtual Service: %w", err)
 	}
 
 	return &EdgeGatewayALBVirtualService{
@@ -256,4 +182,113 @@ func (e *EdgeGatewayALBVirtualService) Update(vs *EdgeGatewayALBVirtualServiceMo
 func (e *EdgeGatewayALBVirtualService) Delete() error {
 	// Delete the ALB Virtual Service
 	return e.nsxtALBVS.Delete()
+}
+
+// servicePortsFromGovcd set the SDK Model EdgeGatewayALBVirtualServiceModelServicePorts from govcdtypes.NsxtAlbVirtualServicePort.
+func (e *EdgeGatewayALBVirtualServiceModel) servicePortsFromGovcd(ports []govcdtypes.NsxtAlbVirtualServicePort) {
+	// Populate Service Ports
+	for _, svcPort := range ports {
+		x := EdgeGatewayALBVirtualServiceModelServicePort{
+			PortStart: svcPort.PortStart,
+			PortEnd:   svcPort.PortEnd,
+			PortSSL:   svcPort.SslEnabled,
+			PortType:  EdgeGatewayALBVirtualServiceModelServicePortType(svcPort.TcpUdpProfile.Type),
+		}
+		e.ServicePorts = append(e.ServicePorts, x)
+	}
+}
+
+// func NsxtAlbVirtualService Set data in govcdtypes.NsxtAlbVirtualService.
+func (e *EdgeGatewayALBVirtualServiceModel) setNsxtAlbVirtualService(edgwid string) *govcdtypes.NsxtAlbVirtualService {
+	govcdVS := &govcdtypes.NsxtAlbVirtualService{
+		ID:                    e.ID,
+		Name:                  e.Name,
+		Description:           e.Description,
+		ApplicationProfile:    govcdtypes.NsxtAlbVirtualServiceApplicationProfile{Type: e.ApplicationProfile},
+		Enabled:               e.Enabled,
+		GatewayRef:            govcdtypes.OpenApiReference{ID: edgwid},
+		LoadBalancerPoolRef:   e.LoadBalancerPoolRef,
+		ServiceEngineGroupRef: e.ServiceEngineGroupRef,
+		CertificateRef:        e.CertificateRef,
+		ServicePorts: func() []govcdtypes.NsxtAlbVirtualServicePort {
+			// Populate Service Ports
+			var (
+				govcdPorts []govcdtypes.NsxtAlbVirtualServicePort
+				x          govcdtypes.NsxtAlbVirtualServicePort
+			)
+			for _, svcPort := range e.ServicePorts {
+				x.PortStart = svcPort.PortStart
+				// If PortEnd is not set, set it to PortStart
+				if (svcPort.PortEnd == nil) || (*svcPort.PortEnd < *svcPort.PortStart && *svcPort.PortEnd > 65535) {
+					x.PortEnd = svcPort.PortStart
+				}
+				x.SslEnabled = svcPort.PortSSL
+				x.TcpUdpProfile = &govcdtypes.NsxtAlbVirtualServicePortTcpUdpProfile{
+					SystemDefined: true,
+					Type:          string(svcPort.PortType),
+				}
+				govcdPorts = append(govcdPorts, x)
+			}
+
+			return govcdPorts
+		}(),
+		VirtualIpAddress: e.VirtualIPAddress,
+	}
+
+	return govcdVS
+}
+
+// func findServiceEngineGroup find the service engine group.
+func (e *EdgeGatewayALBVirtualServiceModel) findServiceEngineGroup(edgeID, edgeName string) error {
+	// Check if the edge name or ID is empty
+	if edgeID == "" || edgeName == "" {
+		return fmt.Errorf("edge name or ID is empty, please provide a valid name or id")
+	}
+
+	// Initialize the CloudAvenue client to call the CloudAvenue API or vmware API
+	c, err := clientcloudavenue.New()
+	if err != nil {
+		return err
+	}
+
+	// Check if the ALB Virtual Service Engine Group is empty
+	if e.ServiceEngineGroupRef.Name == "" {
+		// Find the first service engine group
+		queryParams := url.Values{}
+		queryParams.Add("filter", fmt.Sprintf("gatewayRef.id==%s", edgeID)) // Filter by edge gateway ID URN
+		x, err := c.Vmware.GetAllAlbServiceEngineGroupAssignments(queryParams)
+		if err != nil {
+			return fmt.Errorf("error while fetching service engine group: %s", err.Error())
+		}
+		if len(x) == 0 {
+			return fmt.Errorf("no service engine group found for edge gateway %s", edgeName)
+		}
+		if len(x) > 1 {
+			return fmt.Errorf("multiple service engine group found for edge gateway %s, please precise which one to use", edgeName)
+		}
+		e.ServiceEngineGroupRef = govcdtypes.OpenApiReference{Name: x[0].NsxtAlbServiceEngineGroupAssignment.ServiceEngineGroupRef.Name, ID: x[0].NsxtAlbServiceEngineGroupAssignment.ServiceEngineGroupRef.ID}
+	} else {
+		// Find the service engine group by name
+		queryParams := url.Values{}
+		queryParams.Add("filter", fmt.Sprintf("gatewayRef.id==%s", edgeID)) // Filter by edge gateway ID URN
+		x, err := c.Vmware.GetAllAlbServiceEngineGroupAssignments(queryParams)
+		if err != nil {
+			return fmt.Errorf("error while fetching service engine group: %s", err.Error())
+		}
+		if len(x) == 0 {
+			return fmt.Errorf("no service engine group found for edge gateway %s", edgeName)
+		}
+		var found bool
+		for _, seGroup := range x {
+			if seGroup.NsxtAlbServiceEngineGroupAssignment.ServiceEngineGroupRef.Name == e.ServiceEngineGroupRef.Name {
+				e.ServiceEngineGroupRef = govcdtypes.OpenApiReference{Name: seGroup.NsxtAlbServiceEngineGroupAssignment.ServiceEngineGroupRef.Name, ID: seGroup.NsxtAlbServiceEngineGroupAssignment.ServiceEngineGroupRef.ID}
+				found = true
+				break
+			}
+		}
+		if !found {
+			return fmt.Errorf("service engine group %s not found for edge gateway %s", e.ServiceEngineGroupRef.Name, edgeName)
+		}
+	}
+	return nil
 }

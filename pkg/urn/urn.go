@@ -29,7 +29,6 @@ const (
 	VDCGroup                   = URN(VcloudPrefix + "vdcGroup:")
 	VDCComputePolicy           = URN(VcloudPrefix + "vdcComputePolicy:")
 	Network                    = URN(VcloudPrefix + "network:")
-	LoadBalancerPool           = URN(VcloudPrefix + "loadBalancerPool:")
 	VDCStorageProfile          = URN(VcloudPrefix + "vdcstorageProfile:")
 	VAPP                       = URN(VcloudPrefix + "vapp:")
 	VAPPTemplate               = URN(VcloudPrefix + "vappTemplate:")
@@ -39,6 +38,7 @@ const (
 	Token                      = URN(VcloudPrefix + "token:")
 	AppPortProfile             = URN(VcloudPrefix + "applicationPortProfile:")
 	CertificateLibraryItem     = URN(VcloudPrefix + "certificateLibraryItem:")
+	LoadBalancerPool           = URN(VcloudPrefix + "loadBalancerPool:")
 	LoadBalancerVirtualService = URN(VcloudPrefix + "loadBalancerVirtualService:")
 	ServiceEngineGroup         = URN(VcloudPrefix + "serviceEngineGroup:")
 
@@ -56,7 +56,6 @@ var URNs = []URN{
 	VDCGroup,
 	VDCComputePolicy,
 	Network,
-	LoadBalancerPool,
 	VDCStorageProfile,
 	VAPP,
 	VAPPTemplate,
@@ -66,6 +65,7 @@ var URNs = []URN{
 	Token,
 	AppPortProfile,
 	CertificateLibraryItem,
+	LoadBalancerPool,
 	LoadBalancerVirtualService,
 	ServiceEngineGroup,
 }

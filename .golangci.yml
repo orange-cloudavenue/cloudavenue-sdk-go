@@ -190,5 +190,6 @@ linters-settings:
               "VPN",
               "BMS",
               "SAML",
+              "SSL",
               "VDCG"
             ] 
