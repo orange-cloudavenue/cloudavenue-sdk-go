@@ -188,10 +188,12 @@ type (
 
 	// PoolModelRequest represents a request to create a Load Balancer Pool.
 	PoolModelRequest struct {
-		Name          string `validate:"required"`
-		Description   string `validate:"omitempty"`
-		EdgeGatewayID string `validate:"required"`
-		Enabled       *bool  `validate:"required"`
+		Name        string `validate:"required"`
+		Description string `validate:"omitempty"`
+		Enabled     *bool  `validate:"required"`
+
+		// GatewayRef is a reference to the Edge Gateway where the Load Balancer Pool will be edited.
+		GatewayRef govcdtypes.OpenApiReference `validate:"required"`
 
 		// The heart of a load balancer is its ability to effectively distribute traffic across healthy servers. If persistence is enabled, only the first connection from a client is load balanced. While the persistence remains in effect, subsequent connections or requests from a client are directed to the same server.
 		// Default value is PoolAlgorithmLeastConnections.
@@ -248,6 +250,9 @@ type (
 		// (CommonNameCheckEnabled) is enabled. If common name check is enabled, but domain names are not specified then the
 		// incoming host header will be used to check the certificate.
 		DomainNames []string `validate:"omitempty"`
+
+		// SslEnabled is required when CA Certificates are used.
+		SSLEnabled *bool
 
 		// PersistenceProfile of a Load Balancer Pool. Persistence profile will ensure that the same user sticks to the same
 		// server for a desired duration of time. If the persistence profile is unmanaged by Cloud Director, updates that
@@ -354,7 +359,7 @@ func fromModelToGoVCDNsxtALBPool(poolID string, pool PoolModelRequest) *govcdtyp
 		ID:                       poolID,
 		Name:                     pool.Name,
 		Description:              pool.Description,
-		GatewayRef:               govcdtypes.OpenApiReference{ID: pool.EdgeGatewayID},
+		GatewayRef:               pool.GatewayRef,
 		Enabled:                  pool.Enabled,
 		Algorithm:                string(pool.Algorithm),
 		DefaultPort:              pool.DefaultPort,
@@ -397,5 +402,6 @@ func fromModelToGoVCDNsxtALBPool(poolID string, pool PoolModelRequest) *govcdtyp
 				Value: pool.PersistenceProfile.Value,
 			}
 		}(),
+		SslEnabled: pool.SSLEnabled,
 	}
 }

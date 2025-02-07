@@ -753,7 +753,7 @@ func TestClient_CreatePool(t *testing.T) {
 			pool: PoolModelRequest{
 				Name:                     "pool1",
 				Description:              "pool1 description",
-				EdgeGatewayID:            urnEdgeGateway,
+				GatewayRef:               govcdtypes.OpenApiReference{ID: urnEdgeGateway},
 				Enabled:                  utils.ToPTR(true),
 				Algorithm:                "LEAST_CONNECTIONS",
 				DefaultPort:              utils.ToPTR(80),
@@ -895,7 +895,7 @@ func TestClient_CreatePool(t *testing.T) {
 			pool: PoolModelRequest{
 				Name:                     "pool1",
 				Description:              "pool1 description",
-				EdgeGatewayID:            urnEdgeGateway,
+				GatewayRef:               govcdtypes.OpenApiReference{ID: urnEdgeGateway},
 				Enabled:                  utils.ToPTR(true),
 				Algorithm:                "LEAST_CONNECTIONS",
 				DefaultPort:              utils.ToPTR(80),
@@ -1007,7 +1007,7 @@ func TestClient_CreatePool(t *testing.T) {
 				// Valid fields
 				Name:                     "pool1",
 				Description:              "pool1 description",
-				EdgeGatewayID:            urnEdgeGateway,
+				GatewayRef:               govcdtypes.OpenApiReference{ID: urnEdgeGateway},
 				Enabled:                  utils.ToPTR(true),
 				DefaultPort:              utils.ToPTR(80),
 				GracefulTimeoutPeriod:    utils.ToPTR(10),
@@ -1069,7 +1069,7 @@ func TestClient_CreatePool(t *testing.T) {
 				// Valid fields
 				Name:                     "pool1",
 				Description:              "pool1 description",
-				EdgeGatewayID:            urnEdgeGateway,
+				GatewayRef:               govcdtypes.OpenApiReference{ID: urnEdgeGateway},
 				Enabled:                  utils.ToPTR(true),
 				DefaultPort:              utils.ToPTR(80),
 				Algorithm:                "LEAST_CONNECTIONS", // LEAST CONNECTIONS instead of LEAST_CONNECTIONS
@@ -1104,7 +1104,7 @@ func TestClient_CreatePool(t *testing.T) {
 			pool: PoolModelRequest{
 				Name:                     "pool1",
 				Description:              "pool1 description",
-				EdgeGatewayID:            urnEdgeGateway,
+				GatewayRef:               govcdtypes.OpenApiReference{ID: urnEdgeGateway},
 				Enabled:                  utils.ToPTR(true),
 				Algorithm:                "LEAST_CONNECTIONS",
 				DefaultPort:              utils.ToPTR(80),
@@ -1154,7 +1154,7 @@ func TestClient_CreatePool(t *testing.T) {
 			pool: PoolModelRequest{
 				Name:                     "pool1",
 				Description:              "pool1 description",
-				EdgeGatewayID:            urnEdgeGateway,
+				GatewayRef:               govcdtypes.OpenApiReference{ID: urnEdgeGateway},
 				Enabled:                  utils.ToPTR(true),
 				Algorithm:                "LEAST_CONNECTIONS",
 				DefaultPort:              utils.ToPTR(80),
@@ -1248,7 +1248,7 @@ func TestClient_UpdatePool(t *testing.T) {
 			pool: PoolModelRequest{
 				Name:                     "poule 2",
 				Description:              "poule description",
-				EdgeGatewayID:            urnEdgeGateway,
+				GatewayRef:               govcdtypes.OpenApiReference{ID: urnEdgeGateway},
 				Enabled:                  utils.ToPTR(true),
 				Algorithm:                "LEAST_CONNECTIONS",
 				DefaultPort:              utils.ToPTR(80),
@@ -1464,7 +1464,7 @@ func TestClient_UpdatePool(t *testing.T) {
 			pool: PoolModelRequest{
 				Name:                     "pool1",
 				Description:              "pool1 description",
-				EdgeGatewayID:            urnEdgeGateway,
+				GatewayRef:               govcdtypes.OpenApiReference{ID: urnEdgeGateway},
 				Enabled:                  utils.ToPTR(true),
 				Algorithm:                "LEAST_CONNECTIONS",
 				DefaultPort:              utils.ToPTR(80),
@@ -1513,7 +1513,7 @@ func TestClient_UpdatePool(t *testing.T) {
 			pool: PoolModelRequest{
 				Name:                     "poule 2",
 				Description:              "poule description",
-				EdgeGatewayID:            urnEdgeGateway,
+				GatewayRef:               govcdtypes.OpenApiReference{ID: urnEdgeGateway},
 				Enabled:                  utils.ToPTR(true),
 				Algorithm:                "LEAST_CONNECTIONS",
 				DefaultPort:              utils.ToPTR(80),
@@ -1563,7 +1563,7 @@ func TestClient_UpdatePool(t *testing.T) {
 			pool: PoolModelRequest{
 				Name:                     "poule 2",
 				Description:              "poule description",
-				EdgeGatewayID:            urnEdgeGateway,
+				GatewayRef:               govcdtypes.OpenApiReference{ID: urnEdgeGateway},
 				Enabled:                  utils.ToPTR(true),
 				Algorithm:                "LEAST_CONNECTIONS",
 				DefaultPort:              utils.ToPTR(80),
