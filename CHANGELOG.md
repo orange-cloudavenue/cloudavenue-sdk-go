@@ -3,6 +3,10 @@
 
 * `edgateway/virtualservice` - Now the struct `EdgeGatewayALBVirtualServiceModel` implement simplified struct EdgeGatewayALBVirtualServiceModelServicePort for a service port. (GH-166)
 
+### :dependabot: **Dependencies**
+
+* deps: bumps github.com/hashicorp/terraform-plugin-sdk/v2 from 2.35.0 to 2.36.0 (GH-209)
+
 ## 0.21.3 (February  3, 2025)
 ### :information_source: **Notes**
 
