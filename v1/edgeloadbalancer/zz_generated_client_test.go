@@ -66,6 +66,21 @@ func (mr *MockClientMockRecorder) CreatePool(ctx, pool any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreatePool", reflect.TypeOf((*MockClient)(nil).CreatePool), ctx, pool)
 }
 
+// CreateVirtualService mocks base method.
+func (m *MockClient) CreateVirtualService(ctx context.Context, vsr VirtualServiceModelRequest) (*VirtualServiceModel, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateVirtualService", ctx, vsr)
+	ret0, _ := ret[0].(*VirtualServiceModel)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateVirtualService indicates an expected call of CreateVirtualService.
+func (mr *MockClientMockRecorder) CreateVirtualService(ctx, vsr any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateVirtualService", reflect.TypeOf((*MockClient)(nil).CreateVirtualService), ctx, vsr)
+}
+
 // DeletePool mocks base method.
 func (m *MockClient) DeletePool(ctx context.Context, poolID string) error {
 	m.ctrl.T.Helper()
@@ -78,6 +93,20 @@ func (m *MockClient) DeletePool(ctx context.Context, poolID string) error {
 func (mr *MockClientMockRecorder) DeletePool(ctx, poolID any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeletePool", reflect.TypeOf((*MockClient)(nil).DeletePool), ctx, poolID)
+}
+
+// DeleteVirtualService mocks base method.
+func (m *MockClient) DeleteVirtualService(ctx context.Context, virtualServiceID string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteVirtualService", ctx, virtualServiceID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteVirtualService indicates an expected call of DeleteVirtualService.
+func (mr *MockClientMockRecorder) DeleteVirtualService(ctx, virtualServiceID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteVirtualService", reflect.TypeOf((*MockClient)(nil).DeleteVirtualService), ctx, virtualServiceID)
 }
 
 // GetPool mocks base method.
@@ -110,6 +139,21 @@ func (mr *MockClientMockRecorder) GetServiceEngineGroup(ctx, edgeGatewayID, name
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetServiceEngineGroup", reflect.TypeOf((*MockClient)(nil).GetServiceEngineGroup), ctx, edgeGatewayID, nameOrID)
 }
 
+// GetVirtualService mocks base method.
+func (m *MockClient) GetVirtualService(ctx context.Context, edgeGatewayID, virtualServiceNameOrID string) (*VirtualServiceModel, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetVirtualService", ctx, edgeGatewayID, virtualServiceNameOrID)
+	ret0, _ := ret[0].(*VirtualServiceModel)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetVirtualService indicates an expected call of GetVirtualService.
+func (mr *MockClientMockRecorder) GetVirtualService(ctx, edgeGatewayID, virtualServiceNameOrID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetVirtualService", reflect.TypeOf((*MockClient)(nil).GetVirtualService), ctx, edgeGatewayID, virtualServiceNameOrID)
+}
+
 // ListPools mocks base method.
 func (m *MockClient) ListPools(ctx context.Context, edgeGatewayID string) ([]*PoolModel, error) {
 	m.ctrl.T.Helper()
@@ -140,6 +184,21 @@ func (mr *MockClientMockRecorder) ListServiceEngineGroups(ctx, edgeGatewayID any
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListServiceEngineGroups", reflect.TypeOf((*MockClient)(nil).ListServiceEngineGroups), ctx, edgeGatewayID)
 }
 
+// ListVirtualServices mocks base method.
+func (m *MockClient) ListVirtualServices(ctx context.Context, edgeGatewayID string) ([]*VirtualServiceModel, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListVirtualServices", ctx, edgeGatewayID)
+	ret0, _ := ret[0].([]*VirtualServiceModel)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListVirtualServices indicates an expected call of ListVirtualServices.
+func (mr *MockClientMockRecorder) ListVirtualServices(ctx, edgeGatewayID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListVirtualServices", reflect.TypeOf((*MockClient)(nil).ListVirtualServices), ctx, edgeGatewayID)
+}
+
 // UpdatePool mocks base method.
 func (m *MockClient) UpdatePool(ctx context.Context, poolID string, pool PoolModelRequest) (*PoolModel, error) {
 	m.ctrl.T.Helper()
@@ -153,6 +212,21 @@ func (m *MockClient) UpdatePool(ctx context.Context, poolID string, pool PoolMod
 func (mr *MockClientMockRecorder) UpdatePool(ctx, poolID, pool any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdatePool", reflect.TypeOf((*MockClient)(nil).UpdatePool), ctx, poolID, pool)
+}
+
+// UpdateVirtualService mocks base method.
+func (m *MockClient) UpdateVirtualService(ctx context.Context, virtualServiceID string, vsr VirtualServiceModelRequest) (*VirtualServiceModel, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateVirtualService", ctx, virtualServiceID, vsr)
+	ret0, _ := ret[0].(*VirtualServiceModel)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdateVirtualService indicates an expected call of UpdateVirtualService.
+func (mr *MockClientMockRecorder) UpdateVirtualService(ctx, virtualServiceID, vsr any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateVirtualService", reflect.TypeOf((*MockClient)(nil).UpdateVirtualService), ctx, virtualServiceID, vsr)
 }
 
 // MockclientFake is a mock of clientFake interface.
@@ -194,6 +268,21 @@ func (mr *MockclientFakeMockRecorder) CreateNsxtAlbPool(albPoolConfig any) *gomo
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateNsxtAlbPool", reflect.TypeOf((*MockclientFake)(nil).CreateNsxtAlbPool), albPoolConfig)
 }
 
+// CreateNsxtAlbVirtualService mocks base method.
+func (m *MockclientFake) CreateNsxtAlbVirtualService(albVirtualServiceConfig *types.NsxtAlbVirtualService) (*govcd.NsxtAlbVirtualService, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateNsxtAlbVirtualService", albVirtualServiceConfig)
+	ret0, _ := ret[0].(*govcd.NsxtAlbVirtualService)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateNsxtAlbVirtualService indicates an expected call of CreateNsxtAlbVirtualService.
+func (mr *MockclientFakeMockRecorder) CreateNsxtAlbVirtualService(albVirtualServiceConfig any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateNsxtAlbVirtualService", reflect.TypeOf((*MockclientFake)(nil).CreateNsxtAlbVirtualService), albVirtualServiceConfig)
+}
+
 // GetAlbPoolById mocks base method.
 func (m *MockclientFake) GetAlbPoolById(id string) (*govcd.NsxtAlbPool, error) {
 	m.ctrl.T.Helper()
@@ -224,6 +313,36 @@ func (mr *MockclientFakeMockRecorder) GetAlbPoolByName(edgeGatewayID, name any) 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAlbPoolByName", reflect.TypeOf((*MockclientFake)(nil).GetAlbPoolByName), edgeGatewayID, name)
 }
 
+// GetAlbVirtualServiceById mocks base method.
+func (m *MockclientFake) GetAlbVirtualServiceById(id string) (*govcd.NsxtAlbVirtualService, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAlbVirtualServiceById", id)
+	ret0, _ := ret[0].(*govcd.NsxtAlbVirtualService)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetAlbVirtualServiceById indicates an expected call of GetAlbVirtualServiceById.
+func (mr *MockclientFakeMockRecorder) GetAlbVirtualServiceById(id any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAlbVirtualServiceById", reflect.TypeOf((*MockclientFake)(nil).GetAlbVirtualServiceById), id)
+}
+
+// GetAlbVirtualServiceByName mocks base method.
+func (m *MockclientFake) GetAlbVirtualServiceByName(edgeGatewayID, name string) (*govcd.NsxtAlbVirtualService, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAlbVirtualServiceByName", edgeGatewayID, name)
+	ret0, _ := ret[0].(*govcd.NsxtAlbVirtualService)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetAlbVirtualServiceByName indicates an expected call of GetAlbVirtualServiceByName.
+func (mr *MockclientFakeMockRecorder) GetAlbVirtualServiceByName(edgeGatewayID, name any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAlbVirtualServiceByName", reflect.TypeOf((*MockclientFake)(nil).GetAlbVirtualServiceByName), edgeGatewayID, name)
+}
+
 // GetAllAlbPoolSummaries mocks base method.
 func (m *MockclientFake) GetAllAlbPoolSummaries(edgeGatewayID string, queryParameters url.Values) ([]*govcd.NsxtAlbPool, error) {
 	m.ctrl.T.Helper()
@@ -252,6 +371,21 @@ func (m *MockclientFake) GetAllAlbServiceEngineGroupAssignments(queryParameters 
 func (mr *MockclientFakeMockRecorder) GetAllAlbServiceEngineGroupAssignments(queryParameters any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAllAlbServiceEngineGroupAssignments", reflect.TypeOf((*MockclientFake)(nil).GetAllAlbServiceEngineGroupAssignments), queryParameters)
+}
+
+// GetAllAlbVirtualServiceSummaries mocks base method.
+func (m *MockclientFake) GetAllAlbVirtualServiceSummaries(edgeGatewayID string, queryParameters url.Values) ([]*govcd.NsxtAlbVirtualService, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAllAlbVirtualServiceSummaries", edgeGatewayID, queryParameters)
+	ret0, _ := ret[0].([]*govcd.NsxtAlbVirtualService)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetAllAlbVirtualServiceSummaries indicates an expected call of GetAllAlbVirtualServiceSummaries.
+func (mr *MockclientFakeMockRecorder) GetAllAlbVirtualServiceSummaries(edgeGatewayID, queryParameters any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAllAlbVirtualServiceSummaries", reflect.TypeOf((*MockclientFake)(nil).GetAllAlbVirtualServiceSummaries), edgeGatewayID, queryParameters)
 }
 
 // R mocks base method.
@@ -321,6 +455,21 @@ func (mr *MockclientGoVCDMockRecorder) CreateNsxtAlbPool(albPoolConfig any) *gom
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateNsxtAlbPool", reflect.TypeOf((*MockclientGoVCD)(nil).CreateNsxtAlbPool), albPoolConfig)
 }
 
+// CreateNsxtAlbVirtualService mocks base method.
+func (m *MockclientGoVCD) CreateNsxtAlbVirtualService(albVirtualServiceConfig *types.NsxtAlbVirtualService) (*govcd.NsxtAlbVirtualService, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateNsxtAlbVirtualService", albVirtualServiceConfig)
+	ret0, _ := ret[0].(*govcd.NsxtAlbVirtualService)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateNsxtAlbVirtualService indicates an expected call of CreateNsxtAlbVirtualService.
+func (mr *MockclientGoVCDMockRecorder) CreateNsxtAlbVirtualService(albVirtualServiceConfig any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateNsxtAlbVirtualService", reflect.TypeOf((*MockclientGoVCD)(nil).CreateNsxtAlbVirtualService), albVirtualServiceConfig)
+}
+
 // GetAlbPoolById mocks base method.
 func (m *MockclientGoVCD) GetAlbPoolById(id string) (*govcd.NsxtAlbPool, error) {
 	m.ctrl.T.Helper()
@@ -351,6 +500,36 @@ func (mr *MockclientGoVCDMockRecorder) GetAlbPoolByName(edgeGatewayID, name any)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAlbPoolByName", reflect.TypeOf((*MockclientGoVCD)(nil).GetAlbPoolByName), edgeGatewayID, name)
 }
 
+// GetAlbVirtualServiceById mocks base method.
+func (m *MockclientGoVCD) GetAlbVirtualServiceById(id string) (*govcd.NsxtAlbVirtualService, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAlbVirtualServiceById", id)
+	ret0, _ := ret[0].(*govcd.NsxtAlbVirtualService)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetAlbVirtualServiceById indicates an expected call of GetAlbVirtualServiceById.
+func (mr *MockclientGoVCDMockRecorder) GetAlbVirtualServiceById(id any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAlbVirtualServiceById", reflect.TypeOf((*MockclientGoVCD)(nil).GetAlbVirtualServiceById), id)
+}
+
+// GetAlbVirtualServiceByName mocks base method.
+func (m *MockclientGoVCD) GetAlbVirtualServiceByName(edgeGatewayID, name string) (*govcd.NsxtAlbVirtualService, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAlbVirtualServiceByName", edgeGatewayID, name)
+	ret0, _ := ret[0].(*govcd.NsxtAlbVirtualService)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetAlbVirtualServiceByName indicates an expected call of GetAlbVirtualServiceByName.
+func (mr *MockclientGoVCDMockRecorder) GetAlbVirtualServiceByName(edgeGatewayID, name any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAlbVirtualServiceByName", reflect.TypeOf((*MockclientGoVCD)(nil).GetAlbVirtualServiceByName), edgeGatewayID, name)
+}
+
 // GetAllAlbPoolSummaries mocks base method.
 func (m *MockclientGoVCD) GetAllAlbPoolSummaries(edgeGatewayID string, queryParameters url.Values) ([]*govcd.NsxtAlbPool, error) {
 	m.ctrl.T.Helper()
@@ -379,6 +558,21 @@ func (m *MockclientGoVCD) GetAllAlbServiceEngineGroupAssignments(queryParameters
 func (mr *MockclientGoVCDMockRecorder) GetAllAlbServiceEngineGroupAssignments(queryParameters any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAllAlbServiceEngineGroupAssignments", reflect.TypeOf((*MockclientGoVCD)(nil).GetAllAlbServiceEngineGroupAssignments), queryParameters)
+}
+
+// GetAllAlbVirtualServiceSummaries mocks base method.
+func (m *MockclientGoVCD) GetAllAlbVirtualServiceSummaries(edgeGatewayID string, queryParameters url.Values) ([]*govcd.NsxtAlbVirtualService, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAllAlbVirtualServiceSummaries", edgeGatewayID, queryParameters)
+	ret0, _ := ret[0].([]*govcd.NsxtAlbVirtualService)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetAllAlbVirtualServiceSummaries indicates an expected call of GetAllAlbVirtualServiceSummaries.
+func (mr *MockclientGoVCDMockRecorder) GetAllAlbVirtualServiceSummaries(edgeGatewayID, queryParameters any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAllAlbVirtualServiceSummaries", reflect.TypeOf((*MockclientGoVCD)(nil).GetAllAlbVirtualServiceSummaries), edgeGatewayID, queryParameters)
 }
 
 // MockclientCloudavenue is a mock of clientCloudavenue interface.

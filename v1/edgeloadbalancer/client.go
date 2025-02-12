@@ -36,6 +36,13 @@ type (
 		GetPool(ctx context.Context, edgeGatewayID, poolNameOrID string) (*PoolModel, error)
 		UpdatePool(ctx context.Context, poolID string, pool PoolModelRequest) (*PoolModel, error)
 		DeletePool(ctx context.Context, poolID string) error
+
+		// * Virtual Services
+		ListVirtualServices(ctx context.Context, edgeGatewayID string) ([]*VirtualServiceModel, error)
+		GetVirtualService(ctx context.Context, edgeGatewayID, virtualServiceNameOrID string) (*VirtualServiceModel, error)
+		CreateVirtualService(ctx context.Context, vsr VirtualServiceModelRequest) (*VirtualServiceModel, error)
+		UpdateVirtualService(ctx context.Context, virtualServiceID string, vsr VirtualServiceModelRequest) (*VirtualServiceModel, error)
+		DeleteVirtualService(ctx context.Context, virtualServiceID string) error
 	}
 
 	// Internal client interfaces.
@@ -50,11 +57,20 @@ type (
 	}
 
 	clientGoVCD interface {
+		// Service Engine Groups
 		GetAllAlbServiceEngineGroupAssignments(queryParameters url.Values) ([]*govcd.NsxtAlbServiceEngineGroupAssignment, error)
+
+		// Pools
 		GetAlbPoolById(id string) (*govcd.NsxtAlbPool, error)
 		GetAlbPoolByName(edgeGatewayID, name string) (*govcd.NsxtAlbPool, error)
 		GetAllAlbPoolSummaries(edgeGatewayID string, queryParameters url.Values) ([]*govcd.NsxtAlbPool, error)
 		CreateNsxtAlbPool(albPoolConfig *govcdtypes.NsxtAlbPool) (*govcd.NsxtAlbPool, error)
+
+		// Virtual Services
+		GetAlbVirtualServiceByName(edgeGatewayID, name string) (*govcd.NsxtAlbVirtualService, error)
+		GetAlbVirtualServiceById(id string) (*govcd.NsxtAlbVirtualService, error)
+		GetAllAlbVirtualServiceSummaries(edgeGatewayID string, queryParameters url.Values) ([]*govcd.NsxtAlbVirtualService, error)
+		CreateNsxtAlbVirtualService(albVirtualServiceConfig *govcdtypes.NsxtAlbVirtualService) (*govcd.NsxtAlbVirtualService, error)
 	}
 
 	clientCloudavenue interface {

@@ -70,6 +70,30 @@ var URNs = []URN{
 	ServiceEngineGroup,
 }
 
+var URNByNames = map[string]URN{
+	"org":                        Org,
+	"vm":                         VM,
+	"user":                       User,
+	"group":                      Group,
+	"gateway":                    Gateway,
+	"vdc":                        VDC,
+	"vdcGroup":                   VDCGroup,
+	"vdcComputePolicy":           VDCComputePolicy,
+	"network":                    Network,
+	"vdcstorageProfile":          VDCStorageProfile,
+	"vapp":                       VAPP,
+	"vappTemplate":               VAPPTemplate,
+	"disk":                       Disk,
+	"firewallGroup":              SecurityGroup,
+	"catalog":                    Catalog,
+	"token":                      Token,
+	"applicationPortProfile":     AppPortProfile,
+	"certificateLibraryItem":     CertificateLibraryItem,
+	"loadBalancerPool":           LoadBalancerPool,
+	"loadBalancerVirtualService": LoadBalancerVirtualService,
+	"serviceEngineGroup":         ServiceEngineGroup,
+}
+
 type (
 	URN string
 )

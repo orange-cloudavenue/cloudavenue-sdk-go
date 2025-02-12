@@ -10,6 +10,7 @@
 package urn
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
@@ -28,4 +29,17 @@ func TestIsType(urnType URN) resource.CheckResourceAttrWithFunc {
 		}
 		return nil
 	}
+}
+
+// FindURNTypeFromString returns the URN type from a string.
+func FindURNTypeFromString(value string) (URN, error) {
+	if value == "" {
+		return "", errors.New("value doesn't contains an URN type provided")
+	}
+
+	if u, ok := URNByNames[value]; ok {
+		return u, nil
+	}
+
+	return "", fmt.Errorf("URN type %s doesn't exist by package urn", value)
 }
