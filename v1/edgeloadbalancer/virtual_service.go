@@ -82,7 +82,21 @@ func (c *client) CreateVirtualService(ctx context.Context, vsr VirtualServiceMod
 		return nil, err
 	}
 
-	vs, err := c.clientGoVCD.CreateNsxtAlbVirtualService(fromModelRequestToVCDNsxtAlbVirtualService(vsr))
+	model := fromModelRequestToVCDNsxtAlbVirtualService(vsr)
+
+	if model.ServiceEngineGroupRef == (govcdtypes.OpenApiReference{}) {
+		seg, err := c.GetFirstServiceEngineGroup(ctx, vsr.EdgeGatewayID)
+		if err != nil {
+			return nil, fmt.Errorf("error finding service engine group: %w", err)
+		}
+
+		model.ServiceEngineGroupRef = govcdtypes.OpenApiReference{
+			ID:   seg.ID,
+			Name: seg.Name,
+		}
+	}
+
+	vs, err := c.clientGoVCD.CreateNsxtAlbVirtualService(model)
 	if err != nil {
 		return nil, fmt.Errorf("error creating virtual service: %w", err)
 	}
@@ -116,7 +130,23 @@ func (c *client) UpdateVirtualService(ctx context.Context, virtualServiceID stri
 		return nil, fmt.Errorf("error retrieving virtual service: %w", err)
 	}
 
-	vsUpdated, err := updateVirtualService(vsToUpdate, fromModelRequestToVCDNsxtAlbVirtualService(vsr))
+	model := fromModelRequestToVCDNsxtAlbVirtualService(vsr)
+
+	if model.ServiceEngineGroupRef == (govcdtypes.OpenApiReference{}) {
+		seg, err := c.GetFirstServiceEngineGroup(ctx, vsr.EdgeGatewayID)
+		if err != nil {
+			return nil, fmt.Errorf("error finding service engine group: %w", err)
+		}
+
+		model.ServiceEngineGroupRef = govcdtypes.OpenApiReference{
+			ID:   seg.ID,
+			Name: seg.Name,
+		}
+	}
+
+	model.ID = virtualServiceID
+
+	vsUpdated, err := updateVirtualService(vsToUpdate, model)
 	if err != nil {
 		return nil, fmt.Errorf("error updating virtual service: %w", err)
 	}

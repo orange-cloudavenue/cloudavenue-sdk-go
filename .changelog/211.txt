@@ -1,0 +1,4 @@
+```release-note:feature
+`elb` - Add new edgeloadbalancer package to manage edgegateway load balancer. Manage pool and virtual service.
+```
+

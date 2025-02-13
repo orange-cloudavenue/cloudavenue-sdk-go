@@ -29,6 +29,7 @@ type (
 		// * Service Engine Groups
 		ListServiceEngineGroups(ctx context.Context, edgeGatewayID string) ([]*ServiceEngineGroupModel, error)
 		GetServiceEngineGroup(ctx context.Context, edgeGatewayID, nameOrID string) (*ServiceEngineGroupModel, error)
+		GetFirstServiceEngineGroup(ctx context.Context, edgeGatewayID string) (*ServiceEngineGroupModel, error)
 
 		// * Pools
 		CreatePool(ctx context.Context, pool PoolModelRequest) (*PoolModel, error)

@@ -350,3 +350,155 @@ func TestClient_GetServiceEngineGroup(t *testing.T) {
 		})
 	}
 }
+
+func TestClient_GetFirstServiceEngineGroup(t *testing.T) {
+	// Mock controller.
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	// Mock client for cloudavenue.
+	clientCAV := NewMockclientFake(ctrl)
+
+	c, _ := NewFakeClient(clientCAV)
+
+	edgeGatewayID := urn.Gateway.String() + uuid.New().String()
+	serviceEngineID := urn.ServiceEngineGroup.String() + uuid.New().String()
+
+	tests := []struct {
+		name          string
+		mockFunc      func()
+		expectedValue *ServiceEngineGroupModel
+		expectedErr   bool
+		edgeGatewayID string
+		err           error
+	}{
+		{
+			name:          "success",
+			edgeGatewayID: edgeGatewayID,
+			mockFunc: func() {
+				clientCAV.EXPECT().Refresh().Return(nil)
+
+				v := url.Values{}
+				v.Add("filter", "gatewayRef.id=="+edgeGatewayID)
+				clientCAV.EXPECT().GetAllAlbServiceEngineGroupAssignments(gomock.AssignableToTypeOf(v)).Return([]*govcd.NsxtAlbServiceEngineGroupAssignment{
+					{
+						NsxtAlbServiceEngineGroupAssignment: &govcdtypes.NsxtAlbServiceEngineGroupAssignment{
+							ServiceEngineGroupRef: &govcdtypes.OpenApiReference{
+								ID:   serviceEngineID,
+								Name: "name",
+							},
+							GatewayRef: &govcdtypes.OpenApiReference{
+								ID:   edgeGatewayID,
+								Name: "edge_name",
+							},
+							MaxVirtualServices:         utils.ToPTR(10),
+							MinVirtualServices:         utils.ToPTR(1),
+							NumDeployedVirtualServices: 2,
+						},
+					},
+				}, nil)
+			},
+			expectedValue: &ServiceEngineGroupModel{
+				ID:   serviceEngineID,
+				Name: "name",
+				GatewayRef: &govcdtypes.OpenApiReference{
+					ID:   edgeGatewayID,
+					Name: "edge_name",
+				},
+				MaxVirtualServices:         utils.ToPTR(10),
+				MinVirtualServices:         utils.ToPTR(1),
+				NumDeployedVirtualServices: 2,
+			},
+			expectedErr: false,
+			err:         nil,
+		},
+		{
+			name:          "error-two-service-engine-group",
+			edgeGatewayID: edgeGatewayID,
+			mockFunc: func() {
+				clientCAV.EXPECT().Refresh().Return(nil)
+
+				v := url.Values{}
+				v.Add("filter", "gatewayRef.id=="+edgeGatewayID)
+				clientCAV.EXPECT().GetAllAlbServiceEngineGroupAssignments(gomock.AssignableToTypeOf(v)).Return([]*govcd.NsxtAlbServiceEngineGroupAssignment{
+					{
+						NsxtAlbServiceEngineGroupAssignment: &govcdtypes.NsxtAlbServiceEngineGroupAssignment{
+							ServiceEngineGroupRef: &govcdtypes.OpenApiReference{
+								ID:   serviceEngineID,
+								Name: "name",
+							},
+							GatewayRef: &govcdtypes.OpenApiReference{
+								ID:   edgeGatewayID,
+								Name: "edge_name",
+							},
+							MaxVirtualServices:         utils.ToPTR(10),
+							MinVirtualServices:         utils.ToPTR(1),
+							NumDeployedVirtualServices: 2,
+						},
+					},
+					{
+						NsxtAlbServiceEngineGroupAssignment: &govcdtypes.NsxtAlbServiceEngineGroupAssignment{
+							ServiceEngineGroupRef: &govcdtypes.OpenApiReference{
+								ID:   serviceEngineID,
+								Name: "name",
+							},
+							GatewayRef: &govcdtypes.OpenApiReference{
+								ID:   edgeGatewayID,
+								Name: "edge_name",
+							},
+							MaxVirtualServices:         utils.ToPTR(10),
+							MinVirtualServices:         utils.ToPTR(1),
+							NumDeployedVirtualServices: 2,
+						},
+					},
+				}, nil)
+			},
+			expectedErr: true,
+			err:         errors.New("more than one service engine group available for edge gateway"),
+		},
+		{
+			name:          "refresh-error",
+			edgeGatewayID: edgeGatewayID,
+			mockFunc: func() {
+				clientCAV.EXPECT().Refresh().Return(errors.New("error"))
+			},
+			expectedValue: nil,
+			expectedErr:   true,
+			err:           errors.New("error"),
+		},
+		{
+			name:          "error-get-all-certificates",
+			edgeGatewayID: edgeGatewayID,
+			mockFunc: func() {
+				clientCAV.EXPECT().Refresh().Return(nil)
+
+				v := url.Values{}
+				v.Add("filter", "gatewayRef.id=="+edgeGatewayID)
+				clientCAV.EXPECT().GetAllAlbServiceEngineGroupAssignments(gomock.AssignableToTypeOf(v)).Return(nil, errors.New("error"))
+			},
+			expectedValue: nil,
+			expectedErr:   true,
+			err:           errors.New("error"),
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			tc.mockFunc()
+
+			value, err := c.GetFirstServiceEngineGroup(context.Background(), tc.edgeGatewayID)
+			if !tc.expectedErr {
+				assert.NoError(t, err)
+				assert.NotNil(t, value)
+			} else {
+				assert.Error(t, err)
+				assert.Contains(t, err.Error(), tc.err.Error())
+				assert.Nil(t, value)
+				return
+			}
+
+			assert.NoError(t, err)
+			assert.Equal(t, tc.expectedValue, value)
+		})
+	}
+}

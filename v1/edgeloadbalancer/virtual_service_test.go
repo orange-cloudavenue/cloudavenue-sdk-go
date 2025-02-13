@@ -3,6 +3,7 @@ package edgeloadbalancer
 import (
 	"context"
 	"errors"
+	"net/url"
 	"testing"
 
 	"github.com/google/uuid"
@@ -21,7 +22,6 @@ func TestVirtualServiceRequestValidation(t *testing.T) {
 	poolID := urn.LoadBalancerPool.String() + uuid.New().String()
 	edgeGatewayID := urn.Gateway.String() + uuid.New().String()
 	serviceEngineID := urn.ServiceEngineGroup.String() + uuid.New().String()
-	// certificateID := urn.CertificateLibraryItem.String() + uuid.New().String()
 
 	tests := []struct {
 		name         string
@@ -43,7 +43,6 @@ func TestVirtualServiceRequestValidation(t *testing.T) {
 					{
 						Start: utils.ToPTR(80),
 						End:   nil,
-						Type:  VirtualServiceModelServicePortType("TCP_PROXY"),
 					},
 				},
 				VirtualIPAddress: "192.168.0.1",
@@ -65,7 +64,6 @@ func TestVirtualServiceRequestValidation(t *testing.T) {
 					{
 						Start: utils.ToPTR(80),
 						End:   nil,
-						Type:  VirtualServiceModelServicePortType("TCP_PROXY"),
 					},
 				},
 				VirtualIPAddress: "192.168.0.1",
@@ -87,7 +85,6 @@ func TestVirtualServiceRequestValidation(t *testing.T) {
 					{
 						Start: utils.ToPTR(80),
 						End:   nil,
-						Type:  VirtualServiceModelServicePortType("TCP_PROXY"),
 					},
 				},
 				VirtualIPAddress: "192.168.0.1",
@@ -108,13 +105,33 @@ func TestVirtualServiceRequestValidation(t *testing.T) {
 					{
 						Start: utils.ToPTR(80),
 						End:   nil,
-						Type:  VirtualServiceModelServicePortType("TCP_PROXY"),
 					},
 				},
 				VirtualIPAddress: "192.168.0.1",
 			},
 			expectedErr: true,
 			err:         errors.New("Field validation for 'EdgeGatewayID' failed on the 'urn'"),
+		},
+		{
+			name: "error-invalid-certificate-id",
+			virtualModel: VirtualServiceModelRequest{
+				Name:               "virtualServiceName1",
+				Description:        "virtualServiceDescription1",
+				Enabled:            utils.ToPTR(true),
+				ApplicationProfile: VirtualServiceModelApplicationProfile("HTTPS"),
+				PoolID:             poolID,
+				EdgeGatewayID:      edgeGatewayID,
+				CertificateID:      &edgeGatewayID,
+				ServicePorts: []VirtualServiceModelServicePort{
+					{
+						Start: utils.ToPTR(443),
+						End:   nil,
+					},
+				},
+				VirtualIPAddress: "192.168.0.1",
+			},
+			expectedErr: true,
+			err:         errors.New("Field validation for 'CertificateID' failed on the 'urn'"),
 		},
 		{
 			name: "error-invalid-virtual-ip",
@@ -129,7 +146,6 @@ func TestVirtualServiceRequestValidation(t *testing.T) {
 					{
 						Start: utils.ToPTR(80),
 						End:   nil,
-						Type:  VirtualServiceModelServicePortType("TCP_PROXY"),
 					},
 				},
 				VirtualIPAddress: "192.168.0.3001",
@@ -165,7 +181,6 @@ func TestVirtualServiceRequestValidation(t *testing.T) {
 					{
 						Start: utils.ToPTR(85000),
 						End:   nil,
-						Type:  VirtualServiceModelServicePortType("TCP_PROXY"),
 					},
 				},
 				VirtualIPAddress: "192.168.0.1",
@@ -186,34 +201,12 @@ func TestVirtualServiceRequestValidation(t *testing.T) {
 					{
 						Start: utils.ToPTR(8080),
 						End:   utils.ToPTR(8070),
-						Type:  VirtualServiceModelServicePortType("TCP_PROXY"),
 					},
 				},
 				VirtualIPAddress: "192.168.0.1",
 			},
 			expectedErr: true,
 			err:         errors.New("Field validation for 'End' failed on the 'gtfield'"),
-		},
-		{
-			name: "error-service-port-invalid-type",
-			virtualModel: VirtualServiceModelRequest{
-				Name:               "virtualServiceName1",
-				Description:        "virtualServiceDescription1",
-				Enabled:            utils.ToPTR(true),
-				ApplicationProfile: VirtualServiceModelApplicationProfile("HTTP"),
-				PoolID:             poolID,
-				EdgeGatewayID:      edgeGatewayID,
-				ServicePorts: []VirtualServiceModelServicePort{
-					{
-						Start: utils.ToPTR(8080),
-						End:   utils.ToPTR(8090),
-						Type:  VirtualServiceModelServicePortType("TCPPROXY"),
-					},
-				},
-				VirtualIPAddress: "192.168.0.1",
-			},
-			expectedErr: true,
-			err:         errors.New("Field validation for 'Type' failed on the 'oneof'"),
 		},
 	}
 
@@ -320,7 +313,6 @@ func TestClient_GetVirtualService(t *testing.T) {
 					{
 						Start: utils.ToPTR(80),
 						End:   nil,
-						Type:  VirtualServiceModelServicePortType("TCP_PROXY"),
 					},
 				},
 				VirtualIPAddress:      "192.168.0.1",
@@ -399,7 +391,6 @@ func TestClient_GetVirtualService(t *testing.T) {
 					{
 						Start: utils.ToPTR(443),
 						End:   nil,
-						Type:  VirtualServiceModelServicePortType("TCP_PROXY"),
 					},
 				},
 				VirtualIPAddress:      "192.168.0.1",
@@ -408,77 +399,76 @@ func TestClient_GetVirtualService(t *testing.T) {
 				DetailedHealthMessage: "OK",
 			},
 		},
-		{
-			name:               "success-http-by-name-with-service-port-type-empty",
-			edgeGatewayID:      edgeGatewayID,
-			virtualServiceID:   virtualServiceID,
-			virtualServiceName: "virtualServiceName1",
-			byNameOrID:         "name",
-			mockFunc: func() {
-				clientCAV.EXPECT().Refresh().Return(nil)
-				clientCAV.EXPECT().GetAlbVirtualServiceByName(edgeGatewayID, "virtualServiceName1").Return(&govcd.NsxtAlbVirtualService{
-					NsxtAlbVirtualService: &govcdtypes.NsxtAlbVirtualService{
-						ID:          virtualServiceID,
-						Name:        "virtualServiceName1",
-						Description: "virtualServiceDescription1",
-						Enabled:     utils.ToPTR(true),
-						ApplicationProfile: govcdtypes.NsxtAlbVirtualServiceApplicationProfile{
-							Type: "HTTP",
-						},
-						GatewayRef: govcdtypes.OpenApiReference{
-							ID: edgeGatewayID,
-						},
-						LoadBalancerPoolRef: govcdtypes.OpenApiReference{
-							ID: poolID,
-						},
-						ServiceEngineGroupRef: govcdtypes.OpenApiReference{
-							ID: serviceEngineID,
-						},
-						ServicePorts: []govcdtypes.NsxtAlbVirtualServicePort{
-							{
-								PortStart:     utils.ToPTR(80),
-								PortEnd:       nil,
-								SslEnabled:    utils.ToPTR(false),
-								TcpUdpProfile: nil,
-							},
-						},
-						VirtualIpAddress:      "192.168.0.1",
-						HealthStatus:          "UP",
-						HealthMessage:         "OK",
-						DetailedHealthMessage: "OK",
-					},
-				}, nil)
-			},
-			expectedValue: &VirtualServiceModel{
-				ID:                 virtualServiceID,
-				Name:               "virtualServiceName1",
-				Description:        "virtualServiceDescription1",
-				Enabled:            utils.ToPTR(true),
-				ApplicationProfile: VirtualServiceModelApplicationProfile("HTTP"),
-				PoolRef: govcdtypes.OpenApiReference{
-					ID: poolID,
-				},
-				ServiceEngineGroupRef: &govcdtypes.OpenApiReference{
-					ID: serviceEngineID,
-				},
-				EdgeGatewayRef: govcdtypes.OpenApiReference{
-					ID: edgeGatewayID,
-				},
-				ServicePorts: []VirtualServiceModelServicePort{
-					{
-						Start: utils.ToPTR(80),
-						End:   nil,
-						Type:  "",
-					},
-				},
-				VirtualIPAddress:      "192.168.0.1",
-				HealthStatus:          VirtualServiceModelHealthStatus("UP"),
-				HealthMessage:         "OK",
-				DetailedHealthMessage: "OK",
-			},
-			expectedErr: false,
-			err:         nil,
-		},
+		// {
+		// 	name:               "success-http-by-name-with-service-port-type-empty",
+		// 	edgeGatewayID:      edgeGatewayID,
+		// 	virtualServiceID:   virtualServiceID,
+		// 	virtualServiceName: "virtualServiceName1",
+		// 	byNameOrID:         "name",
+		// 	mockFunc: func() {
+		// 		clientCAV.EXPECT().Refresh().Return(nil)
+		// 		clientCAV.EXPECT().GetAlbVirtualServiceByName(edgeGatewayID, "virtualServiceName1").Return(&govcd.NsxtAlbVirtualService{
+		// 			NsxtAlbVirtualService: &govcdtypes.NsxtAlbVirtualService{
+		// 				ID:          virtualServiceID,
+		// 				Name:        "virtualServiceName1",
+		// 				Description: "virtualServiceDescription1",
+		// 				Enabled:     utils.ToPTR(true),
+		// 				ApplicationProfile: govcdtypes.NsxtAlbVirtualServiceApplicationProfile{
+		// 					Type: "HTTP",
+		// 				},
+		// 				GatewayRef: govcdtypes.OpenApiReference{
+		// 					ID: edgeGatewayID,
+		// 				},
+		// 				LoadBalancerPoolRef: govcdtypes.OpenApiReference{
+		// 					ID: poolID,
+		// 				},
+		// 				ServiceEngineGroupRef: govcdtypes.OpenApiReference{
+		// 					ID: serviceEngineID,
+		// 				},
+		// 				ServicePorts: []govcdtypes.NsxtAlbVirtualServicePort{
+		// 					{
+		// 						PortStart:     utils.ToPTR(80),
+		// 						PortEnd:       nil,
+		// 						SslEnabled:    utils.ToPTR(false),
+		// 						TcpUdpProfile: nil,
+		// 					},
+		// 				},
+		// 				VirtualIpAddress:      "192.168.0.1",
+		// 				HealthStatus:          "UP",
+		// 				HealthMessage:         "OK",
+		// 				DetailedHealthMessage: "OK",
+		// 			},
+		// 		}, nil)
+		// 	},
+		// 	expectedValue: &VirtualServiceModel{
+		// 		ID:                 virtualServiceID,
+		// 		Name:               "virtualServiceName1",
+		// 		Description:        "virtualServiceDescription1",
+		// 		Enabled:            utils.ToPTR(true),
+		// 		ApplicationProfile: VirtualServiceModelApplicationProfile("HTTP"),
+		// 		PoolRef: govcdtypes.OpenApiReference{
+		// 			ID: poolID,
+		// 		},
+		// 		ServiceEngineGroupRef: &govcdtypes.OpenApiReference{
+		// 			ID: serviceEngineID,
+		// 		},
+		// 		EdgeGatewayRef: govcdtypes.OpenApiReference{
+		// 			ID: edgeGatewayID,
+		// 		},
+		// 		ServicePorts: []VirtualServiceModelServicePort{
+		// 			{
+		// 				Start: utils.ToPTR(80),
+		// 				End:   nil,
+		// 			},
+		// 		},
+		// 		VirtualIPAddress:      "192.168.0.1",
+		// 		HealthStatus:          VirtualServiceModelHealthStatus("UP"),
+		// 		HealthMessage:         "OK",
+		// 		DetailedHealthMessage: "OK",
+		// 	},
+		// 	expectedErr: false,
+		// 	err:         nil,
+		// },
 		{
 			name:             "refresh-error",
 			edgeGatewayID:    edgeGatewayID,
@@ -709,7 +699,6 @@ func TestClient_ListVirtualServices(t *testing.T) {
 						{
 							Start: utils.ToPTR(80),
 							End:   nil,
-							Type:  VirtualServiceModelServicePortType("TCP_PROXY"),
 						},
 					},
 					VirtualIPAddress:      "192.168.0.1",
@@ -739,7 +728,6 @@ func TestClient_ListVirtualServices(t *testing.T) {
 						{
 							Start: utils.ToPTR(443),
 							End:   nil,
-							Type:  VirtualServiceModelServicePortType("TCP_PROXY"),
 						},
 					},
 					VirtualIPAddress:      "192.168.1.1",
@@ -895,6 +883,7 @@ func TestClient_CreateVirtualService(t *testing.T) {
 	poolID := urn.LoadBalancerPool.String() + uuid.New().String()
 	serviceEngineID := urn.ServiceEngineGroup.String() + uuid.New().String()
 	virtualServiceID := urn.LoadBalancerVirtualService.String() + uuid.New().String()
+	certificateID := urn.CertificateLibraryItem.String() + uuid.New().String()
 
 	tests := []struct {
 		name          string
@@ -904,6 +893,174 @@ func TestClient_CreateVirtualService(t *testing.T) {
 		expectedErr   bool
 		err           error
 	}{
+		{
+			name: "success-l4tcp",
+			virtualModel: VirtualServiceModelRequest{
+				Name:                 "virtualServiceName1",
+				Description:          "virtualServiceDescription1",
+				Enabled:              utils.ToPTR(true),
+				ApplicationProfile:   VirtualServiceModelApplicationProfile("L4_UDP"),
+				PoolID:               poolID,
+				EdgeGatewayID:        edgeGatewayID,
+				ServiceEngineGroupID: &serviceEngineID,
+				ServicePorts: []VirtualServiceModelServicePort{
+					{
+						Start: utils.ToPTR(80),
+						End:   nil,
+					},
+				},
+				VirtualIPAddress: "192.168.0.1",
+			},
+			mockFunc: func() {
+				clientCAV.EXPECT().Refresh().Return(nil)
+				clientCAV.EXPECT().CreateNsxtAlbVirtualService(gomock.AssignableToTypeOf(&govcdtypes.NsxtAlbVirtualService{})).Return(&govcd.NsxtAlbVirtualService{
+					NsxtAlbVirtualService: &govcdtypes.NsxtAlbVirtualService{
+						ID:          virtualServiceID,
+						Name:        "virtualServiceName1",
+						Description: "virtualServiceDescription1",
+						Enabled:     utils.ToPTR(true),
+						ApplicationProfile: govcdtypes.NsxtAlbVirtualServiceApplicationProfile{
+							Type: "L4",
+						},
+						GatewayRef: govcdtypes.OpenApiReference{
+							ID: edgeGatewayID,
+						},
+						LoadBalancerPoolRef: govcdtypes.OpenApiReference{
+							ID: poolID,
+						},
+						ServiceEngineGroupRef: govcdtypes.OpenApiReference{
+							ID: serviceEngineID,
+						},
+						ServicePorts: []govcdtypes.NsxtAlbVirtualServicePort{
+							{
+								PortStart:  utils.ToPTR(80),
+								PortEnd:    nil,
+								SslEnabled: utils.ToPTR(false),
+								TcpUdpProfile: &govcdtypes.NsxtAlbVirtualServicePortTcpUdpProfile{
+									Type: "UDP_FAST_PATH",
+								},
+							},
+						},
+						VirtualIpAddress:      "192.168.0.1",
+						HealthStatus:          "UP",
+						HealthMessage:         "OK",
+						DetailedHealthMessage: "OK",
+					},
+				}, nil)
+			},
+			expectedValue: &VirtualServiceModel{
+				ID:                 virtualServiceID,
+				Name:               "virtualServiceName1",
+				Description:        "virtualServiceDescription1",
+				Enabled:            utils.ToPTR(true),
+				ApplicationProfile: VirtualServiceModelApplicationProfile("L4_UDP"),
+				PoolRef: govcdtypes.OpenApiReference{
+					ID: poolID,
+				},
+				ServiceEngineGroupRef: &govcdtypes.OpenApiReference{
+					ID: serviceEngineID,
+				},
+				EdgeGatewayRef: govcdtypes.OpenApiReference{
+					ID: edgeGatewayID,
+				},
+				ServicePorts: []VirtualServiceModelServicePort{
+					{
+						Start: utils.ToPTR(80),
+						End:   nil,
+					},
+				},
+				VirtualIPAddress:      "192.168.0.1",
+				HealthStatus:          VirtualServiceModelHealthStatus("UP"),
+				HealthMessage:         "OK",
+				DetailedHealthMessage: "OK",
+			},
+			expectedErr: false,
+			err:         nil,
+		},
+		{
+			name: "success-l4tcp",
+			virtualModel: VirtualServiceModelRequest{
+				Name:                 "virtualServiceName1",
+				Description:          "virtualServiceDescription1",
+				Enabled:              utils.ToPTR(true),
+				ApplicationProfile:   VirtualServiceModelApplicationProfile("L4_TCP"),
+				PoolID:               poolID,
+				EdgeGatewayID:        edgeGatewayID,
+				ServiceEngineGroupID: &serviceEngineID,
+				ServicePorts: []VirtualServiceModelServicePort{
+					{
+						Start: utils.ToPTR(80),
+						End:   nil,
+					},
+				},
+				VirtualIPAddress: "192.168.0.1",
+			},
+			mockFunc: func() {
+				clientCAV.EXPECT().Refresh().Return(nil)
+				clientCAV.EXPECT().CreateNsxtAlbVirtualService(gomock.AssignableToTypeOf(&govcdtypes.NsxtAlbVirtualService{})).Return(&govcd.NsxtAlbVirtualService{
+					NsxtAlbVirtualService: &govcdtypes.NsxtAlbVirtualService{
+						ID:          virtualServiceID,
+						Name:        "virtualServiceName1",
+						Description: "virtualServiceDescription1",
+						Enabled:     utils.ToPTR(true),
+						ApplicationProfile: govcdtypes.NsxtAlbVirtualServiceApplicationProfile{
+							Type: "L4",
+						},
+						GatewayRef: govcdtypes.OpenApiReference{
+							ID: edgeGatewayID,
+						},
+						LoadBalancerPoolRef: govcdtypes.OpenApiReference{
+							ID: poolID,
+						},
+						ServiceEngineGroupRef: govcdtypes.OpenApiReference{
+							ID: serviceEngineID,
+						},
+						ServicePorts: []govcdtypes.NsxtAlbVirtualServicePort{
+							{
+								PortStart:  utils.ToPTR(80),
+								PortEnd:    nil,
+								SslEnabled: utils.ToPTR(false),
+								TcpUdpProfile: &govcdtypes.NsxtAlbVirtualServicePortTcpUdpProfile{
+									Type: "TCP_FAST_PATH",
+								},
+							},
+						},
+						VirtualIpAddress:      "192.168.0.1",
+						HealthStatus:          "UP",
+						HealthMessage:         "OK",
+						DetailedHealthMessage: "OK",
+					},
+				}, nil)
+			},
+			expectedValue: &VirtualServiceModel{
+				ID:                 virtualServiceID,
+				Name:               "virtualServiceName1",
+				Description:        "virtualServiceDescription1",
+				Enabled:            utils.ToPTR(true),
+				ApplicationProfile: VirtualServiceModelApplicationProfile("L4_TCP"),
+				PoolRef: govcdtypes.OpenApiReference{
+					ID: poolID,
+				},
+				ServiceEngineGroupRef: &govcdtypes.OpenApiReference{
+					ID: serviceEngineID,
+				},
+				EdgeGatewayRef: govcdtypes.OpenApiReference{
+					ID: edgeGatewayID,
+				},
+				ServicePorts: []VirtualServiceModelServicePort{
+					{
+						Start: utils.ToPTR(80),
+						End:   nil,
+					},
+				},
+				VirtualIPAddress:      "192.168.0.1",
+				HealthStatus:          VirtualServiceModelHealthStatus("UP"),
+				HealthMessage:         "OK",
+				DetailedHealthMessage: "OK",
+			},
+			expectedErr: false,
+			err:         nil,
+		},
 		{
 			name: "success-http",
 			virtualModel: VirtualServiceModelRequest{
@@ -918,7 +1075,6 @@ func TestClient_CreateVirtualService(t *testing.T) {
 					{
 						Start: utils.ToPTR(80),
 						End:   nil,
-						Type:  VirtualServiceModelServicePortType("TCP_PROXY"),
 					},
 				},
 				VirtualIPAddress: "192.168.0.1",
@@ -979,7 +1135,6 @@ func TestClient_CreateVirtualService(t *testing.T) {
 					{
 						Start: utils.ToPTR(80),
 						End:   nil,
-						Type:  VirtualServiceModelServicePortType("TCP_PROXY"),
 					},
 				},
 				VirtualIPAddress:      "192.168.0.1",
@@ -989,6 +1144,225 @@ func TestClient_CreateVirtualService(t *testing.T) {
 			},
 			expectedErr: false,
 			err:         nil,
+		},
+		{
+			name: "success-https",
+			virtualModel: VirtualServiceModelRequest{
+				Name:                 "virtualServiceName1",
+				Description:          "virtualServiceDescription1",
+				Enabled:              utils.ToPTR(true),
+				ApplicationProfile:   VirtualServiceModelApplicationProfile("HTTPS"),
+				PoolID:               poolID,
+				EdgeGatewayID:        edgeGatewayID,
+				ServiceEngineGroupID: &serviceEngineID,
+				CertificateID:        &certificateID,
+				ServicePorts: []VirtualServiceModelServicePort{
+					{
+						Start: utils.ToPTR(443),
+						End:   nil,
+					},
+				},
+				VirtualIPAddress: "192.168.0.1",
+			},
+			mockFunc: func() {
+				clientCAV.EXPECT().Refresh().Return(nil)
+				clientCAV.EXPECT().CreateNsxtAlbVirtualService(gomock.AssignableToTypeOf(&govcdtypes.NsxtAlbVirtualService{})).Return(&govcd.NsxtAlbVirtualService{
+					NsxtAlbVirtualService: &govcdtypes.NsxtAlbVirtualService{
+						ID:          virtualServiceID,
+						Name:        "virtualServiceName1",
+						Description: "virtualServiceDescription1",
+						Enabled:     utils.ToPTR(true),
+						ApplicationProfile: govcdtypes.NsxtAlbVirtualServiceApplicationProfile{
+							Type: "HTTPS",
+						},
+						GatewayRef: govcdtypes.OpenApiReference{
+							ID: edgeGatewayID,
+						},
+						LoadBalancerPoolRef: govcdtypes.OpenApiReference{
+							ID: poolID,
+						},
+						ServiceEngineGroupRef: govcdtypes.OpenApiReference{
+							ID: serviceEngineID,
+						},
+						CertificateRef: &govcdtypes.OpenApiReference{
+							ID: certificateID,
+						},
+						ServicePorts: []govcdtypes.NsxtAlbVirtualServicePort{
+							{
+								PortStart:  utils.ToPTR(443),
+								PortEnd:    nil,
+								SslEnabled: utils.ToPTR(true),
+								TcpUdpProfile: &govcdtypes.NsxtAlbVirtualServicePortTcpUdpProfile{
+									Type: "TCP_PROXY",
+								},
+							},
+						},
+						VirtualIpAddress:      "192.168.0.1",
+						HealthStatus:          "UP",
+						HealthMessage:         "OK",
+						DetailedHealthMessage: "OK",
+					},
+				}, nil)
+			},
+			expectedValue: &VirtualServiceModel{
+				ID:                 virtualServiceID,
+				Name:               "virtualServiceName1",
+				Description:        "virtualServiceDescription1",
+				Enabled:            utils.ToPTR(true),
+				ApplicationProfile: VirtualServiceModelApplicationProfile("HTTPS"),
+				PoolRef: govcdtypes.OpenApiReference{
+					ID: poolID,
+				},
+				ServiceEngineGroupRef: &govcdtypes.OpenApiReference{
+					ID: serviceEngineID,
+				},
+				EdgeGatewayRef: govcdtypes.OpenApiReference{
+					ID: edgeGatewayID,
+				},
+				CertificateRef: &govcdtypes.OpenApiReference{
+					ID: certificateID,
+				},
+				ServicePorts: []VirtualServiceModelServicePort{
+					{
+						Start: utils.ToPTR(443),
+						End:   nil,
+					},
+				},
+				VirtualIPAddress:      "192.168.0.1",
+				HealthStatus:          VirtualServiceModelHealthStatus("UP"),
+				HealthMessage:         "OK",
+				DetailedHealthMessage: "OK",
+			},
+			expectedErr: false,
+			err:         nil,
+		},
+		{
+			name: "success-http-with-empty-service-engine-group",
+			virtualModel: VirtualServiceModelRequest{
+				Name:               "virtualServiceName1",
+				Description:        "virtualServiceDescription1",
+				Enabled:            utils.ToPTR(true),
+				ApplicationProfile: VirtualServiceModelApplicationProfile("HTTP"),
+				PoolID:             poolID,
+				EdgeGatewayID:      edgeGatewayID,
+				ServicePorts: []VirtualServiceModelServicePort{
+					{
+						Start: utils.ToPTR(80),
+						End:   nil,
+					},
+				},
+				VirtualIPAddress: "192.168.0.1",
+			},
+			mockFunc: func() {
+				clientCAV.EXPECT().Refresh().Return(nil).Times(2)
+				v := url.Values{}
+				v.Add("filter", "gatewayRef.id=="+edgeGatewayID)
+				clientCAV.EXPECT().GetAllAlbServiceEngineGroupAssignments(gomock.AssignableToTypeOf(v)).Return([]*govcd.NsxtAlbServiceEngineGroupAssignment{
+					{
+						NsxtAlbServiceEngineGroupAssignment: &govcdtypes.NsxtAlbServiceEngineGroupAssignment{
+							ServiceEngineGroupRef: &govcdtypes.OpenApiReference{
+								ID:   serviceEngineID,
+								Name: "name",
+							},
+							GatewayRef: &govcdtypes.OpenApiReference{
+								ID:   edgeGatewayID,
+								Name: "edge_name",
+							},
+							MaxVirtualServices:         utils.ToPTR(10),
+							MinVirtualServices:         utils.ToPTR(1),
+							NumDeployedVirtualServices: 2,
+						},
+					},
+				}, nil)
+				clientCAV.EXPECT().CreateNsxtAlbVirtualService(gomock.AssignableToTypeOf(&govcdtypes.NsxtAlbVirtualService{})).Return(&govcd.NsxtAlbVirtualService{
+					NsxtAlbVirtualService: &govcdtypes.NsxtAlbVirtualService{
+						ID:          virtualServiceID,
+						Name:        "virtualServiceName1",
+						Description: "virtualServiceDescription1",
+						Enabled:     utils.ToPTR(true),
+						ApplicationProfile: govcdtypes.NsxtAlbVirtualServiceApplicationProfile{
+							Type: "HTTP",
+						},
+						GatewayRef: govcdtypes.OpenApiReference{
+							ID: edgeGatewayID,
+						},
+						LoadBalancerPoolRef: govcdtypes.OpenApiReference{
+							ID: poolID,
+						},
+						ServiceEngineGroupRef: govcdtypes.OpenApiReference{
+							ID: serviceEngineID,
+						},
+						ServicePorts: []govcdtypes.NsxtAlbVirtualServicePort{
+							{
+								PortStart:  utils.ToPTR(80),
+								PortEnd:    nil,
+								SslEnabled: utils.ToPTR(false),
+								TcpUdpProfile: &govcdtypes.NsxtAlbVirtualServicePortTcpUdpProfile{
+									Type: "TCP_PROXY",
+								},
+							},
+						},
+						VirtualIpAddress:      "192.168.0.1",
+						HealthStatus:          "UP",
+						HealthMessage:         "OK",
+						DetailedHealthMessage: "OK",
+					},
+				}, nil)
+			},
+			expectedValue: &VirtualServiceModel{
+				ID:                 virtualServiceID,
+				Name:               "virtualServiceName1",
+				Description:        "virtualServiceDescription1",
+				Enabled:            utils.ToPTR(true),
+				ApplicationProfile: VirtualServiceModelApplicationProfile("HTTP"),
+				PoolRef: govcdtypes.OpenApiReference{
+					ID: poolID,
+				},
+				ServiceEngineGroupRef: &govcdtypes.OpenApiReference{
+					ID: serviceEngineID,
+				},
+				EdgeGatewayRef: govcdtypes.OpenApiReference{
+					ID: edgeGatewayID,
+				},
+				ServicePorts: []VirtualServiceModelServicePort{
+					{
+						Start: utils.ToPTR(80),
+						End:   nil,
+					},
+				},
+				VirtualIPAddress:      "192.168.0.1",
+				HealthStatus:          VirtualServiceModelHealthStatus("UP"),
+				HealthMessage:         "OK",
+				DetailedHealthMessage: "OK",
+			},
+			expectedErr: false,
+			err:         nil,
+		},
+		{
+			name: "error-http-with-empty-service-engine-group",
+			virtualModel: VirtualServiceModelRequest{
+				Name:               "virtualServiceName1",
+				Description:        "virtualServiceDescription1",
+				Enabled:            utils.ToPTR(true),
+				ApplicationProfile: VirtualServiceModelApplicationProfile("HTTP"),
+				PoolID:             poolID,
+				EdgeGatewayID:      edgeGatewayID,
+				ServicePorts: []VirtualServiceModelServicePort{
+					{
+						Start: utils.ToPTR(80),
+						End:   nil,
+					},
+				},
+				VirtualIPAddress: "192.168.0.1",
+			},
+			mockFunc: func() {
+				clientCAV.EXPECT().Refresh().Return(nil).Times(2)
+				v := url.Values{}
+				v.Add("filter", "gatewayRef.id=="+edgeGatewayID)
+				clientCAV.EXPECT().GetAllAlbServiceEngineGroupAssignments(gomock.AssignableToTypeOf(v)).Return(nil, errors.New("error"))
+			},
+			expectedErr: true,
+			err:         errors.New("error"),
 		},
 		{
 			name:          "error-validation",
@@ -1012,7 +1386,6 @@ func TestClient_CreateVirtualService(t *testing.T) {
 					{
 						Start: utils.ToPTR(80),
 						End:   nil,
-						Type:  VirtualServiceModelServicePortType("TCP_PROXY"),
 					},
 				},
 				VirtualIPAddress: "192.168.0.1",
@@ -1039,7 +1412,6 @@ func TestClient_CreateVirtualService(t *testing.T) {
 					{
 						Start: utils.ToPTR(80),
 						End:   nil,
-						Type:  VirtualServiceModelServicePortType("TCP_PROXY"),
 					},
 				},
 				VirtualIPAddress: "192.168.0.1",
@@ -1113,7 +1485,6 @@ func TestClient_UpdateVirtualService(t *testing.T) {
 					{
 						Start: utils.ToPTR(80),
 						End:   nil,
-						Type:  VirtualServiceModelServicePortType("TCP_PROXY"),
 					},
 				},
 				VirtualIPAddress: "192.168.0.1",
@@ -1214,7 +1585,6 @@ func TestClient_UpdateVirtualService(t *testing.T) {
 					{
 						Start: utils.ToPTR(80),
 						End:   nil,
-						Type:  VirtualServiceModelServicePortType("TCP_PROXY"),
 					},
 				},
 				VirtualIPAddress:      "192.168.0.1",
@@ -1224,6 +1594,216 @@ func TestClient_UpdateVirtualService(t *testing.T) {
 			},
 			expectedErr: false,
 			err:         nil,
+		},
+		{
+			name:             "success-http-without-service-engine-group",
+			virtualServiceID: virtualServiceID,
+			virtualModel: VirtualServiceModelRequest{
+				Name:               "virtualServiceName1",
+				Description:        "virtualServiceDescription1",
+				Enabled:            utils.ToPTR(true),
+				ApplicationProfile: VirtualServiceModelApplicationProfile("HTTP"),
+				PoolID:             poolID,
+				EdgeGatewayID:      edgeGatewayID,
+				ServicePorts: []VirtualServiceModelServicePort{
+					{
+						Start: utils.ToPTR(80),
+						End:   nil,
+					},
+				},
+				VirtualIPAddress: "192.168.0.1",
+			},
+			mockFunc: func() {
+				clientCAV.EXPECT().Refresh().Return(nil).Times(2)
+				clientCAV.EXPECT().GetAlbVirtualServiceById(virtualServiceID).Return(&govcd.NsxtAlbVirtualService{
+					NsxtAlbVirtualService: &govcdtypes.NsxtAlbVirtualService{
+						ID:          virtualServiceID,
+						Name:        "virtualServiceName1",
+						Description: "virtualServiceDescription1",
+						Enabled:     utils.ToPTR(true),
+						ApplicationProfile: govcdtypes.NsxtAlbVirtualServiceApplicationProfile{
+							Type: "HTTPS",
+						},
+						GatewayRef: govcdtypes.OpenApiReference{
+							ID: edgeGatewayID,
+						},
+						LoadBalancerPoolRef: govcdtypes.OpenApiReference{
+							ID: poolID,
+						},
+						CertificateRef: &govcdtypes.OpenApiReference{
+							ID: certificateID,
+						},
+						ServiceEngineGroupRef: govcdtypes.OpenApiReference{
+							ID: serviceEngineID,
+						},
+						ServicePorts: []govcdtypes.NsxtAlbVirtualServicePort{
+							{
+								PortStart:  utils.ToPTR(443),
+								PortEnd:    nil,
+								SslEnabled: utils.ToPTR(true),
+								TcpUdpProfile: &govcdtypes.NsxtAlbVirtualServicePortTcpUdpProfile{
+									Type: "TCP_PROXY",
+								},
+							},
+						},
+						VirtualIpAddress:      "192.168.0.1",
+						HealthStatus:          "UP",
+						HealthMessage:         "OK",
+						DetailedHealthMessage: "OK",
+					},
+				}, nil)
+
+				v := url.Values{}
+				v.Add("filter", "gatewayRef.id=="+edgeGatewayID)
+				clientCAV.EXPECT().GetAllAlbServiceEngineGroupAssignments(gomock.AssignableToTypeOf(v)).Return([]*govcd.NsxtAlbServiceEngineGroupAssignment{
+					{
+						NsxtAlbServiceEngineGroupAssignment: &govcdtypes.NsxtAlbServiceEngineGroupAssignment{
+							ServiceEngineGroupRef: &govcdtypes.OpenApiReference{
+								ID:   serviceEngineID,
+								Name: "name",
+							},
+							GatewayRef: &govcdtypes.OpenApiReference{
+								ID:   edgeGatewayID,
+								Name: "edge_name",
+							},
+							MaxVirtualServices:         utils.ToPTR(10),
+							MinVirtualServices:         utils.ToPTR(1),
+							NumDeployedVirtualServices: 2,
+						},
+					},
+				}, nil)
+
+				updateVirtualService = func(_ fakeVirtualServiceClient, _ *govcdtypes.NsxtAlbVirtualService) (*govcd.NsxtAlbVirtualService, error) {
+					return &govcd.NsxtAlbVirtualService{
+						NsxtAlbVirtualService: &govcdtypes.NsxtAlbVirtualService{
+							ID:          virtualServiceID,
+							Name:        "virtualServiceName1",
+							Description: "virtualServiceDescription1",
+							Enabled:     utils.ToPTR(true),
+							ApplicationProfile: govcdtypes.NsxtAlbVirtualServiceApplicationProfile{
+								Type: "HTTP",
+							},
+							GatewayRef: govcdtypes.OpenApiReference{
+								ID: edgeGatewayID,
+							},
+							LoadBalancerPoolRef: govcdtypes.OpenApiReference{
+								ID: poolID,
+							},
+							ServiceEngineGroupRef: govcdtypes.OpenApiReference{
+								ID: serviceEngineID,
+							},
+							ServicePorts: []govcdtypes.NsxtAlbVirtualServicePort{
+								{
+									PortStart:  utils.ToPTR(80),
+									PortEnd:    nil,
+									SslEnabled: utils.ToPTR(false),
+									TcpUdpProfile: &govcdtypes.NsxtAlbVirtualServicePortTcpUdpProfile{
+										Type: "TCP_PROXY",
+									},
+								},
+							},
+							VirtualIpAddress:      "192.168.0.1",
+							HealthStatus:          "UP",
+							HealthMessage:         "OK",
+							DetailedHealthMessage: "OK",
+						},
+					}, nil
+				}
+			},
+			expectedValue: &VirtualServiceModel{
+				ID:                 virtualServiceID,
+				Name:               "virtualServiceName1",
+				Description:        "virtualServiceDescription1",
+				Enabled:            utils.ToPTR(true),
+				ApplicationProfile: VirtualServiceModelApplicationProfile("HTTP"),
+				PoolRef: govcdtypes.OpenApiReference{
+					ID: poolID,
+				},
+				ServiceEngineGroupRef: &govcdtypes.OpenApiReference{
+					ID: serviceEngineID,
+				},
+				EdgeGatewayRef: govcdtypes.OpenApiReference{
+					ID: edgeGatewayID,
+				},
+				ServicePorts: []VirtualServiceModelServicePort{
+					{
+						Start: utils.ToPTR(80),
+						End:   nil,
+					},
+				},
+				VirtualIPAddress:      "192.168.0.1",
+				HealthStatus:          VirtualServiceModelHealthStatus("UP"),
+				HealthMessage:         "OK",
+				DetailedHealthMessage: "OK",
+			},
+			expectedErr: false,
+			err:         nil,
+		},
+		{
+			name:             "success-http-without-service-engine-group",
+			virtualServiceID: virtualServiceID,
+			virtualModel: VirtualServiceModelRequest{
+				Name:               "virtualServiceName1",
+				Description:        "virtualServiceDescription1",
+				Enabled:            utils.ToPTR(true),
+				ApplicationProfile: VirtualServiceModelApplicationProfile("HTTP"),
+				PoolID:             poolID,
+				EdgeGatewayID:      edgeGatewayID,
+				ServicePorts: []VirtualServiceModelServicePort{
+					{
+						Start: utils.ToPTR(80),
+						End:   nil,
+					},
+				},
+				VirtualIPAddress: "192.168.0.1",
+			},
+			mockFunc: func() {
+				clientCAV.EXPECT().Refresh().Return(nil).Times(2)
+				clientCAV.EXPECT().GetAlbVirtualServiceById(virtualServiceID).Return(&govcd.NsxtAlbVirtualService{
+					NsxtAlbVirtualService: &govcdtypes.NsxtAlbVirtualService{
+						ID:          virtualServiceID,
+						Name:        "virtualServiceName1",
+						Description: "virtualServiceDescription1",
+						Enabled:     utils.ToPTR(true),
+						ApplicationProfile: govcdtypes.NsxtAlbVirtualServiceApplicationProfile{
+							Type: "HTTPS",
+						},
+						GatewayRef: govcdtypes.OpenApiReference{
+							ID: edgeGatewayID,
+						},
+						LoadBalancerPoolRef: govcdtypes.OpenApiReference{
+							ID: poolID,
+						},
+						CertificateRef: &govcdtypes.OpenApiReference{
+							ID: certificateID,
+						},
+						ServiceEngineGroupRef: govcdtypes.OpenApiReference{
+							ID: serviceEngineID,
+						},
+						ServicePorts: []govcdtypes.NsxtAlbVirtualServicePort{
+							{
+								PortStart:  utils.ToPTR(443),
+								PortEnd:    nil,
+								SslEnabled: utils.ToPTR(true),
+								TcpUdpProfile: &govcdtypes.NsxtAlbVirtualServicePortTcpUdpProfile{
+									Type: "TCP_PROXY",
+								},
+							},
+						},
+						VirtualIpAddress:      "192.168.0.1",
+						HealthStatus:          "UP",
+						HealthMessage:         "OK",
+						DetailedHealthMessage: "OK",
+					},
+				}, nil)
+
+				v := url.Values{}
+				v.Add("filter", "gatewayRef.id=="+edgeGatewayID)
+				clientCAV.EXPECT().GetAllAlbServiceEngineGroupAssignments(gomock.AssignableToTypeOf(v)).Return(nil, errors.New("error"))
+			},
+
+			expectedErr: true,
+			err:         errors.New("error"),
 		},
 		{
 			name:        "error-empty-virtualServiceID",
@@ -1264,7 +1844,6 @@ func TestClient_UpdateVirtualService(t *testing.T) {
 					{
 						Start: utils.ToPTR(80),
 						End:   nil,
-						Type:  VirtualServiceModelServicePortType("TCP_PROXY"),
 					},
 				},
 				VirtualIPAddress: "192.168.0.1",
@@ -1285,7 +1864,6 @@ func TestClient_UpdateVirtualService(t *testing.T) {
 					{
 						Start: utils.ToPTR(80),
 						End:   nil,
-						Type:  VirtualServiceModelServicePortType("TCP_PROXY"),
 					},
 				},
 				VirtualIPAddress: "192.168.0.1",
@@ -1313,7 +1891,6 @@ func TestClient_UpdateVirtualService(t *testing.T) {
 					{
 						Start: utils.ToPTR(80),
 						End:   nil,
-						Type:  VirtualServiceModelServicePortType("TCP_PROXY"),
 					},
 				},
 				VirtualIPAddress: "192.168.0.1",

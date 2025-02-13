@@ -71,12 +71,6 @@ type (
 		// To make a single port, set the same value in PortStart and PortEnd.
 		Start *int `validate:"required,gte=1,lte=65535"`
 		End   *int `validate:"omitempty,gte=1,lte=65535,gtfield=Start"`
-
-		// PortType can be set to
-		// VirtualServiceServicePortTypeTCPProxy - "TCP_PROXY"
-		// VirtualServiceServicePortTypeTCPFastPath - "TCP_FAST_PATH"
-		// VirtualServiceServicePortTypeUDPFastPath - "UDP_FAST_PATH".
-		Type VirtualServiceModelServicePortType `validate:"required,oneof=TCP_PROXY TCP_FAST_PATH UDP_FAST_PATH"`
 	}
 
 	VirtualServiceModelRequest struct {
@@ -87,7 +81,7 @@ type (
 		Enabled *bool `validate:"required"`
 
 		// ApplicationProfile sets protocol for load balancing
-		ApplicationProfile VirtualServiceModelApplicationProfile `validate:"required,oneof=HTTP HTTPS L4 L4_TLS"`
+		ApplicationProfile VirtualServiceModelApplicationProfile `validate:"required,oneof=HTTP HTTPS L4_TCP L4_UDP L4_TLS"`
 
 		// PoolID contains a reference to the ELB Pool to be used for the virtual service
 		PoolID string `validate:"required,urn_rfc2141,urn=loadBalancerPool"`
@@ -101,9 +95,9 @@ type (
 		// EdgeGatewayID contains a reference to the Edge Gateway where the virtual service will be created
 		EdgeGatewayID string `validate:"required,urn_rfc2141,urn=gateway"`
 
-		// CertificateRef contains certificate reference if serving encrypted traffic
+		// CertificateID contains certificate reference if serving encrypted traffic
 		// If not set, the virtual service will not serve encrypted traffic (TLS/HTTPS).
-		CertificateRef *string `validate:"omitempty,urn_rfc2141,urn=certificateLibraryItem,required_if=ApplicationProfile HTTPS,required_if=ApplicationProfile L4_TLS"`
+		CertificateID *string `validate:"omitempty,urn_rfc2141,urn=certificateLibraryItem,required_if=ApplicationProfile HTTPS,required_if=ApplicationProfile L4_TLS"`
 
 		// ServicePorts define one or more ports (or port ranges) of the virtual service
 		ServicePorts []VirtualServiceModelServicePort `validate:"required,gte=1,dive"`
@@ -115,11 +109,23 @@ type (
 
 func fromVCDNsxtAlbVirtualServiceToModel(vs govcdtypes.NsxtAlbVirtualService) *VirtualServiceModel {
 	return &VirtualServiceModel{
-		ID:                    vs.ID,
-		Name:                  vs.Name,
-		Description:           vs.Description,
-		Enabled:               vs.Enabled,
-		ApplicationProfile:    VirtualServiceModelApplicationProfile(vs.ApplicationProfile.Type),
+		ID:          vs.ID,
+		Name:        vs.Name,
+		Description: vs.Description,
+		Enabled:     vs.Enabled,
+		ApplicationProfile: func() VirtualServiceModelApplicationProfile {
+			if vs.ApplicationProfile.Type == "L4" {
+				if len(vs.ServicePorts) > 0 {
+					switch vs.ServicePorts[0].TcpUdpProfile.Type {
+					case string(virtualServiceServicePortTypeTCPFastPath):
+						return VirtualServiceApplicationProfileL4TCP
+					case string(virtualServiceServicePortTypeUDPFastPath):
+						return VirtualServiceApplicationProfileL4UDP
+					}
+				}
+			}
+			return VirtualServiceModelApplicationProfile(vs.ApplicationProfile.Type)
+		}(),
 		PoolRef:               vs.LoadBalancerPoolRef,
 		EdgeGatewayRef:        vs.GatewayRef,
 		ServiceEngineGroupRef: &vs.ServiceEngineGroupRef,
@@ -138,12 +144,6 @@ func fromVCDNsxtAlbVirtualServiceServicePortToModel(sp []govcdtypes.NsxtAlbVirtu
 		servicePorts = append(servicePorts, VirtualServiceModelServicePort{
 			Start: port.PortStart,
 			End:   port.PortEnd,
-			Type: func() VirtualServiceModelServicePortType {
-				if port.TcpUdpProfile == nil {
-					return ""
-				}
-				return VirtualServiceModelServicePortType(port.TcpUdpProfile.Type)
-			}(),
 		})
 	}
 	return servicePorts
@@ -155,7 +155,14 @@ func fromModelRequestToVCDNsxtAlbVirtualService(vs VirtualServiceModelRequest) *
 		Description: vs.Description,
 		Enabled:     vs.Enabled,
 		ApplicationProfile: govcdtypes.NsxtAlbVirtualServiceApplicationProfile{
-			Type: string(vs.ApplicationProfile),
+			Type: func() string {
+				switch vs.ApplicationProfile {
+				case VirtualServiceApplicationProfileL4TCP, VirtualServiceApplicationProfileL4UDP:
+					return "L4"
+				default:
+					return string(vs.ApplicationProfile)
+				}
+			}(),
 		},
 		GatewayRef: govcdtypes.OpenApiReference{
 			ID: vs.EdgeGatewayID,
@@ -172,11 +179,11 @@ func fromModelRequestToVCDNsxtAlbVirtualService(vs VirtualServiceModelRequest) *
 			}
 		}(),
 		CertificateRef: func() *govcdtypes.OpenApiReference {
-			if vs.CertificateRef == nil {
+			if vs.CertificateID == nil {
 				return nil
 			}
 			return &govcdtypes.OpenApiReference{
-				ID: *vs.CertificateRef,
+				ID: *vs.CertificateID,
 			}
 		}(),
 		ServicePorts:     fromModelRequestServicePortToVCDNsxtAlbVirtualServiceServicePort(vs.ApplicationProfile, vs.ServicePorts),
@@ -197,9 +204,36 @@ func fromModelRequestServicePortToVCDNsxtAlbVirtualServiceServicePort(appProfile
 				return nil
 			}(),
 			TcpUdpProfile: &govcdtypes.NsxtAlbVirtualServicePortTcpUdpProfile{
-				Type: string(port.Type),
+				Type: func() string {
+					switch appProfile {
+					case VirtualServiceApplicationProfileL4TCP:
+						return string(virtualServiceServicePortTypeTCPFastPath)
+					case VirtualServiceApplicationProfileL4UDP:
+						return string(virtualServiceServicePortTypeUDPFastPath)
+					default:
+						return string(virtualServiceServicePortTypeTCPProxy)
+					}
+				}(),
 			},
 		})
 	}
 	return servicePorts
 }
+
+var (
+	VirtualServiceApplicationProfiles = []VirtualServiceModelApplicationProfile{
+		VirtualServiceApplicationProfileHTTP,
+		VirtualServiceApplicationProfileHTTPS,
+		VirtualServiceApplicationProfileL4TCP,
+		VirtualServiceApplicationProfileL4UDP,
+		VirtualServiceApplicationProfileL4TLS,
+	}
+
+	VirtualServiceHealthStatuses = []VirtualServiceModelHealthStatus{
+		VirtualServiceHealthStatusUP,
+		VirtualServiceHealthStatusDOWN,
+		VirtualServiceHealthStatusRUNNING,
+		VirtualServiceHealthStatusUNAVAILABLE,
+		VirtualServiceHealthStatusUNKNOWN,
+	}
+)
