@@ -1,4 +1,8 @@
 ## 0.22.0 (Unreleased)
+
+### :rocket: **New Features**
+
+* `elb` - Add new edgeloadbalancer package to manage edgegateway load balancer. Manage pool and virtual service. (GH-211)
 ### :information_source: **Notes**
 
 * `edgateway/virtualservice` - Now the struct `EdgeGatewayALBVirtualServiceModel` implement simplified struct EdgeGatewayALBVirtualServiceModelServicePort for a service port. (GH-166)
