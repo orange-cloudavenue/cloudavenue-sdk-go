@@ -16,6 +16,7 @@ func New() *validator.Validate {
 	v := validator.New()
 	_ = v.RegisterValidation(DisallowUpper.Key, DisallowUpper.Func)
 	_ = v.RegisterValidation(DisallowSpace.Key, DisallowSpace.Func)
+	_ = v.RegisterValidation(URN.Key, URN.Func)
 
 	return v
 }

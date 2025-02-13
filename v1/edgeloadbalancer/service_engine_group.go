@@ -100,3 +100,21 @@ func (c *client) GetServiceEngineGroup(ctx context.Context, edgeGatewayID, nameO
 
 	return seg, nil
 }
+
+// Retrieve the first service engine group for an edge gateway if one and only one is available.
+func (c *client) GetFirstServiceEngineGroup(ctx context.Context, edgeGatewayID string) (*ServiceEngineGroupModel, error) {
+	if err := c.clientCloudavenue.Refresh(); err != nil {
+		return nil, err
+	}
+
+	segs, err := c.listServiceEngineGroups(ctx, edgeGatewayID)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(segs) > 1 {
+		return nil, fmt.Errorf("more than one service engine group available for edge gateway %s", edgeGatewayID)
+	}
+
+	return segs[0], nil
+}
