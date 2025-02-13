@@ -13,7 +13,7 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.36.0
 	github.com/jarcoal/httpmock v1.3.1
-	github.com/sethvargo/go-envconfig v1.1.0
+	github.com/sethvargo/go-envconfig v1.1.1
 	github.com/stretchr/testify v1.10.0
 	github.com/vmware/go-vcloud-director/v2 v2.26.1
 	go.uber.org/mock v0.5.0
