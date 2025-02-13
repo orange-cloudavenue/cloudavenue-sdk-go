@@ -180,6 +180,7 @@ linters-settings:
               "XMPP",
               "XSRF",
               "XSS",
+              "SSL",
               # Custom rules
               "VDC",
               "DFW",
@@ -190,6 +191,5 @@ linters-settings:
               "VPN",
               "BMS",
               "SAML",
-              "SSL",
               "VDCG"
             ] 
