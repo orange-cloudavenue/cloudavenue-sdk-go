@@ -1,4 +1,9 @@
 ## 0.23.0 (Unreleased)
+
+### :dependabot: **Dependencies**
+
+* deps: bumps golang.org/x/mod from 0.22.0 to 0.23.0 (GH-207)
+
 ## 0.22.0 (February 13, 2025)
 
 ### :rocket: **New Features**
