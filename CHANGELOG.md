@@ -2,6 +2,7 @@
 
 ### :dependabot: **Dependencies**
 
+* deps: bumps github.com/go-playground/validator/v10 from 10.24.0 to 10.25.0 (GH-215)
 * deps: bumps golang.org/x/mod from 0.22.0 to 0.23.0 (GH-207)
 
 ## 0.22.0 (February 13, 2025)
