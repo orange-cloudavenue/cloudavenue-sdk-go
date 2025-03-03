@@ -1,0 +1,3 @@
+```release-note:note
+`edgegateway` - Removes support for VDCG in edgegw security group. This is not a breaking change as the support was partial and non-functional.
+```
