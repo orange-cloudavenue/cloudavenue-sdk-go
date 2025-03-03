@@ -10,6 +10,8 @@
 package v1
 
 import (
+	"fmt"
+
 	"github.com/vmware/go-vcloud-director/v2/govcd"
 	govcdtypes "github.com/vmware/go-vcloud-director/v2/types/v56"
 
@@ -22,13 +24,8 @@ var _ FirewallGroupInterface = (*EdgeClient)(nil)
 
 // CreateFirewallSecurityGroup allow creating a new security group. T.
 func (e *EdgeClient) CreateFirewallSecurityGroup(securityGroupConfig *FirewallGroupSecurityGroupModel) (*FirewallGroupSecurityGroup, error) {
-	ower := &govcdtypes.OpenApiReference{}
-
 	if e.OwnerType.IsVDCGROUP() {
-		ower.Name = e.OwnerName
-	} else {
-		ower.Name = e.vcdEdge.EdgeGateway.Name
-		ower.ID = e.vcdEdge.EdgeGateway.ID
+		return nil, fmt.Errorf("the edge gateway %s(%s) belongs to a VDC Group %s(%s), use the VDC Group function to create a security group", e.vcdEdge.EdgeGateway.Name, e.vcdEdge.EdgeGateway.ID, e.vcdEdge.EdgeGateway.OwnerRef.Name, e.vcdEdge.EdgeGateway.OwnerRef.ID)
 	}
 
 	securityGroup, err := e.vcdEdge.CreateNsxtFirewallGroup(&govcdtypes.NsxtFirewallGroup{
@@ -36,7 +33,10 @@ func (e *EdgeClient) CreateFirewallSecurityGroup(securityGroupConfig *FirewallGr
 		Description: securityGroupConfig.Description,
 		TypeValue:   govcdtypes.FirewallGroupTypeSecurityGroup,
 		Members:     securityGroupConfig.Members,
-		OwnerRef:    ower,
+		OwnerRef: &govcdtypes.OpenApiReference{
+			ID:   e.vcdEdge.EdgeGateway.ID,
+			Name: e.vcdEdge.EdgeGateway.Name,
+		},
 	})
 	if err != nil {
 		return nil, err
@@ -86,13 +86,8 @@ func (e *EdgeClient) GetFirewallSecurityGroup(nameOrID string) (*FirewallGroupSe
 
 // CreateFirewallIPSet allow creating a new IPSet group.
 func (e *EdgeClient) CreateFirewallIPSet(ipSetConfig *FirewallGroupIPSetModel) (*FirewallGroupIPSet, error) {
-	ower := &govcdtypes.OpenApiReference{}
-
 	if e.OwnerType.IsVDCGROUP() {
-		ower.Name = e.OwnerName
-	} else {
-		ower.Name = e.vcdEdge.EdgeGateway.Name
-		ower.ID = e.vcdEdge.EdgeGateway.ID
+		return nil, fmt.Errorf("the edge gateway %s(%s) belongs to a VDC Group %s(%s), use the VDC Group function to create a security group", e.vcdEdge.EdgeGateway.Name, e.vcdEdge.EdgeGateway.ID, e.vcdEdge.EdgeGateway.OwnerRef.Name, e.vcdEdge.EdgeGateway.OwnerRef.ID)
 	}
 
 	ipSet, err := e.vcdEdge.CreateNsxtFirewallGroup(&govcdtypes.NsxtFirewallGroup{
@@ -100,7 +95,10 @@ func (e *EdgeClient) CreateFirewallIPSet(ipSetConfig *FirewallGroupIPSetModel) (
 		Description: ipSetConfig.Description,
 		TypeValue:   govcdtypes.FirewallGroupTypeIpSet,
 		IpAddresses: ipSetConfig.IPAddresses,
-		OwnerRef:    ower,
+		OwnerRef: &govcdtypes.OpenApiReference{
+			ID:   e.vcdEdge.EdgeGateway.ID,
+			Name: e.vcdEdge.EdgeGateway.Name,
+		},
 	})
 	if err != nil {
 		return nil, err
