@@ -44,6 +44,16 @@ type (
 		CreateVirtualService(ctx context.Context, vsr VirtualServiceModelRequest) (*VirtualServiceModel, error)
 		UpdateVirtualService(ctx context.Context, virtualServiceID string, vsr VirtualServiceModelRequest) (*VirtualServiceModel, error)
 		DeleteVirtualService(ctx context.Context, virtualServiceID string) error
+
+		// * Policies
+		// ? Request
+		GetPoliciesHTTPRequest(ctx context.Context, virtualServiceID string) (*PoliciesHTTPRequestModel, error)
+		UpdatePoliciesHTTPRequest(ctx context.Context, policies *PoliciesHTTPRequestModel) (*PoliciesHTTPRequestModel, error)
+		DeletePoliciesHTTPRequest(ctx context.Context, virtualServiceID string) error
+		// ? Response
+		GetPoliciesHTTPResponse(ctx context.Context, virtualServiceID string) (*PoliciesHTTPResponseModel, error)
+		UpdatePoliciesHTTPResponse(ctx context.Context, policies *PoliciesHTTPResponseModel) (*PoliciesHTTPResponseModel, error)
+		DeletePoliciesHTTPResponse(ctx context.Context, virtualServiceID string) error
 	}
 
 	// Internal client interfaces.

@@ -10,6 +10,8 @@
 package edgeloadbalancer
 
 import (
+	"net/url"
+
 	"github.com/vmware/go-vcloud-director/v2/govcd"
 	govcdtypes "github.com/vmware/go-vcloud-director/v2/types/v56"
 
@@ -20,6 +22,12 @@ type (
 	fakeVirtualServiceClient interface {
 		Update(*govcdtypes.NsxtAlbVirtualService) (*govcd.NsxtAlbVirtualService, error)
 		Delete() error
+
+		// Policies
+		GetAllHttpRequestRules(queryParameters url.Values) ([]*govcdtypes.AlbVsHttpRequestRule, error)
+		UpdateHttpRequestRules(config *govcdtypes.AlbVsHttpRequestRules) (*govcdtypes.AlbVsHttpRequestRules, error)
+		GetAllHttpResponseRules(queryParameters url.Values) ([]*govcdtypes.AlbVsHttpResponseRule, error)
+		UpdateHttpResponseRules(config *govcdtypes.AlbVsHttpResponseRules) (*govcdtypes.AlbVsHttpResponseRules, error)
 	}
 
 	VirtualServiceModel struct {

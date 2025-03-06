@@ -81,6 +81,34 @@ func (mr *MockClientMockRecorder) CreateVirtualService(ctx, vsr any) *gomock.Cal
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateVirtualService", reflect.TypeOf((*MockClient)(nil).CreateVirtualService), ctx, vsr)
 }
 
+// DeletePoliciesHTTPRequest mocks base method.
+func (m *MockClient) DeletePoliciesHTTPRequest(ctx context.Context, virtualServiceID string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeletePoliciesHTTPRequest", ctx, virtualServiceID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeletePoliciesHTTPRequest indicates an expected call of DeletePoliciesHTTPRequest.
+func (mr *MockClientMockRecorder) DeletePoliciesHTTPRequest(ctx, virtualServiceID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeletePoliciesHTTPRequest", reflect.TypeOf((*MockClient)(nil).DeletePoliciesHTTPRequest), ctx, virtualServiceID)
+}
+
+// DeletePoliciesHTTPResponse mocks base method.
+func (m *MockClient) DeletePoliciesHTTPResponse(ctx context.Context, virtualServiceID string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeletePoliciesHTTPResponse", ctx, virtualServiceID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeletePoliciesHTTPResponse indicates an expected call of DeletePoliciesHTTPResponse.
+func (mr *MockClientMockRecorder) DeletePoliciesHTTPResponse(ctx, virtualServiceID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeletePoliciesHTTPResponse", reflect.TypeOf((*MockClient)(nil).DeletePoliciesHTTPResponse), ctx, virtualServiceID)
+}
+
 // DeletePool mocks base method.
 func (m *MockClient) DeletePool(ctx context.Context, poolID string) error {
 	m.ctrl.T.Helper()
@@ -107,6 +135,51 @@ func (m *MockClient) DeleteVirtualService(ctx context.Context, virtualServiceID 
 func (mr *MockClientMockRecorder) DeleteVirtualService(ctx, virtualServiceID any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteVirtualService", reflect.TypeOf((*MockClient)(nil).DeleteVirtualService), ctx, virtualServiceID)
+}
+
+// GetFirstServiceEngineGroup mocks base method.
+func (m *MockClient) GetFirstServiceEngineGroup(ctx context.Context, edgeGatewayID string) (*ServiceEngineGroupModel, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetFirstServiceEngineGroup", ctx, edgeGatewayID)
+	ret0, _ := ret[0].(*ServiceEngineGroupModel)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetFirstServiceEngineGroup indicates an expected call of GetFirstServiceEngineGroup.
+func (mr *MockClientMockRecorder) GetFirstServiceEngineGroup(ctx, edgeGatewayID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFirstServiceEngineGroup", reflect.TypeOf((*MockClient)(nil).GetFirstServiceEngineGroup), ctx, edgeGatewayID)
+}
+
+// GetPoliciesHTTPRequest mocks base method.
+func (m *MockClient) GetPoliciesHTTPRequest(ctx context.Context, virtualServiceID string) (*PoliciesHTTPRequestModel, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetPoliciesHTTPRequest", ctx, virtualServiceID)
+	ret0, _ := ret[0].(*PoliciesHTTPRequestModel)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetPoliciesHTTPRequest indicates an expected call of GetPoliciesHTTPRequest.
+func (mr *MockClientMockRecorder) GetPoliciesHTTPRequest(ctx, virtualServiceID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetPoliciesHTTPRequest", reflect.TypeOf((*MockClient)(nil).GetPoliciesHTTPRequest), ctx, virtualServiceID)
+}
+
+// GetPoliciesHTTPResponse mocks base method.
+func (m *MockClient) GetPoliciesHTTPResponse(ctx context.Context, virtualServiceID string) (*PoliciesHTTPResponseModel, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetPoliciesHTTPResponse", ctx, virtualServiceID)
+	ret0, _ := ret[0].(*PoliciesHTTPResponseModel)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetPoliciesHTTPResponse indicates an expected call of GetPoliciesHTTPResponse.
+func (mr *MockClientMockRecorder) GetPoliciesHTTPResponse(ctx, virtualServiceID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetPoliciesHTTPResponse", reflect.TypeOf((*MockClient)(nil).GetPoliciesHTTPResponse), ctx, virtualServiceID)
 }
 
 // GetPool mocks base method.
@@ -197,6 +270,36 @@ func (m *MockClient) ListVirtualServices(ctx context.Context, edgeGatewayID stri
 func (mr *MockClientMockRecorder) ListVirtualServices(ctx, edgeGatewayID any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListVirtualServices", reflect.TypeOf((*MockClient)(nil).ListVirtualServices), ctx, edgeGatewayID)
+}
+
+// UpdatePoliciesHTTPRequest mocks base method.
+func (m *MockClient) UpdatePoliciesHTTPRequest(ctx context.Context, policies *PoliciesHTTPRequestModel) (*PoliciesHTTPRequestModel, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdatePoliciesHTTPRequest", ctx, policies)
+	ret0, _ := ret[0].(*PoliciesHTTPRequestModel)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdatePoliciesHTTPRequest indicates an expected call of UpdatePoliciesHTTPRequest.
+func (mr *MockClientMockRecorder) UpdatePoliciesHTTPRequest(ctx, policies any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdatePoliciesHTTPRequest", reflect.TypeOf((*MockClient)(nil).UpdatePoliciesHTTPRequest), ctx, policies)
+}
+
+// UpdatePoliciesHTTPResponse mocks base method.
+func (m *MockClient) UpdatePoliciesHTTPResponse(ctx context.Context, policies *PoliciesHTTPResponseModel) (*PoliciesHTTPResponseModel, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdatePoliciesHTTPResponse", ctx, policies)
+	ret0, _ := ret[0].(*PoliciesHTTPResponseModel)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdatePoliciesHTTPResponse indicates an expected call of UpdatePoliciesHTTPResponse.
+func (mr *MockClientMockRecorder) UpdatePoliciesHTTPResponse(ctx, policies any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdatePoliciesHTTPResponse", reflect.TypeOf((*MockClient)(nil).UpdatePoliciesHTTPResponse), ctx, policies)
 }
 
 // UpdatePool mocks base method.
