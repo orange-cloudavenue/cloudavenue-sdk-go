@@ -1,5 +1,10 @@
 ## 0.23.0 (Unreleased)
 
+### :rocket: **New Features**
+
+* `elb` - Add methods to manage edgegateway load balancer http policies request. (GH-220)
+* `elb` - Add methods to manage edgegateway load balancer http policies response. (GH-220)
+
 ### :dependabot: **Dependencies**
 
 * deps: bumps github.com/avast/retry-go/v4 from 4.6.0 to 4.6.1 (GH-217)
