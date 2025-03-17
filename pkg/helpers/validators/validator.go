@@ -16,7 +16,17 @@ func New() *validator.Validate {
 	v := validator.New()
 	_ = v.RegisterValidation(DisallowUpper.Key, DisallowUpper.Func)
 	_ = v.RegisterValidation(DisallowSpace.Key, DisallowSpace.Func)
+	_ = v.RegisterValidation(KeyValue.Key, KeyValue.Func)
 	_ = v.RegisterValidation(URN.Key, URN.Func)
+
+	// * Network
+	_ = v.RegisterValidation(IPV4Range.Key, IPV4Range.Func)
+	_ = v.RegisterValidation(TCPUDPPort.Key, TCPUDPPort.Func)
+	_ = v.RegisterValidation(TCPUDPPortRange.Key, TCPUDPPortRange.Func)
+
+	// * HTTP
+	_ = v.RegisterValidation(HTTPStatusCode.Key, HTTPStatusCode.Func)
+	_ = v.RegisterValidation(HTTPStatusCodeRange.Key, HTTPStatusCodeRange.Func)
 
 	return v
 }

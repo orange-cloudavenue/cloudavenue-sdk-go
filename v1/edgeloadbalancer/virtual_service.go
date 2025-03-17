@@ -21,6 +21,12 @@ import (
 	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/urn"
 )
 
+// ListVirtualServices retrieves a list of virtual services for a given edge gateway.
+// It returns a slice of VirtualServiceModel pointers and an error if any occurs during the process.
+//
+// Parameters:
+//   - ctx: The context for the request.
+//   - edgeGatewayID: The ID of the edge gateway for which to list virtual services.
 func (c *client) ListVirtualServices(ctx context.Context, edgeGatewayID string) ([]*VirtualServiceModel, error) {
 	if edgeGatewayID == "" {
 		return nil, fmt.Errorf("edgeGatewayID is %w. Please provide a valid edgeGatewayID", errors.ErrEmpty)
@@ -50,17 +56,32 @@ func (c *client) ListVirtualServices(ctx context.Context, edgeGatewayID string) 
 	return allVirtualServices, nil
 }
 
+// GetVirtualService retrieves a virtual service by its name or ID from the specified edge gateway.
+// It first validates the provided virtualServiceNameOrID and edgeGatewayID, ensuring they are not empty
+// and have the correct format. If the virtualServiceNameOrID is not in the expected format, the edgeGatewayID
+// is also validated. The function then refreshes the client session and attempts to retrieve the virtual service.
+//
+// Parameters:
+//   - ctx: The context for the request.
+//   - edgeGatewayID: The ID of the edge gateway containing the virtual service (required if virtualServiceNameOrID is a name).
+//   - virtualServiceNameOrID: The name or ID of the virtual service to retrieve.
+//
+// Returns:
+//   - *VirtualServiceModel: The retrieved virtual service model.
+//   - error: An error if the retrieval fails or if any validation fails.
 func (c *client) GetVirtualService(ctx context.Context, edgeGatewayID, virtualServiceNameOrID string) (*VirtualServiceModel, error) {
-	if edgeGatewayID == "" {
-		return nil, fmt.Errorf("edgeGatewayID is %w. Please provide a valid edgeGatewayID", errors.ErrEmpty)
-	}
-
-	if !urn.IsEdgeGateway(edgeGatewayID) {
-		return nil, fmt.Errorf("edgeGatewayID has %w. Please provide a valid edgeGatewayID", errors.ErrInvalidFormat)
-	}
-
 	if virtualServiceNameOrID == "" {
 		return nil, fmt.Errorf("virtualServiceNameOrID is %w. Please provide a valid virtualServiceNameOrID", errors.ErrEmpty)
+	}
+
+	if !urn.IsLoadBalancerVirtualService(virtualServiceNameOrID) {
+		if edgeGatewayID == "" {
+			return nil, fmt.Errorf("edgeGatewayID is required if the provided virtual service is a name")
+		}
+
+		if !urn.IsEdgeGateway(edgeGatewayID) {
+			return nil, fmt.Errorf("edgeGatewayID has %w. Please provide a valid edgeGatewayID", errors.ErrInvalidFormat)
+		}
 	}
 
 	if err := c.clientCloudavenue.Refresh(); err != nil {
@@ -82,6 +103,7 @@ func (c *client) getVirtualService(_ context.Context, edgeGatewayID, virtualServ
 	return c.clientGoVCD.GetAlbVirtualServiceById(virtualServiceNameOrID)
 }
 
+// CreateVirtualService creates a new virtual service based on the provided VirtualServiceModelRequest.
 func (c *client) CreateVirtualService(ctx context.Context, vsr VirtualServiceModelRequest) (*VirtualServiceModel, error) {
 	if err := validators.New().Struct(vsr); err != nil {
 		return nil, err
@@ -117,6 +139,7 @@ var updateVirtualService = func(virtualServiceClient fakeVirtualServiceClient, v
 	return virtualServiceClient.Update(vs)
 }
 
+// UpdateVirtualService updates an existing virtual service identified by its ID.
 func (c *client) UpdateVirtualService(ctx context.Context, virtualServiceID string, vsr VirtualServiceModelRequest) (*VirtualServiceModel, error) {
 	if virtualServiceID == "" {
 		return nil, fmt.Errorf("virtualServiceID is %w. Please provide a valid virtualServiceID", errors.ErrEmpty)
@@ -167,6 +190,7 @@ var deleteVirtualService = func(virtualServiceClient fakeVirtualServiceClient) e
 	return virtualServiceClient.Delete()
 }
 
+// DeleteVirtualService deletes a virtual service identified by its ID.
 func (c *client) DeleteVirtualService(ctx context.Context, virtualServiceID string) error {
 	if virtualServiceID == "" {
 		return fmt.Errorf("virtualServiceID is %w. Please provide a valid virtualServiceID", errors.ErrEmpty)

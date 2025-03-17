@@ -10,22 +10,15 @@
 package validators
 
 import (
-	"strings"
+	"regexp"
 
 	"github.com/go-playground/validator/v10"
-
-	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/urn"
 )
 
-// URN is a validator that checks if a string is a valid URN (Uniform Resource Name).
-var URN = &CustomValidator{
-	Key: "urn",
+// KeyValue is a validator that checks if a string is a valid key=value pair.
+var KeyValue = &CustomValidator{
+	Key: "str_key_value",
 	Func: func(fl validator.FieldLevel) bool {
-		u, err := urn.FindURNTypeFromString(fl.Param())
-		if err != nil {
-			return false
-		}
-
-		return strings.Contains(fl.Field().String(), u.String())
+		return regexp.MustCompile(`^([a-zA-Z0-9_]+=[a-zA-Z0-9_]+)$`).MatchString(fl.Field().String())
 	},
 }

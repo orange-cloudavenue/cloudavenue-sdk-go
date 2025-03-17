@@ -58,6 +58,7 @@ linters:
     - nilnil # Checks that there is no simultaneous return of `nil` error and an invalid value. [fast: false, auto-fix: false]
     - godot # Check if comments end in a period [fast: true, auto-fix: true]
     - unused #(megacheck): Checks Go code for unused constants, variables, functions and types [fast: false, auto-fix: false]
+    # - unparam # reports unused function parameters
     - staticcheck #(megacheck): Staticcheck is a go vet on steroids, applying a ton of static analysis checks [fast: false, auto-fix: false]
     - bodyclose # checks whether HTTP response body is closed successfully
     - goconst # Finds repeated strings that could be replaced by a constant [fast: true, auto-fix: false]
