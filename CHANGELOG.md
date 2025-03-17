@@ -14,6 +14,7 @@
 * deps: bumps golang.org/x/mod from 0.22.0 to 0.23.0 (GH-207)
 * deps: bumps golang.org/x/mod from 0.23.0 to 0.24.0 (GH-219)
 * deps: bumps golang.org/x/sync from 0.10.0 to 0.11.0 (GH-208)
+* deps: bumps golang.org/x/sync from 0.11.0 to 0.12.0 (GH-218)
 
 ## 0.22.0 (February 13, 2025)
 
