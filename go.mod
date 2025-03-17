@@ -1,7 +1,7 @@
 module github.com/orange-cloudavenue/cloudavenue-sdk-go
 
 go 1.22.0
-toolchain go1.23.1
+toolchain go1.24.1
 
 require (
 	github.com/avast/retry-go/v4 v4.6.1
@@ -18,7 +18,7 @@ require (
 	go.uber.org/mock v0.5.0
 	golang.org/x/exp v0.0.0-20240119083558-1b970713d09a
 	golang.org/x/mod v0.24.0
-	golang.org/x/sync v0.11.0
+	golang.org/x/sync v0.12.0
 )
 
 require (
