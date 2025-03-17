@@ -12,6 +12,7 @@
 * deps: bumps github.com/hashicorp/terraform-plugin-sdk/v2 from 2.36.0 to 2.36.1 (GH-216)
 * deps: bumps github.com/sethvargo/go-envconfig from 1.1.0 to 1.1.1 (GH-213)
 * deps: bumps golang.org/x/mod from 0.22.0 to 0.23.0 (GH-207)
+* deps: bumps golang.org/x/mod from 0.23.0 to 0.24.0 (GH-219)
 * deps: bumps golang.org/x/sync from 0.10.0 to 0.11.0 (GH-208)
 
 ## 0.22.0 (February 13, 2025)
