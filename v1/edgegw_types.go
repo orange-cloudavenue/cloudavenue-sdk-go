@@ -12,6 +12,8 @@ package v1
 import (
 	"github.com/vmware/go-vcloud-director/v2/govcd"
 	govcdtypes "github.com/vmware/go-vcloud-director/v2/types/v56"
+
+	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/urn"
 )
 
 const (
@@ -90,6 +92,11 @@ func (e *EdgeGatewayType) GetT0() string {
 // GetID - Returns the EdgeID.
 func (e *EdgeGatewayType) GetID() string {
 	return e.EdgeID
+}
+
+// GetURN - Returns the URN of the EdgeGateway.
+func (e *EdgeGatewayType) GetURN() string {
+	return urn.Normalize(urn.Gateway, e.GetID()).String()
 }
 
 // GetName - Returns the EdgeName.
