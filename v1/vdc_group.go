@@ -141,3 +141,21 @@ func (g VDCGroup) getVDCNetworkByName(name string) (*govcd.OpenApiOrgVdcNetwork,
 func (g VDCGroup) createVDCNetwork(networkConfig *govcdtypes.OpenApiOrgVdcNetwork) (*govcd.OpenApiOrgVdcNetwork, error) {
 	return g.vg.CreateOpenApiOrgVdcNetwork(networkConfig)
 }
+
+// FindEdgeGateway finds the edge gateway connected to the VDC Group.
+func (g VDCGroup) FindEdgeGateway() (*EdgeGatewayType, error) {
+	edgeGateways, err := (&EdgeGateway{}).List()
+	if err != nil {
+		return nil, fmt.Errorf("error listing edge gateways: %w", err)
+	}
+
+	for _, edgeGateway := range *edgeGateways {
+		if edgeGateway.OwnerType.IsVDCGROUP() {
+			if edgeGateway.OwnerName == g.GetName() {
+				return &edgeGateway, nil
+			}
+		}
+	}
+
+	return nil, fmt.Errorf("no edge gateway connected to VDC Group %q", g.GetName())
+}

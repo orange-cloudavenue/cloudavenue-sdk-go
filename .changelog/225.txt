@@ -1,0 +1,7 @@
+```release-note:feature
+`VDC/VDCGroup` - Add functions to manage network routed on VDC and VDCGroup (CreateNetworkRouted, GetNetworkRouted).
+```
+
+```release-note:note
+`golang` - Bump Golang version to 1.23.0
+```

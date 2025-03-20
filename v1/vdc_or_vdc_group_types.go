@@ -45,4 +45,7 @@ type VDCOrVDCGroupInterface interface {
 	// ? Isolated
 	GetNetworkIsolated(nameOrID string) (*VDCNetworkIsolated, error)
 	CreateNetworkIsolated(*VDCNetworkIsolatedModel) (*VDCNetworkIsolated, error)
+	// ? Routed
+	GetNetworkRouted(nameOrID string) (*VDCNetworkRouted, error)
+	CreateNetworkRouted(*VDCNetworkRoutedModel) (*VDCNetworkRouted, error)
 }

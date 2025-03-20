@@ -28,7 +28,7 @@ type (
 	}
 
 	vdcNetworkModelInterface interface {
-		toVDCNetworkModel(v vdcNetworkInterface) *govcdtypes.OpenApiOrgVdcNetwork
+		toVDCNetworkModel(v vdcNetworkInterface, networkType string) *govcdtypes.OpenApiOrgVdcNetwork
 		fromVDCNetworkModel(*govcdtypes.OpenApiOrgVdcNetwork)
 	}
 
@@ -46,6 +46,18 @@ type (
 	}
 
 	VDCNetworkIsolatedModel = VDCNetworkModel
+
+	// * VDC Or VDCGroup Routed Network.
+	VDCNetworkRouted struct {
+		VDCNetwork[*VDCNetworkRoutedModel]
+		*VDCNetworkRoutedModel
+	}
+
+	VDCNetworkRoutedModel struct {
+		VDCNetworkModel
+		EdgeGatewayID   string `json:"edgeGatewayId"`
+		EdgeGatewayName string `json:"edgeGatewayName"`
+	}
 
 	// * Common Data structs.
 	VDCNetworkModel struct {
@@ -87,7 +99,7 @@ func (ipr VDCNetworkModelSubnetIPRanges) ToVcdIPRanges() govcdtypes.OrgVdcNetwor
 
 // Update updates the network.
 func (n *VDCNetwork[T]) Update(model T) error {
-	net, err := n.net.Update(model.toVDCNetworkModel(n.v))
+	net, err := n.net.Update(model.toVDCNetworkModel(n.v, n.net.GetType()))
 	if err != nil {
 		return err
 	}
@@ -101,15 +113,15 @@ func (n *VDCNetwork[T]) Delete() error {
 	return n.net.Delete()
 }
 
-// * Isolated Network
+// * Routed & Isolated Network
 
 // ToVDCNetworkModel converts the VDCNetworkIsolated to govcd.OpenApiOrgVdcNetwork.
-func (n *VDCNetworkIsolatedModel) toVDCNetworkModel(v vdcNetworkInterface) *govcdtypes.OpenApiOrgVdcNetwork {
+func (n *VDCNetworkModel) toVDCNetworkModel(v vdcNetworkInterface, networkType string) *govcdtypes.OpenApiOrgVdcNetwork {
 	return &govcdtypes.OpenApiOrgVdcNetwork{
 		ID:          n.ID,
 		Name:        n.Name,
 		Description: n.Description,
-		NetworkType: govcdtypes.OrgVdcNetworkTypeIsolated,
+		NetworkType: networkType,
 		OwnerRef: &govcdtypes.OpenApiReference{
 			ID:   v.GetID(),
 			Name: v.GetName(),
@@ -137,7 +149,7 @@ func (n *VDCNetworkIsolatedModel) toVDCNetworkModel(v vdcNetworkInterface) *govc
 }
 
 // fromVDCNetworkModel converts the govcd.OpenApiOrgVdcNetwork to VDCNetworkIsolated.
-func (n *VDCNetworkIsolatedModel) fromVDCNetworkModel(net *govcdtypes.OpenApiOrgVdcNetwork) {
+func (n *VDCNetworkModel) fromVDCNetworkModel(net *govcdtypes.OpenApiOrgVdcNetwork) {
 	n.ID = net.ID
 	n.Name = net.Name
 	n.Description = net.Description
@@ -160,4 +172,27 @@ func (n *VDCNetworkIsolatedModel) fromVDCNetworkModel(net *govcdtypes.OpenApiOrg
 			return ipRanges
 		}(),
 	}
+}
+
+// fromVDCNetworkModel converts the govcd.OpenApiOrgVdcNetwork to VDCNetworkRouted.
+func (n *VDCNetworkRoutedModel) fromVDCNetworkModel(net *govcdtypes.OpenApiOrgVdcNetwork) {
+	n.VDCNetworkModel.fromVDCNetworkModel(net)
+	if net.Connection != nil {
+		n.EdgeGatewayID = net.Connection.RouterRef.ID
+		n.EdgeGatewayName = net.Connection.RouterRef.Name
+	}
+}
+
+// toVDCNetworkModel converts the VDCNetworkRouted to govcd.OpenApiOrgVdcNetwork.
+func (n *VDCNetworkRoutedModel) toVDCNetworkModel(v vdcNetworkInterface, networkType string) *govcdtypes.OpenApiOrgVdcNetwork {
+	x := n.VDCNetworkModel.toVDCNetworkModel(v, networkType)
+	x.Connection = &govcdtypes.Connection{
+		RouterRef: govcdtypes.OpenApiReference{
+			ID:   n.EdgeGatewayID,
+			Name: n.EdgeGatewayName,
+		},
+		ConnectionTypeValue: "INTERNAL", // Because
+	}
+
+	return x
 }
