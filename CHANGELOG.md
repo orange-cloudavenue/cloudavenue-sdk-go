@@ -1,4 +1,12 @@
 ## 0.24.0 (Unreleased)
+
+### :rocket: **New Features**
+
+* `VDC/VDCGroup` - Add functions to manage network routed on VDC and VDCGroup (CreateNetworkRouted, GetNetworkRouted). (GH-225)
+### :information_source: **Notes**
+
+* `golang` - Bump Golang version to 1.23.0 (GH-225)
+
 ## 0.23.0 (March 17, 2025)
 
 ### :rocket: **New Features**
