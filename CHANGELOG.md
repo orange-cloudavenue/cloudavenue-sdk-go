@@ -5,6 +5,7 @@
 * `VDC/VDCGroup` - Add functions to manage network routed on VDC and VDCGroup (CreateNetworkRouted, GetNetworkRouted). (GH-225)
 ### :information_source: **Notes**
 
+* `edgegateway` - Removes support for VDCG in edgegw security group. This is not a breaking change as the support was partial and non-functional. (GH-221)
 * `golang` - Bump Golang version to 1.23.0 (GH-225)
 
 ## 0.23.0 (March 17, 2025)
