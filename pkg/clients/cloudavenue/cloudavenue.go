@@ -142,6 +142,11 @@ func (v *Client) Refresh() error {
 	return nil
 }
 
+// GetClient - Returns the client.
+func GetClient() *Client {
+	return cache
+}
+
 // New creates a new cloudavenue client.
 func New() (*Client, error) {
 	if cache != nil && !c.token.IsExpired() {

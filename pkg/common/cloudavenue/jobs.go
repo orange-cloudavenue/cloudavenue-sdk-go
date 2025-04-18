@@ -14,6 +14,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/orange-cloudavenue/cloudavenue-sdk-go/internal/endpoints"
 	clientcloudavenue "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/clients/cloudavenue"
 )
 
@@ -69,18 +70,15 @@ func (j *JobCreatedAPIResponse) GetJobStatus() (response *JobStatus, err error) 
 func (j *JobStatus) Refresh() error {
 	jobID := j.JobID
 
-	c, err := clientcloudavenue.New()
-	if err != nil {
-		return err
-	}
+	c := clientcloudavenue.GetClient()
 
 	r, err := c.R().
 		SetResult(&[]JobStatus{}).
 		SetError(&APIErrorResponse{}).
 		SetPathParams(map[string]string{
-			"JobID": j.JobID,
+			"job-id": j.JobID,
 		}).
-		Get("/api/customers/v1.0/jobs/{JobID}")
+		Get(endpoints.JobStatusGet)
 	if err != nil {
 		return err
 	}
@@ -133,7 +131,7 @@ func (j *JobStatus) Wait(refreshInterval, timeout int) error {
 // refreshInterval - The interval in seconds between each refresh.
 func (j *JobStatus) WaitWithContext(ctx context.Context, refreshInterval int) error {
 	if _, deadlineSet := ctx.Deadline(); !deadlineSet {
-		return j.Wait(refreshInterval, 90)
+		return j.Wait(refreshInterval, 5*60)
 	}
 
 	err := j.Refresh()
