@@ -1,0 +1,26 @@
+```release-note:feature
+`internal/endpoints` - Added new API endpoints for Edge Gateway management:
+- `EdgeGatewayCreateFromVDC`
+- `EdgeGatewayCreateFromVDCGroup`
+- `EdgeGatewayGet`
+- `EdgeGatewayList`
+- `EdgeGatewayDelete`
+- `EdgeGatewayUpdate`
+```
+
+```release-note:feature
+`v1/edgegateway` - Added Edge Gateway management functions:
+- `ListEdgeGateway`
+- `GetEdgeGateway`
+- `CreateEdgeGateway`
+- `UpdateEdgeGateway`
+- `DeleteEdgeGateway`
+```
+
+```release-note:note
+`pkg/common/cloudavenue/jobs.go` - Adjusted default refresh intervals for job tasks.
+```
+
+```release-note:note
+`v1/edgegateway/edgegateway_test.go` - Added comprehensive unit tests for Edge Gateway functionalities.
+```
