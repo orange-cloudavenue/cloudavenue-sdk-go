@@ -214,6 +214,8 @@ func (p *PoliciesHTTPHeaderMatch) toVCD() *govcdtypes.AlbVsHttpRequestRuleHeader
 	}
 }
 
+// * Helpers to convert PoliciesHTTPHeadersMatch to and from vCD types
+
 func (PoliciesHTTPHeadersMatch) fromVCD(match []govcdtypes.AlbVsHttpRequestRuleHeaderMatch) PoliciesHTTPHeadersMatch {
 	var headers []PoliciesHTTPHeaderMatch
 	for _, h := range match {

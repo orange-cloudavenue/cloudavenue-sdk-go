@@ -1,0 +1,7 @@
+```release-note:feature
+`elb` - Add methods to manage edgegateway load balancer http policies security.
+```
+
+```release-note:feature
+`elb` - Add methods to manage edgegateway load balancer http policies security.
+```
