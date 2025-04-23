@@ -35,7 +35,7 @@ func (c *client) GetPoliciesHTTPSecurity(ctx context.Context, virtualServiceID s
 
 	rules, err := getPoliciesHTTPSecurity(vs)
 	if err != nil {
-		return nil, fmt.Errorf("error retrieving HTTP request rules: %w", err)
+		return nil, fmt.Errorf("error retrieving HTTP security rules: %w", err)
 	}
 
 	return (&PoliciesHTTPSecurityModel{}).fromVCD(virtualServiceID, &govcdtypes.AlbVsHttpSecurityRules{
