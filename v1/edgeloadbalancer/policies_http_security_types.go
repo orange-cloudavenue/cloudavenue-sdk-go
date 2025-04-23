@@ -120,9 +120,14 @@ func (p *PoliciesHTTPSecurityModelPolicy) toVCD() govcdtypes.AlbVsHttpSecurityRu
 		Logging:                      p.Logging,
 		MatchCriteria:                p.MatchCriteria.toVCD(),
 		AllowOrCloseConnectionAction: p.ConnectionAction,
-		RedirectToHTTPSAction:        &govcdtypes.AlbVsHttpSecurityRuleRedirectToHTTPSAction{Port: *p.RedirectToHTTPSAction},
-		LocalResponseAction:          p.SendResponseAction.toVCD(),
-		RateLimitAction:              p.RateLimitAction.toVCD(),
+		RedirectToHTTPSAction: func() *govcdtypes.AlbVsHttpSecurityRuleRedirectToHTTPSAction {
+			if p.RedirectToHTTPSAction != nil {
+				return &govcdtypes.AlbVsHttpSecurityRuleRedirectToHTTPSAction{Port: *p.RedirectToHTTPSAction}
+			}
+			return nil
+		}(),
+		LocalResponseAction: p.SendResponseAction.toVCD(),
+		RateLimitAction:     p.RateLimitAction.toVCD(),
 	}
 }
 

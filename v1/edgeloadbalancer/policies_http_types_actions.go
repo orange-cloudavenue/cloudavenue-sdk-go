@@ -80,9 +80,6 @@ type (
 		CloseConnectionAction string `validate:"omitempty"`
 		// Action to take when the rate limit is exceeded
 		LocalResponseAction *PoliciesHTTPActionSendResponse `validate:"omitempty"`
-		// Action to take when the rate limit is exceeded
-		// RepportOnlyAction bool `validate:"omitempty"`
-		// Action string `validate:"required,oneof=Close_Connection Redirect Local_Response"`
 	}
 
 	PoliciesHTTPActionSendResponse struct {
