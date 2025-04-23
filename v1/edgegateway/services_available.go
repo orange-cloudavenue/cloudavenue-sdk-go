@@ -31,7 +31,7 @@ type (
 	}
 )
 
-var listOfServices = []ServiceModelDetails{
+var ListOfServices = []ServiceModelDetails{
 	{
 		Category: "administration",
 		Network:  "57.199.209.192/27",
@@ -55,7 +55,7 @@ var listOfServices = []ServiceModelDetails{
 				FQDN:        []string{"rhui.service.cav"},
 				Ports: []NetworkServicesModelSvcServiceDetailsPorts{
 					{
-						Port:     80,
+						Port:     8080,
 						Protocol: "tcp",
 					},
 				},
@@ -67,11 +67,11 @@ var listOfServices = []ServiceModelDetails{
 				FQDN:        []string{"wsus.service.cav"},
 				Ports: []NetworkServicesModelSvcServiceDetailsPorts{
 					{
-						Port:     80,
+						Port:     8530,
 						Protocol: "tcp",
 					},
 					{
-						Port:     443,
+						Port:     8531,
 						Protocol: "tcp",
 					},
 				},

@@ -79,7 +79,7 @@ func (e *EdgeGateway) getNetworkServices(ctx context.Context) error {
 									}
 									return ip.String()
 								}(),
-								ServiceDetails: listOfServices,
+								ServiceDetails: ListOfServices,
 							}
 
 						case "internet":

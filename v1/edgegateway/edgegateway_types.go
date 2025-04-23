@@ -49,7 +49,7 @@ type (
 		Services NetworkServicesModelSvcs
 	}
 
-	// EdgeGatewayModelRequest represents the request model for creating or updating an edge gateway.
+	// EdgeGatewayModelRequest represents the request model for creating an edge gateway.
 	EdgeGatewayModelRequest struct { //nolint:revive
 		// OwnerRef defines Org VDC or VDC Group that this network belongs to.
 		OwnerRef *govcdtypes.OpenApiReference `validate:"required"`
