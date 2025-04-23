@@ -1,4 +1,9 @@
 ## 0.25.0 (Unreleased)
+
+### :dependabot: **Dependencies**
+
+* deps: bumps go.uber.org/mock from 0.5.0 to 0.5.1 (GH-237)
+
 ## 0.24.0 (March 26, 2025)
 
 ### :rocket: **New Features**
