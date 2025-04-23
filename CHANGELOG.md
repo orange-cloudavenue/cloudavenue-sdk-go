@@ -3,6 +3,7 @@
 ### :dependabot: **Dependencies**
 
 * deps: bumps github.com/go-playground/validator/v10 from 10.25.0 to 10.26.0 (GH-234)
+* deps: bumps github.com/sethvargo/go-envconfig from 1.1.1 to 1.2.0 (GH-239)
 * deps: bumps go.uber.org/mock from 0.5.0 to 0.5.1 (GH-237)
 
 ## 0.24.0 (March 26, 2025)
