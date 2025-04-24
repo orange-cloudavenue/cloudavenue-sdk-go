@@ -2,7 +2,9 @@
 
 ### :dependabot: **Dependencies**
 
+* deps: bumps github.com/aws/aws-sdk-go from 1.55.6 to 1.55.7 (GH-244)
 * deps: bumps github.com/go-playground/validator/v10 from 10.25.0 to 10.26.0 (GH-234)
+* deps: bumps github.com/jarcoal/httpmock from 1.3.1 to 1.4.0 (GH-235)
 * deps: bumps github.com/sethvargo/go-envconfig from 1.1.1 to 1.2.0 (GH-239)
 * deps: bumps go.uber.org/mock from 0.5.0 to 0.5.1 (GH-237)
 
