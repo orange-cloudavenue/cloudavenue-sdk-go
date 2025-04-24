@@ -27,6 +27,7 @@
 * deps: bumps github.com/jarcoal/httpmock from 1.3.1 to 1.4.0 (GH-235)
 * deps: bumps github.com/sethvargo/go-envconfig from 1.1.1 to 1.2.0 (GH-239)
 * deps: bumps go.uber.org/mock from 0.5.0 to 0.5.1 (GH-237)
+* deps: bumps golang.org/x/sync from 0.12.0 to 0.13.0 (GH-236)
 
 ## 0.24.0 (March 26, 2025)
 
