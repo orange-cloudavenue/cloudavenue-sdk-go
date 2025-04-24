@@ -175,9 +175,6 @@ formatters:
     goimports:
       local-prefixes:
         - github.com/orange-cloudavenue/cloudavenue-sdk-go
-    gosec:
-      excludes:
-        - G115
   exclusions:
     generated: lax
     paths:
