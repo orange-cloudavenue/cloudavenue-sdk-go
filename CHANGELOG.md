@@ -1,5 +1,25 @@
 ## 0.25.0 (Unreleased)
 
+### :rocket: **New Features**
+
+* `internal/endpoints` - Added new API endpoints for Edge Gateway management:
+- `EdgeGatewayCreateFromVDC`
+- `EdgeGatewayCreateFromVDCGroup`
+- `EdgeGatewayGet`
+- `EdgeGatewayList`
+- `EdgeGatewayDelete`
+- `EdgeGatewayUpdate` (GH-241)
+* `v1/edgegateway` - Added Edge Gateway management functions:
+- `ListEdgeGateway`
+- `GetEdgeGateway`
+- `CreateEdgeGateway`
+- `UpdateEdgeGateway`
+- `DeleteEdgeGateway` (GH-241)
+### :information_source: **Notes**
+
+* `pkg/common/cloudavenue/jobs.go` - Adjusted default refresh intervals for job tasks. (GH-241)
+* `v1/edgegateway/edgegateway_test.go` - Added comprehensive unit tests for Edge Gateway functionalities. (GH-241)
+
 ### :dependabot: **Dependencies**
 
 * deps: bumps github.com/aws/aws-sdk-go from 1.55.6 to 1.55.7 (GH-244)
