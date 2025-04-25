@@ -16,6 +16,9 @@ type (
 	PoliciesHTTPMethod                    string
 	PoliciesHTTPMatchCriteriaCriteria     string
 	PoliciesHTTPActionHeaderRewriteAction string
+	// PoliciesHTTPConnectionAction specifies the action to be taken on the connection.
+	// Valid values are "ALLOW" or "DENY".
+	PoliciesHTTPConnectionAction string
 )
 
 type (

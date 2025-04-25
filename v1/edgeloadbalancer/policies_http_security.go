@@ -60,11 +60,11 @@ var getPoliciesHTTPSecurity = func(virtualServiceClient fakeVirtualServiceClient
 
 func (c *client) UpdatePoliciesHTTPSecurity(ctx context.Context, policies *PoliciesHTTPSecurityModel) (*PoliciesHTTPSecurityModel, error) {
 	if err := validators.New().Struct(policies); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("validation error: %w", err)
 	}
 
 	if err := c.clientCloudavenue.Refresh(); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error refreshing client: %w", err)
 	}
 
 	// * Get the virtual service
@@ -75,18 +75,14 @@ func (c *client) UpdatePoliciesHTTPSecurity(ctx context.Context, policies *Polic
 
 	policiesUpdated, err := updatePoliciesHTTPSecurity(vs, policies.toVCD())
 	if err != nil {
-		return nil, fmt.Errorf("error updating HTTP request rules: %w", err)
+		return nil, fmt.Errorf("error updating HTTP security rules: %w", err)
 	}
 
 	return policies.fromVCD(policies.VirtualServiceID, policiesUpdated), nil
 }
 
 var updatePoliciesHTTPSecurity = func(vs fakeVirtualServiceClient, policies *govcdtypes.AlbVsHttpSecurityRules) (*govcdtypes.AlbVsHttpSecurityRules, error) {
-	policiesUpdated, err := vs.UpdateHttpSecurityRules(policies)
-	if err != nil {
-		return nil, fmt.Errorf("error updating HTTP request rules: %w", err)
-	}
-	return policiesUpdated, nil
+	return vs.UpdateHttpSecurityRules(policies)
 }
 
 func (c *client) DeletePoliciesHTTPSecurity(ctx context.Context, virtualServiceID string) error {
@@ -105,7 +101,7 @@ func (c *client) DeletePoliciesHTTPSecurity(ctx context.Context, virtualServiceI
 	}
 	_, err = updatePoliciesHTTPSecurity(vs, &govcdtypes.AlbVsHttpSecurityRules{})
 	if err != nil {
-		return fmt.Errorf("error deleting HTTP request rules: %w", err)
+		return fmt.Errorf("error deleting HTTP security rules: %w", err)
 	}
 
 	return nil

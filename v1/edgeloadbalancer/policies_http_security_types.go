@@ -40,7 +40,6 @@ type (
 		RateLimitAction *PoliciesHTTPActionRateLimit `validate:"omitempty"`
 		// HTTP Redirect to HTTPS Action
 		// It can be configured in combination with other actions
-		// RedirectToHTTPSAction *PoliciesHTTPActionRedirectToHTTPS `validate:"omitempty"`
 		RedirectToHTTPSAction *int `validate:"omitempty"`
 		// HTTP Send Response Action
 		// It can be configured in combination with other actions
@@ -156,84 +155,5 @@ func (p PoliciesHTTPSecurityMatchCriteria) toVCD() govcdtypes.AlbVsHttpRequestAn
 		CookieMatch:      p.CookieMatch.toVCD(),
 		HeaderMatch:      p.HeaderMatch.toVCD(),
 		QueryMatch:       p.QueryMatch,
-	}
-}
-
-// * Helpers to convert PoliciesHTTPActionRateLimit to and from vCD types
-
-func (PoliciesHTTPActionRateLimit) fromVCD(action *govcdtypes.AlbVsHttpSecurityRuleRateLimitAction) *PoliciesHTTPActionRateLimit {
-	if action == nil {
-		return nil
-	}
-	return &PoliciesHTTPActionRateLimit{
-		Count:  action.Count,
-		Period: action.Period,
-		RedirectAction: func() *PoliciesHTTPActionRedirect {
-			if action.RedirectAction != nil {
-				return (&PoliciesHTTPActionRedirect{}).fromVCD(action.RedirectAction)
-			}
-			return nil
-		}(),
-		LocalResponseAction: func() *PoliciesHTTPActionSendResponse {
-			if action.LocalResponseAction != nil {
-				return (&PoliciesHTTPActionSendResponse{}).fromVCD(action.LocalResponseAction)
-			}
-			return nil
-		}(),
-		CloseConnectionAction: func() string {
-			if action.CloseConnectionAction != "" {
-				return "Close_Connection"
-			}
-			return ""
-		}(),
-	}
-}
-
-func (p *PoliciesHTTPActionRateLimit) toVCD() *govcdtypes.AlbVsHttpSecurityRuleRateLimitAction {
-	if p == nil {
-		return nil
-	}
-	return &govcdtypes.AlbVsHttpSecurityRuleRateLimitAction{
-		Count:  p.Count,
-		Period: p.Period,
-		CloseConnectionAction: func() string {
-			return p.CloseConnectionAction
-		}(),
-		RedirectAction: func() *govcdtypes.AlbVsHttpRequestRuleRedirectAction {
-			if p.RedirectAction != nil {
-				return p.RedirectAction.toVCD()
-			}
-			return nil
-		}(),
-		LocalResponseAction: func() *govcdtypes.AlbVsHttpSecurityRuleRateLimitLocalResponseAction {
-			if p.LocalResponseAction != nil {
-				return p.LocalResponseAction.toVCD()
-			}
-			return nil
-		}(),
-	}
-}
-
-// * Helpers to convert PoliciesHTTPActionSendResponse to and from vCD types
-
-func (PoliciesHTTPActionSendResponse) fromVCD(action *govcdtypes.AlbVsHttpSecurityRuleRateLimitLocalResponseAction) *PoliciesHTTPActionSendResponse {
-	if action == nil {
-		return nil
-	}
-	return &PoliciesHTTPActionSendResponse{
-		StatusCode:  action.StatusCode,
-		ContentType: action.ContentType,
-		Content:     action.Content,
-	}
-}
-
-func (p *PoliciesHTTPActionSendResponse) toVCD() *govcdtypes.AlbVsHttpSecurityRuleRateLimitLocalResponseAction {
-	if p == nil {
-		return nil
-	}
-	return &govcdtypes.AlbVsHttpSecurityRuleRateLimitLocalResponseAction{
-		Content:     p.Content,
-		ContentType: p.ContentType,
-		StatusCode:  p.StatusCode,
 	}
 }
