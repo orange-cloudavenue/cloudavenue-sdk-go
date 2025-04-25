@@ -16,6 +16,9 @@ type (
 	PoliciesHTTPMethod                    string
 	PoliciesHTTPMatchCriteriaCriteria     string
 	PoliciesHTTPActionHeaderRewriteAction string
+	// PoliciesHTTPConnectionAction specifies the action to be taken on the connection.
+	// var PoliciesHTTPConnectionAction and PoliciesHTTPConnectionActionString are defined to get the list of valid values.
+	PoliciesHTTPConnectionAction string
 )
 
 type (

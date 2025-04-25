@@ -47,6 +47,9 @@ const (
 	PoliciesHTTPMethodMOVE      PoliciesHTTPMethod = "MOVE"
 	PoliciesHTTPMethodLOCK      PoliciesHTTPMethod = "LOCK"
 	PoliciesHTTPMethodUNLOCK    PoliciesHTTPMethod = "UNLOCK"
+
+	PoliciesHTTPConnectionActionALLOW PoliciesHTTPConnectionAction = "ALLOW"
+	PoliciesHTTPConnectionActionCLOSE PoliciesHTTPConnectionAction = "CLOSE"
 )
 
 // * Var HTTP.
@@ -126,7 +129,7 @@ var (
 	PoliciesHTTPLocationMatchCriteria       = PoliciesHTTPPathMatchCriteria
 	PoliciesHTTPLocationMatchCriteriaString = PoliciesHTTPPathMatchCriteriaString
 
-	PoliciesHTTPRequestHeaderMatchCriteria = []PoliciesHTTPMatchCriteriaCriteria{
+	PoliciesHTTPHeaderMatchCriteria = []PoliciesHTTPMatchCriteriaCriteria{
 		PoliciesHTTPMatchCriteriaCriteriaBEGINSWITH,
 		PoliciesHTTPMatchCriteriaCriteriaDOESNOTBEGINWITH,
 		PoliciesHTTPMatchCriteriaCriteriaCONTAINS,
@@ -139,7 +142,7 @@ var (
 		PoliciesHTTPMatchCriteriaCriteriaDOESNOTEXIST,
 	}
 
-	PoliciesHTTPRequestHeaderMatchCriteriaString = sliceAnyToSliceString(PoliciesHTTPRequestHeaderMatchCriteria)
+	PoliciesHTTPHeaderMatchCriteriaString = sliceAnyToSliceString(PoliciesHTTPHeaderMatchCriteria)
 
 	PoliciesHTTPCookieMatchCriteria = []PoliciesHTTPMatchCriteriaCriteria{
 		PoliciesHTTPMatchCriteriaCriteriaBEGINSWITH,
@@ -150,6 +153,8 @@ var (
 		PoliciesHTTPMatchCriteriaCriteriaDOESNOTENDWITH,
 		PoliciesHTTPMatchCriteriaCriteriaEQUALS,
 		PoliciesHTTPMatchCriteriaCriteriaDOESNOTEQUAL,
+		PoliciesHTTPMatchCriteriaCriteriaEXISTS,
+		PoliciesHTTPMatchCriteriaCriteriaDOESNOTEXIST,
 	}
 	PoliciesHTTPCookieMatchCriteriaString = sliceAnyToSliceString(PoliciesHTTPCookieMatchCriteria)
 )
@@ -178,4 +183,35 @@ var (
 		PoliciesHTTPMatchCriteriaCriteriaREGEXDOESNOTMATCH,
 	}
 	PoliciesHTTPResponseLocationHeaderMatchCriteriaString = sliceAnyToSliceString(PoliciesHTTPResponseLocationHeaderMatchCriteria)
+)
+
+// * Var for Connection.
+var (
+	PoliciesHTTPConnectionActions = []PoliciesHTTPConnectionAction{
+		PoliciesHTTPConnectionActionALLOW,
+		PoliciesHTTPConnectionActionCLOSE,
+	}
+	PoliciesHTTPConnectionActionsString = sliceAnyToSliceString(PoliciesHTTPConnectionActions)
+)
+
+// * Var for ActionSendReponseStatusCode.
+var (
+	PoliciesHTTPActionResponseStatusCodes       = []int64{200, 204, 403, 404, 429, 501}
+	PoliciesHTTPActionResponseStatusCodesString = sliceAnyToSliceString(PoliciesHTTPActionResponseStatusCodes)
+)
+
+// * Var for content type.
+var (
+	PoliciesHTTPActionContentTypes = []string{
+		"application/json",
+		"text/plain",
+		"text/html",
+	}
+	PoliciesHTTPActionContentTypesString = sliceAnyToSliceString(PoliciesHTTPActionContentTypes)
+)
+
+// * Var for RedirectStatusCode.
+var (
+	PoliciesHTTPRedirectStatusCodes       = []int64{301, 302, 307}
+	PoliciesHTTPRedirectStatusCodesString = sliceAnyToSliceString(PoliciesHTTPRedirectStatusCodes)
 )

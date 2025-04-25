@@ -10,7 +10,6 @@
 package edgeloadbalancer
 
 import (
-	"context"
 	"errors"
 	"testing"
 
@@ -563,7 +562,7 @@ func TestClient_GetPoliciesHTTPRequest(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			tc.mockFunc()
 
-			policies, err := c.GetPoliciesHTTPRequest(context.Background(), tc.virtualServiceID)
+			policies, err := c.GetPoliciesHTTPRequest(t.Context(), tc.virtualServiceID)
 			if !tc.expectedErr {
 				assert.NoError(t, err)
 				assert.NotNil(t, policies)
@@ -1239,7 +1238,7 @@ func TestClient_UpdatePoliciesHTTPRequest(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			tc.mockFunc()
 
-			updatedPolicies, err := c.UpdatePoliciesHTTPRequest(context.Background(), tc.policies)
+			updatedPolicies, err := c.UpdatePoliciesHTTPRequest(t.Context(), tc.policies)
 			if !tc.expectedErr {
 				assert.NoError(t, err)
 				assert.NotNil(t, tc.policies)
@@ -1369,7 +1368,7 @@ func TestClient_DeletePoliciesHTTPRequest(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			tc.mockFunc()
 
-			err := c.DeletePoliciesHTTPRequest(context.Background(), tc.virtualServiceID)
+			err := c.DeletePoliciesHTTPRequest(t.Context(), tc.virtualServiceID)
 			if !tc.expectedErr {
 				assert.NoError(t, err)
 			} else {

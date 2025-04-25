@@ -9,7 +9,11 @@
 
 package edgeloadbalancer
 
-import govcdtypes "github.com/vmware/go-vcloud-director/v2/types/v56"
+import (
+	govcdtypes "github.com/vmware/go-vcloud-director/v2/types/v56"
+
+	"github.com/orange-cloudavenue/cloudavenue-sdk-go/internal/utils"
+)
 
 // * Action
 
@@ -64,21 +68,31 @@ type (
 		KeepQuery bool `validate:"omitempty"`
 	}
 
-	// PoliciesHTTPActionRedirectToHTTPS struct {
-	// 	// The port must be between 1 to 65535
-	// 	Port int
-	// }
-
 	PoliciesHTTPActionRateLimit struct {
-		// Maximum number of requests per period allowed 1 to 1000000000
-		Count int `validate:"required"`
+		//
+		// number of requests per period allowed 1 to 1000000000
+		// Default is 1000 requests
+		// 1 request is the minimum
+		// 1000000000 requests is the maximum
+		Count int `validate:"default=1000,min=1,max=1000000000"`
+		//
 		// Time period in seconds for the rate limit 1 to 1000000000
-		Period int `validate:"required"`
-		// Action to take when the rate limit is exceeded
+		// Default is 60 seconds
+		// 1 second is the minimum period
+		// 1000000000 seconds is the maximum period
+		Period int `validate:"default=60,min=1,max=1000000000"`
+		//
+		// Action to do an HTTP redirect when the rate limit is exceeded
+		// It can't be configured in combination with other actions below
 		RedirectAction *PoliciesHTTPActionRedirect `validate:"omitempty"`
-		// Action to take when the rate limit is exceeded
-		CloseConnectionAction string `validate:"omitempty"`
-		// Action to take when the rate limit is exceeded
+		//
+		// Action to close the connection HTTP when the rate limit is exceeded
+		// The network connection is closed (no error http return).
+		// It can't be configured in combination with other actions
+		CloseConnectionAction *bool `validate:"omitempty"`
+		//
+		// You can use this action to send a custom response to the client when the rate limit is exceeded.
+		// It can't be configured in combination with other actions
 		LocalResponseAction *PoliciesHTTPActionSendResponse `validate:"omitempty"`
 	}
 
@@ -87,8 +101,8 @@ type (
 		StatusCode int `validate:"required,oneof=200 204 403 404 429 501"`
 		// Content type of the response
 		ContentType string `validate:"required,oneof=application/json text/html text/plain"`
-		// Content of the response
-		Content string `validate:"required"`
+		// Content of the response - base64 encoded string
+		Content string `validate:"required,base64"`
 	}
 )
 
@@ -117,6 +131,8 @@ func (p *PoliciesHTTPActionHeaderRewrite) toVCD() *govcdtypes.AlbVsHttpRequestRu
 		Value:  p.Value,
 	}
 }
+
+// * Helpers to convert PoliciesHTTPActionHeadersRewrite to and from vCD types
 
 func (PoliciesHTTPActionHeadersRewrite) fromVCD(action []*govcdtypes.AlbVsHttpRequestRuleHeaderActions) PoliciesHTTPActionHeadersRewrite {
 	var headers []*PoliciesHTTPActionHeaderRewrite
@@ -191,5 +207,77 @@ func (p *PoliciesHTTPActionLocationRewrite) toVCD() *govcdtypes.AlbVsHttpRespRul
 		Port:      p.Port,
 		Path:      p.Path,
 		KeepQuery: p.KeepQuery,
+	}
+}
+
+// * Helpers to convert PoliciesHTTPActionRateLimit to and from vCD types
+
+func (PoliciesHTTPActionRateLimit) fromVCD(action *govcdtypes.AlbVsHttpSecurityRuleRateLimitAction) *PoliciesHTTPActionRateLimit {
+	if action == nil {
+		return nil
+	}
+	return &PoliciesHTTPActionRateLimit{
+		Count:  action.Count,
+		Period: action.Period,
+		RedirectAction: func() *PoliciesHTTPActionRedirect {
+			if action.RedirectAction != nil {
+				return (&PoliciesHTTPActionRedirect{}).fromVCD(action.RedirectAction)
+			}
+			return nil
+		}(),
+		LocalResponseAction: func() *PoliciesHTTPActionSendResponse {
+			if action.LocalResponseAction != nil {
+				return (&PoliciesHTTPActionSendResponse{}).fromVCD(action.LocalResponseAction)
+			}
+			return nil
+		}(),
+		CloseConnectionAction: func() *bool {
+			if action.CloseConnectionAction == string(PoliciesHTTPConnectionActionCLOSE) {
+				return utils.ToPTR(true)
+			}
+			return nil
+		}(),
+	}
+}
+
+func (p *PoliciesHTTPActionRateLimit) toVCD() *govcdtypes.AlbVsHttpSecurityRuleRateLimitAction {
+	if p == nil {
+		return nil
+	}
+	return &govcdtypes.AlbVsHttpSecurityRuleRateLimitAction{
+		Count:  p.Count,
+		Period: p.Period,
+		CloseConnectionAction: func() string {
+			if p.CloseConnectionAction != nil && *p.CloseConnectionAction {
+				return string(PoliciesHTTPConnectionActionCLOSE)
+			}
+			return ""
+		}(),
+		RedirectAction:      p.RedirectAction.toVCD(),
+		LocalResponseAction: p.LocalResponseAction.toVCD(),
+	}
+}
+
+// * Helpers to convert PoliciesHTTPActionSendResponse to and from vCD types
+
+func (PoliciesHTTPActionSendResponse) fromVCD(action *govcdtypes.AlbVsHttpSecurityRuleRateLimitLocalResponseAction) *PoliciesHTTPActionSendResponse {
+	if action == nil {
+		return nil
+	}
+	return &PoliciesHTTPActionSendResponse{
+		StatusCode:  action.StatusCode,
+		ContentType: action.ContentType,
+		Content:     action.Content,
+	}
+}
+
+func (p *PoliciesHTTPActionSendResponse) toVCD() *govcdtypes.AlbVsHttpSecurityRuleRateLimitLocalResponseAction {
+	if p == nil {
+		return nil
+	}
+	return &govcdtypes.AlbVsHttpSecurityRuleRateLimitLocalResponseAction{
+		Content:     p.Content,
+		ContentType: p.ContentType,
+		StatusCode:  p.StatusCode,
 	}
 }

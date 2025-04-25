@@ -33,23 +33,26 @@ type (
 		// Action to take when the rule matches
 
 		// HTTP Connection Action
+		// If set, the rule will either allow or close the connection based on the action specified.
 		// It can be configured in combination with other actions
-		ConnectionAction string `validate:"omitempty,oneof=ALLOW CLOSE"`
+		ConnectionAction PoliciesHTTPConnectionAction `validate:"omitempty,oneof=ALLOW CLOSE"`
 		// HTTP Rate Limit Action
+		// If set, the rule will limit the rate of requests from a client IP address.
 		// It can be configured in combination with other actions
 		RateLimitAction *PoliciesHTTPActionRateLimit `validate:"omitempty"`
 		// HTTP Redirect to HTTPS Action
+		// If set, the rule will redirect HTTP requests to HTTPS on the specified port.
 		// It can be configured in combination with other actions
-		// RedirectToHTTPSAction *PoliciesHTTPActionRedirectToHTTPS `validate:"omitempty"`
 		RedirectToHTTPSAction *int `validate:"omitempty"`
 		// HTTP Send Response Action
+		// If set, the rule will send a custom response to the client.
 		// It can be configured in combination with other actions
 		SendResponseAction *PoliciesHTTPActionSendResponse `validate:"omitempty"`
 	}
 
 	PoliciesHTTPSecurityMatchCriteria struct {
 		// Protocol
-		Protocol string `validate:"omitempty,oneof=HTTP HTTPS"`
+		Protocol PoliciesHTTPProtocol `validate:"omitempty,oneof=HTTP HTTPS"`
 		// Client IP addresses
 		ClientIPMatch *PoliciesHTTPClientIPMatch `validate:"omitempty"`
 		// Service Ports
@@ -69,13 +72,13 @@ type (
 
 // * Helpers to convert PoliciesHTTPSecurityModel to and from vCD types
 
-func (PoliciesHTTPSecurityModel) fromVCD(virtualServiceID string, rules *govcdtypes.AlbVsHttpSecurityRules) *PoliciesHTTPSecurityModel {
+func (PoliciesHTTPSecurityModel) fromVCD(virtualServiceID string, rules []*govcdtypes.AlbVsHttpSecurityRule) *PoliciesHTTPSecurityModel {
 	x := &PoliciesHTTPSecurityModel{
 		VirtualServiceID: virtualServiceID,
 	}
 
-	for _, rule := range rules.Values {
-		x.Policies = append(x.Policies, (&PoliciesHTTPSecurityModelPolicy{}).fromVCD(&rule))
+	for _, rule := range rules {
+		x.Policies = append(x.Policies, (&PoliciesHTTPSecurityModelPolicy{}).fromVCD(rule))
 	}
 	return x
 }
@@ -83,12 +86,9 @@ func (PoliciesHTTPSecurityModel) fromVCD(virtualServiceID string, rules *govcdty
 func (p *PoliciesHTTPSecurityModel) toVCD() *govcdtypes.AlbVsHttpSecurityRules {
 	m := &govcdtypes.AlbVsHttpSecurityRules{}
 
-	var rules []govcdtypes.AlbVsHttpSecurityRule
 	for _, policy := range p.Policies {
-		rules = append(rules, policy.toVCD())
+		m.Values = append(m.Values, policy.toVCD())
 	}
-
-	m.Values = rules
 
 	return m
 }
@@ -101,7 +101,7 @@ func (PoliciesHTTPSecurityModelPolicy) fromVCD(rule *govcdtypes.AlbVsHttpSecurit
 		Active:           rule.Active,
 		Logging:          rule.Logging,
 		MatchCriteria:    PoliciesHTTPSecurityMatchCriteria{}.fromVCD(rule.MatchCriteria),
-		ConnectionAction: rule.AllowOrCloseConnectionAction,
+		ConnectionAction: PoliciesHTTPConnectionAction(rule.AllowOrCloseConnectionAction),
 		RedirectToHTTPSAction: func() *int {
 			if rule.RedirectToHTTPSAction != nil {
 				return &rule.RedirectToHTTPSAction.Port
@@ -119,7 +119,7 @@ func (p *PoliciesHTTPSecurityModelPolicy) toVCD() govcdtypes.AlbVsHttpSecurityRu
 		Active:                       p.Active,
 		Logging:                      p.Logging,
 		MatchCriteria:                p.MatchCriteria.toVCD(),
-		AllowOrCloseConnectionAction: p.ConnectionAction,
+		AllowOrCloseConnectionAction: string(p.ConnectionAction),
 		RedirectToHTTPSAction: func() *govcdtypes.AlbVsHttpSecurityRuleRedirectToHTTPSAction {
 			if p.RedirectToHTTPSAction != nil {
 				return &govcdtypes.AlbVsHttpSecurityRuleRedirectToHTTPSAction{Port: *p.RedirectToHTTPSAction}
@@ -135,7 +135,7 @@ func (p *PoliciesHTTPSecurityModelPolicy) toVCD() govcdtypes.AlbVsHttpSecurityRu
 
 func (PoliciesHTTPSecurityMatchCriteria) fromVCD(criteria govcdtypes.AlbVsHttpRequestAndSecurityRuleMatchCriteria) PoliciesHTTPSecurityMatchCriteria {
 	return PoliciesHTTPSecurityMatchCriteria{
-		Protocol:         criteria.Protocol,
+		Protocol:         PoliciesHTTPProtocol(criteria.Protocol),
 		ClientIPMatch:    (&PoliciesHTTPClientIPMatch{}).fromVCD(criteria.ClientIPMatch),
 		ServicePortMatch: (&PoliciesHTTPServicePortMatch{}).fromVCD(criteria.ServicePortMatch),
 		MethodMatch:      (&PoliciesHTTPMethodMatch{}).fromVCD(criteria.MethodMatch),
@@ -148,7 +148,7 @@ func (PoliciesHTTPSecurityMatchCriteria) fromVCD(criteria govcdtypes.AlbVsHttpRe
 
 func (p PoliciesHTTPSecurityMatchCriteria) toVCD() govcdtypes.AlbVsHttpRequestAndSecurityRuleMatchCriteria {
 	return govcdtypes.AlbVsHttpRequestAndSecurityRuleMatchCriteria{
-		Protocol:         p.Protocol,
+		Protocol:         string(p.Protocol),
 		ClientIPMatch:    p.ClientIPMatch.toVCD(),
 		ServicePortMatch: p.ServicePortMatch.toVCD(),
 		MethodMatch:      p.MethodMatch.toVCD(),
@@ -156,84 +156,5 @@ func (p PoliciesHTTPSecurityMatchCriteria) toVCD() govcdtypes.AlbVsHttpRequestAn
 		CookieMatch:      p.CookieMatch.toVCD(),
 		HeaderMatch:      p.HeaderMatch.toVCD(),
 		QueryMatch:       p.QueryMatch,
-	}
-}
-
-// * Helpers to convert PoliciesHTTPActionRateLimit to and from vCD types
-
-func (PoliciesHTTPActionRateLimit) fromVCD(action *govcdtypes.AlbVsHttpSecurityRuleRateLimitAction) *PoliciesHTTPActionRateLimit {
-	if action == nil {
-		return nil
-	}
-	return &PoliciesHTTPActionRateLimit{
-		Count:  action.Count,
-		Period: action.Period,
-		RedirectAction: func() *PoliciesHTTPActionRedirect {
-			if action.RedirectAction != nil {
-				return (&PoliciesHTTPActionRedirect{}).fromVCD(action.RedirectAction)
-			}
-			return nil
-		}(),
-		LocalResponseAction: func() *PoliciesHTTPActionSendResponse {
-			if action.LocalResponseAction != nil {
-				return (&PoliciesHTTPActionSendResponse{}).fromVCD(action.LocalResponseAction)
-			}
-			return nil
-		}(),
-		CloseConnectionAction: func() string {
-			if action.CloseConnectionAction != "" {
-				return "Close_Connection"
-			}
-			return ""
-		}(),
-	}
-}
-
-func (p *PoliciesHTTPActionRateLimit) toVCD() *govcdtypes.AlbVsHttpSecurityRuleRateLimitAction {
-	if p == nil {
-		return nil
-	}
-	return &govcdtypes.AlbVsHttpSecurityRuleRateLimitAction{
-		Count:  p.Count,
-		Period: p.Period,
-		CloseConnectionAction: func() string {
-			return p.CloseConnectionAction
-		}(),
-		RedirectAction: func() *govcdtypes.AlbVsHttpRequestRuleRedirectAction {
-			if p.RedirectAction != nil {
-				return p.RedirectAction.toVCD()
-			}
-			return nil
-		}(),
-		LocalResponseAction: func() *govcdtypes.AlbVsHttpSecurityRuleRateLimitLocalResponseAction {
-			if p.LocalResponseAction != nil {
-				return p.LocalResponseAction.toVCD()
-			}
-			return nil
-		}(),
-	}
-}
-
-// * Helpers to convert PoliciesHTTPActionSendResponse to and from vCD types
-
-func (PoliciesHTTPActionSendResponse) fromVCD(action *govcdtypes.AlbVsHttpSecurityRuleRateLimitLocalResponseAction) *PoliciesHTTPActionSendResponse {
-	if action == nil {
-		return nil
-	}
-	return &PoliciesHTTPActionSendResponse{
-		StatusCode:  action.StatusCode,
-		ContentType: action.ContentType,
-		Content:     action.Content,
-	}
-}
-
-func (p *PoliciesHTTPActionSendResponse) toVCD() *govcdtypes.AlbVsHttpSecurityRuleRateLimitLocalResponseAction {
-	if p == nil {
-		return nil
-	}
-	return &govcdtypes.AlbVsHttpSecurityRuleRateLimitLocalResponseAction{
-		Content:     p.Content,
-		ContentType: p.ContentType,
-		StatusCode:  p.StatusCode,
 	}
 }
