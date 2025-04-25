@@ -60,11 +60,11 @@ var getPoliciesHTTPSecurity = func(virtualServiceClient fakeVirtualServiceClient
 
 func (c *client) UpdatePoliciesHTTPSecurity(ctx context.Context, policies *PoliciesHTTPSecurityModel) (*PoliciesHTTPSecurityModel, error) {
 	if err := validators.New().Struct(policies); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("validation error: %w", err)
 	}
 
 	if err := c.clientCloudavenue.Refresh(); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error refreshing client: %w", err)
 	}
 
 	// * Get the virtual service

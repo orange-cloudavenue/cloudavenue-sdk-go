@@ -77,7 +77,7 @@ type (
 		// Action to take when the rate limit is exceeded
 		RedirectAction *PoliciesHTTPActionRedirect `validate:"omitempty"`
 		// Action to take when the rate limit is exceeded
-		CloseConnectionAction string `validate:"omitempty"`
+		CloseConnectionAction *bool `validate:"omitempty"`
 		// Action to take when the rate limit is exceeded
 		LocalResponseAction *PoliciesHTTPActionSendResponse `validate:"omitempty"`
 	}
@@ -87,8 +87,8 @@ type (
 		StatusCode int `validate:"required,oneof=200 204 403 404 429 501"`
 		// Content type of the response
 		ContentType string `validate:"required,oneof=application/json text/html text/plain"`
-		// Content of the response
-		Content string `validate:"required"`
+		// Content of the response - base64 encoded string
+		Content string `validate:"required,base64"`
 	}
 )
 
@@ -117,6 +117,8 @@ func (p *PoliciesHTTPActionHeaderRewrite) toVCD() *govcdtypes.AlbVsHttpRequestRu
 		Value:  p.Value,
 	}
 }
+
+// * Helpers to convert PoliciesHTTPActionHeadersRewrite to and from vCD types
 
 func (PoliciesHTTPActionHeadersRewrite) fromVCD(action []*govcdtypes.AlbVsHttpRequestRuleHeaderActions) PoliciesHTTPActionHeadersRewrite {
 	var headers []*PoliciesHTTPActionHeaderRewrite

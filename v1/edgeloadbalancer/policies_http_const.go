@@ -47,6 +47,9 @@ const (
 	PoliciesHTTPMethodMOVE      PoliciesHTTPMethod = "MOVE"
 	PoliciesHTTPMethodLOCK      PoliciesHTTPMethod = "LOCK"
 	PoliciesHTTPMethodUNLOCK    PoliciesHTTPMethod = "UNLOCK"
+
+	PoliciesHTTPConnectionActionALLOW PoliciesHTTPConnectionAction = "ALLOW"
+	PoliciesHTTPConnectionActionCLOSE PoliciesHTTPConnectionAction = "CLOSE"
 )
 
 // * Var HTTP.
@@ -126,7 +129,7 @@ var (
 	PoliciesHTTPLocationMatchCriteria       = PoliciesHTTPPathMatchCriteria
 	PoliciesHTTPLocationMatchCriteriaString = PoliciesHTTPPathMatchCriteriaString
 
-	PoliciesHTTPRequestHeaderMatchCriteria = []PoliciesHTTPMatchCriteriaCriteria{
+	PoliciesHTTPHeaderMatchCriteria = []PoliciesHTTPMatchCriteriaCriteria{
 		PoliciesHTTPMatchCriteriaCriteriaBEGINSWITH,
 		PoliciesHTTPMatchCriteriaCriteriaDOESNOTBEGINWITH,
 		PoliciesHTTPMatchCriteriaCriteriaCONTAINS,
@@ -139,7 +142,7 @@ var (
 		PoliciesHTTPMatchCriteriaCriteriaDOESNOTEXIST,
 	}
 
-	PoliciesHTTPRequestHeaderMatchCriteriaString = sliceAnyToSliceString(PoliciesHTTPRequestHeaderMatchCriteria)
+	PoliciesHTTPHeaderMatchCriteriaString = sliceAnyToSliceString(PoliciesHTTPHeaderMatchCriteria)
 
 	PoliciesHTTPCookieMatchCriteria = []PoliciesHTTPMatchCriteriaCriteria{
 		PoliciesHTTPMatchCriteriaCriteriaBEGINSWITH,
@@ -178,4 +181,13 @@ var (
 		PoliciesHTTPMatchCriteriaCriteriaREGEXDOESNOTMATCH,
 	}
 	PoliciesHTTPResponseLocationHeaderMatchCriteriaString = sliceAnyToSliceString(PoliciesHTTPResponseLocationHeaderMatchCriteria)
+)
+
+// * Var for Connection.
+var (
+	PoliciesHTTPConnectionActions = []PoliciesHTTPConnectionAction{
+		PoliciesHTTPConnectionActionALLOW,
+		PoliciesHTTPConnectionActionCLOSE,
+	}
+	PoliciesHTTPConnectionActionsString = sliceAnyToSliceString(PoliciesHTTPConnectionActions)
 )

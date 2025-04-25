@@ -911,6 +911,40 @@ func TestClient_UpdatePoliciesHTTPSecurity(t *testing.T) {
 			expectedErr: false,
 			err:         nil,
 		},
+		// ? ------------------------------------------------------------------------------
+		// ? ------------------------------ ERROR CASES -----------------------------------
+		{
+			// Check if SendResponseAction is base64 encoded
+			// and if it is not, return an error
+			name:        "error-PoliciesHTTPActionSendResponse-base64encoding",
+			expectedErr: true,
+			mockFunc: func() {
+				clientCAV.EXPECT().Refresh().Return(nil)
+				clientCAV.EXPECT().GetAlbVirtualServiceById(virtualServiceID).Return(&govcd.NsxtAlbVirtualService{}, nil)
+				// getPoliciesHTTPSecurity = func(_ fakeVirtualServiceClient) ([]*govcdtypes.AlbVsHttpSecurityRule, error) {
+				// 	return []*govcdtypes.AlbVsHttpSecurityRule{
+				// 		{
+				// 			Name:    "ruleName",
+				// 			Active:  true,
+				// 			Logging: true,
+				// 			MatchCriteria: govcdtypes.AlbVsHttpRequestAndSecurityRuleMatchCriteria{
+				// 				Protocol: "HTTP",
+				// 			},
+				// 			// TODO - ERROR CASE
+				// 			LocalResponseAction: &govcdtypes.AlbVsHttpSecurityRuleRateLimitLocalResponseAction{
+				// 				StatusCode:  404,
+				// 				ContentType: "application/json",
+				// 				Content:     "{\"notencoded\":\"value\"}",
+				// 			},
+				// 		},
+				// 	}, errors.New("error encoding PoliciesHTTPActionSendResponse")
+				// }
+				updatePoliciesHTTPSecurity = func(_ fakeVirtualServiceClient, v *govcdtypes.AlbVsHttpSecurityRules) (*govcdtypes.AlbVsHttpSecurityRules, error) {
+					return v, errors.New("error encoding PoliciesHTTPActionSendResponse")
+				}
+			},
+			err: errors.New("error ecncoding PoliciesHTTPActionSendResponse"),
+		},
 	}
 
 	for _, tc := range tests {

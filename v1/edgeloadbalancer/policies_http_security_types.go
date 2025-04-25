@@ -11,6 +11,8 @@ package edgeloadbalancer
 
 import (
 	govcdtypes "github.com/vmware/go-vcloud-director/v2/types/v56"
+
+	"github.com/orange-cloudavenue/cloudavenue-sdk-go/internal/utils"
 )
 
 type (
@@ -180,11 +182,11 @@ func (PoliciesHTTPActionRateLimit) fromVCD(action *govcdtypes.AlbVsHttpSecurityR
 			}
 			return nil
 		}(),
-		CloseConnectionAction: func() string {
-			if action.CloseConnectionAction != "" {
-				return "Close_Connection"
+		CloseConnectionAction: func() *bool {
+			if action.CloseConnectionAction == "CLOSE" {
+				return utils.ToPTR(true)
 			}
-			return ""
+			return nil
 		}(),
 	}
 }
@@ -197,7 +199,10 @@ func (p *PoliciesHTTPActionRateLimit) toVCD() *govcdtypes.AlbVsHttpSecurityRuleR
 		Count:  p.Count,
 		Period: p.Period,
 		CloseConnectionAction: func() string {
-			return p.CloseConnectionAction
+			if p.CloseConnectionAction != nil && *p.CloseConnectionAction {
+				return "CLOSE"
+			}
+			return ""
 		}(),
 		RedirectAction: func() *govcdtypes.AlbVsHttpRequestRuleRedirectAction {
 			if p.RedirectAction != nil {

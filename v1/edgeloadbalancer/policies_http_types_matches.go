@@ -16,6 +16,10 @@ type (
 	PoliciesHTTPMethod                    string
 	PoliciesHTTPMatchCriteriaCriteria     string
 	PoliciesHTTPActionHeaderRewriteAction string
+	// Policies HTTP ConnectionAction is used to define the action taken on the connection.
+	// One of ALLOW or DENY.
+	// var PoliciesHTTPConnectionActionString are defined get the list of valid values.
+	PoliciesHTTPConnectionAction string
 )
 
 type (
