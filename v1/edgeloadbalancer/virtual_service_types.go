@@ -28,6 +28,8 @@ type (
 		UpdateHttpRequestRules(config *govcdtypes.AlbVsHttpRequestRules) (*govcdtypes.AlbVsHttpRequestRules, error)
 		GetAllHttpResponseRules(queryParameters url.Values) ([]*govcdtypes.AlbVsHttpResponseRule, error)
 		UpdateHttpResponseRules(config *govcdtypes.AlbVsHttpResponseRules) (*govcdtypes.AlbVsHttpResponseRules, error)
+		GetAllHttpSecurityRules(queryParameters url.Values) ([]*govcdtypes.AlbVsHttpSecurityRule, error)
+		UpdateHttpSecurityRules(config *govcdtypes.AlbVsHttpSecurityRules) (*govcdtypes.AlbVsHttpSecurityRules, error)
 	}
 
 	VirtualServiceModel struct {

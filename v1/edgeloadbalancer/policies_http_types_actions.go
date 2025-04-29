@@ -63,6 +63,33 @@ type (
 		// Whether or not to keep the existing query string when rewriting the URL. Defaults to true.
 		KeepQuery bool `validate:"omitempty"`
 	}
+
+	// PoliciesHTTPActionRedirectToHTTPS struct {
+	// 	// The port must be between 1 to 65535
+	// 	Port int
+	// }
+
+	PoliciesHTTPActionRateLimit struct {
+		// Maximum number of requests per period allowed 1 to 1000000000
+		Count int `validate:"required"`
+		// Time period in seconds for the rate limit 1 to 1000000000
+		Period int `validate:"required"`
+		// Action to take when the rate limit is exceeded
+		RedirectAction *PoliciesHTTPActionRedirect `validate:"omitempty"`
+		// Action to take when the rate limit is exceeded
+		CloseConnectionAction *bool `validate:"omitempty"`
+		// Action to take when the rate limit is exceeded
+		LocalResponseAction *PoliciesHTTPActionSendResponse `validate:"omitempty"`
+	}
+
+	PoliciesHTTPActionSendResponse struct {
+		// HTTP status code to return
+		StatusCode int `validate:"required,oneof=200 204 403 404 429 501"`
+		// Content type of the response
+		ContentType string `validate:"required,oneof=application/json text/html text/plain"`
+		// Content of the response - base64 encoded string
+		Content string `validate:"required,base64"`
+	}
 )
 
 // * Helpers to convert PoliciesHTTPActionHeaderRewrite to and from vCD types
@@ -90,6 +117,8 @@ func (p *PoliciesHTTPActionHeaderRewrite) toVCD() *govcdtypes.AlbVsHttpRequestRu
 		Value:  p.Value,
 	}
 }
+
+// * Helpers to convert PoliciesHTTPActionHeadersRewrite to and from vCD types
 
 func (PoliciesHTTPActionHeadersRewrite) fromVCD(action []*govcdtypes.AlbVsHttpRequestRuleHeaderActions) PoliciesHTTPActionHeadersRewrite {
 	var headers []*PoliciesHTTPActionHeaderRewrite
