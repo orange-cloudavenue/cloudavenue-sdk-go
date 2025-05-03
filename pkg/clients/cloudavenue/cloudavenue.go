@@ -40,7 +40,7 @@ type Opts struct {
 	Org        string `env:"ORG,overwrite"`      // Required
 	VDC        string `env:"VDC,overwrite"`
 	Debug      bool   `env:"DEBUG,overwrite"`
-	VCDVersion string `env:"VCD_VERSION,overwrite,default=37.2"`
+	VCDVersion string `env:"VCD_VERSION,overwrite,default=38.1"`
 	Dev        bool   `env:"DEV,overwrite"` // Only for development
 }
 
