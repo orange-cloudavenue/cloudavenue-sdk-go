@@ -1,4 +1,10 @@
 ## 0.26.0 (Unreleased)
+
+### :dependabot: **Dependencies**
+
+* deps: bumps github.com/sethvargo/go-envconfig from 1.2.0 to 1.3.0 (GH-247)
+* deps: bumps golang.org/x/sync from 0.13.0 to 0.14.0 (GH-248)
+
 ## 0.25.0 (April 24, 2025)
 
 ### :rocket: **New Features**
