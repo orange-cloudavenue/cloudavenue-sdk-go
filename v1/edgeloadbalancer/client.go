@@ -54,6 +54,10 @@ type (
 		GetPoliciesHTTPResponse(ctx context.Context, virtualServiceID string) (*PoliciesHTTPResponseModel, error)
 		UpdatePoliciesHTTPResponse(ctx context.Context, policies *PoliciesHTTPResponseModel) (*PoliciesHTTPResponseModel, error)
 		DeletePoliciesHTTPResponse(ctx context.Context, virtualServiceID string) error
+		// ? Security
+		GetPoliciesHTTPSecurity(ctx context.Context, virtualServiceID string) (*PoliciesHTTPSecurityModel, error)
+		UpdatePoliciesHTTPSecurity(ctx context.Context, policies *PoliciesHTTPSecurityModel) (*PoliciesHTTPSecurityModel, error)
+		DeletePoliciesHTTPSecurity(ctx context.Context, virtualServiceID string) error
 	}
 
 	// Internal client interfaces.

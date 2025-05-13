@@ -16,6 +16,9 @@ type (
 	PoliciesHTTPMethod                    string
 	PoliciesHTTPMatchCriteriaCriteria     string
 	PoliciesHTTPActionHeaderRewriteAction string
+	// PoliciesHTTPConnectionAction specifies the action to be taken on the connection.
+	// Valid values are "ALLOW" or "DENY".
+	PoliciesHTTPConnectionAction string
 )
 
 type (
@@ -213,6 +216,8 @@ func (p *PoliciesHTTPHeaderMatch) toVCD() *govcdtypes.AlbVsHttpRequestRuleHeader
 		Value:         p.Values,
 	}
 }
+
+// * Helpers to convert PoliciesHTTPHeadersMatch to and from vCD types
 
 func (PoliciesHTTPHeadersMatch) fromVCD(match []govcdtypes.AlbVsHttpRequestRuleHeaderMatch) PoliciesHTTPHeadersMatch {
 	var headers []PoliciesHTTPHeaderMatch
