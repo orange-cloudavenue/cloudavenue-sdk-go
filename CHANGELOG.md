@@ -1,5 +1,9 @@
 ## 0.26.0 (Unreleased)
 
+### :rocket: **New Features**
+
+* `elb` - Add methods to manage edgegateway load balancer http policies security. (GH-240)
+
 ### :dependabot: **Dependencies**
 
 * deps: bumps github.com/sethvargo/go-envconfig from 1.2.0 to 1.3.0 (GH-247)
