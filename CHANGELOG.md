@@ -6,6 +6,7 @@
 
 ### :dependabot: **Dependencies**
 
+* deps: bumps github.com/hashicorp/terraform-plugin-sdk/v2 from 2.36.1 to 2.37.0 (GH-250)
 * deps: bumps github.com/sethvargo/go-envconfig from 1.2.0 to 1.3.0 (GH-247)
 * deps: bumps go.uber.org/mock from 0.5.1 to 0.5.2 (GH-246)
 * deps: bumps golang.org/x/mod from 0.24.0 to 0.25.0 (GH-261)
