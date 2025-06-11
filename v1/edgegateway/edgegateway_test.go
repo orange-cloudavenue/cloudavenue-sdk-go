@@ -10,6 +10,7 @@
 package edgegateway
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"testing"
@@ -520,7 +521,7 @@ func TestClient_GetEdgeGateway(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			test.mockFunc()
 
-			edgeGateway, err := c.GetEdgeGateway(t.Context(), test.edgeGatewayNameOrID)
+			edgeGateway, err := c.GetEdgeGateway(context.Background(), test.edgeGatewayNameOrID)
 			if !test.expectedError {
 				assert.NoError(t, err)
 				assert.NotNil(t, edgeGateway)
@@ -716,7 +717,7 @@ func TestClient_ListEdgeGateway(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			test.mockFunc()
 
-			allEdgeGateways, err := c.ListEdgeGateway(t.Context())
+			allEdgeGateways, err := c.ListEdgeGateway(context.Background())
 			if !test.expectedError {
 				assert.NoError(t, err)
 				assert.NotNil(t, allEdgeGateways)
@@ -866,7 +867,7 @@ func TestClient_UpdateEdgeGateway(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			test.mockFunc()
 
-			err := c.UpdateEdgeGateway(t.Context(), &EdgeGatewayModelUpdate{
+			err := c.UpdateEdgeGateway(context.Background(), &EdgeGatewayModelUpdate{
 				ID:        test.edgeID,
 				Bandwidth: test.bandwidth,
 			})
@@ -1075,7 +1076,7 @@ func TestClient_EnableNetworkService(t *testing.T) {
 				},
 			}
 
-			err := e.EnableNetworkService(t.Context())
+			err := e.EnableNetworkService(context.Background())
 			if !test.expectedError {
 				assert.NoError(t, err)
 				return
@@ -1283,7 +1284,7 @@ func TestClient_DisableNetworkService(t *testing.T) {
 				},
 			}
 
-			err := e.DisableNetworkService(t.Context())
+			err := e.DisableNetworkService(context.Background())
 			if !test.expectedError {
 				assert.NoError(t, err)
 				return
@@ -1536,7 +1537,7 @@ func TestClient_DeleteEdgeGateway(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			test.mockFunc()
 
-			err := c.DeleteEdgeGateway(t.Context(), edgeGatewayID)
+			err := c.DeleteEdgeGateway(context.Background(), edgeGatewayID)
 			if !test.expectedError {
 				assert.NoError(t, err)
 				return
