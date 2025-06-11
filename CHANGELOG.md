@@ -9,6 +9,7 @@
 * deps: bumps github.com/sethvargo/go-envconfig from 1.2.0 to 1.3.0 (GH-247)
 * deps: bumps go.uber.org/mock from 0.5.1 to 0.5.2 (GH-246)
 * deps: bumps golang.org/x/sync from 0.13.0 to 0.14.0 (GH-248)
+* deps: bumps golang.org/x/sync from 0.14.0 to 0.15.0 (GH-262)
 
 ## 0.25.0 (April 24, 2025)
 
