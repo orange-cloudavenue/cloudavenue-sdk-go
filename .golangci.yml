@@ -44,10 +44,10 @@ linters:
     - staticcheck # Staticcheck is `go vet` on steroids [fast: false, auto-fix: false]
     - tparallel # tparallel detects inappropriate usage of t.Parallel() method in your Go test codes [fast: false, auto-fix: false]
     - unconvert # Remove unnecessary type conversions [fast: false, auto-fix: false]
-    - usetesting # Use the testing package [fast: false, auto-fix: false]
     - wastedassign # Finds assignments to variables that are never used [fast: false, auto-fix: false]
     - whitespace # Checks for trailing whitespace [fast: true, auto-fix: false]
   disable:
+    - usetesting # Use the testing package [fast: false, auto-fix: false]
     - containedctx
     - cyclop
     - depguard

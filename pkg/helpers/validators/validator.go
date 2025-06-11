@@ -28,5 +28,8 @@ func New() *validator.Validate {
 	_ = v.RegisterValidation(HTTPStatusCode.Key, HTTPStatusCode.Func)
 	_ = v.RegisterValidation(HTTPStatusCodeRange.Key, HTTPStatusCodeRange.Func)
 
+	// * Default
+	_ = v.RegisterValidation(Default.Key, Default.Func, true)
+
 	return v
 }
