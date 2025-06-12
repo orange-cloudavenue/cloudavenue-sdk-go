@@ -1,4 +1,9 @@
 ## 0.27.0 (Unreleased)
+
+### :dependabot: **Dependencies**
+
+* revert: deps github.com/hashicorp/terraform-plugin-sdk/v2 from 2.37.0 to 2.36.1 (GH-266)
+
 ## 0.26.0 (June 12, 2025)
 
 ### :rocket: **New Features**
