@@ -16,6 +16,7 @@ import (
 	"testing"
 
 	"github.com/google/uuid"
+	"github.com/orange-cloudavenue/common-go/validators"
 	"github.com/stretchr/testify/assert"
 	gomock "go.uber.org/mock/gomock"
 
@@ -23,7 +24,6 @@ import (
 	govcdtypes "github.com/vmware/go-vcloud-director/v2/types/v56"
 
 	"github.com/orange-cloudavenue/cloudavenue-sdk-go/internal/utils"
-	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/helpers/validators"
 	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/urn"
 )
 
@@ -221,7 +221,7 @@ func TestVirtualServiceRequestValidation(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			err := validators.New().Struct(tc.virtualModel)
+			err := validators.New().Struct(&tc.virtualModel)
 			if !tc.expectedErr {
 				assert.NoError(t, err)
 			} else {

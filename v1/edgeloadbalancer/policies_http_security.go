@@ -13,9 +13,9 @@ import (
 	"context"
 	"fmt"
 
-	govcdtypes "github.com/vmware/go-vcloud-director/v2/types/v56"
+	"github.com/orange-cloudavenue/common-go/validators"
 
-	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/helpers/validators"
+	govcdtypes "github.com/vmware/go-vcloud-director/v2/types/v56"
 )
 
 func (c *client) GetPoliciesHTTPSecurity(ctx context.Context, virtualServiceID string) (*PoliciesHTTPSecurityModel, error) {
@@ -46,7 +46,7 @@ var getPoliciesHTTPSecurity = func(virtualServiceClient fakeVirtualServiceClient
 }
 
 func (c *client) UpdatePoliciesHTTPSecurity(ctx context.Context, policies *PoliciesHTTPSecurityModel) (*PoliciesHTTPSecurityModel, error) {
-	if err := validators.New().Struct(policies); err != nil {
+	if err := validators.New().StructCtx(ctx, policies); err != nil {
 		return nil, fmt.Errorf("validation error: %w", err)
 	}
 

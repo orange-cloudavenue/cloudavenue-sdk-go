@@ -1,0 +1,4 @@
+```release-note:note
+`pkg/helpers/validators` - Migrated struct validation logic to use the shared library orange-cloudavenue/common-go, replacing the previous cloudavenue-sdk/pkg/helpers/validators implementation.
+```
+

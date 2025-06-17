@@ -74,13 +74,13 @@ type (
 		// Default is 1000 requests
 		// 1 request is the minimum
 		// 1000000000 requests is the maximum
-		Count int `validate:"default=1000,min=1,max=1000000000"`
+		Count int `default:"1000" validate:"min=1,max=1000000000"`
 		//
 		// Time period in seconds for the rate limit 1 to 1000000000
 		// Default is 60 seconds
 		// 1 second is the minimum period
 		// 1000000000 seconds is the maximum period
-		Period int `validate:"default=60,min=1,max=1000000000"`
+		Period int `default:"60" validate:"min=1,max=1000000000"`
 		//
 		// Action to do an HTTP redirect when the rate limit is exceeded
 		// It can't be configured in combination with other actions below

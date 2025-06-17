@@ -13,11 +13,12 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/orange-cloudavenue/common-go/validators"
+
 	"github.com/vmware/go-vcloud-director/v2/govcd"
 	govcdtypes "github.com/vmware/go-vcloud-director/v2/types/v56"
 
 	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/errors"
-	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/helpers/validators"
 	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/urn"
 )
 
@@ -105,7 +106,7 @@ func (c *client) getVirtualService(_ context.Context, edgeGatewayID, virtualServ
 
 // CreateVirtualService creates a new virtual service based on the provided VirtualServiceModelRequest.
 func (c *client) CreateVirtualService(ctx context.Context, vsr VirtualServiceModelRequest) (*VirtualServiceModel, error) {
-	if err := validators.New().Struct(vsr); err != nil {
+	if err := validators.New().StructCtx(ctx, &vsr); err != nil {
 		return nil, err
 	}
 
@@ -149,7 +150,7 @@ func (c *client) UpdateVirtualService(ctx context.Context, virtualServiceID stri
 		return nil, fmt.Errorf("virtualServiceID has %w. Please provide a valid virtualServiceID", errors.ErrInvalidFormat)
 	}
 
-	if err := validators.New().Struct(vsr); err != nil {
+	if err := validators.New().StructCtx(ctx, &vsr); err != nil {
 		return nil, err
 	}
 

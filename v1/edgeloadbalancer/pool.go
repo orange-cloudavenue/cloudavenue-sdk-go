@@ -14,11 +14,12 @@ import (
 	"fmt"
 	"net/url"
 
+	"github.com/orange-cloudavenue/common-go/validators"
+
 	"github.com/vmware/go-vcloud-director/v2/govcd"
 	govcdtypes "github.com/vmware/go-vcloud-director/v2/types/v56"
 
 	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/errors"
-	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/helpers/validators"
 	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/urn"
 )
 
@@ -94,7 +95,7 @@ func (c *client) getpool(_ context.Context, edgeGatewayID, nameOrID string) (*go
 }
 
 func (c *client) CreatePool(ctx context.Context, pool PoolModelRequest) (*PoolModel, error) {
-	if err := validators.New().Struct(pool); err != nil {
+	if err := validators.New().StructCtx(ctx, &pool); err != nil {
 		return nil, err
 	}
 
@@ -123,7 +124,7 @@ func (c *client) UpdatePool(ctx context.Context, poolID string, pool PoolModelRe
 		return nil, fmt.Errorf("poolID has %w. Please provide a valid poolID", errors.ErrInvalidFormat)
 	}
 
-	if err := validators.New().Struct(pool); err != nil {
+	if err := validators.New().StructCtx(ctx, &pool); err != nil {
 		return nil, err
 	}
 
