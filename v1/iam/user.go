@@ -10,7 +10,7 @@
 package iam
 
 import (
-	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/helpers/validators"
+	"github.com/orange-cloudavenue/common-go/validators"
 )
 
 // CreateLocalUser creates a new local user in the system.
@@ -24,7 +24,7 @@ import (
 //	*User - A pointer to the created User struct.
 //	error - An error if the creation or validation fails, otherwise nil.
 func (c *Client) CreateLocalUser(user LocalUser) (*UserClient, error) {
-	return c.createGenericUser(user)
+	return c.createGenericUser(&user)
 }
 
 // CreateSAMLUser creates a new SAML user in the system.
@@ -110,7 +110,7 @@ func (c *Client) GetUser(nameOrID string) (*UserClient, error) {
 // Update updates the user information in the system.
 // Returns an error if the update operation fails.
 func (u *UserClient) Update() error {
-	if err := validators.New().Struct(u.User); err != nil {
+	if err := validators.New().Struct(&u.User); err != nil {
 		return err
 	}
 

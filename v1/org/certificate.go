@@ -13,10 +13,11 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/orange-cloudavenue/common-go/validators"
+
 	"github.com/vmware/go-vcloud-director/v2/govcd"
 	govcdtypes "github.com/vmware/go-vcloud-director/v2/types/v56"
 
-	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/helpers/validators"
 	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/urn"
 )
 
@@ -80,12 +81,12 @@ func (c *client) getCertificateFromLibrary(_ context.Context, nameOrID string) (
 }
 
 // CreateCertificateLibrary creates a new certificate library.
-func (c *client) CreateCertificateInLibrary(_ context.Context, cert *CertificateCreateRequest) (*CertificateModel, error) {
+func (c *client) CreateCertificateInLibrary(ctx context.Context, cert *CertificateCreateRequest) (*CertificateModel, error) {
 	if err := c.clientCloudavenue.Refresh(); err != nil {
 		return nil, err
 	}
 
-	if err := validators.New().Struct(cert); err != nil {
+	if err := validators.New().StructCtx(ctx, cert); err != nil {
 		return nil, err
 	}
 
@@ -117,7 +118,7 @@ func (c *client) UpdateCertificateInLibrary(ctx context.Context, certificateID s
 		return nil, err
 	}
 
-	if err := validators.New().Struct(cert); err != nil {
+	if err := validators.New().StructCtx(ctx, cert); err != nil {
 		return nil, err
 	}
 

@@ -13,8 +13,9 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/orange-cloudavenue/common-go/validators"
+
 	commoncloudavenue "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/common/cloudavenue"
-	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/helpers/validators"
 )
 
 // GetProperties retrieves the properties of the client from the Cloudavenue API.
@@ -56,7 +57,7 @@ func (c *client) UpdateProperties(ctx context.Context, properties *PropertiesReq
 		return nil, err
 	}
 
-	if err := validators.New().Struct(properties); err != nil {
+	if err := validators.New().StructCtx(ctx, properties); err != nil {
 		return nil, err
 	}
 

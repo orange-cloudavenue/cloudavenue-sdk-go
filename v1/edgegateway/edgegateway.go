@@ -14,12 +14,12 @@ import (
 	"fmt"
 
 	"github.com/go-resty/resty/v2"
+	"github.com/orange-cloudavenue/common-go/validators"
 
 	"github.com/vmware/go-vcloud-director/v2/govcd"
 
 	"github.com/orange-cloudavenue/cloudavenue-sdk-go/internal/endpoints"
 	commoncloudavenue "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/common/cloudavenue"
-	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/helpers/validators"
 	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/urn"
 	v1 "github.com/orange-cloudavenue/cloudavenue-sdk-go/v1"
 )
