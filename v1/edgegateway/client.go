@@ -83,6 +83,6 @@ func NewFakeClient(i clientInterface) (Client, error) {
 
 func newFakeEdgeGatewayClient(i clientInterface) *EdgeGateway {
 	return &EdgeGateway{
-		clientInterface: i,
+		internalClient: i,
 	}
 }

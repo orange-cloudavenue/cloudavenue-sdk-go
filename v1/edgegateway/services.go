@@ -28,7 +28,7 @@ func (e *EdgeGateway) getNetworkServices(ctx context.Context) error {
 	}
 
 	// Get network services
-	resp, err := e.R().
+	resp, err := e.internalClient.R().
 		SetContext(ctx).
 		SetResult(&networkServicesResponse{}).
 		Get(endpoints.NetworkServiceGet)
@@ -143,7 +143,7 @@ func (e *EdgeGateway) EnableNetworkService(ctx context.Context) error {
 	}
 
 	// Enable network services
-	resp, err := e.R().
+	resp, err := e.internalClient.R().
 		SetContext(ctx).
 		SetBody(nsmc).
 		SetResult(&commoncloudavenue.JobStatus{}).
@@ -172,7 +172,7 @@ func (e *EdgeGateway) DisableNetworkService(ctx context.Context) error {
 	}
 
 	// Disable network services
-	resp, err := e.R().
+	resp, err := e.internalClient.R().
 		SetContext(ctx).
 		SetResult(&commoncloudavenue.JobStatus{}).
 		Delete(endpoints.InlineTemplate(endpoints.NetworkServiceDelete, map[string]string{
