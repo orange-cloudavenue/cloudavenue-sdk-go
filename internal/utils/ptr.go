@@ -7,7 +7,7 @@
  * or see the "LICENSE" file for more details.
  */
 
-package utils
+package utils //nolint:revive,nolintlint
 
 // ToPTR is a generic function that takes a value and returns a pointer to it.
 func ToPTR[T any](v T) *T {
