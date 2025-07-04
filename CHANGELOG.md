@@ -1,4 +1,5 @@
 ## 0.27.0 (Unreleased)
+## 0.26.2 (July  4, 2025)
 ### :information_source: **Notes**
 
 * `pkg/helpers/validators` - Migrated struct validation logic to use the shared library orange-cloudavenue/common-go, replacing the previous cloudavenue-sdk/pkg/helpers/validators implementation. (GH-270)
