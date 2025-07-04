@@ -3,6 +3,10 @@
 
 * `pkg/helpers/validators` - Migrated struct validation logic to use the shared library orange-cloudavenue/common-go, replacing the previous cloudavenue-sdk/pkg/helpers/validators implementation. (GH-270)
 
+### :dependabot: **Dependencies**
+
+* deps: bumps github.com/hashicorp/terraform-plugin-sdk/v2 from 2.36.1 to 2.37.0 (GH-268)
+
 ## 0.26.1 (June 12, 2025)
 
 ### :dependabot: **Dependencies**
