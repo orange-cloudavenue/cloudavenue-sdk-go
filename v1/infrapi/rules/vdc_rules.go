@@ -897,7 +897,7 @@ func (r Rule) GetRuleDetails() string {
 func GetRulesDetails() string {
 	x := ""
 	x += "## Rules\n"
-	x += "More information about rules can be found [here](https://wiki.cloudavenue.orange-business.com/wiki/Virtual_Datacenter)."
+	x += "More information about rules can be found [here](https://cloud.orange-business.com/en/offres/infrastructure-iaas/cloud-avenue/wiki-cloud-avenue/services/virtual-datacenter/virtual-datacenter/)."
 	x += "All fields with a ** are editable.\n\n"
 	for _, sc := range ALLServiceClasses {
 		r, err := GetRuleByServiceClass(sc)
@@ -944,7 +944,7 @@ func (r Rule) GetStorageProfileDetails() string {
 func GetStorageProfilesDetails() string {
 	x := ""
 	x += "## Storage Profiles\n"
-	x += "More information about storage profiles can be found [here](https://wiki.cloudavenue.orange-business.com/wiki/Storage)."
+	x += "More information about storage profiles can be found [here](https://cloud.orange-business.com/en/offres/infrastructure-iaas/cloud-avenue/wiki-cloud-avenue/services/block-storage/)."
 	x += "All fields with a ** are editable.\n\n"
 	for _, sc := range ALLServiceClasses {
 		r, err := GetRuleByServiceClass(sc)

@@ -48,7 +48,7 @@ type (
 )
 
 var (
-	// Source : https://wiki.cloudavenue.orange-business.com/wiki/Network
+	// Source : https://cloud.orange-business.com/en/offres/infrastructure-iaas/cloud-avenue/wiki-cloud-avenue/services/network/
 	EdgeGatewayAllowedBandwidth = map[ClassService]struct {
 		T0TotalBandwidth   int
 		T1AllowedBandwidth []int
