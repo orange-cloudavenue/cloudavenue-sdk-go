@@ -71,7 +71,7 @@ func (c *client) GetEdgeGateway(ctx context.Context, edgeGatewayNameOrID string)
 
 	edge := &EdgeGateway{
 		EdgeGatewayModel: edgeGatewayModel,
-		clientInterface:  c,
+		internalClient:   c,
 	}
 
 	if err := edge.getNetworkServices(ctx); err != nil {

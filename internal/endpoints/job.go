@@ -10,5 +10,7 @@
 package endpoints
 
 const (
-	JobStatusGet = "/api/customers/v1.0/jobs/{job-id}"
+	JobStatusGet = CloudavenueV1 + "jobs/{job-id}"
+
+	VmwareJobStatusGet = "/api/task/{job-id}"
 )
