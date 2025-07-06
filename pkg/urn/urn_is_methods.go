@@ -113,3 +113,8 @@ func (urn URN) IsLoadBalancerVirtualService() bool {
 func (urn URN) IsServiceEngineGroup() bool {
 	return urn.IsType(ServiceEngineGroup)
 }
+
+// IsVCDA returns true if the URN is a VCDA URN.
+func (urn URN) IsVCDA() bool {
+	return urn.IsType(VCDA)
+}
