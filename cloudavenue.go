@@ -47,6 +47,13 @@ func New(opts *ClientOpts) (*Client, error) {
 		opts.Netbackup = new(clientnetbackup.Opts)
 	}
 
+	// Check development mode first to avoid unnecessary initialization
+	if os.Getenv("CLOUDAVENUE_DEV") == "true" {
+		return &Client{
+			V1: v1.V1{},
+		}, nil
+	}
+
 	// * Client CloudAvenue
 	if err := clientcloudavenue.Init(opts.CloudAvenue); err != nil {
 		return nil, err
@@ -56,10 +63,6 @@ func New(opts *ClientOpts) (*Client, error) {
 	cavClient, err := clientcloudavenue.New()
 	if err != nil {
 		return nil, err
-	}
-
-	if os.Getenv("CLOUDAVENUE_DEV") == "true" {
-		return &Client{}, nil
 	}
 
 	console, err := consoles.FingByOrganizationName(cavClient.GetOrganization())
@@ -86,7 +89,9 @@ func New(opts *ClientOpts) (*Client, error) {
 		}
 	}
 
-	return &Client{}, nil
+	return &Client{
+		V1: v1.V1{},
+	}, nil
 }
 
 // * Expose particular functions
