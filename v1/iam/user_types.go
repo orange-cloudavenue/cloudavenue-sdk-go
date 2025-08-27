@@ -146,10 +146,10 @@ func toGoVCDTypeUser(user any, roleReference *govcdtypes.Reference) *govcdtypes.
 	// Switch name of the user struct to set specific fields
 	// No default case because only LocalUser and SAMLUser are extra fields
 	switch v := user.(type) {
-	case LocalUser:
+	case *LocalUser:
 		u.Password = v.Password
 		u.ProviderType = govcd.OrgUserProviderIntegrated
-	case SAMLUser:
+	case *SAMLUser:
 		u.ProviderType = govcd.OrgUserProviderSAML
 		u.IsExternal = true
 	}

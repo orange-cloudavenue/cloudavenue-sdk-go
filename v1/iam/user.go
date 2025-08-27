@@ -37,7 +37,7 @@ func (c *Client) CreateLocalUser(user LocalUser) (*UserClient, error) {
 //   - *User: Pointer to the created User object.
 //   - error: Error, if any occurred during the creation process.
 func (c *Client) CreateSAMLUser(user SAMLUser) (*UserClient, error) {
-	userCreated, err := c.createGenericUser(user)
+	userCreated, err := c.createGenericUser(&user)
 	if err != nil {
 		return nil, err
 	}
