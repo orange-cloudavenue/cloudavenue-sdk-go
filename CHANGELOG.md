@@ -1,4 +1,5 @@
 ## 0.27.0 (Unreleased)
+## 0.26.3 (August 27, 2025)
 ## 0.26.2 (July  4, 2025)
 ### :information_source: **Notes**
 
