@@ -40,10 +40,11 @@ func (v *Query) Get() *Get {
 type objectType string
 
 const (
-	typeVDC    objectType = "orgVdc"
-	typeVAPP   objectType = "vApp"
-	typeVM     objectType = "vm"
-	typeEdgeGW objectType = "edgeGateway"
+	typeVDC        objectType = "orgVdc"
+	typeVAPP       objectType = "vApp"
+	typeVM         objectType = "vm"
+	typeEdgeGW     objectType = "edgeGateway"
+	typeVDCStorage objectType = "orgVdcStorageProfile"
 )
 
 // getUUIDFromHref.
@@ -66,15 +67,27 @@ func getUUIDFromHref(href string, idAtEnd bool) (string, error) {
 }
 
 // queryList.
-func queryList(objectType objectType) (govcd.Results, error) {
+func queryList(objectType objectType, filters map[string]string) (govcd.Results, error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {
 		panic(err)
 	}
 
-	return c.Vmware.Query(map[string]string{
-		"type": string(objectType),
-	})
+	filter := ""
+	count := 0
+	for k, v := range filters {
+		filter += k + "==" + v
+		if count < len(filters)-1 {
+			filter += ";"
+		}
+		count++
+	}
+	queryParams := map[string]string{
+		"type":   string(objectType),
+		"filter": filter,
+	}
+
+	return c.Vmware.Query(queryParams)
 }
 
 // queryListWithOptionalFilter.
@@ -114,8 +127,11 @@ func queryGetWithOptionalFilter(objectType objectType, _ string, filters map[str
 
 // VDC list all vdc informations.
 func (q *List) VDC() ([]*types.QueryResultOrgVdcRecordType, error) {
-	r, err := queryList(typeVDC)
-	return r.Results.OrgVdcRecord, err
+	r, err := queryList(typeVDC, nil)
+	if err != nil {
+		return nil, err
+	}
+	return r.Results.OrgVdcRecord, nil
 }
 
 // VDC get a vdc informations by name.
@@ -129,7 +145,7 @@ func (q *Get) VDC(vdcName string) (*types.QueryResultOrgVdcRecordType, error) {
 
 // VAPP list all vapp informations.
 func (q *List) VAPP() ([]*types.QueryResultVAppRecordType, error) {
-	r, err := queryList(typeVAPP)
+	r, err := queryList(typeVAPP, nil)
 	return r.Results.VAppRecord, err
 }
 
@@ -180,8 +196,11 @@ func (q *Get) VM(vmName, vAppName string) (*types.QueryResultVMRecordType, error
 
 // EdgeGW list all edgegw informations.
 func (q *List) EdgeGW() ([]*types.QueryResultEdgeGatewayRecordType, error) {
-	r, err := queryList(typeEdgeGW)
-	return r.Results.EdgeGatewayRecord, err
+	r, err := queryList(typeEdgeGW, nil)
+	if err != nil {
+		return nil, err
+	}
+	return r.Results.EdgeGatewayRecord, nil
 }
 
 // EdgeGW get a edgegw informations by name.
@@ -191,4 +210,24 @@ func (q *Get) EdgeGW(edgeGWName string) (*types.QueryResultEdgeGatewayRecordType
 		return nil, err
 	}
 	return r.Results.EdgeGatewayRecord[0], err
+}
+
+// VDCStorage list all vdc storage informations.
+func (q *List) VDCStorage(vdcName string) ([]*types.QueryResultOrgVdcStorageProfileRecordType, error) {
+	r, err := queryList(typeVDCStorage, map[string]string{
+		"vdcName": vdcName,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return r.Results.OrgVdcStorageProfileRecord, nil
+}
+
+// VDCStorage get a vdc storage informations by name.
+func (q *Get) VDCStorage(vdcStorageName string) (*types.QueryResultOrgVdcStorageProfileRecordType, error) {
+	r, err := queryGet(typeVDCStorage, vdcStorageName)
+	if r.Results.OrgVdcStorageProfileRecord == nil {
+		return nil, err
+	}
+	return r.Results.OrgVdcStorageProfileRecord[0], err
 }

@@ -20,7 +20,7 @@ type (
 		*EdgeGatewayModel
 
 		// internal
-		clientInterface
+		internalClient clientInterface
 	}
 
 	// EdgeGatewayModel represents the model of an edge gateway.
