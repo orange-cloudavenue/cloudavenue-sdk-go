@@ -141,7 +141,7 @@ func (t *Tier0) GetT0s() (listOfT0s *T0s, err error) {
 	r, err := c.R().
 		SetResult(&[]string{}).
 		SetError(&commoncloudavenue.APIErrorResponse{}).
-		Get("/api/customers/v2.0/tier-0-vrfs")
+		Get("/infrapicustomerproxy/v2.0/tier-0-vrfs")
 	if err != nil {
 		return
 	}
@@ -175,7 +175,7 @@ func (t *Tier0) GetT0(t0 string) (response *T0, err error) {
 		SetResult(&T0{}).
 		SetError(&commoncloudavenue.APIErrorResponse{}).
 		SetPathParam("t0Name", t0).
-		Get("/api/customers/v2.0/tier-0-vrfs/{t0Name}")
+		Get("/infrapicustomerproxy/v2.0/tier-0-vrfs/{t0Name}")
 	if err != nil {
 		return
 	}

@@ -58,7 +58,7 @@ func (v *EdgeGateway) List() (response *EdgeGateways, err error) {
 	r, err := c.R().
 		SetResult(&EdgeGateways{}).
 		SetError(&commoncloudavenue.APIErrorResponse{}).
-		Get("/api/customers/v2.0/edges")
+		Get("/infrapicustomerproxy/v2.0/edges")
 	if err != nil {
 		return
 	}
@@ -126,7 +126,7 @@ func (v *EdgeGateway) New(vdcName, tier0VrfName string) (job *commoncloudavenue.
 			"tier0VrfId": tier0VrfName,
 		}).
 		SetPathParam("VdcName", vdcName).
-		Post("/api/customers/v2.0/vdcs/{VdcName}/edges")
+		Post("/infrapicustomerproxy/v2.0/vdcs/{VdcName}/edges")
 	if err != nil {
 		return
 	}
@@ -152,7 +152,7 @@ func (v *EdgeGateway) NewFromVDCGroup(vdcGroupName, tier0VrfName string) (job *c
 			"tier0VrfId": tier0VrfName,
 		}).
 		SetPathParam("VdcGroupName", vdcGroupName).
-		Post("/api/customers/v2.0/vdc-groups/{VdcGroupName}/edges")
+		Post("/infrapicustomerproxy/v2.0/vdc-groups/{VdcGroupName}/edges")
 	if err != nil {
 		return
 	}
@@ -201,7 +201,7 @@ func (v *EdgeGateway) Get(edgeGatewayNameOrID string) (edgeClient *EdgeClient, e
 				SetPathParams(map[string]string{
 					"EdgeID": strings.TrimPrefix(nameOrID.String(), urn.Gateway.String()),
 				}).
-				Get("/api/customers/v2.0/edges/{EdgeID}")
+				Get("/infrapicustomerproxy/v2.0/edges/{EdgeID}")
 			if err != nil {
 				return err
 			}
@@ -262,7 +262,7 @@ func (e *EdgeGatewayType) Delete() (job *commoncloudavenue.JobStatus, err error)
 		SetPathParams(map[string]string{
 			"EdgeID": e.EdgeID,
 		}).
-		Delete("/api/customers/v2.0/edges/{EdgeID}")
+		Delete("/infrapicustomerproxy/v2.0/edges/{EdgeID}")
 	if err != nil {
 		return
 	}
@@ -297,7 +297,7 @@ func (e *EdgeGatewayType) UpdateBandwidth(rateLimit int) (job *commoncloudavenue
 		SetPathParams(map[string]string{
 			"EdgeID": e.EdgeID,
 		}).
-		Put("/api/customers/v2.0/edges/{EdgeID}")
+		Put("/infrapicustomerproxy/v2.0/edges/{EdgeID}")
 	if err != nil {
 		return
 	}
@@ -424,7 +424,7 @@ func (e *EdgeGatewayType) ListNetworksType() (response *NetworkTypes, err error)
 		SetPathParams(map[string]string{
 			"EdgeID": e.EdgeID,
 		}).
-		Get("/api/customers/v2.0/edges/{EdgeID}/networks")
+		Get("/infrapicustomerproxy/v2.0/edges/{EdgeID}/networks")
 	if err != nil {
 		return
 	}

@@ -45,7 +45,7 @@ func (v *PublicIP) GetIPs() (response *IPs, err error) {
 	r, err := c.R().
 		SetResult(&IPs{}).
 		SetError(&commoncloudavenue.APIErrorResponse{}).
-		Get("/api/customers/v2.0/ip")
+		Get("/infrapicustomerproxy/v2.0/ip")
 	if err != nil {
 		return
 	}
@@ -123,7 +123,7 @@ func (v *PublicIP) New(edgeGatewayName string) (job *commoncloudavenue.JobStatus
 		SetHeader("X-VDC-Edge-Name", edgeGatewayName).
 		SetResult(&commoncloudavenue.JobCreatedAPIResponse{}).
 		SetError(&commoncloudavenue.APIErrorResponse{}).
-		Post("/api/customers/v1.0/ip")
+		Post("/infrapicustomerproxy/v1.0/ip")
 	if err != nil {
 		return
 	}
@@ -148,7 +148,7 @@ func (i *IP) Delete() (job *commoncloudavenue.JobStatus, err error) {
 		}).
 		SetResult(&commoncloudavenue.JobCreatedAPIResponse{}).
 		SetError(&commoncloudavenue.APIErrorResponse{}).
-		Delete("/api/customers/v1.0/ip/{PublicIP}/")
+		Delete("/infrapicustomerproxy/v1.0/ip/{PublicIP}/")
 	if err != nil {
 		return
 	}

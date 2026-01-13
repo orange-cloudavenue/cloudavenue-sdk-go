@@ -10,5 +10,5 @@
 package endpoints
 
 const (
-	JobStatusGet = "/api/customers/v1.0/jobs/{job-id}"
+	JobStatusGet = "/infrapicustomerproxy/v1.0/jobs/{job-id}"
 )

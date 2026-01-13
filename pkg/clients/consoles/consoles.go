@@ -15,6 +15,10 @@ import (
 	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/errors"
 )
 
+// CerberusAPIEndpoint is the unified API endpoint for all consoles.
+// With the Cerberus migration, all organizations now use a single API endpoint.
+const CerberusAPIEndpoint = "https://api1.cloudavenue.orange-business.com"
+
 type (
 	Console      string
 	LocationCode string
@@ -23,7 +27,7 @@ type (
 		SiteName            string
 		LocationCode        LocationCode
 		SiteID              Console
-		URL                 string
+		URL                 string // Legacy URL (kept for reference)
 		Services            Services
 		OrganizationPattern *regexp.Regexp
 	}
@@ -59,7 +63,7 @@ var consoles = map[Console]console{
 		SiteName:            "Console Externe VDR",
 		LocationCode:        LocationVDR,
 		SiteID:              Console1,
-		URL:                 "https://console1.cloudavenue.orange-business.com",
+		URL:                 "https://console1.cloudavenue.orange-business.com", // Legacy
 		OrganizationPattern: regexp.MustCompile(`^cav01ev01ocb\d{7}$`),
 		Services: Services{
 			S3: Service{
@@ -76,7 +80,7 @@ var consoles = map[Console]console{
 		SiteName:            "Console Interne VDR",
 		LocationCode:        LocationVDR,
 		SiteID:              Console2,
-		URL:                 "https://console2.cloudavenue.orange-business.com",
+		URL:                 "https://console2.cloudavenue.orange-business.com", // Legacy
 		OrganizationPattern: regexp.MustCompile(`^cav01iv02ocb\d{7}$`),
 		Services: Services{
 			S3: Service{
@@ -94,7 +98,7 @@ var consoles = map[Console]console{
 		SiteName:            "Console Externe CHA",
 		LocationCode:        LocationCHR,
 		SiteID:              Console4,
-		URL:                 "https://console4.cloudavenue.orange-business.com",
+		URL:                 "https://console4.cloudavenue.orange-business.com", // Legacy
 		OrganizationPattern: regexp.MustCompile(`^cav02ev04ocb\d{7}$`),
 		Services: Services{
 			Netbackup: Service{
@@ -107,7 +111,7 @@ var consoles = map[Console]console{
 		SiteName:            "Console Interne CHA",
 		LocationCode:        LocationCHR,
 		SiteID:              Console5,
-		URL:                 "https://console5.cloudavenue-cha.itn.intraorange",
+		URL:                 "https://console5.cloudavenue-cha.itn.intraorange", // Legacy
 		OrganizationPattern: regexp.MustCompile(`^cav02iv05ocb\d{7}$`),
 		Services: Services{
 			Netbackup: Service{
@@ -121,7 +125,7 @@ var consoles = map[Console]console{
 		SiteName:            "Console specific VDR",
 		LocationCode:        LocationVDR,
 		SiteID:              Console7,
-		URL:                 "https://console7.cloudavenue-vdr.itn.intraorange",
+		URL:                 "https://console7.cloudavenue-vdr.itn.intraorange", // Legacy
 		OrganizationPattern: regexp.MustCompile(`^cav01iv07ocb\d{7}$`),
 		Services: Services{
 			Netbackup: Service{
@@ -134,7 +138,7 @@ var consoles = map[Console]console{
 		SiteName:            "Console specific VDR",
 		LocationCode:        LocationVDR,
 		SiteID:              Console8,
-		URL:                 "https://console8.cloudavenue-vdr.itn.intraorange",
+		URL:                 "https://console8.cloudavenue-vdr.itn.intraorange", // Legacy
 		OrganizationPattern: regexp.MustCompile(`^cav01iv08ocb\d{7}$`),
 		Services: Services{
 			Netbackup: Service{
@@ -148,7 +152,7 @@ var consoles = map[Console]console{
 		SiteName:            "Console VCOD",
 		LocationCode:        LocationVDRCHA,
 		SiteID:              Console9,
-		URL:                 "https://console9.cloudavenue.orange-business.com",
+		URL:                 "https://console9.cloudavenue.orange-business.com", // Legacy
 		OrganizationPattern: regexp.MustCompile(`^cav0[0-2]{1}vv09ocb\d{7}$`),
 		Services: Services{
 			Netbackup: Service{
@@ -171,7 +175,9 @@ func FindBySiteID(siteID string) (Console, bool) {
 }
 
 // FindByURL - Returns the console by its URL.
+// This function now checks against the legacy URL for backward compatibility.
 func FindByURL(url string) (Console, bool) {
+	// Legacy lookup by old console URLs
 	for c, console := range consoles {
 		if console.URL == url {
 			return c, true
@@ -233,7 +239,14 @@ func (c Console) GetSiteID() Console {
 	return consoles[c].SiteID
 }
 
-// GetURL - Returns the URL.
+// GetURL - Returns the Cerberus API endpoint.
+// With the Cerberus migration, all consoles now use a single unified endpoint.
 func (c Console) GetURL() string {
+	return consoles[c].URL
+}
+
+// GetLegacyURL - Returns the legacy console URL (before Cerberus migration).
+// This is kept for reference and backward compatibility.
+func (c Console) GetLegacyURL() string {
 	return consoles[c].URL
 }
