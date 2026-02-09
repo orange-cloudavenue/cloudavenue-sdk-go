@@ -1,4 +1,5 @@
-## 0.27.0 (Unreleased)
+## 0.28.0 (Unreleased)
+## 0.27.0 (February  9, 2026)
 ### :rotating_light: **Breaking Changes**
 
 * Migrated authentication to use the new token endpoint, which includes changes in the token response structure. This release introduces a end of life of the legacy authentication method at 01/10/2026, and may require updates to bump the SDK version and adjust authentication handling in existing code. (GH-298)
