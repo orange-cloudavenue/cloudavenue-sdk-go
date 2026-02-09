@@ -28,7 +28,7 @@ import (
 
 // DefaultVCDAPIVersion is the default VCD API version used for VMware client.
 // This is kept for backward compatibility with the VMware govcd client.
-const DefaultVCDAPIVersion = "37.2"
+const DefaultVCDAPIVersion = "39.1"
 
 var (
 	_ model.ClientOpts = (*Opts)(nil)
