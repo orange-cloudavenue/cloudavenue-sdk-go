@@ -244,9 +244,3 @@ func (c Console) GetSiteID() Console {
 func (c Console) GetURL() string {
 	return consoles[c].URL
 }
-
-// GetLegacyURL - Returns the legacy console URL (before Cerberus migration).
-// This is kept for reference and backward compatibility.
-func (c Console) GetLegacyURL() string {
-	return consoles[c].URL
-}

@@ -54,7 +54,7 @@ type (
 func (v *BMS) List() (response *[]BMS, err error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {
-		return
+		return response, err
 	}
 
 	r, err := c.R().
@@ -62,7 +62,7 @@ func (v *BMS) List() (response *[]BMS, err error) {
 		SetError(&commoncloudavenue.APIErrorResponse{}).
 		Get("/infrapicustomerproxy/v2.0/bms")
 	if err != nil {
-		return
+		return response, err
 	}
 
 	if r.IsError() {

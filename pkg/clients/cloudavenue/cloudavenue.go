@@ -110,7 +110,7 @@ func Init(opts *Opts) (err error) {
 	c.token.endpoint = opts.URL
 	c.token.debug = opts.Debug
 
-	return
+	return err
 }
 
 type Client struct {

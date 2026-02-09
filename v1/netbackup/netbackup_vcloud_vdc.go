@@ -75,7 +75,7 @@ type vdcsResponse struct {
 func (v *VcloudClient) GetVdcs() (resp *VDCs, err error) {
 	c, err := clientnetbackup.New()
 	if err != nil {
-		return
+		return resp, err
 	}
 
 	r, err := c.R().
@@ -83,7 +83,7 @@ func (v *VcloudClient) GetVdcs() (resp *VDCs, err error) {
 		SetError(&commonnetbackup.APIError{}).
 		Get("/v6/vcloud/vdcs")
 	if err != nil {
-		return
+		return resp, err
 	}
 
 	if r.IsError() {
@@ -98,7 +98,7 @@ func (v *VcloudClient) GetVdcs() (resp *VDCs, err error) {
 func (v *VcloudClient) GetVdcsByOrgID(orgID int) (resp *VDCs, err error) {
 	vdcs, err := v.GetVdcs()
 	if err != nil {
-		return
+		return resp, err
 	}
 
 	for _, vdc := range *vdcs {
@@ -119,7 +119,7 @@ type vdcResponse struct {
 func (v *VcloudClient) GetVDCByID(id int) (resp *VDC, err error) {
 	c, err := clientnetbackup.New()
 	if err != nil {
-		return
+		return resp, err
 	}
 
 	r, err := c.R().
@@ -130,7 +130,7 @@ func (v *VcloudClient) GetVDCByID(id int) (resp *VDC, err error) {
 		}).
 		Get("/v6/vcloud/vdcs/{vdcID}")
 	if err != nil {
-		return
+		return resp, err
 	}
 
 	if r.IsError() {
@@ -145,7 +145,7 @@ func (v *VcloudClient) GetVDCByID(id int) (resp *VDC, err error) {
 func (v *VcloudClient) GetVDCByIdentifier(identifier string) (resp *VDC, err error) {
 	vdcs, err := v.GetVdcs()
 	if err != nil {
-		return
+		return resp, err
 	}
 
 	for _, vdc := range *vdcs {
@@ -162,7 +162,7 @@ func (v *VcloudClient) GetVDCByIdentifier(identifier string) (resp *VDC, err err
 func (v *VcloudClient) GetVDCByName(name string) (resp *VDC, err error) {
 	vdcs, err := v.GetVdcs()
 	if err != nil {
-		return
+		return resp, err
 	}
 
 	for _, vdc := range *vdcs {
@@ -179,7 +179,7 @@ func (v *VcloudClient) GetVDCByName(name string) (resp *VDC, err error) {
 func (v *VcloudClient) GetVDCByNameOrIdentifier(nameOrIdentifier string) (resp *VDC, err error) {
 	vdcs, err := v.GetVdcs()
 	if err != nil {
-		return
+		return resp, err
 	}
 
 	for _, vdc := range *vdcs {

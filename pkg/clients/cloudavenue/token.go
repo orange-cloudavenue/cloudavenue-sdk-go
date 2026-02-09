@@ -151,7 +151,7 @@ func (t *token) RefreshToken() error {
 // Response from POST /auth/v1/user/token
 type cerberusAuthResponse struct {
 	AccessToken string `json:"access_token"`
-	Type        string `json:"type"`
+	Type        string `json:"token_type"`
 	ExpiresIn   int    `json:"expires_in"` // seconds
 }
 

@@ -116,7 +116,7 @@ func (s *S3User) GetCredentials() (resp *S3Credentials, err error) {
 		}).
 		Get("/api/v1/core/tenants/{orgID}/users/{userName}/credentials")
 	if err != nil {
-		return
+		return resp, err
 	}
 
 	if r.IsError() {
@@ -137,7 +137,7 @@ func (s *S3User) GetCredential(accessKey string) (resp *S3Credential, err error)
 		}).
 		Get("/api/v1/core/tenants/{orgID}/users/{userName}/credentials/{accessKey}")
 	if err != nil {
-		return
+		return resp, err
 	}
 
 	if r.IsError() {
@@ -157,7 +157,7 @@ func (s *S3User) NewCredential() (resp *S3Credential, err error) {
 		}).
 		Post("/api/v1/core/tenants/{orgID}/users/{userName}/credentials")
 	if err != nil {
-		return
+		return resp, err
 	}
 
 	if r.IsError() {
@@ -177,7 +177,7 @@ func (c *S3Credential) Delete() (err error) {
 		}).
 		Delete("/api/v1/core/tenants/{orgID}/users/{userName}/credentials/{accessKey}")
 	if err != nil {
-		return
+		return err
 	}
 
 	if r.IsError() {

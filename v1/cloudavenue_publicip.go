@@ -170,13 +170,13 @@ type internetServiceRequest struct {
 // New - Creates a new public IP on the specified edge gateway.
 // The edgeGatewayID must be the UUID of the edge gateway (not the name).
 func (v *PublicIP) New(edgeGatewayID string) (job *commoncloudavenue.JobStatus, err error) {
+	if edgeGatewayID == "" {
+		return nil, fmt.Errorf("edgeGatewayID is empty")
+	}
+
 	c, err := clientcloudavenue.New()
 	if err != nil {
 		return nil, err
-	}
-
-	if edgeGatewayID == "" {
-		return nil, fmt.Errorf("edgeGatewayID is empty")
 	}
 
 	req := internetServiceRequest{

@@ -197,7 +197,7 @@ func (s S3Client) GetUsers() (resp *S3Users, err error) {
 		}).
 		Get("/api/v1/core/tenants/{orgID}/users")
 	if err != nil {
-		return
+		return resp, err
 	}
 
 	if r.IsError() {

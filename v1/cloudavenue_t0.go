@@ -135,7 +135,7 @@ func (c ClassService) IsVRFDedicatedLarge() bool {
 func (t *Tier0) GetT0s() (listOfT0s *T0s, err error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {
-		return
+		return listOfT0s, err
 	}
 
 	r, err := c.R().
@@ -143,7 +143,7 @@ func (t *Tier0) GetT0s() (listOfT0s *T0s, err error) {
 		SetError(&commoncloudavenue.APIErrorResponse{}).
 		Get("/infrapicustomerproxy/v2.0/tier-0-vrfs")
 	if err != nil {
-		return
+		return listOfT0s, err
 	}
 
 	if r.IsError() {
@@ -168,7 +168,7 @@ func (t *Tier0) GetT0s() (listOfT0s *T0s, err error) {
 func (t *Tier0) GetT0(t0 string) (response *T0, err error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {
-		return
+		return response, err
 	}
 
 	r, err := c.R().
@@ -177,7 +177,7 @@ func (t *Tier0) GetT0(t0 string) (response *T0, err error) {
 		SetPathParam("t0Name", t0).
 		Get("/infrapicustomerproxy/v2.0/tier-0-vrfs/{t0Name}")
 	if err != nil {
-		return
+		return response, err
 	}
 
 	if r.IsError() {

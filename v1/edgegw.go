@@ -52,7 +52,7 @@ func (e *EdgeClient) GetVmwareEdgeGateway() (*govcd.NsxtEdgeGateway, error) {
 func (v *EdgeGateway) List() (response *EdgeGateways, err error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {
-		return
+		return response, err
 	}
 
 	r, err := c.R().
@@ -60,7 +60,7 @@ func (v *EdgeGateway) List() (response *EdgeGateways, err error) {
 		SetError(&commoncloudavenue.APIErrorResponse{}).
 		Get("/infrapicustomerproxy/v2.0/edges")
 	if err != nil {
-		return
+		return response, err
 	}
 
 	if r.IsError() {
@@ -74,7 +74,7 @@ func (v *EdgeGateway) List() (response *EdgeGateways, err error) {
 func (v *EdgeGateway) GetAllowedBandwidthValues(t0VrfName string) (allowedValues []int, err error) {
 	t0, err := (&Tier0{}).GetT0(t0VrfName)
 	if err != nil {
-		return
+		return allowedValues, err
 	}
 
 	if v, ok := EdgeGatewayAllowedBandwidth[t0.GetClassService()]; ok {
@@ -88,12 +88,12 @@ func (v *EdgeGateway) GetAllowedBandwidthValues(t0VrfName string) (allowedValues
 func (e *EdgeGateways) GetBandwidthCapacityRemaining(t0VrfName string) (response int, err error) {
 	t0, err := (&Tier0{}).GetT0(t0VrfName)
 	if err != nil {
-		return
+		return response, err
 	}
 
 	t0BandwidthCapacity, err := t0.GetBandwidthCapacity()
 	if err != nil {
-		return
+		return response, err
 	}
 
 	for _, edgeGateway := range *e {
@@ -116,7 +116,7 @@ func (e *EdgeGateways) GetBandwidthCapacityRemaining(t0VrfName string) (response
 func (v *EdgeGateway) New(vdcName, tier0VrfName string) (job *commoncloudavenue.JobStatus, err error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {
-		return
+		return job, err
 	}
 
 	r, err := c.R().
@@ -128,7 +128,7 @@ func (v *EdgeGateway) New(vdcName, tier0VrfName string) (job *commoncloudavenue.
 		SetPathParam("VdcName", vdcName).
 		Post("/infrapicustomerproxy/v2.0/vdcs/{VdcName}/edges")
 	if err != nil {
-		return
+		return job, err
 	}
 
 	if r.IsError() {
@@ -142,7 +142,7 @@ func (v *EdgeGateway) New(vdcName, tier0VrfName string) (job *commoncloudavenue.
 func (v *EdgeGateway) NewFromVDCGroup(vdcGroupName, tier0VrfName string) (job *commoncloudavenue.JobStatus, err error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {
-		return
+		return job, err
 	}
 
 	r, err := c.R().
@@ -154,7 +154,7 @@ func (v *EdgeGateway) NewFromVDCGroup(vdcGroupName, tier0VrfName string) (job *c
 		SetPathParam("VdcGroupName", vdcGroupName).
 		Post("/infrapicustomerproxy/v2.0/vdc-groups/{VdcGroupName}/edges")
 	if err != nil {
-		return
+		return job, err
 	}
 
 	if r.IsError() {
@@ -253,7 +253,7 @@ func (v *EdgeGateway) GetByID(edgeGatewayID string) (edgeClient *EdgeClient, err
 func (e *EdgeGatewayType) Delete() (job *commoncloudavenue.JobStatus, err error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {
-		return
+		return job, err
 	}
 
 	r, err := c.R().
@@ -264,7 +264,7 @@ func (e *EdgeGatewayType) Delete() (job *commoncloudavenue.JobStatus, err error)
 		}).
 		Delete("/infrapicustomerproxy/v2.0/edges/{EdgeID}")
 	if err != nil {
-		return
+		return job, err
 	}
 
 	if r.IsError() {
@@ -285,7 +285,7 @@ func (e *EdgeGatewayType) GetBandwidth() int {
 func (e *EdgeGatewayType) UpdateBandwidth(rateLimit int) (job *commoncloudavenue.JobStatus, err error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {
-		return
+		return job, err
 	}
 
 	r, err := c.R().
@@ -299,7 +299,7 @@ func (e *EdgeGatewayType) UpdateBandwidth(rateLimit int) (job *commoncloudavenue
 		}).
 		Put("/infrapicustomerproxy/v2.0/edges/{EdgeID}")
 	if err != nil {
-		return
+		return job, err
 	}
 
 	if r.IsError() {
@@ -415,7 +415,7 @@ func (n NetworkType) GetEndAddress() string {
 func (e *EdgeGatewayType) ListNetworksType() (response *NetworkTypes, err error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {
-		return
+		return response, err
 	}
 
 	r, err := c.R().
@@ -426,7 +426,7 @@ func (e *EdgeGatewayType) ListNetworksType() (response *NetworkTypes, err error)
 		}).
 		Get("/infrapicustomerproxy/v2.0/edges/{EdgeID}/networks")
 	if err != nil {
-		return
+		return response, err
 	}
 
 	if r.IsError() {

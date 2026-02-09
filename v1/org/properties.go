@@ -35,7 +35,7 @@ func (c *client) GetProperties(ctx context.Context) (values *PropertiesModel, er
 		SetError(&commoncloudavenue.APIErrorResponse{}).
 		Get("/infrapicustomerproxy/v2.0/configurations")
 	if err != nil {
-		return
+		return values, err
 	}
 
 	if r.IsError() {
