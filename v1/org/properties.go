@@ -33,9 +33,9 @@ func (c *client) GetProperties(ctx context.Context) (values *PropertiesModel, er
 		SetContext(ctx).
 		SetResult(&propertiesResponse{}).
 		SetError(&commoncloudavenue.APIErrorResponse{}).
-		Get("/api/customers/v2.0/configurations")
+		Get("/infrapicustomerproxy/v2.0/configurations")
 	if err != nil {
-		return
+		return values, err
 	}
 
 	if r.IsError() {
@@ -66,7 +66,7 @@ func (c *client) UpdateProperties(ctx context.Context, properties *PropertiesReq
 		SetBody(properties).
 		SetResult(&commoncloudavenue.JobCreatedAPIResponse{}).
 		SetError(&commoncloudavenue.APIErrorResponse{}).
-		Put("/api/customers/v2.0/configurations")
+		Put("/infrapicustomerproxy/v2.0/configurations")
 	if err != nil {
 		return nil, err
 	}

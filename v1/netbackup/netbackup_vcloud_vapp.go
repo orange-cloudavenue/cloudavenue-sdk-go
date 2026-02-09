@@ -71,7 +71,7 @@ type VAppsResponse struct {
 func (v *VcloudClient) GetVApps() (resp *VApps, err error) {
 	c, err := clientnetbackup.New()
 	if err != nil {
-		return
+		return resp, err
 	}
 
 	r, err := c.R().
@@ -79,7 +79,7 @@ func (v *VcloudClient) GetVApps() (resp *VApps, err error) {
 		SetError(&commonnetbackup.APIError{}).
 		Get("/v6/vcloud/vapps")
 	if err != nil {
-		return
+		return resp, err
 	}
 
 	if r.IsError() {
@@ -100,7 +100,7 @@ type VAppResponse struct {
 func (v *VcloudClient) GetVAppByID(id int) (resp *VApp, err error) {
 	c, err := clientnetbackup.New()
 	if err != nil {
-		return
+		return resp, err
 	}
 
 	r, err := c.R().
@@ -111,7 +111,7 @@ func (v *VcloudClient) GetVAppByID(id int) (resp *VApp, err error) {
 		}).
 		Get("/v6/vcloud/vapps/{vAppID}")
 	if err != nil {
-		return
+		return resp, err
 	}
 
 	if r.IsError() {
@@ -126,7 +126,7 @@ func (v *VcloudClient) GetVAppByID(id int) (resp *VApp, err error) {
 func (v *VcloudClient) GetVAppByName(name string) (resp *VApp, err error) {
 	vapps, err := v.GetVApps()
 	if err != nil {
-		return
+		return resp, err
 	}
 
 	for _, vapp := range *vapps {
@@ -143,7 +143,7 @@ func (v *VcloudClient) GetVAppByName(name string) (resp *VApp, err error) {
 func (v *VcloudClient) GetVAppByIdentifier(identifier string) (resp *VApp, err error) {
 	vapps, err := v.GetVApps()
 	if err != nil {
-		return
+		return resp, err
 	}
 
 	for _, vapp := range *vapps {
@@ -160,7 +160,7 @@ func (v *VcloudClient) GetVAppByIdentifier(identifier string) (resp *VApp, err e
 func (v *VcloudClient) GetVAppByNameOrIdentifier(nameOrIdentifier string) (resp *VApp, err error) {
 	vapps, err := v.GetVApps()
 	if err != nil {
-		return
+		return resp, err
 	}
 
 	for _, vapp := range *vapps {
@@ -215,7 +215,7 @@ type GetVAppMachinesResponse struct {
 func (v *VcloudClient) GetVAppMachines(vAppID int) (resp *GetVAppMachinesResponse, err error) {
 	c, err := clientnetbackup.New()
 	if err != nil {
-		return
+		return resp, err
 	}
 
 	r, err := c.R().
@@ -226,7 +226,7 @@ func (v *VcloudClient) GetVAppMachines(vAppID int) (resp *GetVAppMachinesRespons
 		}).
 		Get("/v6/vcloud/vapps/{vAppID}/machines")
 	if err != nil {
-		return
+		return resp, err
 	}
 
 	if r.IsError() {

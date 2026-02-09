@@ -52,15 +52,15 @@ func (e *EdgeClient) GetVmwareEdgeGateway() (*govcd.NsxtEdgeGateway, error) {
 func (v *EdgeGateway) List() (response *EdgeGateways, err error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {
-		return
+		return response, err
 	}
 
 	r, err := c.R().
 		SetResult(&EdgeGateways{}).
 		SetError(&commoncloudavenue.APIErrorResponse{}).
-		Get("/api/customers/v2.0/edges")
+		Get("/infrapicustomerproxy/v2.0/edges")
 	if err != nil {
-		return
+		return response, err
 	}
 
 	if r.IsError() {
@@ -74,7 +74,7 @@ func (v *EdgeGateway) List() (response *EdgeGateways, err error) {
 func (v *EdgeGateway) GetAllowedBandwidthValues(t0VrfName string) (allowedValues []int, err error) {
 	t0, err := (&Tier0{}).GetT0(t0VrfName)
 	if err != nil {
-		return
+		return allowedValues, err
 	}
 
 	if v, ok := EdgeGatewayAllowedBandwidth[t0.GetClassService()]; ok {
@@ -88,12 +88,12 @@ func (v *EdgeGateway) GetAllowedBandwidthValues(t0VrfName string) (allowedValues
 func (e *EdgeGateways) GetBandwidthCapacityRemaining(t0VrfName string) (response int, err error) {
 	t0, err := (&Tier0{}).GetT0(t0VrfName)
 	if err != nil {
-		return
+		return response, err
 	}
 
 	t0BandwidthCapacity, err := t0.GetBandwidthCapacity()
 	if err != nil {
-		return
+		return response, err
 	}
 
 	for _, edgeGateway := range *e {
@@ -116,7 +116,7 @@ func (e *EdgeGateways) GetBandwidthCapacityRemaining(t0VrfName string) (response
 func (v *EdgeGateway) New(vdcName, tier0VrfName string) (job *commoncloudavenue.JobStatus, err error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {
-		return
+		return job, err
 	}
 
 	r, err := c.R().
@@ -126,9 +126,9 @@ func (v *EdgeGateway) New(vdcName, tier0VrfName string) (job *commoncloudavenue.
 			"tier0VrfId": tier0VrfName,
 		}).
 		SetPathParam("VdcName", vdcName).
-		Post("/api/customers/v2.0/vdcs/{VdcName}/edges")
+		Post("/infrapicustomerproxy/v2.0/vdcs/{VdcName}/edges")
 	if err != nil {
-		return
+		return job, err
 	}
 
 	if r.IsError() {
@@ -142,7 +142,7 @@ func (v *EdgeGateway) New(vdcName, tier0VrfName string) (job *commoncloudavenue.
 func (v *EdgeGateway) NewFromVDCGroup(vdcGroupName, tier0VrfName string) (job *commoncloudavenue.JobStatus, err error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {
-		return
+		return job, err
 	}
 
 	r, err := c.R().
@@ -152,9 +152,9 @@ func (v *EdgeGateway) NewFromVDCGroup(vdcGroupName, tier0VrfName string) (job *c
 			"tier0VrfId": tier0VrfName,
 		}).
 		SetPathParam("VdcGroupName", vdcGroupName).
-		Post("/api/customers/v2.0/vdc-groups/{VdcGroupName}/edges")
+		Post("/infrapicustomerproxy/v2.0/vdc-groups/{VdcGroupName}/edges")
 	if err != nil {
-		return
+		return job, err
 	}
 
 	if r.IsError() {
@@ -201,7 +201,7 @@ func (v *EdgeGateway) Get(edgeGatewayNameOrID string) (edgeClient *EdgeClient, e
 				SetPathParams(map[string]string{
 					"EdgeID": strings.TrimPrefix(nameOrID.String(), urn.Gateway.String()),
 				}).
-				Get("/api/customers/v2.0/edges/{EdgeID}")
+				Get("/infrapicustomerproxy/v2.0/edges/{EdgeID}")
 			if err != nil {
 				return err
 			}
@@ -253,7 +253,7 @@ func (v *EdgeGateway) GetByID(edgeGatewayID string) (edgeClient *EdgeClient, err
 func (e *EdgeGatewayType) Delete() (job *commoncloudavenue.JobStatus, err error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {
-		return
+		return job, err
 	}
 
 	r, err := c.R().
@@ -262,9 +262,9 @@ func (e *EdgeGatewayType) Delete() (job *commoncloudavenue.JobStatus, err error)
 		SetPathParams(map[string]string{
 			"EdgeID": e.EdgeID,
 		}).
-		Delete("/api/customers/v2.0/edges/{EdgeID}")
+		Delete("/infrapicustomerproxy/v2.0/edges/{EdgeID}")
 	if err != nil {
-		return
+		return job, err
 	}
 
 	if r.IsError() {
@@ -285,7 +285,7 @@ func (e *EdgeGatewayType) GetBandwidth() int {
 func (e *EdgeGatewayType) UpdateBandwidth(rateLimit int) (job *commoncloudavenue.JobStatus, err error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {
-		return
+		return job, err
 	}
 
 	r, err := c.R().
@@ -297,9 +297,9 @@ func (e *EdgeGatewayType) UpdateBandwidth(rateLimit int) (job *commoncloudavenue
 		SetPathParams(map[string]string{
 			"EdgeID": e.EdgeID,
 		}).
-		Put("/api/customers/v2.0/edges/{EdgeID}")
+		Put("/infrapicustomerproxy/v2.0/edges/{EdgeID}")
 	if err != nil {
-		return
+		return job, err
 	}
 
 	if r.IsError() {
@@ -415,7 +415,7 @@ func (n NetworkType) GetEndAddress() string {
 func (e *EdgeGatewayType) ListNetworksType() (response *NetworkTypes, err error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {
-		return
+		return response, err
 	}
 
 	r, err := c.R().
@@ -424,9 +424,9 @@ func (e *EdgeGatewayType) ListNetworksType() (response *NetworkTypes, err error)
 		SetPathParams(map[string]string{
 			"EdgeID": e.EdgeID,
 		}).
-		Get("/api/customers/v2.0/edges/{EdgeID}/networks")
+		Get("/infrapicustomerproxy/v2.0/edges/{EdgeID}/networks")
 	if err != nil {
-		return
+		return response, err
 	}
 
 	if r.IsError() {

@@ -204,7 +204,7 @@ func (v *CAVVDC) Get(vdcName string) (*CAVVirtualDataCenter, error) {
 		SetResult(&CAVVirtualDataCenter{}).
 		SetError(&commoncloudavenue.APIErrorResponse{}).
 		SetPathParam("vdcName", vdcName).
-		Get("/api/customers/v2.0/vdcs/{vdcName}")
+		Get("/infrapicustomerproxy/v2.0/vdcs/{vdcName}")
 	if err != nil {
 		return nil, err
 	}
@@ -231,7 +231,7 @@ func (v *CAVVDC) List() (*VDCs, error) {
 	r, err := c.R().
 		SetResult(&listOfVDCs{}).
 		SetError(&commoncloudavenue.APIErrorResponse{}).
-		Get("/api/customers/v2.0/vdcs")
+		Get("/infrapicustomerproxy/v2.0/vdcs")
 	if err != nil {
 		return nil, err
 	}
@@ -259,16 +259,16 @@ func (v *CAVVDC) List() (*VDCs, error) {
 func (v *CAVVirtualDataCenter) Delete(ctx context.Context) (err error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {
-		return
+		return err
 	}
 
 	r, err := c.R().
 		SetResult(&commoncloudavenue.JobStatus{}).
 		SetError(&commoncloudavenue.APIErrorResponse{}).
 		SetPathParam("vdcName", v.VDC.Name).
-		Delete("/api/customers/v2.0/vdcs/{vdcName}")
+		Delete("/infrapicustomerproxy/v2.0/vdcs/{vdcName}")
 	if err != nil {
-		return
+		return err
 	}
 
 	if r.IsError() {
@@ -290,7 +290,7 @@ func (v *CAVVirtualDataCenter) Update(ctx context.Context) (err error) {
 		SetError(&commoncloudavenue.APIErrorResponse{}).
 		SetPathParam("vdcName", v.VDC.Name).
 		SetResult(&commoncloudavenue.JobStatus{}).
-		Put("/api/customers/v2.0/vdcs/{vdcName}")
+		Put("/infrapicustomerproxy/v2.0/vdcs/{vdcName}")
 	if err != nil {
 		return err
 	}
@@ -310,16 +310,16 @@ func (v *CAVVDC) New(ctx context.Context, value *CAVVirtualDataCenter) (vdc *CAV
 
 	c, err := clientcloudavenue.New()
 	if err != nil {
-		return
+		return vdc, err
 	}
 
 	r, err := c.R().
 		SetBody(value).
 		SetError(&commoncloudavenue.APIErrorResponse{}).
 		SetResult(&commoncloudavenue.JobStatus{}).
-		Post("/api/customers/v2.0/vdcs")
+		Post("/infrapicustomerproxy/v2.0/vdcs")
 	if err != nil {
-		return
+		return vdc, err
 	}
 
 	if r.IsError() {

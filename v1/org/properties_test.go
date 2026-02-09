@@ -51,7 +51,7 @@ func TestClient_GetProperties(t *testing.T) {
 					if err != nil {
 						t.Fatal(err)
 					}
-					httpmock.RegisterResponder("GET", "/api/customers/v2.0/configurations", responder)
+					httpmock.RegisterResponder("GET", "/infrapicustomerproxy/v2.0/configurations", responder)
 					return clientcloudavenue.MockClient().R()
 				})
 			},
@@ -92,7 +92,7 @@ func TestClient_GetProperties(t *testing.T) {
 					if err != nil {
 						t.Fatal(err)
 					}
-					httpmock.RegisterResponder("GET", "/api/customers/v2.0/configurations", responder)
+					httpmock.RegisterResponder("GET", "/infrapicustomerproxy/v2.0/configurations", responder)
 					return clientcloudavenue.MockClient().R()
 				})
 			},
@@ -107,7 +107,7 @@ func TestClient_GetProperties(t *testing.T) {
 					httpmock.ActivateNonDefault(clientcloudavenue.MockClient().GetClient())
 					responder := httpmock.NewStringResponder(200, ``)
 
-					httpmock.RegisterResponder("GET", "/api/customers/v2.0/bad/path", responder)
+					httpmock.RegisterResponder("GET", "/infrapicustomerproxy/v2.0/bad/path", responder)
 					return clientcloudavenue.MockClient().R()
 				})
 			},
@@ -163,7 +163,7 @@ func TestClient_UpdateProperties(t *testing.T) {
 						t.Fatal(err)
 					}
 					httpmock.BodyContainsBytes(json.RawMessage(`{"fullName":"John Doe","description":"John Doe description","customerMail":"","internetBillingMode":"PAYG"}`))
-					httpmock.RegisterResponder("PUT", "/api/customers/v2.0/configurations", responder)
+					httpmock.RegisterResponder("PUT", "/infrapicustomerproxy/v2.0/configurations", responder)
 					return clientcloudavenue.MockClient().R()
 				})
 			},
@@ -219,7 +219,7 @@ func TestClient_UpdateProperties(t *testing.T) {
 						t.Fatal(err)
 					}
 
-					httpmock.RegisterResponder("PUT", "/api/customers/v2.0/configurations", responder)
+					httpmock.RegisterResponder("PUT", "/infrapicustomerproxy/v2.0/configurations", responder)
 					return clientcloudavenue.MockClient().R()
 				})
 			},
@@ -242,7 +242,7 @@ func TestClient_UpdateProperties(t *testing.T) {
 					httpmock.ActivateNonDefault(clientcloudavenue.MockClient().GetClient())
 					responder := httpmock.NewStringResponder(200, ``)
 
-					httpmock.RegisterResponder("PUT", "/api/customers/v2.0/bad/path", responder)
+					httpmock.RegisterResponder("PUT", "/infrapicustomerproxy/v2.0/bad/path", responder)
 					return clientcloudavenue.MockClient().R()
 				})
 			},

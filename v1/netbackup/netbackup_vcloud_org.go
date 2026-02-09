@@ -72,7 +72,7 @@ type orgsResponse struct {
 func (v *VcloudClient) GetOrgs() (resp *Orgs, err error) {
 	c, err := clientnetbackup.New()
 	if err != nil {
-		return
+		return resp, err
 	}
 
 	r, err := c.R().
@@ -80,7 +80,7 @@ func (v *VcloudClient) GetOrgs() (resp *Orgs, err error) {
 		SetError(&commonnetbackup.APIError{}).
 		Get("/v6/vcloud/orgs")
 	if err != nil {
-		return
+		return resp, err
 	}
 
 	if r.IsError() {
@@ -100,7 +100,7 @@ type orgResponse struct {
 func (v *VcloudClient) GetOrg(id int) (resp *Org, err error) {
 	c, err := clientnetbackup.New()
 	if err != nil {
-		return
+		return resp, err
 	}
 
 	r, err := c.R().
@@ -111,7 +111,7 @@ func (v *VcloudClient) GetOrg(id int) (resp *Org, err error) {
 		}).
 		Get("/v6/vcloud/orgs/{orgID}")
 	if err != nil {
-		return
+		return resp, err
 	}
 
 	if r.IsError() {
@@ -125,7 +125,7 @@ func (v *VcloudClient) GetOrg(id int) (resp *Org, err error) {
 func (v *VcloudClient) GetOrgByName(name string) (resp *Org, err error) {
 	orgs, err := v.GetOrgs()
 	if err != nil {
-		return
+		return resp, err
 	}
 
 	for _, org := range *orgs {

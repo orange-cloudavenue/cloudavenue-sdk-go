@@ -49,7 +49,7 @@ func (s S3Client) SyncBucket(bucketName string) (err error) {
 		SetQueryParam("sync", "").
 		Get("/api/v1/s3/{bucketName}")
 	if err != nil {
-		return
+		return err
 	}
 
 	if r.IsError() {

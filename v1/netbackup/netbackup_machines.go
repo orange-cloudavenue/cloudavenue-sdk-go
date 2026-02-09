@@ -209,7 +209,7 @@ type machinesResponse struct {
 func (m *MachineClient) GetMachines() (resp *Machines, err error) {
 	c, err := clientnetbackup.New()
 	if err != nil {
-		return
+		return resp, err
 	}
 
 	r, err := c.R().
@@ -217,7 +217,7 @@ func (m *MachineClient) GetMachines() (resp *Machines, err error) {
 		SetError(&commonnetbackup.APIError{}).
 		Get("/v6/machines")
 	if err != nil {
-		return
+		return resp, err
 	}
 
 	if r.IsError() {
@@ -235,7 +235,7 @@ type machineResponse struct {
 func (m *MachineClient) GetMachineByID(id int) (resp *Machine, err error) {
 	c, err := clientnetbackup.New()
 	if err != nil {
-		return
+		return resp, err
 	}
 
 	r, err := c.R().
@@ -244,7 +244,7 @@ func (m *MachineClient) GetMachineByID(id int) (resp *Machine, err error) {
 		SetPathParam("id", fmt.Sprintf("%d", id)).
 		Get("/v6/machines/{id}")
 	if err != nil {
-		return
+		return resp, err
 	}
 
 	if r.IsError() {
@@ -258,7 +258,7 @@ func (m *MachineClient) GetMachineByID(id int) (resp *Machine, err error) {
 func (m *MachineClient) GetMachineByName(name string) (resp *Machine, err error) {
 	machines, err := m.GetMachines()
 	if err != nil {
-		return
+		return resp, err
 	}
 
 	for _, machine := range *machines {
@@ -274,7 +274,7 @@ func (m *MachineClient) GetMachineByName(name string) (resp *Machine, err error)
 func (m *MachineClient) GetMachineByIdentifier(identifier string) (resp *Machine, err error) {
 	machines, err := m.GetMachines()
 	if err != nil {
-		return
+		return resp, err
 	}
 
 	for _, machine := range *machines {
@@ -290,7 +290,7 @@ func (m *MachineClient) GetMachineByIdentifier(identifier string) (resp *Machine
 func (m *MachineClient) GetMachineByNameOrIdentifier(nameOrIdentifier string) (resp *Machine, err error) {
 	machines, err := m.GetMachines()
 	if err != nil {
-		return
+		return resp, err
 	}
 
 	for _, machine := range *machines {

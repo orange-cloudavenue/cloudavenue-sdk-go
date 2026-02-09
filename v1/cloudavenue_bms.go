@@ -54,15 +54,15 @@ type (
 func (v *BMS) List() (response *[]BMS, err error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {
-		return
+		return response, err
 	}
 
 	r, err := c.R().
 		SetResult([]BMS{}). //- because the response is a slice of struct
 		SetError(&commoncloudavenue.APIErrorResponse{}).
-		Get("/api/customers/v2.0/bms")
+		Get("/infrapicustomerproxy/v2.0/bms")
 	if err != nil {
-		return
+		return response, err
 	}
 
 	if r.IsError() {
