@@ -1,4 +1,12 @@
 ## 0.27.0 (Unreleased)
+### :rotating_light: **Breaking Changes**
+
+* Migrated authentication to use the new token endpoint, which includes changes in the token response structure. This release introduces a end of life of the legacy authentication method at 01/10/2026, and may require updates to bump the SDK version and adjust authentication handling in existing code. (GH-298)
+* Updated organization retrieval to use GetOrgByName and GetAdminOrgByName methods, which may affect existing code that relies on organization ID formats. (GH-298)
+### :information_source: **Notes**
+
+* Updated the default VCD API version to 39.1 for better compatibility with the latest vCloud Director features. (GH-298)
+
 ## 0.26.3 (August 27, 2025)
 ## 0.26.2 (July  4, 2025)
 ### :information_source: **Notes**
