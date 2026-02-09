@@ -73,7 +73,7 @@ func New(opts *ClientOpts) (*Client, error) {
 			Username:         cavClient.GetUsername(),
 			OrganizationName: cavClient.GetOrganization(),
 			Debug:            cavClient.GetDebug(),
-			CAVToken:         clientcloudavenue.GetBearerToken(),
+			CAVToken:         clientcloudavenue.GetClient().Vmware.Client.VCDToken,
 		}); err != nil {
 			return nil, err
 		}
