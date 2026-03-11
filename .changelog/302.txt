@@ -1,0 +1,3 @@
+```release-note:dependency
+deps: bumps github.com/avast/retry-go/v4, github.com/aws/aws-sdk-go, github.com/go-resty/resty/v2, github.com/hashicorp/terraform-plugin-sdk/v2, github.com/jarcoal/httpmock, github.com/stretchr/testify, go.uber.org/mock, golang.org/x/sync from  to 
+```
