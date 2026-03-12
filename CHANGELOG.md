@@ -1,4 +1,9 @@
 ## 0.28.0 (Unreleased)
+
+### :dependabot: **Dependencies**
+
+* deps: bumps actions/checkout, crazy-max/ghaction-github-labeler from  to (GH-301)
+
 ## 0.27.1 (February  9, 2026)
 
 ### :bug: **Bug Fixes**
