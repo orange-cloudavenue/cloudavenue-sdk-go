@@ -15,6 +15,8 @@ import (
 	"time"
 
 	"github.com/go-resty/resty/v2"
+
+	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/clients/consoles"
 )
 
 // token holds the OAuth2 authentication state for Cerberus API.
@@ -35,6 +37,7 @@ type token struct {
 
 	// Connection settings
 	endpoint string
+	coreAPI  string
 	debug    bool
 }
 
@@ -46,6 +49,28 @@ func (t *token) GetOrganization() string {
 // GetEndpoint - Returns the API endpoint.
 func (t *token) GetEndpoint() string {
 	return t.endpoint
+}
+
+func (t *token) effectiveCoreAPI() string {
+	if t.coreAPI == "" {
+		return consoles.CerberusAPIEndpoint
+	}
+
+	return t.coreAPI
+}
+
+func (t *token) newBackendClient() *resty.Client {
+	return resty.New().
+		SetDebug(t.debug).
+		SetHeader("Accept", "application/json").
+		SetBaseURL(t.effectiveCoreAPI()).
+		SetAuthScheme("Bearer").
+		SetAuthToken(t.GetToken()).
+		SetHeader("User-Agent", "Cloudavenue-SDK-v1")
+}
+
+func (t *token) newAuthClient() *resty.Client {
+	return resty.New().SetBaseURL(t.effectiveCoreAPI())
 }
 
 // GetEndpointURL - Returns the API endpoint URL.
@@ -97,7 +122,7 @@ func (t *token) RefreshToken() error {
 		return nil
 	}
 
-	c := resty.New().SetBaseURL("https://api1.cloudavenue.orange-business.com")
+	c := t.newAuthClient()
 
 	r, err := c.R().
 		SetDebug(t.debug).
