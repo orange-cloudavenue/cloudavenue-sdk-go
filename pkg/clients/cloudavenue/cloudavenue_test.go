@@ -13,6 +13,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"sync"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -21,13 +22,31 @@ import (
 	cloudavenueerrors "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/errors"
 )
 
+func clearCloudavenueEnv(t *testing.T) {
+	t.Helper()
+	for _, key := range []string{
+		"CLOUDAVENUE_CORE_API",
+		"CLOUDAVENUE_URL",
+		"CLOUDAVENUE_USERNAME",
+		"CLOUDAVENUE_PASSWORD",
+		"CLOUDAVENUE_ORG",
+		"CLOUDAVENUE_VDC",
+	} {
+		t.Setenv(key, "")
+	}
+	t.Setenv("CLOUDAVENUE_DEBUG", "false")
+	t.Setenv("CLOUDAVENUE_DEV", "false")
+}
+
 func TestOptsValidateDefaultsCoreAPI(t *testing.T) {
+	clearCloudavenueEnv(t)
+	t.Setenv("CLOUDAVENUE_DEV", "true")
+
 	opts := &Opts{
 		URL:      "https://vcd.example.com",
 		Username: "username",
 		Password: "password",
 		Org:      "org",
-		Dev:      true,
 	}
 
 	err := opts.Validate()
@@ -49,12 +68,14 @@ func TestOptsValidateRejectsInvalidCoreAPI(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			clearCloudavenueEnv(t)
+			t.Setenv("CLOUDAVENUE_DEV", "true")
+
 			opts := &Opts{
 				URL:      "https://vcd.example.com",
 				Username: "username",
 				Password: "password",
 				Org:      "org",
-				Dev:      true,
 				CoreAPI:  tt.coreAPI,
 			}
 
@@ -67,6 +88,8 @@ func TestOptsValidateRejectsInvalidCoreAPI(t *testing.T) {
 }
 
 func TestInitKeepsVMwareURLSeparatedFromCoreAPI(t *testing.T) {
+	clearCloudavenueEnv(t)
+	t.Setenv("CLOUDAVENUE_DEV", "true")
 	resetClientState(t)
 
 	opts := &Opts{
@@ -74,7 +97,6 @@ func TestInitKeepsVMwareURLSeparatedFromCoreAPI(t *testing.T) {
 		Username: "username",
 		Password: "password",
 		Org:      "org",
-		Dev:      true,
 		CoreAPI:  "https://core-api.example.com",
 	}
 
@@ -87,21 +109,27 @@ func TestInitKeepsVMwareURLSeparatedFromCoreAPI(t *testing.T) {
 }
 
 func TestTokenUsesCoreAPIForAuthAndBackendClient(t *testing.T) {
+	var mu sync.Mutex
 	var paths []string
 	var authHeaders []string
 
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		mu.Lock()
 		paths = append(paths, r.URL.Path)
 		authHeaders = append(authHeaders, r.Header.Get("Authorization"))
+		mu.Unlock()
 
 		switch r.URL.Path {
 		case "/auth/v1/user/token":
 			w.Header().Set("Content-Type", "application/json")
-			assert.NoError(t, json.NewEncoder(w).Encode(map[string]any{
+			if err := json.NewEncoder(w).Encode(map[string]any{
 				"access_token": "access-token",
 				"token_type":   "Bearer",
 				"expires_in":   3600,
-			}))
+			}); err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				assert.NoError(t, err)
+			}
 		case "/infrapicustomerproxy/v2.0/configurations":
 			w.WriteHeader(http.StatusOK)
 		default:
@@ -127,9 +155,16 @@ func TestTokenUsesCoreAPIForAuthAndBackendClient(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode())
 
-	assert.Equal(t, []string{"/auth/v1/user/token", "/infrapicustomerproxy/v2.0/configurations"}, paths)
-	assert.Equal(t, "", authHeaders[0])
-	assert.Equal(t, "Bearer access-token", authHeaders[1])
+	// All HTTP calls above complete synchronously; no concurrent writers remain at this point.
+	mu.Lock()
+	defer mu.Unlock()
+	if assert.Len(t, paths, 2) {
+		assert.Equal(t, []string{"/auth/v1/user/token", "/infrapicustomerproxy/v2.0/configurations"}, paths)
+	}
+	if assert.Len(t, authHeaders, 2) {
+		assert.Equal(t, "", authHeaders[0]) // auth endpoint uses no Authorization header — credentials are in the request body
+		assert.Equal(t, "Bearer access-token", authHeaders[1])
+	}
 }
 
 func TestTokenFallsBackToDefaultCoreAPIForAuthAndBackendClient(t *testing.T) {
