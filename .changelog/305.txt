@@ -1,0 +1,3 @@
+```release-note:feature
+`pkg/clients/cloudavenue` - Add `CoreAPI` to override the backend API endpoint used for authentication and backend requests, with HTTPS validation and fallback to the default public endpoint.
+```

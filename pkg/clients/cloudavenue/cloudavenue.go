@@ -44,6 +44,9 @@ type Opts struct {
 	VDC      string `env:"VDC,overwrite"`
 	Debug    bool   `env:"DEBUG,overwrite"`
 	Dev      bool   `env:"DEV,overwrite"` // Only for development
+	// CoreAPI overrides the default backend API endpoint.
+	// If empty, the default public endpoint is used (consoles.CerberusAPIEndpoint).
+	CoreAPI string `env:"CORE_API,overwrite"`
 }
 
 func (o *Opts) Validate() error {
@@ -90,6 +93,16 @@ func (o *Opts) Validate() error {
 		}
 	}
 
+	// If CoreAPI is not set, use the default backend API endpoint.
+	if o.CoreAPI == "" {
+		o.CoreAPI = consoles.CerberusAPIEndpoint
+	}
+
+	// Validate the backend URL format.
+	if u, err := url.ParseRequestURI(o.CoreAPI); err != nil || !u.IsAbs() || u.Scheme != "https" || u.Host == "" {
+		return fmt.Errorf("the core API %q has an %w", o.CoreAPI, errors.ErrInvalidFormat)
+	}
+
 	return nil
 }
 
@@ -109,6 +122,7 @@ func Init(opts *Opts) (err error) {
 	c.token.vdc = opts.VDC
 	c.token.endpoint = opts.URL
 	c.token.debug = opts.Debug
+	c.token.coreAPI = opts.CoreAPI
 
 	return err
 }
@@ -179,16 +193,9 @@ func New() (*Client, error) {
 		return cache.getAdminOrg()
 	})
 
-	// Setup Cerberus API client (InfrAPI proxy)
+	// Setup backend API client (auth + InfrAPI proxy)
 	wg.Go(func() error {
-		cache.Client = resty.New().
-			SetDebug(c.token.debug).
-			// SetHeader("Content-Type", "application/json").
-			SetHeader("Accept", "application/json").
-			SetBaseURL(consoles.CerberusAPIEndpoint).
-			SetAuthScheme("Bearer").
-			SetAuthToken(c.token.GetToken()).
-			SetHeader("User-Agent", "Cloudavenue-SDK-v1")
+		cache.Client = c.token.newBackendClient()
 
 		return nil
 	})
