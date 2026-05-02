@@ -1,5 +1,9 @@
 ## 0.28.0 (Unreleased)
 
+### :rocket: **New Features**
+
+* `pkg/clients/cloudavenue` - Add `CoreAPI` to override the backend API endpoint used for authentication and backend requests, with HTTPS validation and fallback to the default public endpoint. (GH-305)
+
 ### :dependabot: **Dependencies**
 
 * deps: bumps actions/checkout, crazy-max/ghaction-github-labeler from  to (GH-301)
