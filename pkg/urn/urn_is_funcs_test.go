@@ -593,12 +593,12 @@ func TestIsCatalog(t *testing.T) {
 		want    bool
 	}{
 		{ // IsCatalog
-			name: "IsCatalog",
+			name: testIsCatalogName,
 			urn:  URN(Catalog.String() + validUUIDv4).String(),
 			want: true,
 		},
 		{ // IsNotCatalog
-			name: "IsNotCatalog",
+			name: testIsNotCatalogName,
 			urn:  URN(testInvalidVMURN).String(),
 			want: false,
 		},

@@ -465,12 +465,12 @@ func TestURN_IsCatalog(t *testing.T) {
 		want bool
 	}{
 		{ // IsCatalog
-			name: "IsCatalog",
+			name: testIsCatalogName,
 			urn:  URN(Catalog.String() + validUUIDv4),
 			want: true,
 		},
 		{ // IsNotCatalog
-			name: "IsNotCatalog",
+			name: testIsNotCatalogName,
 			urn:  URN(testInvalidVMURNLong),
 			want: false,
 		},
@@ -529,12 +529,12 @@ func TestVcloudURN_IsCatalog(t *testing.T) {
 		want bool
 	}{
 		{ // IsCatalog
-			name: "IsCatalog",
+			name: testIsCatalogName,
 			urn:  URN(Catalog.String() + validUUIDv4),
 			want: true,
 		},
 		{ // IsNotCatalog
-			name: "IsNotCatalog",
+			name: testIsNotCatalogName,
 			urn:  URN(testInvalidVMURNLong),
 			want: false,
 		},

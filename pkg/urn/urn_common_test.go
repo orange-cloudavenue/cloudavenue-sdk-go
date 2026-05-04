@@ -18,6 +18,8 @@ const (
 	testInvalidUserURN     = "urn:vcloud:user:f47ac10b-58cc-4372-a567-0e02b2c3d479"
 	testInvalidUserURNLong = "urn:vcloud:user:f47ac10b-58cc-4372-a567-0e02b2c3d4791"
 	testExtractUUID        = "123e4567-e89b-12d3-a456-426614174000"
+	testIsCatalogName      = "IsCatalog"
+	testIsNotCatalogName   = "IsNotCatalog"
 )
 
 func TestNormalize(t *testing.T) {

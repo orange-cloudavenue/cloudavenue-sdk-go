@@ -17,8 +17,9 @@ import (
 )
 
 const (
-	testOrgName        = "cav01ev01ocb0001234"
-	testValidateErrFmt = "Opts.Validate() error = %v, wantErr %v"
+	testOrgName           = "cav01ev01ocb0001234"
+	testValidateErrFmt    = "Opts.Validate() error = %v, wantErr %v"
+	testNetbackupEndpoint = "https://backup4.cloudavenue.orange-business.com/NetBackupSelfService/Api"
 )
 
 func TestOpts_Validate(t *testing.T) {
@@ -46,14 +47,14 @@ func TestOpts_Validate(t *testing.T) {
 			name: "should not return an error if the endpoint or the url are not empty and the organization is provided",
 			opts: &Opts{
 				org:      testOrgName,
-				Endpoint: "https://backup4.cloudavenue.orange-business.com/NetBackupSelfService/Api",
+				Endpoint: testNetbackupEndpoint,
 			},
 			wantErr: nil,
 		},
 		{
 			name: "should not return an error if the endpoint or the url are not empty and the organization is empty",
 			opts: &Opts{
-				URL: "https://backup4.cloudavenue.orange-business.com/NetBackupSelfService/Api",
+				URL: testNetbackupEndpoint,
 			},
 			wantErr: nil,
 		},
@@ -114,7 +115,7 @@ func TestInit(t *testing.T) {
 			name: "should not set username, password, endpoint, and debug if not provided",
 			org:  testOrgName,
 			opts: &Opts{
-				Endpoint: "https://backup4.cloudavenue.orange-business.com/NetBackupSelfService/Api",
+				Endpoint: testNetbackupEndpoint,
 			},
 			expectedUser: "",
 			expectedPass: "",

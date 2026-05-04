@@ -49,7 +49,7 @@ func TestClient_ListServiceEngineGroups(t *testing.T) {
 		err               error
 	}{
 		{
-			name:          "success",
+			name:          testSuccess,
 			edgeGatewayID: urnEdgeGateway,
 			mockFunc: func() {
 				clientCAV.EXPECT().Refresh().Return(nil)
@@ -192,7 +192,7 @@ func TestClient_GetServiceEngineGroup(t *testing.T) {
 		nameOrID          string
 	}{
 		{
-			name:          "success",
+			name:          testSuccess,
 			edgeGatewayID: urnEdgeGateway,
 			nameOrID:      urnServiceEngineGroup,
 			mockFunc: func() {
@@ -373,7 +373,7 @@ func TestClient_GetFirstServiceEngineGroup(t *testing.T) {
 		err           error
 	}{
 		{
-			name:          "success",
+			name:          testSuccess,
 			edgeGatewayID: edgeGatewayID,
 			mockFunc: func() {
 				clientCAV.EXPECT().Refresh().Return(nil)

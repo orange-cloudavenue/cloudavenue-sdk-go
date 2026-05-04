@@ -62,7 +62,7 @@ func TestClient_GetPoliciesHTTPSecurity(t *testing.T) {
 						Description: testVirtualServiceDesc2,
 						Enabled:     utils.ToPTR(true),
 						ApplicationProfile: govcdtypes.NsxtAlbVirtualServiceApplicationProfile{
-							Type: "HTTPS",
+							Type: string(PoliciesHTTPProtocolHTTPS),
 						},
 						GatewayRef: govcdtypes.OpenApiReference{
 							ID: edgeGatewayID,
@@ -79,7 +79,7 @@ func TestClient_GetPoliciesHTTPSecurity(t *testing.T) {
 								PortEnd:    nil,
 								SslEnabled: utils.ToPTR(true),
 								TcpUdpProfile: &govcdtypes.NsxtAlbVirtualServicePortTcpUdpProfile{
-									Type: "TCP_PROXY",
+									Type: string(virtualServiceServicePortTypeTCPProxy),
 								},
 							},
 						},
@@ -97,7 +97,7 @@ func TestClient_GetPoliciesHTTPSecurity(t *testing.T) {
 							Logging: true,
 							MatchCriteria: govcdtypes.AlbVsHttpRequestAndSecurityRuleMatchCriteria{
 								ClientIPMatch: &govcdtypes.AlbVsHttpRequestRuleClientIPMatch{
-									MatchCriteria: "IS_IN",
+									MatchCriteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN),
 									Addresses: []string{
 										testIPSingle,
 										testIPCIDR,
@@ -105,22 +105,22 @@ func TestClient_GetPoliciesHTTPSecurity(t *testing.T) {
 									},
 								},
 								ServicePortMatch: &govcdtypes.AlbVsHttpRequestRuleServicePortMatch{
-									MatchCriteria: "IS_IN",
+									MatchCriteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN),
 									Ports: []int{
 										80,
 										443,
 									},
 								},
 								MethodMatch: &govcdtypes.AlbVsHttpRequestRuleMethodMatch{
-									MatchCriteria: "IS_IN",
+									MatchCriteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN),
 									Methods: []string{
-										"GET",
-										"POST",
+										string(PoliciesHTTPMethodGET),
+										string(PoliciesHTTPMethodPOST),
 									},
 								},
-								Protocol: "HTTP",
+								Protocol: string(PoliciesHTTPProtocolHTTP),
 								PathMatch: &govcdtypes.AlbVsHttpRequestRulePathMatch{
-									MatchCriteria: "BEGINS_WITH",
+									MatchCriteria: string(PoliciesHTTPMatchCriteriaCriteriaBEGINSWITH),
 									MatchStrings: []string{
 										testPath1,
 										testPath2,
@@ -132,7 +132,7 @@ func TestClient_GetPoliciesHTTPSecurity(t *testing.T) {
 								},
 								HeaderMatch: []govcdtypes.AlbVsHttpRequestRuleHeaderMatch{
 									{
-										MatchCriteria: "IS_IN",
+										MatchCriteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN),
 										Key:           testHeaderUserAgent,
 										Value: []string{
 											testHeaderValueMozilla,
@@ -140,7 +140,7 @@ func TestClient_GetPoliciesHTTPSecurity(t *testing.T) {
 										},
 									},
 									{
-										MatchCriteria: "IS_IN",
+										MatchCriteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN),
 										Key:           testHeaderAccept,
 										Value: []string{
 											testContentTypeJSON,
@@ -149,7 +149,7 @@ func TestClient_GetPoliciesHTTPSecurity(t *testing.T) {
 									},
 								},
 								CookieMatch: &govcdtypes.AlbVsHttpRequestRuleCookieMatch{
-									MatchCriteria: "BEGINS_WITH",
+									MatchCriteria: string(PoliciesHTTPMatchCriteriaCriteriaBEGINSWITH),
 									Key:           testCookieName,
 									Value:         testCookieValue,
 								},
@@ -169,25 +169,25 @@ func TestClient_GetPoliciesHTTPSecurity(t *testing.T) {
 						Active:  true,
 						Logging: true,
 						MatchCriteria: PoliciesHTTPSecurityMatchCriteria{
-							Protocol:         "HTTP",
-							ClientIPMatch:    &PoliciesHTTPClientIPMatch{Criteria: "IS_IN", Addresses: []string{testIPSingle, testIPCIDR, testIPRange}},
-							ServicePortMatch: &PoliciesHTTPServicePortMatch{Criteria: "IS_IN", Ports: []int{80, 443}},
-							MethodMatch:      &PoliciesHTTPMethodMatch{Criteria: "IS_IN", Methods: []string{"GET", "POST"}},
-							PathMatch:        &PoliciesHTTPPathMatch{Criteria: "BEGINS_WITH", MatchStrings: []string{testPath1, testPath2}},
+							Protocol:         PoliciesHTTPProtocolHTTP,
+							ClientIPMatch:    &PoliciesHTTPClientIPMatch{Criteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN), Addresses: []string{testIPSingle, testIPCIDR, testIPRange}},
+							ServicePortMatch: &PoliciesHTTPServicePortMatch{Criteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN), Ports: []int{80, 443}},
+							MethodMatch:      &PoliciesHTTPMethodMatch{Criteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN), Methods: []string{string(PoliciesHTTPMethodGET), string(PoliciesHTTPMethodPOST)}},
+							PathMatch:        &PoliciesHTTPPathMatch{Criteria: string(PoliciesHTTPMatchCriteriaCriteriaBEGINSWITH), MatchStrings: []string{testPath1, testPath2}},
 							QueryMatch:       []string{testQuery1, testQuery2},
 							HeaderMatch: []PoliciesHTTPHeaderMatch{
 								{
-									Criteria: "IS_IN",
+									Criteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN),
 									Name:     testHeaderUserAgent,
 									Values:   []string{testHeaderValueMozilla, testHeaderValueCurl},
 								},
 								{
-									Criteria: "IS_IN",
+									Criteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN),
 									Name:     testHeaderAccept,
 									Values:   []string{testContentTypeJSON, testContentTypeHTML},
 								},
 							},
-							CookieMatch: &PoliciesHTTPCookieMatch{Criteria: "BEGINS_WITH", Name: testCookieName, Value: testCookieValue},
+							CookieMatch: &PoliciesHTTPCookieMatch{Criteria: string(PoliciesHTTPMatchCriteriaCriteriaBEGINSWITH), Name: testCookieName, Value: testCookieValue},
 						},
 						RedirectToHTTPSAction: utils.ToPTR(8443),
 					},
@@ -208,7 +208,7 @@ func TestClient_GetPoliciesHTTPSecurity(t *testing.T) {
 						Description: testVirtualServiceDesc2,
 						Enabled:     utils.ToPTR(true),
 						ApplicationProfile: govcdtypes.NsxtAlbVirtualServiceApplicationProfile{
-							Type: "HTTPS",
+							Type: string(PoliciesHTTPProtocolHTTPS),
 						},
 						GatewayRef: govcdtypes.OpenApiReference{
 							ID: edgeGatewayID,
@@ -225,7 +225,7 @@ func TestClient_GetPoliciesHTTPSecurity(t *testing.T) {
 								PortEnd:    nil,
 								SslEnabled: utils.ToPTR(true),
 								TcpUdpProfile: &govcdtypes.NsxtAlbVirtualServicePortTcpUdpProfile{
-									Type: "TCP_PROXY",
+									Type: string(virtualServiceServicePortTypeTCPProxy),
 								},
 							},
 						},
@@ -243,7 +243,7 @@ func TestClient_GetPoliciesHTTPSecurity(t *testing.T) {
 							Logging: true,
 							MatchCriteria: govcdtypes.AlbVsHttpRequestAndSecurityRuleMatchCriteria{
 								ClientIPMatch: &govcdtypes.AlbVsHttpRequestRuleClientIPMatch{
-									MatchCriteria: "IS_IN",
+									MatchCriteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN),
 									Addresses: []string{
 										testIPSingle,
 										testIPCIDR,
@@ -251,22 +251,22 @@ func TestClient_GetPoliciesHTTPSecurity(t *testing.T) {
 									},
 								},
 								ServicePortMatch: &govcdtypes.AlbVsHttpRequestRuleServicePortMatch{
-									MatchCriteria: "IS_IN",
+									MatchCriteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN),
 									Ports: []int{
 										80,
 										443,
 									},
 								},
 								MethodMatch: &govcdtypes.AlbVsHttpRequestRuleMethodMatch{
-									MatchCriteria: "IS_IN",
+									MatchCriteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN),
 									Methods: []string{
-										"GET",
-										"POST",
+										string(PoliciesHTTPMethodGET),
+										string(PoliciesHTTPMethodPOST),
 									},
 								},
-								Protocol: "HTTP",
+								Protocol: string(PoliciesHTTPProtocolHTTP),
 								PathMatch: &govcdtypes.AlbVsHttpRequestRulePathMatch{
-									MatchCriteria: "BEGINS_WITH",
+									MatchCriteria: string(PoliciesHTTPMatchCriteriaCriteriaBEGINSWITH),
 									MatchStrings: []string{
 										testPath1,
 										testPath2,
@@ -278,7 +278,7 @@ func TestClient_GetPoliciesHTTPSecurity(t *testing.T) {
 								},
 								HeaderMatch: []govcdtypes.AlbVsHttpRequestRuleHeaderMatch{
 									{
-										MatchCriteria: "IS_IN",
+										MatchCriteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN),
 										Key:           testHeaderUserAgent,
 										Value: []string{
 											testHeaderValueMozilla,
@@ -286,7 +286,7 @@ func TestClient_GetPoliciesHTTPSecurity(t *testing.T) {
 										},
 									},
 									{
-										MatchCriteria: "IS_IN",
+										MatchCriteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN),
 										Key:           testHeaderAccept,
 										Value: []string{
 											testContentTypeJSON,
@@ -295,7 +295,7 @@ func TestClient_GetPoliciesHTTPSecurity(t *testing.T) {
 									},
 								},
 								CookieMatch: &govcdtypes.AlbVsHttpRequestRuleCookieMatch{
-									MatchCriteria: "BEGINS_WITH",
+									MatchCriteria: string(PoliciesHTTPMatchCriteriaCriteriaBEGINSWITH),
 									Key:           testCookieName,
 									Value:         testCookieValue,
 								},
@@ -317,25 +317,25 @@ func TestClient_GetPoliciesHTTPSecurity(t *testing.T) {
 						Active:  true,
 						Logging: true,
 						MatchCriteria: PoliciesHTTPSecurityMatchCriteria{
-							Protocol:         "HTTP",
-							ClientIPMatch:    &PoliciesHTTPClientIPMatch{Criteria: "IS_IN", Addresses: []string{testIPSingle, testIPCIDR, testIPRange}},
-							ServicePortMatch: &PoliciesHTTPServicePortMatch{Criteria: "IS_IN", Ports: []int{80, 443}},
-							MethodMatch:      &PoliciesHTTPMethodMatch{Criteria: "IS_IN", Methods: []string{"GET", "POST"}},
-							PathMatch:        &PoliciesHTTPPathMatch{Criteria: "BEGINS_WITH", MatchStrings: []string{testPath1, testPath2}},
+							Protocol:         PoliciesHTTPProtocolHTTP,
+							ClientIPMatch:    &PoliciesHTTPClientIPMatch{Criteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN), Addresses: []string{testIPSingle, testIPCIDR, testIPRange}},
+							ServicePortMatch: &PoliciesHTTPServicePortMatch{Criteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN), Ports: []int{80, 443}},
+							MethodMatch:      &PoliciesHTTPMethodMatch{Criteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN), Methods: []string{string(PoliciesHTTPMethodGET), string(PoliciesHTTPMethodPOST)}},
+							PathMatch:        &PoliciesHTTPPathMatch{Criteria: string(PoliciesHTTPMatchCriteriaCriteriaBEGINSWITH), MatchStrings: []string{testPath1, testPath2}},
 							QueryMatch:       []string{testQuery1, testQuery2},
 							HeaderMatch: []PoliciesHTTPHeaderMatch{
 								{
-									Criteria: "IS_IN",
+									Criteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN),
 									Name:     testHeaderUserAgent,
 									Values:   []string{testHeaderValueMozilla, testHeaderValueCurl},
 								},
 								{
-									Criteria: "IS_IN",
+									Criteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN),
 									Name:     testHeaderAccept,
 									Values:   []string{testContentTypeJSON, testContentTypeHTML},
 								},
 							},
-							CookieMatch: &PoliciesHTTPCookieMatch{Criteria: "BEGINS_WITH", Name: testCookieName, Value: testCookieValue},
+							CookieMatch: &PoliciesHTTPCookieMatch{Criteria: string(PoliciesHTTPMatchCriteriaCriteriaBEGINSWITH), Name: testCookieName, Value: testCookieValue},
 						},
 						SendResponseAction: &PoliciesHTTPActionSendResponse{
 							StatusCode:  404,
@@ -360,7 +360,7 @@ func TestClient_GetPoliciesHTTPSecurity(t *testing.T) {
 						Description: testVirtualServiceDesc2,
 						Enabled:     utils.ToPTR(true),
 						ApplicationProfile: govcdtypes.NsxtAlbVirtualServiceApplicationProfile{
-							Type: "HTTPS",
+							Type: string(PoliciesHTTPProtocolHTTPS),
 						},
 						GatewayRef: govcdtypes.OpenApiReference{
 							ID: edgeGatewayID,
@@ -377,7 +377,7 @@ func TestClient_GetPoliciesHTTPSecurity(t *testing.T) {
 								PortEnd:    nil,
 								SslEnabled: utils.ToPTR(true),
 								TcpUdpProfile: &govcdtypes.NsxtAlbVirtualServicePortTcpUdpProfile{
-									Type: "TCP_PROXY",
+									Type: string(virtualServiceServicePortTypeTCPProxy),
 								},
 							},
 						},
@@ -395,7 +395,7 @@ func TestClient_GetPoliciesHTTPSecurity(t *testing.T) {
 							Logging: true,
 							MatchCriteria: govcdtypes.AlbVsHttpRequestAndSecurityRuleMatchCriteria{
 								ClientIPMatch: &govcdtypes.AlbVsHttpRequestRuleClientIPMatch{
-									MatchCriteria: "IS_IN",
+									MatchCriteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN),
 									Addresses: []string{
 										testIPSingle,
 										testIPCIDR,
@@ -403,22 +403,22 @@ func TestClient_GetPoliciesHTTPSecurity(t *testing.T) {
 									},
 								},
 								ServicePortMatch: &govcdtypes.AlbVsHttpRequestRuleServicePortMatch{
-									MatchCriteria: "IS_IN",
+									MatchCriteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN),
 									Ports: []int{
 										80,
 										443,
 									},
 								},
 								MethodMatch: &govcdtypes.AlbVsHttpRequestRuleMethodMatch{
-									MatchCriteria: "IS_IN",
+									MatchCriteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN),
 									Methods: []string{
-										"GET",
-										"POST",
+										string(PoliciesHTTPMethodGET),
+										string(PoliciesHTTPMethodPOST),
 									},
 								},
-								Protocol: "HTTP",
+								Protocol: string(PoliciesHTTPProtocolHTTP),
 								PathMatch: &govcdtypes.AlbVsHttpRequestRulePathMatch{
-									MatchCriteria: "BEGINS_WITH",
+									MatchCriteria: string(PoliciesHTTPMatchCriteriaCriteriaBEGINSWITH),
 									MatchStrings: []string{
 										testPath1,
 										testPath2,
@@ -430,7 +430,7 @@ func TestClient_GetPoliciesHTTPSecurity(t *testing.T) {
 								},
 								HeaderMatch: []govcdtypes.AlbVsHttpRequestRuleHeaderMatch{
 									{
-										MatchCriteria: "IS_IN",
+										MatchCriteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN),
 										Key:           testHeaderUserAgent,
 										Value: []string{
 											testHeaderValueMozilla,
@@ -438,7 +438,7 @@ func TestClient_GetPoliciesHTTPSecurity(t *testing.T) {
 										},
 									},
 									{
-										MatchCriteria: "IS_IN",
+										MatchCriteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN),
 										Key:           testHeaderAccept,
 										Value: []string{
 											testContentTypeJSON,
@@ -447,7 +447,7 @@ func TestClient_GetPoliciesHTTPSecurity(t *testing.T) {
 									},
 								},
 								CookieMatch: &govcdtypes.AlbVsHttpRequestRuleCookieMatch{
-									MatchCriteria: "BEGINS_WITH",
+									MatchCriteria: string(PoliciesHTTPMatchCriteriaCriteriaBEGINSWITH),
 									Key:           testCookieName,
 									Value:         testCookieValue,
 								},
@@ -458,7 +458,7 @@ func TestClient_GetPoliciesHTTPSecurity(t *testing.T) {
 								RedirectAction: &govcdtypes.AlbVsHttpRequestRuleRedirectAction{
 									Host:       testDomain,
 									KeepQuery:  true,
-									Protocol:   "HTTPS",
+									Protocol:   string(PoliciesHTTPProtocolHTTPS),
 									Port:       utils.ToPTR(443),
 									StatusCode: 302,
 									Path:       testNewPath,
@@ -476,25 +476,25 @@ func TestClient_GetPoliciesHTTPSecurity(t *testing.T) {
 						Active:  true,
 						Logging: true,
 						MatchCriteria: PoliciesHTTPSecurityMatchCriteria{
-							Protocol:         "HTTP",
-							ClientIPMatch:    &PoliciesHTTPClientIPMatch{Criteria: "IS_IN", Addresses: []string{testIPSingle, testIPCIDR, testIPRange}},
-							ServicePortMatch: &PoliciesHTTPServicePortMatch{Criteria: "IS_IN", Ports: []int{80, 443}},
-							MethodMatch:      &PoliciesHTTPMethodMatch{Criteria: "IS_IN", Methods: []string{"GET", "POST"}},
-							PathMatch:        &PoliciesHTTPPathMatch{Criteria: "BEGINS_WITH", MatchStrings: []string{testPath1, testPath2}},
+							Protocol:         PoliciesHTTPProtocolHTTP,
+							ClientIPMatch:    &PoliciesHTTPClientIPMatch{Criteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN), Addresses: []string{testIPSingle, testIPCIDR, testIPRange}},
+							ServicePortMatch: &PoliciesHTTPServicePortMatch{Criteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN), Ports: []int{80, 443}},
+							MethodMatch:      &PoliciesHTTPMethodMatch{Criteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN), Methods: []string{string(PoliciesHTTPMethodGET), string(PoliciesHTTPMethodPOST)}},
+							PathMatch:        &PoliciesHTTPPathMatch{Criteria: string(PoliciesHTTPMatchCriteriaCriteriaBEGINSWITH), MatchStrings: []string{testPath1, testPath2}},
 							QueryMatch:       []string{testQuery1, testQuery2},
 							HeaderMatch: []PoliciesHTTPHeaderMatch{
 								{
-									Criteria: "IS_IN",
+									Criteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN),
 									Name:     testHeaderUserAgent,
 									Values:   []string{testHeaderValueMozilla, testHeaderValueCurl},
 								},
 								{
-									Criteria: "IS_IN",
+									Criteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN),
 									Name:     testHeaderAccept,
 									Values:   []string{testContentTypeJSON, testContentTypeHTML},
 								},
 							},
-							CookieMatch: &PoliciesHTTPCookieMatch{Criteria: "BEGINS_WITH", Name: testCookieName, Value: testCookieValue},
+							CookieMatch: &PoliciesHTTPCookieMatch{Criteria: string(PoliciesHTTPMatchCriteriaCriteriaBEGINSWITH), Name: testCookieName, Value: testCookieValue},
 						},
 						RateLimitAction: &PoliciesHTTPActionRateLimit{
 							Count:  100,
@@ -502,7 +502,7 @@ func TestClient_GetPoliciesHTTPSecurity(t *testing.T) {
 							RedirectAction: &PoliciesHTTPActionRedirect{
 								Host:       testDomain,
 								KeepQuery:  true,
-								Protocol:   "HTTPS",
+								Protocol:   string(PoliciesHTTPProtocolHTTPS),
 								Port:       utils.ToPTR(443),
 								StatusCode: 302,
 								Path:       testNewPath,
@@ -526,7 +526,7 @@ func TestClient_GetPoliciesHTTPSecurity(t *testing.T) {
 						Description: testVirtualServiceDesc2,
 						Enabled:     utils.ToPTR(true),
 						ApplicationProfile: govcdtypes.NsxtAlbVirtualServiceApplicationProfile{
-							Type: "HTTPS",
+							Type: string(PoliciesHTTPProtocolHTTPS),
 						},
 						GatewayRef: govcdtypes.OpenApiReference{
 							ID: edgeGatewayID,
@@ -543,7 +543,7 @@ func TestClient_GetPoliciesHTTPSecurity(t *testing.T) {
 								PortEnd:    nil,
 								SslEnabled: utils.ToPTR(true),
 								TcpUdpProfile: &govcdtypes.NsxtAlbVirtualServicePortTcpUdpProfile{
-									Type: "TCP_PROXY",
+									Type: string(virtualServiceServicePortTypeTCPProxy),
 								},
 							},
 						},
@@ -561,7 +561,7 @@ func TestClient_GetPoliciesHTTPSecurity(t *testing.T) {
 							Logging: true,
 							MatchCriteria: govcdtypes.AlbVsHttpRequestAndSecurityRuleMatchCriteria{
 								ClientIPMatch: &govcdtypes.AlbVsHttpRequestRuleClientIPMatch{
-									MatchCriteria: "IS_IN",
+									MatchCriteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN),
 									Addresses: []string{
 										testIPSingle,
 										testIPCIDR,
@@ -569,22 +569,22 @@ func TestClient_GetPoliciesHTTPSecurity(t *testing.T) {
 									},
 								},
 								ServicePortMatch: &govcdtypes.AlbVsHttpRequestRuleServicePortMatch{
-									MatchCriteria: "IS_IN",
+									MatchCriteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN),
 									Ports: []int{
 										80,
 										443,
 									},
 								},
 								MethodMatch: &govcdtypes.AlbVsHttpRequestRuleMethodMatch{
-									MatchCriteria: "IS_IN",
+									MatchCriteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN),
 									Methods: []string{
-										"GET",
-										"POST",
+										string(PoliciesHTTPMethodGET),
+										string(PoliciesHTTPMethodPOST),
 									},
 								},
-								Protocol: "HTTP",
+								Protocol: string(PoliciesHTTPProtocolHTTP),
 								PathMatch: &govcdtypes.AlbVsHttpRequestRulePathMatch{
-									MatchCriteria: "BEGINS_WITH",
+									MatchCriteria: string(PoliciesHTTPMatchCriteriaCriteriaBEGINSWITH),
 									MatchStrings: []string{
 										testPath1,
 										testPath2,
@@ -596,7 +596,7 @@ func TestClient_GetPoliciesHTTPSecurity(t *testing.T) {
 								},
 								HeaderMatch: []govcdtypes.AlbVsHttpRequestRuleHeaderMatch{
 									{
-										MatchCriteria: "IS_IN",
+										MatchCriteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN),
 										Key:           testHeaderUserAgent,
 										Value: []string{
 											testHeaderValueMozilla,
@@ -604,7 +604,7 @@ func TestClient_GetPoliciesHTTPSecurity(t *testing.T) {
 										},
 									},
 									{
-										MatchCriteria: "IS_IN",
+										MatchCriteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN),
 										Key:           testHeaderAccept,
 										Value: []string{
 											testContentTypeJSON,
@@ -613,7 +613,7 @@ func TestClient_GetPoliciesHTTPSecurity(t *testing.T) {
 									},
 								},
 								CookieMatch: &govcdtypes.AlbVsHttpRequestRuleCookieMatch{
-									MatchCriteria: "BEGINS_WITH",
+									MatchCriteria: string(PoliciesHTTPMatchCriteriaCriteriaBEGINSWITH),
 									Key:           testCookieName,
 									Value:         testCookieValue,
 								},
@@ -639,25 +639,25 @@ func TestClient_GetPoliciesHTTPSecurity(t *testing.T) {
 						Active:  true,
 						Logging: true,
 						MatchCriteria: PoliciesHTTPSecurityMatchCriteria{
-							Protocol:         "HTTP",
-							ClientIPMatch:    &PoliciesHTTPClientIPMatch{Criteria: "IS_IN", Addresses: []string{testIPSingle, testIPCIDR, testIPRange}},
-							ServicePortMatch: &PoliciesHTTPServicePortMatch{Criteria: "IS_IN", Ports: []int{80, 443}},
-							MethodMatch:      &PoliciesHTTPMethodMatch{Criteria: "IS_IN", Methods: []string{"GET", "POST"}},
-							PathMatch:        &PoliciesHTTPPathMatch{Criteria: "BEGINS_WITH", MatchStrings: []string{testPath1, testPath2}},
+							Protocol:         PoliciesHTTPProtocolHTTP,
+							ClientIPMatch:    &PoliciesHTTPClientIPMatch{Criteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN), Addresses: []string{testIPSingle, testIPCIDR, testIPRange}},
+							ServicePortMatch: &PoliciesHTTPServicePortMatch{Criteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN), Ports: []int{80, 443}},
+							MethodMatch:      &PoliciesHTTPMethodMatch{Criteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN), Methods: []string{string(PoliciesHTTPMethodGET), string(PoliciesHTTPMethodPOST)}},
+							PathMatch:        &PoliciesHTTPPathMatch{Criteria: string(PoliciesHTTPMatchCriteriaCriteriaBEGINSWITH), MatchStrings: []string{testPath1, testPath2}},
 							QueryMatch:       []string{testQuery1, testQuery2},
 							HeaderMatch: []PoliciesHTTPHeaderMatch{
 								{
-									Criteria: "IS_IN",
+									Criteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN),
 									Name:     testHeaderUserAgent,
 									Values:   []string{testHeaderValueMozilla, testHeaderValueCurl},
 								},
 								{
-									Criteria: "IS_IN",
+									Criteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN),
 									Name:     testHeaderAccept,
 									Values:   []string{testContentTypeJSON, testContentTypeHTML},
 								},
 							},
-							CookieMatch: &PoliciesHTTPCookieMatch{Criteria: "BEGINS_WITH", Name: testCookieName, Value: testCookieValue},
+							CookieMatch: &PoliciesHTTPCookieMatch{Criteria: string(PoliciesHTTPMatchCriteriaCriteriaBEGINSWITH), Name: testCookieName, Value: testCookieValue},
 						},
 						RateLimitAction: &PoliciesHTTPActionRateLimit{
 							Count:  100,
@@ -765,7 +765,7 @@ func TestClient_UpdatePoliciesHTTPSecurity(t *testing.T) {
 		// ? ------------------------------------------------------------------------------
 		// ? ------------------------------ SUCCESS CASES ---------------------------------
 		{
-			name: "success",
+			name: testSuccess,
 			policies: &PoliciesHTTPSecurityModel{
 				VirtualServiceID: virtualServiceID,
 				Policies: []*PoliciesHTTPSecurityModelPolicy{
@@ -774,25 +774,25 @@ func TestClient_UpdatePoliciesHTTPSecurity(t *testing.T) {
 						Active:  true,
 						Logging: true,
 						MatchCriteria: PoliciesHTTPSecurityMatchCriteria{
-							Protocol:         "HTTP",
-							ClientIPMatch:    &PoliciesHTTPClientIPMatch{Criteria: "IS_IN", Addresses: []string{testIPSingle, testIPCIDR, testIPRange}},
-							ServicePortMatch: &PoliciesHTTPServicePortMatch{Criteria: "IS_IN", Ports: []int{80, 443}},
-							MethodMatch:      &PoliciesHTTPMethodMatch{Criteria: "IS_IN", Methods: []string{"GET", "POST"}},
-							PathMatch:        &PoliciesHTTPPathMatch{Criteria: "BEGINS_WITH", MatchStrings: []string{testPath1, testPath2}},
+							Protocol:         PoliciesHTTPProtocolHTTP,
+							ClientIPMatch:    &PoliciesHTTPClientIPMatch{Criteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN), Addresses: []string{testIPSingle, testIPCIDR, testIPRange}},
+							ServicePortMatch: &PoliciesHTTPServicePortMatch{Criteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN), Ports: []int{80, 443}},
+							MethodMatch:      &PoliciesHTTPMethodMatch{Criteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN), Methods: []string{string(PoliciesHTTPMethodGET), string(PoliciesHTTPMethodPOST)}},
+							PathMatch:        &PoliciesHTTPPathMatch{Criteria: string(PoliciesHTTPMatchCriteriaCriteriaBEGINSWITH), MatchStrings: []string{testPath1, testPath2}},
 							QueryMatch:       []string{testQuery1, testQuery2},
 							HeaderMatch: []PoliciesHTTPHeaderMatch{
 								{
-									Criteria: "IS_IN",
+									Criteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN),
 									Name:     testHeaderUserAgent,
 									Values:   []string{testHeaderValueMozilla, testHeaderValueCurl},
 								},
 								{
-									Criteria: "IS_IN",
+									Criteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN),
 									Name:     testHeaderAccept,
 									Values:   []string{testContentTypeJSON, testContentTypeHTML},
 								},
 							},
-							CookieMatch: &PoliciesHTTPCookieMatch{Criteria: "BEGINS_WITH", Name: testCookieName, Value: testCookieValue},
+							CookieMatch: &PoliciesHTTPCookieMatch{Criteria: string(PoliciesHTTPMatchCriteriaCriteriaBEGINSWITH), Name: testCookieName, Value: testCookieValue},
 						},
 						RedirectToHTTPSAction: utils.ToPTR(8443),
 					},
@@ -806,25 +806,25 @@ func TestClient_UpdatePoliciesHTTPSecurity(t *testing.T) {
 						Active:  true,
 						Logging: true,
 						MatchCriteria: PoliciesHTTPSecurityMatchCriteria{
-							Protocol:         "HTTP",
-							ClientIPMatch:    &PoliciesHTTPClientIPMatch{Criteria: "IS_IN", Addresses: []string{testIPSingle, testIPCIDR, testIPRange}},
-							ServicePortMatch: &PoliciesHTTPServicePortMatch{Criteria: "IS_IN", Ports: []int{80, 443}},
-							MethodMatch:      &PoliciesHTTPMethodMatch{Criteria: "IS_IN", Methods: []string{"GET", "POST"}},
-							PathMatch:        &PoliciesHTTPPathMatch{Criteria: "BEGINS_WITH", MatchStrings: []string{testPath1, testPath2}},
+							Protocol:         PoliciesHTTPProtocolHTTP,
+							ClientIPMatch:    &PoliciesHTTPClientIPMatch{Criteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN), Addresses: []string{testIPSingle, testIPCIDR, testIPRange}},
+							ServicePortMatch: &PoliciesHTTPServicePortMatch{Criteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN), Ports: []int{80, 443}},
+							MethodMatch:      &PoliciesHTTPMethodMatch{Criteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN), Methods: []string{string(PoliciesHTTPMethodGET), string(PoliciesHTTPMethodPOST)}},
+							PathMatch:        &PoliciesHTTPPathMatch{Criteria: string(PoliciesHTTPMatchCriteriaCriteriaBEGINSWITH), MatchStrings: []string{testPath1, testPath2}},
 							QueryMatch:       []string{testQuery1, testQuery2},
 							HeaderMatch: []PoliciesHTTPHeaderMatch{
 								{
-									Criteria: "IS_IN",
+									Criteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN),
 									Name:     testHeaderUserAgent,
 									Values:   []string{testHeaderValueMozilla, testHeaderValueCurl},
 								},
 								{
-									Criteria: "IS_IN",
+									Criteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN),
 									Name:     testHeaderAccept,
 									Values:   []string{testContentTypeJSON, testContentTypeHTML},
 								},
 							},
-							CookieMatch: &PoliciesHTTPCookieMatch{Criteria: "BEGINS_WITH", Name: testCookieName, Value: testCookieValue},
+							CookieMatch: &PoliciesHTTPCookieMatch{Criteria: string(PoliciesHTTPMatchCriteriaCriteriaBEGINSWITH), Name: testCookieName, Value: testCookieValue},
 						},
 						RedirectToHTTPSAction: utils.ToPTR(8443),
 					},
@@ -839,7 +839,7 @@ func TestClient_UpdatePoliciesHTTPSecurity(t *testing.T) {
 						Description: testVirtualServiceDesc2,
 						Enabled:     utils.ToPTR(true),
 						ApplicationProfile: govcdtypes.NsxtAlbVirtualServiceApplicationProfile{
-							Type: "HTTPS",
+							Type: string(PoliciesHTTPProtocolHTTPS),
 						},
 						GatewayRef: govcdtypes.OpenApiReference{
 							ID: edgeGatewayID,
@@ -856,7 +856,7 @@ func TestClient_UpdatePoliciesHTTPSecurity(t *testing.T) {
 								PortEnd:    nil,
 								SslEnabled: utils.ToPTR(true),
 								TcpUdpProfile: &govcdtypes.NsxtAlbVirtualServicePortTcpUdpProfile{
-									Type: "TCP_PROXY",
+									Type: string(virtualServiceServicePortTypeTCPProxy),
 								},
 							},
 						},
@@ -874,7 +874,7 @@ func TestClient_UpdatePoliciesHTTPSecurity(t *testing.T) {
 							Logging: true,
 							MatchCriteria: govcdtypes.AlbVsHttpRequestAndSecurityRuleMatchCriteria{
 								ClientIPMatch: &govcdtypes.AlbVsHttpRequestRuleClientIPMatch{
-									MatchCriteria: "IS_IN",
+									MatchCriteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN),
 									Addresses: []string{
 										testIPSingle,
 										testIPCIDR,
@@ -882,22 +882,22 @@ func TestClient_UpdatePoliciesHTTPSecurity(t *testing.T) {
 									},
 								},
 								ServicePortMatch: &govcdtypes.AlbVsHttpRequestRuleServicePortMatch{
-									MatchCriteria: "IS_IN",
+									MatchCriteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN),
 									Ports: []int{
 										80,
 										443,
 									},
 								},
 								MethodMatch: &govcdtypes.AlbVsHttpRequestRuleMethodMatch{
-									MatchCriteria: "IS_IN",
+									MatchCriteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN),
 									Methods: []string{
-										"GET",
-										"POST",
+										string(PoliciesHTTPMethodGET),
+										string(PoliciesHTTPMethodPOST),
 									},
 								},
-								Protocol: "HTTP",
+								Protocol: string(PoliciesHTTPProtocolHTTP),
 								PathMatch: &govcdtypes.AlbVsHttpRequestRulePathMatch{
-									MatchCriteria: "BEGINS_WITH",
+									MatchCriteria: string(PoliciesHTTPMatchCriteriaCriteriaBEGINSWITH),
 									MatchStrings: []string{
 										testPath1,
 										testPath2,
@@ -909,7 +909,7 @@ func TestClient_UpdatePoliciesHTTPSecurity(t *testing.T) {
 								},
 								HeaderMatch: []govcdtypes.AlbVsHttpRequestRuleHeaderMatch{
 									{
-										MatchCriteria: "IS_IN",
+										MatchCriteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN),
 										Key:           testHeaderUserAgent,
 										Value: []string{
 											testHeaderValueMozilla,
@@ -917,7 +917,7 @@ func TestClient_UpdatePoliciesHTTPSecurity(t *testing.T) {
 										},
 									},
 									{
-										MatchCriteria: "IS_IN",
+										MatchCriteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN),
 										Key:           testHeaderAccept,
 										Value: []string{
 											testContentTypeJSON,
@@ -926,7 +926,7 @@ func TestClient_UpdatePoliciesHTTPSecurity(t *testing.T) {
 									},
 								},
 								CookieMatch: &govcdtypes.AlbVsHttpRequestRuleCookieMatch{
-									MatchCriteria: "BEGINS_WITH",
+									MatchCriteria: string(PoliciesHTTPMatchCriteriaCriteriaBEGINSWITH),
 									Key:           testCookieName,
 									Value:         testCookieValue,
 								},
@@ -954,8 +954,8 @@ func TestClient_UpdatePoliciesHTTPSecurity(t *testing.T) {
 						Active:  true,
 						Logging: true,
 						MatchCriteria: PoliciesHTTPSecurityMatchCriteria{
-							Protocol:  "HTTP",
-							PathMatch: &PoliciesHTTPPathMatch{Criteria: "BEGINS_WITH", MatchStrings: []string{testPath1, testPath2}},
+							Protocol:  PoliciesHTTPProtocolHTTP,
+							PathMatch: &PoliciesHTTPPathMatch{Criteria: string(PoliciesHTTPMatchCriteriaCriteriaBEGINSWITH), MatchStrings: []string{testPath1, testPath2}},
 						},
 						// RedirectToHTTPSAction: utils.ToPTR(8443),
 						RateLimitAction: &PoliciesHTTPActionRateLimit{
@@ -973,7 +973,7 @@ func TestClient_UpdatePoliciesHTTPSecurity(t *testing.T) {
 						Description: testVirtualServiceDesc2,
 						Enabled:     utils.ToPTR(true),
 						ApplicationProfile: govcdtypes.NsxtAlbVirtualServiceApplicationProfile{
-							Type: "HTTPS",
+							Type: string(PoliciesHTTPProtocolHTTPS),
 						},
 						GatewayRef: govcdtypes.OpenApiReference{
 							ID: edgeGatewayID,
@@ -990,7 +990,7 @@ func TestClient_UpdatePoliciesHTTPSecurity(t *testing.T) {
 								PortEnd:    nil,
 								SslEnabled: utils.ToPTR(true),
 								TcpUdpProfile: &govcdtypes.NsxtAlbVirtualServicePortTcpUdpProfile{
-									Type: "TCP_PROXY",
+									Type: string(virtualServiceServicePortTypeTCPProxy),
 								},
 							},
 						},
@@ -1007,9 +1007,9 @@ func TestClient_UpdatePoliciesHTTPSecurity(t *testing.T) {
 							Active:  true,
 							Logging: true,
 							MatchCriteria: govcdtypes.AlbVsHttpRequestAndSecurityRuleMatchCriteria{
-								Protocol: "HTTP",
+								Protocol: string(PoliciesHTTPProtocolHTTP),
 								PathMatch: &govcdtypes.AlbVsHttpRequestRulePathMatch{
-									MatchCriteria: "BEGINS_WITH",
+									MatchCriteria: string(PoliciesHTTPMatchCriteriaCriteriaBEGINSWITH),
 									MatchStrings: []string{
 										testPath1,
 										testPath2,
@@ -1036,8 +1036,8 @@ func TestClient_UpdatePoliciesHTTPSecurity(t *testing.T) {
 						Active:  true,
 						Logging: true,
 						MatchCriteria: PoliciesHTTPSecurityMatchCriteria{
-							Protocol:  "HTTP",
-							PathMatch: &PoliciesHTTPPathMatch{Criteria: "BEGINS_WITH", MatchStrings: []string{testPath1, testPath2}},
+							Protocol:  PoliciesHTTPProtocolHTTP,
+							PathMatch: &PoliciesHTTPPathMatch{Criteria: string(PoliciesHTTPMatchCriteriaCriteriaBEGINSWITH), MatchStrings: []string{testPath1, testPath2}},
 						},
 						// RedirectToHTTPSAction: utils.ToPTR(8443),
 						RateLimitAction: &PoliciesHTTPActionRateLimit{
@@ -1061,7 +1061,7 @@ func TestClient_UpdatePoliciesHTTPSecurity(t *testing.T) {
 						Active:  true,
 						Logging: true,
 						MatchCriteria: PoliciesHTTPSecurityMatchCriteria{
-							Protocol: "HTTP",
+							Protocol: PoliciesHTTPProtocolHTTP,
 						},
 						RateLimitAction: &PoliciesHTTPActionRateLimit{
 							Count:  100,
@@ -1069,7 +1069,7 @@ func TestClient_UpdatePoliciesHTTPSecurity(t *testing.T) {
 							RedirectAction: &PoliciesHTTPActionRedirect{
 								Host:       testDomain,
 								KeepQuery:  true,
-								Protocol:   "HTTPS",
+								Protocol:   string(PoliciesHTTPProtocolHTTPS),
 								Port:       utils.ToPTR(443),
 								StatusCode: 302,
 							},
@@ -1086,7 +1086,7 @@ func TestClient_UpdatePoliciesHTTPSecurity(t *testing.T) {
 						Description: testVirtualServiceDesc2,
 						Enabled:     utils.ToPTR(true),
 						ApplicationProfile: govcdtypes.NsxtAlbVirtualServiceApplicationProfile{
-							Type: "HTTPS",
+							Type: string(PoliciesHTTPProtocolHTTPS),
 						},
 						GatewayRef: govcdtypes.OpenApiReference{
 							ID: edgeGatewayID,
@@ -1103,7 +1103,7 @@ func TestClient_UpdatePoliciesHTTPSecurity(t *testing.T) {
 								PortEnd:    nil,
 								SslEnabled: utils.ToPTR(true),
 								TcpUdpProfile: &govcdtypes.NsxtAlbVirtualServicePortTcpUdpProfile{
-									Type: "TCP_PROXY",
+									Type: string(virtualServiceServicePortTypeTCPProxy),
 								},
 							},
 						},
@@ -1120,7 +1120,7 @@ func TestClient_UpdatePoliciesHTTPSecurity(t *testing.T) {
 							Active:  true,
 							Logging: true,
 							MatchCriteria: govcdtypes.AlbVsHttpRequestAndSecurityRuleMatchCriteria{
-								Protocol: "HTTP",
+								Protocol: string(PoliciesHTTPProtocolHTTP),
 							},
 							RateLimitAction: &govcdtypes.AlbVsHttpSecurityRuleRateLimitAction{
 								Count:  100,
@@ -1128,7 +1128,7 @@ func TestClient_UpdatePoliciesHTTPSecurity(t *testing.T) {
 								RedirectAction: &govcdtypes.AlbVsHttpRequestRuleRedirectAction{
 									Host:       testDomain,
 									KeepQuery:  true,
-									Protocol:   "HTTPS",
+									Protocol:   string(PoliciesHTTPProtocolHTTPS),
 									Port:       utils.ToPTR(443),
 									StatusCode: 302,
 								},
@@ -1148,7 +1148,7 @@ func TestClient_UpdatePoliciesHTTPSecurity(t *testing.T) {
 						Active:  true,
 						Logging: true,
 						MatchCriteria: PoliciesHTTPSecurityMatchCriteria{
-							Protocol: "HTTP",
+							Protocol: PoliciesHTTPProtocolHTTP,
 						},
 						RateLimitAction: &PoliciesHTTPActionRateLimit{
 							Count:  100,
@@ -1156,7 +1156,7 @@ func TestClient_UpdatePoliciesHTTPSecurity(t *testing.T) {
 							RedirectAction: &PoliciesHTTPActionRedirect{
 								Host:       testDomain,
 								KeepQuery:  true,
-								Protocol:   "HTTPS",
+								Protocol:   string(PoliciesHTTPProtocolHTTPS),
 								Port:       utils.ToPTR(443),
 								StatusCode: 302,
 							},
@@ -1177,7 +1177,7 @@ func TestClient_UpdatePoliciesHTTPSecurity(t *testing.T) {
 						Active:  true,
 						Logging: true,
 						MatchCriteria: PoliciesHTTPSecurityMatchCriteria{
-							Protocol: "HTTP",
+							Protocol: PoliciesHTTPProtocolHTTP,
 						},
 						RateLimitAction: &PoliciesHTTPActionRateLimit{
 							Count:  100,
@@ -1200,7 +1200,7 @@ func TestClient_UpdatePoliciesHTTPSecurity(t *testing.T) {
 						Description: testVirtualServiceDesc2,
 						Enabled:     utils.ToPTR(true),
 						ApplicationProfile: govcdtypes.NsxtAlbVirtualServiceApplicationProfile{
-							Type: "HTTPS",
+							Type: string(PoliciesHTTPProtocolHTTPS),
 						},
 						GatewayRef: govcdtypes.OpenApiReference{
 							ID: edgeGatewayID,
@@ -1217,7 +1217,7 @@ func TestClient_UpdatePoliciesHTTPSecurity(t *testing.T) {
 								PortEnd:    nil,
 								SslEnabled: utils.ToPTR(true),
 								TcpUdpProfile: &govcdtypes.NsxtAlbVirtualServicePortTcpUdpProfile{
-									Type: "TCP_PROXY",
+									Type: string(virtualServiceServicePortTypeTCPProxy),
 								},
 							},
 						},
@@ -1234,7 +1234,7 @@ func TestClient_UpdatePoliciesHTTPSecurity(t *testing.T) {
 							Active:  true,
 							Logging: true,
 							MatchCriteria: govcdtypes.AlbVsHttpRequestAndSecurityRuleMatchCriteria{
-								Protocol: "HTTP",
+								Protocol: string(PoliciesHTTPProtocolHTTP),
 							},
 							RateLimitAction: &govcdtypes.AlbVsHttpSecurityRuleRateLimitAction{
 								Count:  100,
@@ -1260,7 +1260,7 @@ func TestClient_UpdatePoliciesHTTPSecurity(t *testing.T) {
 						Active:  true,
 						Logging: true,
 						MatchCriteria: PoliciesHTTPSecurityMatchCriteria{
-							Protocol: "HTTP",
+							Protocol: PoliciesHTTPProtocolHTTP,
 						},
 						RateLimitAction: &PoliciesHTTPActionRateLimit{
 							Count:  100,
@@ -1290,25 +1290,25 @@ func TestClient_UpdatePoliciesHTTPSecurity(t *testing.T) {
 						Active:  true,
 						Logging: true,
 						MatchCriteria: PoliciesHTTPSecurityMatchCriteria{
-							Protocol:         "HTTP",
-							ClientIPMatch:    &PoliciesHTTPClientIPMatch{Criteria: "IS_IN", Addresses: []string{testIPSingle, testIPCIDR, testIPRange}},
-							ServicePortMatch: &PoliciesHTTPServicePortMatch{Criteria: "IS_IN", Ports: []int{80, 443}},
-							MethodMatch:      &PoliciesHTTPMethodMatch{Criteria: "IS_IN", Methods: []string{"GET", "POST"}},
-							PathMatch:        &PoliciesHTTPPathMatch{Criteria: "BEGINS_WITH", MatchStrings: []string{testPath1, testPath2}},
+							Protocol:         PoliciesHTTPProtocolHTTP,
+							ClientIPMatch:    &PoliciesHTTPClientIPMatch{Criteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN), Addresses: []string{testIPSingle, testIPCIDR, testIPRange}},
+							ServicePortMatch: &PoliciesHTTPServicePortMatch{Criteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN), Ports: []int{80, 443}},
+							MethodMatch:      &PoliciesHTTPMethodMatch{Criteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN), Methods: []string{string(PoliciesHTTPMethodGET), string(PoliciesHTTPMethodPOST)}},
+							PathMatch:        &PoliciesHTTPPathMatch{Criteria: string(PoliciesHTTPMatchCriteriaCriteriaBEGINSWITH), MatchStrings: []string{testPath1, testPath2}},
 							QueryMatch:       []string{testQuery1, testQuery2},
 							HeaderMatch: []PoliciesHTTPHeaderMatch{
 								{
-									Criteria: "IS_IN",
+									Criteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN),
 									Name:     testHeaderUserAgent,
 									Values:   []string{testHeaderValueMozilla, testHeaderValueCurl},
 								},
 								{
-									Criteria: "IS_IN",
+									Criteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN),
 									Name:     testHeaderAccept,
 									Values:   []string{testContentTypeJSON, testContentTypeHTML},
 								},
 							},
-							CookieMatch: &PoliciesHTTPCookieMatch{Criteria: "BEGINS_WITH", Name: testCookieName, Value: testCookieValue},
+							CookieMatch: &PoliciesHTTPCookieMatch{Criteria: string(PoliciesHTTPMatchCriteriaCriteriaBEGINSWITH), Name: testCookieName, Value: testCookieValue},
 						},
 						RedirectToHTTPSAction: utils.ToPTR(8443),
 					},
@@ -1329,25 +1329,25 @@ func TestClient_UpdatePoliciesHTTPSecurity(t *testing.T) {
 						Active:  true,
 						Logging: true,
 						MatchCriteria: PoliciesHTTPSecurityMatchCriteria{
-							Protocol:         "HTTP",
-							ClientIPMatch:    &PoliciesHTTPClientIPMatch{Criteria: "IS_IN", Addresses: []string{testIPSingle, testIPCIDR, testIPRange}},
-							ServicePortMatch: &PoliciesHTTPServicePortMatch{Criteria: "IS_IN", Ports: []int{80, 443}},
-							MethodMatch:      &PoliciesHTTPMethodMatch{Criteria: "IS_IN", Methods: []string{"GET", "POST"}},
-							PathMatch:        &PoliciesHTTPPathMatch{Criteria: "IS_IN", MatchStrings: []string{testPath1, testPath2}},
+							Protocol:         PoliciesHTTPProtocolHTTP,
+							ClientIPMatch:    &PoliciesHTTPClientIPMatch{Criteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN), Addresses: []string{testIPSingle, testIPCIDR, testIPRange}},
+							ServicePortMatch: &PoliciesHTTPServicePortMatch{Criteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN), Ports: []int{80, 443}},
+							MethodMatch:      &PoliciesHTTPMethodMatch{Criteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN), Methods: []string{string(PoliciesHTTPMethodGET), string(PoliciesHTTPMethodPOST)}},
+							PathMatch:        &PoliciesHTTPPathMatch{Criteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN), MatchStrings: []string{testPath1, testPath2}},
 							QueryMatch:       []string{testQuery1, testQuery2},
 							HeaderMatch: []PoliciesHTTPHeaderMatch{
 								{
-									Criteria: "IS_IN",
+									Criteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN),
 									Name:     testHeaderUserAgent,
 									Values:   []string{testHeaderValueMozilla, testHeaderValueCurl},
 								},
 								{
-									Criteria: "IS_IN",
+									Criteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN),
 									Name:     testHeaderAccept,
 									Values:   []string{testContentTypeJSON, testContentTypeHTML},
 								},
 							},
-							CookieMatch: &PoliciesHTTPCookieMatch{Criteria: "IS_IN", Name: testCookieName, Value: testCookieValue},
+							CookieMatch: &PoliciesHTTPCookieMatch{Criteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN), Name: testCookieName, Value: testCookieValue},
 						},
 						RedirectToHTTPSAction: utils.ToPTR(8443),
 					},
@@ -1368,25 +1368,25 @@ func TestClient_UpdatePoliciesHTTPSecurity(t *testing.T) {
 						Active:  true,
 						Logging: true,
 						MatchCriteria: PoliciesHTTPSecurityMatchCriteria{
-							Protocol:         "HTTP",
-							ClientIPMatch:    &PoliciesHTTPClientIPMatch{Criteria: "IS_IN", Addresses: []string{testIPSingle, testIPCIDR, testIPRange}},
-							ServicePortMatch: &PoliciesHTTPServicePortMatch{Criteria: "IS_IN", Ports: []int{80, 443}},
-							MethodMatch:      &PoliciesHTTPMethodMatch{Criteria: "IS_IN", Methods: []string{"GET", "POST"}},
-							PathMatch:        &PoliciesHTTPPathMatch{Criteria: "BEGINS_WITH", MatchStrings: []string{testPath1, testPath2}},
+							Protocol:         PoliciesHTTPProtocolHTTP,
+							ClientIPMatch:    &PoliciesHTTPClientIPMatch{Criteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN), Addresses: []string{testIPSingle, testIPCIDR, testIPRange}},
+							ServicePortMatch: &PoliciesHTTPServicePortMatch{Criteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN), Ports: []int{80, 443}},
+							MethodMatch:      &PoliciesHTTPMethodMatch{Criteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN), Methods: []string{string(PoliciesHTTPMethodGET), string(PoliciesHTTPMethodPOST)}},
+							PathMatch:        &PoliciesHTTPPathMatch{Criteria: string(PoliciesHTTPMatchCriteriaCriteriaBEGINSWITH), MatchStrings: []string{testPath1, testPath2}},
 							QueryMatch:       []string{testQuery1, testQuery2},
 							HeaderMatch: []PoliciesHTTPHeaderMatch{
 								{
-									Criteria: "IS_IN",
+									Criteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN),
 									Name:     testHeaderUserAgent,
 									Values:   []string{testHeaderValueMozilla, testHeaderValueCurl},
 								},
 								{
-									Criteria: "IS_IN",
+									Criteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN),
 									Name:     testHeaderAccept,
 									Values:   []string{testContentTypeJSON, testContentTypeHTML},
 								},
 							},
-							CookieMatch: &PoliciesHTTPCookieMatch{Criteria: "BEGINS_WITH", Name: testCookieName, Value: testCookieValue},
+							CookieMatch: &PoliciesHTTPCookieMatch{Criteria: string(PoliciesHTTPMatchCriteriaCriteriaBEGINSWITH), Name: testCookieName, Value: testCookieValue},
 						},
 						RedirectToHTTPSAction: utils.ToPTR(8443),
 					},
@@ -1409,25 +1409,25 @@ func TestClient_UpdatePoliciesHTTPSecurity(t *testing.T) {
 						Active:  true,
 						Logging: true,
 						MatchCriteria: PoliciesHTTPSecurityMatchCriteria{
-							Protocol:         "HTTP",
-							ClientIPMatch:    &PoliciesHTTPClientIPMatch{Criteria: "IS_IN", Addresses: []string{testIPSingle, testIPCIDR, testIPRange}},
-							ServicePortMatch: &PoliciesHTTPServicePortMatch{Criteria: "IS_IN", Ports: []int{80, 443}},
-							MethodMatch:      &PoliciesHTTPMethodMatch{Criteria: "IS_IN", Methods: []string{"GET", "POST"}},
-							PathMatch:        &PoliciesHTTPPathMatch{Criteria: "BEGINS_WITH", MatchStrings: []string{testPath1, testPath2}},
+							Protocol:         PoliciesHTTPProtocolHTTP,
+							ClientIPMatch:    &PoliciesHTTPClientIPMatch{Criteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN), Addresses: []string{testIPSingle, testIPCIDR, testIPRange}},
+							ServicePortMatch: &PoliciesHTTPServicePortMatch{Criteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN), Ports: []int{80, 443}},
+							MethodMatch:      &PoliciesHTTPMethodMatch{Criteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN), Methods: []string{string(PoliciesHTTPMethodGET), string(PoliciesHTTPMethodPOST)}},
+							PathMatch:        &PoliciesHTTPPathMatch{Criteria: string(PoliciesHTTPMatchCriteriaCriteriaBEGINSWITH), MatchStrings: []string{testPath1, testPath2}},
 							QueryMatch:       []string{testQuery1, testQuery2},
 							HeaderMatch: []PoliciesHTTPHeaderMatch{
 								{
-									Criteria: "IS_IN",
+									Criteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN),
 									Name:     testHeaderUserAgent,
 									Values:   []string{testHeaderValueMozilla, testHeaderValueCurl},
 								},
 								{
-									Criteria: "IS_IN",
+									Criteria: string(PoliciesHTTPMatchCriteriaCriteriaISIN),
 									Name:     testHeaderAccept,
 									Values:   []string{testContentTypeJSON, testContentTypeHTML},
 								},
 							},
-							CookieMatch: &PoliciesHTTPCookieMatch{Criteria: "BEGINS_WITH", Name: testCookieName, Value: testCookieValue},
+							CookieMatch: &PoliciesHTTPCookieMatch{Criteria: string(PoliciesHTTPMatchCriteriaCriteriaBEGINSWITH), Name: testCookieName, Value: testCookieValue},
 						},
 						RedirectToHTTPSAction: utils.ToPTR(8443),
 					},
@@ -1489,7 +1489,7 @@ func TestClient_DeletePoliciesHTTPSecurity(t *testing.T) {
 		// ? ------------------------------------------------------------------------------
 		// ? ------------------------------ SUCCESS CASES ---------------------------------
 		{
-			name:             "success",
+			name:             testSuccess,
 			virtualServiceID: virtualServiceID,
 			mockFunc: func() {
 				clientCAV.EXPECT().Refresh().Return(nil)
@@ -1500,7 +1500,7 @@ func TestClient_DeletePoliciesHTTPSecurity(t *testing.T) {
 						Description: testVirtualServiceDesc2,
 						Enabled:     utils.ToPTR(true),
 						ApplicationProfile: govcdtypes.NsxtAlbVirtualServiceApplicationProfile{
-							Type: "HTTPS",
+							Type: string(PoliciesHTTPProtocolHTTPS),
 						},
 						GatewayRef: govcdtypes.OpenApiReference{
 							ID: edgeGatewayID,
@@ -1517,7 +1517,7 @@ func TestClient_DeletePoliciesHTTPSecurity(t *testing.T) {
 								PortEnd:    nil,
 								SslEnabled: utils.ToPTR(true),
 								TcpUdpProfile: &govcdtypes.NsxtAlbVirtualServicePortTcpUdpProfile{
-									Type: "TCP_PROXY",
+									Type: string(virtualServiceServicePortTypeTCPProxy),
 								},
 							},
 						},

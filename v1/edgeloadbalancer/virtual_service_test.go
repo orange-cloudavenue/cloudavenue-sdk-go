@@ -39,7 +39,7 @@ func TestVirtualServiceRequestValidation(t *testing.T) {
 		err          error
 	}{
 		{
-			name: "success",
+			name: testSuccess,
 			virtualModel: VirtualServiceModelRequest{
 				Name:                 testVirtualServiceName1,
 				Description:          testVirtualServiceDesc1,
@@ -275,7 +275,7 @@ func TestClient_GetVirtualService(t *testing.T) {
 						Description: testVirtualServiceDesc1,
 						Enabled:     utils.ToPTR(true),
 						ApplicationProfile: govcdtypes.NsxtAlbVirtualServiceApplicationProfile{
-							Type: "HTTP",
+							Type: string(VirtualServiceApplicationProfileHTTP),
 						},
 						GatewayRef: govcdtypes.OpenApiReference{
 							ID: edgeGatewayID,
@@ -292,7 +292,7 @@ func TestClient_GetVirtualService(t *testing.T) {
 								PortEnd:    nil,
 								SslEnabled: utils.ToPTR(false),
 								TcpUdpProfile: &govcdtypes.NsxtAlbVirtualServicePortTcpUdpProfile{
-									Type: "TCP_PROXY",
+									Type: string(virtualServiceServicePortTypeTCPProxy),
 								},
 							},
 						},
@@ -347,7 +347,7 @@ func TestClient_GetVirtualService(t *testing.T) {
 						Description: testVirtualServiceDesc2,
 						Enabled:     utils.ToPTR(true),
 						ApplicationProfile: govcdtypes.NsxtAlbVirtualServiceApplicationProfile{
-							Type: "HTTPS",
+							Type: string(VirtualServiceApplicationProfileHTTPS),
 						},
 						GatewayRef: govcdtypes.OpenApiReference{
 							ID: edgeGatewayID,
@@ -367,7 +367,7 @@ func TestClient_GetVirtualService(t *testing.T) {
 								PortEnd:    nil,
 								SslEnabled: utils.ToPTR(true),
 								TcpUdpProfile: &govcdtypes.NsxtAlbVirtualServicePortTcpUdpProfile{
-									Type: "TCP_PROXY",
+									Type: string(virtualServiceServicePortTypeTCPProxy),
 								},
 							},
 						},
@@ -586,7 +586,7 @@ func TestClient_ListVirtualServices(t *testing.T) {
 		err           error
 	}{
 		{
-			name:          "success",
+			name:          testSuccess,
 			edgeGatewayID: edgeGatewayID,
 			mockFunc: func() {
 				clientCAV.EXPECT().Refresh().Return(nil).Times(3)
@@ -621,7 +621,7 @@ func TestClient_ListVirtualServices(t *testing.T) {
 						Description: testVirtualServiceDesc1,
 						Enabled:     utils.ToPTR(true),
 						ApplicationProfile: govcdtypes.NsxtAlbVirtualServiceApplicationProfile{
-							Type: "HTTP",
+							Type: string(VirtualServiceApplicationProfileHTTP),
 						},
 						GatewayRef: govcdtypes.OpenApiReference{
 							ID: edgeGatewayID,
@@ -638,7 +638,7 @@ func TestClient_ListVirtualServices(t *testing.T) {
 								PortEnd:    nil,
 								SslEnabled: utils.ToPTR(false),
 								TcpUdpProfile: &govcdtypes.NsxtAlbVirtualServicePortTcpUdpProfile{
-									Type: "TCP_PROXY",
+									Type: string(virtualServiceServicePortTypeTCPProxy),
 								},
 							},
 						},
@@ -655,7 +655,7 @@ func TestClient_ListVirtualServices(t *testing.T) {
 						Description: testVirtualServiceDesc2,
 						Enabled:     utils.ToPTR(true),
 						ApplicationProfile: govcdtypes.NsxtAlbVirtualServiceApplicationProfile{
-							Type: "HTTPS",
+							Type: string(VirtualServiceApplicationProfileHTTPS),
 						},
 						GatewayRef: govcdtypes.OpenApiReference{
 							ID: edgeGatewayID,
@@ -675,7 +675,7 @@ func TestClient_ListVirtualServices(t *testing.T) {
 								PortEnd:    nil,
 								SslEnabled: utils.ToPTR(true),
 								TcpUdpProfile: &govcdtypes.NsxtAlbVirtualServicePortTcpUdpProfile{
-									Type: "TCP_PROXY",
+									Type: string(virtualServiceServicePortTypeTCPProxy),
 								},
 							},
 						},
@@ -782,7 +782,7 @@ func TestClient_ListVirtualServices(t *testing.T) {
 						Description: testVirtualServiceDesc1,
 						Enabled:     utils.ToPTR(true),
 						ApplicationProfile: govcdtypes.NsxtAlbVirtualServiceApplicationProfile{
-							Type: "HTTP",
+							Type: string(VirtualServiceApplicationProfileHTTP),
 						},
 						GatewayRef: govcdtypes.OpenApiReference{
 							ID: edgeGatewayID,
@@ -799,7 +799,7 @@ func TestClient_ListVirtualServices(t *testing.T) {
 								PortEnd:    nil,
 								SslEnabled: utils.ToPTR(false),
 								TcpUdpProfile: &govcdtypes.NsxtAlbVirtualServicePortTcpUdpProfile{
-									Type: "TCP_PROXY",
+									Type: string(virtualServiceServicePortTypeTCPProxy),
 								},
 							},
 						},
@@ -1095,7 +1095,7 @@ func TestClient_CreateVirtualService(t *testing.T) {
 						Description: testVirtualServiceDesc1,
 						Enabled:     utils.ToPTR(true),
 						ApplicationProfile: govcdtypes.NsxtAlbVirtualServiceApplicationProfile{
-							Type: "HTTP",
+							Type: string(VirtualServiceApplicationProfileHTTP),
 						},
 						GatewayRef: govcdtypes.OpenApiReference{
 							ID: edgeGatewayID,
@@ -1112,7 +1112,7 @@ func TestClient_CreateVirtualService(t *testing.T) {
 								PortEnd:    nil,
 								SslEnabled: utils.ToPTR(false),
 								TcpUdpProfile: &govcdtypes.NsxtAlbVirtualServicePortTcpUdpProfile{
-									Type: "TCP_PROXY",
+									Type: string(virtualServiceServicePortTypeTCPProxy),
 								},
 							},
 						},
@@ -1180,7 +1180,7 @@ func TestClient_CreateVirtualService(t *testing.T) {
 						Description: testVirtualServiceDesc1,
 						Enabled:     utils.ToPTR(true),
 						ApplicationProfile: govcdtypes.NsxtAlbVirtualServiceApplicationProfile{
-							Type: "HTTPS",
+							Type: string(VirtualServiceApplicationProfileHTTPS),
 						},
 						GatewayRef: govcdtypes.OpenApiReference{
 							ID: edgeGatewayID,
@@ -1200,7 +1200,7 @@ func TestClient_CreateVirtualService(t *testing.T) {
 								PortEnd:    nil,
 								SslEnabled: utils.ToPTR(true),
 								TcpUdpProfile: &govcdtypes.NsxtAlbVirtualServicePortTcpUdpProfile{
-									Type: "TCP_PROXY",
+									Type: string(virtualServiceServicePortTypeTCPProxy),
 								},
 							},
 						},
@@ -1288,7 +1288,7 @@ func TestClient_CreateVirtualService(t *testing.T) {
 						Description: testVirtualServiceDesc1,
 						Enabled:     utils.ToPTR(true),
 						ApplicationProfile: govcdtypes.NsxtAlbVirtualServiceApplicationProfile{
-							Type: "HTTP",
+							Type: string(VirtualServiceApplicationProfileHTTP),
 						},
 						GatewayRef: govcdtypes.OpenApiReference{
 							ID: edgeGatewayID,
@@ -1305,7 +1305,7 @@ func TestClient_CreateVirtualService(t *testing.T) {
 								PortEnd:    nil,
 								SslEnabled: utils.ToPTR(false),
 								TcpUdpProfile: &govcdtypes.NsxtAlbVirtualServicePortTcpUdpProfile{
-									Type: "TCP_PROXY",
+									Type: string(virtualServiceServicePortTypeTCPProxy),
 								},
 							},
 						},
@@ -1505,7 +1505,7 @@ func TestClient_UpdateVirtualService(t *testing.T) {
 						Description: testVirtualServiceDesc1,
 						Enabled:     utils.ToPTR(true),
 						ApplicationProfile: govcdtypes.NsxtAlbVirtualServiceApplicationProfile{
-							Type: "HTTPS",
+							Type: string(VirtualServiceApplicationProfileHTTPS),
 						},
 						GatewayRef: govcdtypes.OpenApiReference{
 							ID: edgeGatewayID,
@@ -1525,7 +1525,7 @@ func TestClient_UpdateVirtualService(t *testing.T) {
 								PortEnd:    nil,
 								SslEnabled: utils.ToPTR(true),
 								TcpUdpProfile: &govcdtypes.NsxtAlbVirtualServicePortTcpUdpProfile{
-									Type: "TCP_PROXY",
+									Type: string(virtualServiceServicePortTypeTCPProxy),
 								},
 							},
 						},
@@ -1544,7 +1544,7 @@ func TestClient_UpdateVirtualService(t *testing.T) {
 							Description: testVirtualServiceDesc1,
 							Enabled:     utils.ToPTR(true),
 							ApplicationProfile: govcdtypes.NsxtAlbVirtualServiceApplicationProfile{
-								Type: "HTTP",
+								Type: string(VirtualServiceApplicationProfileHTTP),
 							},
 							GatewayRef: govcdtypes.OpenApiReference{
 								ID: edgeGatewayID,
@@ -1561,7 +1561,7 @@ func TestClient_UpdateVirtualService(t *testing.T) {
 									PortEnd:    nil,
 									SslEnabled: utils.ToPTR(false),
 									TcpUdpProfile: &govcdtypes.NsxtAlbVirtualServicePortTcpUdpProfile{
-										Type: "TCP_PROXY",
+										Type: string(virtualServiceServicePortTypeTCPProxy),
 									},
 								},
 							},
@@ -1629,7 +1629,7 @@ func TestClient_UpdateVirtualService(t *testing.T) {
 						Description: testVirtualServiceDesc1,
 						Enabled:     utils.ToPTR(true),
 						ApplicationProfile: govcdtypes.NsxtAlbVirtualServiceApplicationProfile{
-							Type: "HTTPS",
+							Type: string(VirtualServiceApplicationProfileHTTPS),
 						},
 						GatewayRef: govcdtypes.OpenApiReference{
 							ID: edgeGatewayID,
@@ -1649,7 +1649,7 @@ func TestClient_UpdateVirtualService(t *testing.T) {
 								PortEnd:    nil,
 								SslEnabled: utils.ToPTR(true),
 								TcpUdpProfile: &govcdtypes.NsxtAlbVirtualServicePortTcpUdpProfile{
-									Type: "TCP_PROXY",
+									Type: string(virtualServiceServicePortTypeTCPProxy),
 								},
 							},
 						},
@@ -1688,7 +1688,7 @@ func TestClient_UpdateVirtualService(t *testing.T) {
 							Description: testVirtualServiceDesc1,
 							Enabled:     utils.ToPTR(true),
 							ApplicationProfile: govcdtypes.NsxtAlbVirtualServiceApplicationProfile{
-								Type: "HTTP",
+								Type: string(VirtualServiceApplicationProfileHTTP),
 							},
 							GatewayRef: govcdtypes.OpenApiReference{
 								ID: edgeGatewayID,
@@ -1705,7 +1705,7 @@ func TestClient_UpdateVirtualService(t *testing.T) {
 									PortEnd:    nil,
 									SslEnabled: utils.ToPTR(false),
 									TcpUdpProfile: &govcdtypes.NsxtAlbVirtualServicePortTcpUdpProfile{
-										Type: "TCP_PROXY",
+										Type: string(virtualServiceServicePortTypeTCPProxy),
 									},
 								},
 							},
@@ -1773,7 +1773,7 @@ func TestClient_UpdateVirtualService(t *testing.T) {
 						Description: testVirtualServiceDesc1,
 						Enabled:     utils.ToPTR(true),
 						ApplicationProfile: govcdtypes.NsxtAlbVirtualServiceApplicationProfile{
-							Type: "HTTPS",
+							Type: string(VirtualServiceApplicationProfileHTTPS),
 						},
 						GatewayRef: govcdtypes.OpenApiReference{
 							ID: edgeGatewayID,
@@ -1793,7 +1793,7 @@ func TestClient_UpdateVirtualService(t *testing.T) {
 								PortEnd:    nil,
 								SslEnabled: utils.ToPTR(true),
 								TcpUdpProfile: &govcdtypes.NsxtAlbVirtualServicePortTcpUdpProfile{
-									Type: "TCP_PROXY",
+									Type: string(virtualServiceServicePortTypeTCPProxy),
 								},
 							},
 						},
@@ -1957,7 +1957,7 @@ func TestClient_DeleteVirtualService(t *testing.T) {
 		err              error
 	}{
 		{
-			name:             "success",
+			name:             testSuccess,
 			virtualServiceID: virtualServiceID,
 			mockFunc: func() {
 				clientCAV.EXPECT().Refresh().Return(nil)

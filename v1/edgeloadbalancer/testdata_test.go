@@ -48,6 +48,7 @@ const (
 	testHeaderValueCurl    = "curl/7.64.1"
 	testHeaderValueTest    = "test"
 	testHeaderValue1       = "value1"
+	testHeaderValue2       = "value2"
 
 	// Cookie fixtures.
 	testCookieName  = "session_id"

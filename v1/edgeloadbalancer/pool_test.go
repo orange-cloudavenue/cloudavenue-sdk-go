@@ -65,18 +65,18 @@ func TestClient_GetPool(t *testing.T) {
 						Description:              testPoolName1Desc,
 						GatewayRef:               govcdtypes.OpenApiReference{ID: urnEdgeGateway},
 						Enabled:                  utils.ToPTR(true),
-						Algorithm:                "LEAST_CONNECTIONS",
+						Algorithm:                string(PoolAlgorithmLeastConnections),
 						DefaultPort:              utils.ToPTR(80),
 						GracefulTimeoutPeriod:    utils.ToPTR(10),
 						PassiveMonitoringEnabled: utils.ToPTR(true),
 						HealthMonitors: []govcdtypes.NsxtAlbPoolHealthMonitor{
 							{
 								Name: testPoolMonitorHTTP,
-								Type: "HTTP",
+								Type: string(PoolHealthMonitorTypeHTTP),
 							},
 							{
 								Name: testPoolMonitorTCP,
-								Type: "TCP",
+								Type: string(PoolHealthMonitorTypeTCP),
 							},
 						},
 						Members: []govcdtypes.NsxtAlbPoolMember{
@@ -96,7 +96,7 @@ func TestClient_GetPool(t *testing.T) {
 						DomainNames:            nil,                // nil because CommonNameCheckEnabled is false.
 						PersistenceProfile: &govcdtypes.NsxtAlbPoolPersistenceProfile{
 							Name:  testPoolPersistence,
-							Type:  "CLIENT_IP",
+							Type:  string(PoolPersistenceProfileTypeClientIP),
 							Value: "",
 						},
 						MemberCount:        1,
@@ -171,18 +171,18 @@ func TestClient_GetPool(t *testing.T) {
 						Description:              testPoolName1Desc,
 						GatewayRef:               govcdtypes.OpenApiReference{ID: urnEdgeGateway},
 						Enabled:                  utils.ToPTR(true),
-						Algorithm:                "LEAST_CONNECTIONS",
+						Algorithm:                string(PoolAlgorithmLeastConnections),
 						DefaultPort:              utils.ToPTR(80),
 						GracefulTimeoutPeriod:    utils.ToPTR(10),
 						PassiveMonitoringEnabled: utils.ToPTR(true),
 						HealthMonitors: []govcdtypes.NsxtAlbPoolHealthMonitor{
 							{
 								Name: testPoolMonitorHTTP,
-								Type: "HTTP",
+								Type: string(PoolHealthMonitorTypeHTTP),
 							},
 							{
 								Name: testPoolMonitorTCP,
-								Type: "TCP",
+								Type: string(PoolHealthMonitorTypeTCP),
 							},
 						},
 						Members: []govcdtypes.NsxtAlbPoolMember{
@@ -365,7 +365,7 @@ func TestClient_ListPools(t *testing.T) {
 		err           error
 	}{
 		{
-			name:          "success",
+			name:          testSuccess,
 			edgeGatewayID: urnEdgeGateway,
 			mockFunc: func() {
 				clientCAV.EXPECT().Refresh().Return(nil).Times(3)
@@ -394,18 +394,18 @@ func TestClient_ListPools(t *testing.T) {
 						Description:              testPoolName1Desc,
 						GatewayRef:               govcdtypes.OpenApiReference{ID: urnEdgeGateway},
 						Enabled:                  utils.ToPTR(true),
-						Algorithm:                "LEAST_CONNECTIONS",
+						Algorithm:                string(PoolAlgorithmLeastConnections),
 						DefaultPort:              utils.ToPTR(80),
 						GracefulTimeoutPeriod:    utils.ToPTR(10),
 						PassiveMonitoringEnabled: utils.ToPTR(true),
 						HealthMonitors: []govcdtypes.NsxtAlbPoolHealthMonitor{
 							{
 								Name: testPoolMonitorHTTP,
-								Type: "HTTP",
+								Type: string(PoolHealthMonitorTypeHTTP),
 							},
 							{
 								Name: testPoolMonitorTCP,
-								Type: "TCP",
+								Type: string(PoolHealthMonitorTypeTCP),
 							},
 						},
 						Members: []govcdtypes.NsxtAlbPoolMember{
@@ -425,7 +425,7 @@ func TestClient_ListPools(t *testing.T) {
 						DomainNames:            nil,                // nil because CommonNameCheckEnabled is false.
 						PersistenceProfile: &govcdtypes.NsxtAlbPoolPersistenceProfile{
 							Name:  testPoolPersistence,
-							Type:  "CLIENT_IP",
+							Type:  string(PoolPersistenceProfileTypeClientIP),
 							Value: "",
 						},
 						MemberCount:        1,
@@ -442,18 +442,18 @@ func TestClient_ListPools(t *testing.T) {
 						Description:              testPoolName2Desc,
 						GatewayRef:               govcdtypes.OpenApiReference{ID: urnEdgeGateway},
 						Enabled:                  utils.ToPTR(true),
-						Algorithm:                "LEAST_CONNECTIONS",
+						Algorithm:                string(PoolAlgorithmLeastConnections),
 						DefaultPort:              utils.ToPTR(80),
 						GracefulTimeoutPeriod:    utils.ToPTR(10),
 						PassiveMonitoringEnabled: utils.ToPTR(true),
 						HealthMonitors: []govcdtypes.NsxtAlbPoolHealthMonitor{
 							{
 								Name: testPoolMonitorHTTP,
-								Type: "HTTP",
+								Type: string(PoolHealthMonitorTypeHTTP),
 							},
 							{
 								Name: testPoolMonitorTCP,
-								Type: "TCP",
+								Type: string(PoolHealthMonitorTypeTCP),
 							},
 						},
 						Members: []govcdtypes.NsxtAlbPoolMember{
@@ -473,7 +473,7 @@ func TestClient_ListPools(t *testing.T) {
 						DomainNames:            nil,                // nil because CommonNameCheckEnabled is false.
 						PersistenceProfile: &govcdtypes.NsxtAlbPoolPersistenceProfile{
 							Name:  testPoolPersistence,
-							Type:  "CLIENT_IP",
+							Type:  string(PoolPersistenceProfileTypeClientIP),
 							Value: "",
 						},
 						MemberCount:        1,
@@ -650,18 +650,18 @@ func TestClient_ListPools(t *testing.T) {
 						Description:              testPoolName1Desc,
 						GatewayRef:               govcdtypes.OpenApiReference{ID: urnEdgeGateway},
 						Enabled:                  utils.ToPTR(true),
-						Algorithm:                "LEAST_CONNECTIONS",
+						Algorithm:                string(PoolAlgorithmLeastConnections),
 						DefaultPort:              utils.ToPTR(80),
 						GracefulTimeoutPeriod:    utils.ToPTR(10),
 						PassiveMonitoringEnabled: utils.ToPTR(true),
 						HealthMonitors: []govcdtypes.NsxtAlbPoolHealthMonitor{
 							{
 								Name: testPoolMonitorHTTP,
-								Type: "HTTP",
+								Type: string(PoolHealthMonitorTypeHTTP),
 							},
 							{
 								Name: testPoolMonitorTCP,
-								Type: "TCP",
+								Type: string(PoolHealthMonitorTypeTCP),
 							},
 						},
 						Members: []govcdtypes.NsxtAlbPoolMember{
@@ -681,7 +681,7 @@ func TestClient_ListPools(t *testing.T) {
 						DomainNames:            nil,                // nil because CommonNameCheckEnabled is false.
 						PersistenceProfile: &govcdtypes.NsxtAlbPoolPersistenceProfile{
 							Name:  testPoolPersistence,
-							Type:  "CLIENT_IP",
+							Type:  string(PoolPersistenceProfileTypeClientIP),
 							Value: "",
 						},
 						MemberCount:        1,
@@ -749,13 +749,13 @@ func TestClient_CreatePool(t *testing.T) {
 		err           error
 	}{
 		{
-			name: "success",
+			name: testSuccess,
 			pool: PoolModelRequest{
 				Name:                     testPoolName1,
 				Description:              testPoolName1Desc,
 				GatewayRef:               govcdtypes.OpenApiReference{ID: urnEdgeGateway},
 				Enabled:                  utils.ToPTR(true),
-				Algorithm:                "LEAST_CONNECTIONS",
+				Algorithm:                PoolAlgorithmLeastConnections,
 				DefaultPort:              utils.ToPTR(80),
 				GracefulTimeoutPeriod:    utils.ToPTR(10),
 				PassiveMonitoringEnabled: utils.ToPTR(true),
@@ -799,18 +799,18 @@ func TestClient_CreatePool(t *testing.T) {
 						Description:              testPoolName1Desc,
 						GatewayRef:               govcdtypes.OpenApiReference{ID: urnEdgeGateway},
 						Enabled:                  utils.ToPTR(true),
-						Algorithm:                "LEAST_CONNECTIONS",
+						Algorithm:                string(PoolAlgorithmLeastConnections),
 						DefaultPort:              utils.ToPTR(80),
 						GracefulTimeoutPeriod:    utils.ToPTR(10),
 						PassiveMonitoringEnabled: utils.ToPTR(true),
 						HealthMonitors: []govcdtypes.NsxtAlbPoolHealthMonitor{
 							{
 								Name: testPoolMonitorHTTP,
-								Type: "HTTP",
+								Type: string(PoolHealthMonitorTypeHTTP),
 							},
 							{
 								Name: testPoolMonitorTCP,
-								Type: "TCP",
+								Type: string(PoolHealthMonitorTypeTCP),
 							},
 						},
 						Members: []govcdtypes.NsxtAlbPoolMember{
@@ -830,7 +830,7 @@ func TestClient_CreatePool(t *testing.T) {
 						DomainNames:            nil,                // nil because CommonNameCheckEnabled is false.
 						PersistenceProfile: &govcdtypes.NsxtAlbPoolPersistenceProfile{
 							Name:  testPoolPersistence,
-							Type:  "CLIENT_IP",
+							Type:  string(PoolPersistenceProfileTypeClientIP),
 							Value: "",
 						},
 						MemberCount:        1,
@@ -847,7 +847,7 @@ func TestClient_CreatePool(t *testing.T) {
 				Description:              testPoolName1Desc,
 				GatewayRef:               govcdtypes.OpenApiReference{ID: urnEdgeGateway},
 				Enabled:                  utils.ToPTR(true),
-				Algorithm:                "LEAST_CONNECTIONS",
+				Algorithm:                PoolAlgorithmLeastConnections,
 				DefaultPort:              utils.ToPTR(80),
 				GracefulTimeoutPeriod:    utils.ToPTR(10),
 				PassiveMonitoringEnabled: utils.ToPTR(true),
@@ -897,7 +897,7 @@ func TestClient_CreatePool(t *testing.T) {
 				Description:              testPoolName1Desc,
 				GatewayRef:               govcdtypes.OpenApiReference{ID: urnEdgeGateway},
 				Enabled:                  utils.ToPTR(true),
-				Algorithm:                "LEAST_CONNECTIONS",
+				Algorithm:                PoolAlgorithmLeastConnections,
 				DefaultPort:              utils.ToPTR(80),
 				GracefulTimeoutPeriod:    utils.ToPTR(10),
 				PassiveMonitoringEnabled: utils.ToPTR(true),
@@ -927,18 +927,18 @@ func TestClient_CreatePool(t *testing.T) {
 						Description:              testPoolName1Desc,
 						GatewayRef:               govcdtypes.OpenApiReference{ID: urnEdgeGateway},
 						Enabled:                  utils.ToPTR(true),
-						Algorithm:                "LEAST_CONNECTIONS",
+						Algorithm:                string(PoolAlgorithmLeastConnections),
 						DefaultPort:              utils.ToPTR(80),
 						GracefulTimeoutPeriod:    utils.ToPTR(10),
 						PassiveMonitoringEnabled: utils.ToPTR(true),
 						HealthMonitors: []govcdtypes.NsxtAlbPoolHealthMonitor{
 							{
 								Name: testPoolMonitorHTTP,
-								Type: "HTTP",
+								Type: string(PoolHealthMonitorTypeHTTP),
 							},
 							{
 								Name: testPoolMonitorTCP,
-								Type: "TCP",
+								Type: string(PoolHealthMonitorTypeTCP),
 							},
 						},
 						Members:                nil,
@@ -948,7 +948,7 @@ func TestClient_CreatePool(t *testing.T) {
 						DomainNames:            nil,                // nil because CommonNameCheckEnabled is false.
 						PersistenceProfile: &govcdtypes.NsxtAlbPoolPersistenceProfile{
 							Name:  testPoolPersistence,
-							Type:  "CLIENT_IP",
+							Type:  string(PoolPersistenceProfileTypeClientIP),
 							Value: "",
 						},
 						MemberCount:        1,
@@ -965,7 +965,7 @@ func TestClient_CreatePool(t *testing.T) {
 				Description:              testPoolName1Desc,
 				GatewayRef:               govcdtypes.OpenApiReference{ID: urnEdgeGateway},
 				Enabled:                  utils.ToPTR(true),
-				Algorithm:                "LEAST_CONNECTIONS",
+				Algorithm:                PoolAlgorithmLeastConnections,
 				DefaultPort:              utils.ToPTR(80),
 				GracefulTimeoutPeriod:    utils.ToPTR(10),
 				PassiveMonitoringEnabled: utils.ToPTR(true),
@@ -1072,7 +1072,7 @@ func TestClient_CreatePool(t *testing.T) {
 				GatewayRef:               govcdtypes.OpenApiReference{ID: urnEdgeGateway},
 				Enabled:                  utils.ToPTR(true),
 				DefaultPort:              utils.ToPTR(80),
-				Algorithm:                "LEAST_CONNECTIONS", // LEAST CONNECTIONS instead of LEAST_CONNECTIONS
+				Algorithm:                PoolAlgorithmLeastConnections, // LEAST CONNECTIONS instead of LEAST_CONNECTIONS
 				GracefulTimeoutPeriod:    utils.ToPTR(10),
 				PassiveMonitoringEnabled: utils.ToPTR(true),
 				HealthMonitors: []PoolModelHealthMonitor{
@@ -1106,7 +1106,7 @@ func TestClient_CreatePool(t *testing.T) {
 				Description:              testPoolName1Desc,
 				GatewayRef:               govcdtypes.OpenApiReference{ID: urnEdgeGateway},
 				Enabled:                  utils.ToPTR(true),
-				Algorithm:                "LEAST_CONNECTIONS",
+				Algorithm:                PoolAlgorithmLeastConnections,
 				DefaultPort:              utils.ToPTR(80),
 				GracefulTimeoutPeriod:    utils.ToPTR(10),
 				PassiveMonitoringEnabled: utils.ToPTR(true),
@@ -1156,7 +1156,7 @@ func TestClient_CreatePool(t *testing.T) {
 				Description:              testPoolName1Desc,
 				GatewayRef:               govcdtypes.OpenApiReference{ID: urnEdgeGateway},
 				Enabled:                  utils.ToPTR(true),
-				Algorithm:                "LEAST_CONNECTIONS",
+				Algorithm:                PoolAlgorithmLeastConnections,
 				DefaultPort:              utils.ToPTR(80),
 				GracefulTimeoutPeriod:    utils.ToPTR(10),
 				PassiveMonitoringEnabled: utils.ToPTR(true),
@@ -1243,14 +1243,14 @@ func TestClient_UpdatePool(t *testing.T) {
 		err           error
 	}{
 		{
-			name:   "success",
+			name:   testSuccess,
 			poolID: urnPool,
 			pool: PoolModelRequest{
 				Name:                     testPoolPoule2,
 				Description:              testPoolPouleDesc,
 				GatewayRef:               govcdtypes.OpenApiReference{ID: urnEdgeGateway},
 				Enabled:                  utils.ToPTR(true),
-				Algorithm:                "LEAST_CONNECTIONS",
+				Algorithm:                PoolAlgorithmLeastConnections,
 				DefaultPort:              utils.ToPTR(80),
 				GracefulTimeoutPeriod:    utils.ToPTR(10),
 				PassiveMonitoringEnabled: utils.ToPTR(true),
@@ -1294,18 +1294,18 @@ func TestClient_UpdatePool(t *testing.T) {
 						Description:              testPoolName1Desc,
 						GatewayRef:               govcdtypes.OpenApiReference{ID: urnEdgeGateway},
 						Enabled:                  utils.ToPTR(true),
-						Algorithm:                "LEAST_CONNECTIONS",
+						Algorithm:                string(PoolAlgorithmLeastConnections),
 						DefaultPort:              utils.ToPTR(80),
 						GracefulTimeoutPeriod:    utils.ToPTR(10),
 						PassiveMonitoringEnabled: utils.ToPTR(true),
 						HealthMonitors: []govcdtypes.NsxtAlbPoolHealthMonitor{
 							{
 								Name: testPoolMonitorHTTP,
-								Type: "HTTP",
+								Type: string(PoolHealthMonitorTypeHTTP),
 							},
 							{
 								Name: testPoolMonitorTCP,
-								Type: "TCP",
+								Type: string(PoolHealthMonitorTypeTCP),
 							},
 						},
 						Members: []govcdtypes.NsxtAlbPoolMember{
@@ -1340,18 +1340,18 @@ func TestClient_UpdatePool(t *testing.T) {
 							Description:              testPoolPouleDesc,
 							GatewayRef:               govcdtypes.OpenApiReference{ID: urnEdgeGateway},
 							Enabled:                  utils.ToPTR(true),
-							Algorithm:                "LEAST_CONNECTIONS",
+							Algorithm:                string(PoolAlgorithmLeastConnections),
 							DefaultPort:              utils.ToPTR(80),
 							GracefulTimeoutPeriod:    utils.ToPTR(10),
 							PassiveMonitoringEnabled: utils.ToPTR(true),
 							HealthMonitors: []govcdtypes.NsxtAlbPoolHealthMonitor{
 								{
 									Name: testPoolMonitorHTTP,
-									Type: "HTTP",
+									Type: string(PoolHealthMonitorTypeHTTP),
 								},
 								{
 									Name: testPoolMonitorTCP,
-									Type: "TCP",
+									Type: string(PoolHealthMonitorTypeTCP),
 								},
 							},
 							Members: []govcdtypes.NsxtAlbPoolMember{
@@ -1385,7 +1385,7 @@ func TestClient_UpdatePool(t *testing.T) {
 				Description:              testPoolPouleDesc,
 				GatewayRef:               govcdtypes.OpenApiReference{ID: urnEdgeGateway},
 				Enabled:                  utils.ToPTR(true),
-				Algorithm:                "LEAST_CONNECTIONS",
+				Algorithm:                PoolAlgorithmLeastConnections,
 				DefaultPort:              utils.ToPTR(80),
 				GracefulTimeoutPeriod:    utils.ToPTR(10),
 				PassiveMonitoringEnabled: utils.ToPTR(true),
@@ -1466,7 +1466,7 @@ func TestClient_UpdatePool(t *testing.T) {
 				Description:              testPoolName1Desc,
 				GatewayRef:               govcdtypes.OpenApiReference{ID: urnEdgeGateway},
 				Enabled:                  utils.ToPTR(true),
-				Algorithm:                "LEAST_CONNECTIONS",
+				Algorithm:                PoolAlgorithmLeastConnections,
 				DefaultPort:              utils.ToPTR(80),
 				GracefulTimeoutPeriod:    utils.ToPTR(10),
 				PassiveMonitoringEnabled: utils.ToPTR(true),
@@ -1515,7 +1515,7 @@ func TestClient_UpdatePool(t *testing.T) {
 				Description:              testPoolPouleDesc,
 				GatewayRef:               govcdtypes.OpenApiReference{ID: urnEdgeGateway},
 				Enabled:                  utils.ToPTR(true),
-				Algorithm:                "LEAST_CONNECTIONS",
+				Algorithm:                PoolAlgorithmLeastConnections,
 				DefaultPort:              utils.ToPTR(80),
 				GracefulTimeoutPeriod:    utils.ToPTR(10),
 				PassiveMonitoringEnabled: utils.ToPTR(true),
@@ -1565,7 +1565,7 @@ func TestClient_UpdatePool(t *testing.T) {
 				Description:              testPoolPouleDesc,
 				GatewayRef:               govcdtypes.OpenApiReference{ID: urnEdgeGateway},
 				Enabled:                  utils.ToPTR(true),
-				Algorithm:                "LEAST_CONNECTIONS",
+				Algorithm:                PoolAlgorithmLeastConnections,
 				DefaultPort:              utils.ToPTR(80),
 				GracefulTimeoutPeriod:    utils.ToPTR(10),
 				PassiveMonitoringEnabled: utils.ToPTR(true),
@@ -1609,18 +1609,18 @@ func TestClient_UpdatePool(t *testing.T) {
 						Description:              testPoolName1Desc,
 						GatewayRef:               govcdtypes.OpenApiReference{ID: urnEdgeGateway},
 						Enabled:                  utils.ToPTR(true),
-						Algorithm:                "LEAST_CONNECTIONS",
+						Algorithm:                string(PoolAlgorithmLeastConnections),
 						DefaultPort:              utils.ToPTR(80),
 						GracefulTimeoutPeriod:    utils.ToPTR(10),
 						PassiveMonitoringEnabled: utils.ToPTR(true),
 						HealthMonitors: []govcdtypes.NsxtAlbPoolHealthMonitor{
 							{
 								Name: testPoolMonitorHTTP,
-								Type: "HTTP",
+								Type: string(PoolHealthMonitorTypeHTTP),
 							},
 							{
 								Name: testPoolMonitorTCP,
-								Type: "TCP",
+								Type: string(PoolHealthMonitorTypeTCP),
 							},
 						},
 						Members: []govcdtypes.NsxtAlbPoolMember{
@@ -1696,7 +1696,7 @@ func TestClient_DeletePool(t *testing.T) {
 		err         error
 	}{
 		{
-			name:   "success",
+			name:   testSuccess,
 			poolID: urnPool,
 			mockFunc: func() {
 				clientCAV.EXPECT().Refresh().Return(nil)

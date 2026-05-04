@@ -34,7 +34,7 @@ func TestURN_ContainsPrefix(t *testing.T) {
 			want: false,
 		},
 		{ // Empty string
-			name: "EmptyString",
+			name: testEmptyStringName,
 			urn:  URN(""),
 			want: false,
 		},
@@ -72,7 +72,7 @@ func Test_isURNV4(t *testing.T) {
 			want: false,
 		},
 		{ // Empty string
-			name: "EmptyString",
+			name: testEmptyStringName,
 			args: args{
 				urn: "",
 			},
@@ -115,7 +115,7 @@ func TestURN_IsType(t *testing.T) {
 			want: false,
 		},
 		{ // Empty string
-			name: "EmptyString",
+			name: testEmptyStringName,
 			urn:  URN(""),
 			args: args{
 				prefix: VM,
@@ -151,7 +151,7 @@ func Test_extractURNv4(t *testing.T) {
 			want: validUUIDv4,
 		},
 		{
-			name: "EmptyString",
+			name: testEmptyStringName,
 			args: args{
 				urn:    "",
 				prefix: VM,
@@ -199,7 +199,7 @@ func TestIsValid(t *testing.T) {
 			want: false,
 		},
 		{ // Empty string
-			name: "EmptyString",
+			name: testEmptyStringName,
 			args: args{
 				urn: "",
 			},
@@ -275,7 +275,7 @@ func TestIsUUIDV4(t *testing.T) {
 			want: false,
 		},
 		{
-			name: "EmptyString",
+			name: testEmptyStringName,
 			urn:  "",
 			want: false,
 		},
