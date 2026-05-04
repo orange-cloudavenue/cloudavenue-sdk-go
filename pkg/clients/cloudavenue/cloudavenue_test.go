@@ -22,6 +22,13 @@ import (
 	cloudavenueerrors "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/errors"
 )
 
+const (
+	testURL      = "https://vcd.example.com"
+	testUsername = "username"
+	testPassword = "password"
+	testOrg      = "org"
+)
+
 func clearCloudavenueEnv(t *testing.T) {
 	t.Helper()
 	for _, key := range []string{
@@ -43,16 +50,16 @@ func TestOptsValidateDefaultsCoreAPI(t *testing.T) {
 	t.Setenv("CLOUDAVENUE_DEV", "true")
 
 	opts := &Opts{
-		URL:      "https://vcd.example.com",
-		Username: "username",
-		Password: "password",
-		Org:      "org",
+		URL:      testURL,
+		Username: testUsername,
+		Password: testPassword,
+		Org:      testOrg,
 	}
 
 	err := opts.Validate()
 
 	assert.NoError(t, err)
-	assert.Equal(t, "https://vcd.example.com", opts.URL)
+	assert.Equal(t, testURL, opts.URL)
 	assert.Equal(t, consoles.CerberusAPIEndpoint, opts.CoreAPI)
 }
 
@@ -72,10 +79,10 @@ func TestOptsValidateRejectsInvalidCoreAPI(t *testing.T) {
 			t.Setenv("CLOUDAVENUE_DEV", "true")
 
 			opts := &Opts{
-				URL:      "https://vcd.example.com",
-				Username: "username",
-				Password: "password",
-				Org:      "org",
+				URL:      testURL,
+				Username: testUsername,
+				Password: testPassword,
+				Org:      testOrg,
 				CoreAPI:  tt.coreAPI,
 			}
 
@@ -93,17 +100,17 @@ func TestInitKeepsVMwareURLSeparatedFromCoreAPI(t *testing.T) {
 	resetClientState(t)
 
 	opts := &Opts{
-		URL:      "https://vcd.example.com",
-		Username: "username",
-		Password: "password",
-		Org:      "org",
+		URL:      testURL,
+		Username: testUsername,
+		Password: testPassword,
+		Org:      testOrg,
 		CoreAPI:  "https://core-api.example.com",
 	}
 
 	err := Init(opts)
 
 	assert.NoError(t, err)
-	assert.Equal(t, "https://vcd.example.com", c.token.GetEndpoint())
+	assert.Equal(t, testURL, c.token.GetEndpoint())
 	assert.Equal(t, "https://core-api.example.com", c.token.effectiveCoreAPI())
 	assert.NotEqual(t, c.token.GetEndpoint(), c.token.effectiveCoreAPI())
 }
@@ -139,9 +146,9 @@ func TestTokenUsesCoreAPIForAuthAndBackendClient(t *testing.T) {
 	defer server.Close()
 
 	token := token{
-		clientID:     "username",
-		clientSecret: "password",
-		org:          "org",
+		clientID:     testUsername,
+		clientSecret: testPassword,
+		org:          testOrg,
 		coreAPI:      server.URL,
 	}
 
@@ -169,9 +176,9 @@ func TestTokenUsesCoreAPIForAuthAndBackendClient(t *testing.T) {
 
 func TestTokenFallsBackToDefaultCoreAPIForAuthAndBackendClient(t *testing.T) {
 	token := token{
-		clientID:     "username",
-		clientSecret: "password",
-		org:          "org",
+		clientID:     testUsername,
+		clientSecret: testPassword,
+		org:          testOrg,
 	}
 
 	authClient := token.newAuthClient()
