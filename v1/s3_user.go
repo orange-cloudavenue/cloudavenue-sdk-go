@@ -139,8 +139,8 @@ func (s S3Client) GetUser(username string) (resp *S3User, err *OSEError) {
 		SetResult(&S3User{}).
 		SetError(&OSEError{}).
 		SetPathParams(map[string]string{
-			"orgID":    clients3.GetOrganizationID(),
-			"userName": username,
+			orgIDKey:    clients3.GetOrganizationID(),
+			userNameKey: username,
 		}).
 		Get("/api/v1/core/tenants/{orgID}/users/{userName}")
 	if errA != nil {
@@ -164,8 +164,8 @@ func (s *S3User) GetCanonicalID() (resp string, err error) {
 		r, err := clients3.NewOSE().R().
 			SetResult(&resp).
 			SetPathParams(map[string]string{
-				"orgID":    clients3.GetOrganizationID(),
-				"userName": s.GetName(),
+				orgIDKey:    clients3.GetOrganizationID(),
+				userNameKey: s.GetName(),
 			}).
 			Get("/api/v1/core/tenants/{orgID}/users/{userName}/canonical-id")
 		if err != nil {
@@ -193,7 +193,7 @@ func (s S3Client) GetUsers() (resp *S3Users, err error) {
 	r, err := clients3.NewOSE().R().
 		SetResult(&allUsers{}).
 		SetPathParams(map[string]string{
-			"orgID": clients3.GetOrganizationID(),
+			orgIDKey: clients3.GetOrganizationID(),
 		}).
 		Get("/api/v1/core/tenants/{orgID}/users")
 	if err != nil {

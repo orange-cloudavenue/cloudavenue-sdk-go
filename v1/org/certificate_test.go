@@ -24,6 +24,13 @@ import (
 	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/urn"
 )
 
+const (
+	testSuccess      = "success"
+	testCertName     = "test"
+	testCertName2    = "test2"
+	testRefreshError = "refresh-error"
+)
+
 func TestClient_ListCertificatesInLibrary(t *testing.T) {
 	// Mock controller.
 	ctrl := gomock.NewController(t)
@@ -42,47 +49,47 @@ func TestClient_ListCertificatesInLibrary(t *testing.T) {
 		err               error
 	}{
 		{
-			name: "success",
+			name: testSuccess,
 			mockFunc: func() {
 				clientCAV.EXPECT().Refresh().Return(nil)
 				clientCAV.EXPECT().GetAllCertificatesFromLibrary(nil).Return([]*govcd.Certificate{
 					{
 						CertificateLibrary: &govcdtypes.CertificateLibraryItem{
-							Id:          "test",
-							Alias:       "test",
-							Description: "test",
-							Certificate: "test",
+							Id:          testCertName,
+							Alias:       testCertName,
+							Description: testCertName,
+							Certificate: testCertName,
 						},
 					},
 					{
 						CertificateLibrary: &govcdtypes.CertificateLibraryItem{
-							Id:          "test2",
-							Alias:       "test2",
-							Description: "test2",
-							Certificate: "test2",
+							Id:          testCertName2,
+							Alias:       testCertName2,
+							Description: testCertName2,
+							Certificate: testCertName2,
 						},
 					},
 				}, nil)
 			},
 			expectedCertValue: CertificatesModel{
 				{
-					ID:          "test",
-					Name:        "test",
-					Description: "test",
-					Certificate: "test",
+					ID:          testCertName,
+					Name:        testCertName,
+					Description: testCertName,
+					Certificate: testCertName,
 				},
 				{
-					ID:          "test2",
-					Name:        "test2",
-					Description: "test2",
-					Certificate: "test2",
+					ID:          testCertName2,
+					Name:        testCertName2,
+					Description: testCertName2,
+					Certificate: testCertName2,
 				},
 			},
 			expectedErr: false,
 			err:         nil,
 		},
 		{
-			name: "refresh-error",
+			name: testRefreshError,
 			mockFunc: func() {
 				clientCAV.EXPECT().Refresh().Return(errors.New("error"))
 			},
@@ -152,24 +159,24 @@ func TestClient_GetCertificateFromLibrary(t *testing.T) {
 		err               error
 	}{
 		{
-			name:     "success",
-			nameOrID: "test",
+			name:     testSuccess,
+			nameOrID: testCertName,
 			mockFunc: func() {
 				clientCAV.EXPECT().Refresh().Return(nil)
 				clientCAV.EXPECT().GetCertificateFromLibraryByName(gomock.Any()).Return(&govcd.Certificate{
 					CertificateLibrary: &govcdtypes.CertificateLibraryItem{
-						Id:          "test",
-						Alias:       "test",
-						Description: "test",
-						Certificate: "test",
+						Id:          testCertName,
+						Alias:       testCertName,
+						Description: testCertName,
+						Certificate: testCertName,
 					},
 				}, nil)
 			},
 			expectedCertValue: CertificateModel{
-				ID:          "test",
-				Name:        "test",
-				Description: "test",
-				Certificate: "test",
+				ID:          testCertName,
+				Name:        testCertName,
+				Description: testCertName,
+				Certificate: testCertName,
 			},
 			expectedErr: false,
 			err:         nil,
@@ -182,24 +189,24 @@ func TestClient_GetCertificateFromLibrary(t *testing.T) {
 				clientCAV.EXPECT().GetCertificateFromLibraryById(gomock.Any()).Return(&govcd.Certificate{
 					CertificateLibrary: &govcdtypes.CertificateLibraryItem{
 						Id:          generatedValidID,
-						Alias:       "test",
-						Description: "test",
-						Certificate: "test",
+						Alias:       testCertName,
+						Description: testCertName,
+						Certificate: testCertName,
 					},
 				}, nil)
 			},
 			expectedCertValue: CertificateModel{
 				ID:          generatedValidID,
-				Name:        "test",
-				Description: "test",
-				Certificate: "test",
+				Name:        testCertName,
+				Description: testCertName,
+				Certificate: testCertName,
 			},
 			expectedErr: false,
 			err:         nil,
 		},
 		{
-			name:     "refresh-error",
-			nameOrID: "test",
+			name:     testRefreshError,
+			nameOrID: testCertName,
 			mockFunc: func() {
 				clientCAV.EXPECT().Refresh().Return(errors.New("error"))
 			},
@@ -209,7 +216,7 @@ func TestClient_GetCertificateFromLibrary(t *testing.T) {
 		},
 		{
 			name:     "error-get-cert-by-name",
-			nameOrID: "test",
+			nameOrID: testCertName,
 			mockFunc: func() {
 				clientCAV.EXPECT().Refresh().Return(nil)
 				clientCAV.EXPECT().GetCertificateFromLibraryByName(gomock.Any()).Return(nil, errors.New("error"))
@@ -270,32 +277,32 @@ func TestClient_CreateCertificateInLibrary(t *testing.T) {
 		err               error
 	}{
 		{
-			name: "success",
+			name: testSuccess,
 			certificate: CertificateCreateRequest{
-				Name:        "test",
-				Description: "test",
-				Certificate: "test",
-				PrivateKey:  "test",
-				Passphrase:  "test",
+				Name:        testCertName,
+				Description: testCertName,
+				Certificate: testCertName,
+				PrivateKey:  testCertName,
+				Passphrase:  testCertName,
 			},
 			mockFunc: func() {
 				clientCAV.EXPECT().Refresh().Return(nil)
 				clientCAV.EXPECT().AddCertificateToLibrary(gomock.Any()).Return(&govcd.Certificate{
 					CertificateLibrary: &govcdtypes.CertificateLibraryItem{
 						Id:                   generatedValidID,
-						Alias:                "test",
-						Description:          "test",
-						Certificate:          "test",
-						PrivateKey:           "test",
-						PrivateKeyPassphrase: "test",
+						Alias:                testCertName,
+						Description:          testCertName,
+						Certificate:          testCertName,
+						PrivateKey:           testCertName,
+						PrivateKeyPassphrase: testCertName,
 					},
 				}, nil)
 			},
 			expectedCertValue: CertificateModel{
 				ID:          generatedValidID,
-				Name:        "test",
-				Description: "test",
-				Certificate: "test",
+				Name:        testCertName,
+				Description: testCertName,
+				Certificate: testCertName,
 			},
 			expectedErr: false,
 			err:         nil,
@@ -303,27 +310,27 @@ func TestClient_CreateCertificateInLibrary(t *testing.T) {
 		{
 			name: "success-no-description",
 			certificate: CertificateCreateRequest{
-				Name:        "test",
-				Certificate: "test",
-				PrivateKey:  "test",
-				Passphrase:  "test",
+				Name:        testCertName,
+				Certificate: testCertName,
+				PrivateKey:  testCertName,
+				Passphrase:  testCertName,
 			},
 			mockFunc: func() {
 				clientCAV.EXPECT().Refresh().Return(nil)
 				clientCAV.EXPECT().AddCertificateToLibrary(gomock.Any()).Return(&govcd.Certificate{
 					CertificateLibrary: &govcdtypes.CertificateLibraryItem{
 						Id:          generatedValidID,
-						Alias:       "test",
+						Alias:       testCertName,
 						Description: "",
-						Certificate: "test",
+						Certificate: testCertName,
 					},
 				}, nil)
 			},
 			expectedCertValue: CertificateModel{
 				ID:          generatedValidID,
-				Name:        "test",
+				Name:        testCertName,
 				Description: "",
-				Certificate: "test",
+				Certificate: testCertName,
 			},
 			expectedErr: false,
 			err:         nil,
@@ -331,7 +338,7 @@ func TestClient_CreateCertificateInLibrary(t *testing.T) {
 		{
 			name: "error-validation",
 			certificate: CertificateCreateRequest{
-				Name:        "test",
+				Name:        testCertName,
 				Certificate: "",
 			},
 			mockFunc: func() {
@@ -341,7 +348,7 @@ func TestClient_CreateCertificateInLibrary(t *testing.T) {
 			expectedErr:       true,
 		},
 		{
-			name: "refresh-error",
+			name: testRefreshError,
 			mockFunc: func() {
 				clientCAV.EXPECT().Refresh().Return(errors.New("error"))
 			},
@@ -352,8 +359,8 @@ func TestClient_CreateCertificateInLibrary(t *testing.T) {
 		{
 			name: "error-add-cert",
 			certificate: CertificateCreateRequest{
-				Name:        "test",
-				Certificate: "test",
+				Name:        testCertName,
+				Certificate: testCertName,
 			},
 			mockFunc: func() {
 				clientCAV.EXPECT().Refresh().Return(nil)
@@ -406,38 +413,38 @@ func TestClient_UpdateCertificateInLibrary(t *testing.T) {
 		err               error
 	}{
 		{
-			name:          "success",
+			name:          testSuccess,
 			certificateID: generatedValidID,
 			certificate: CertificateUpdateRequest{
-				Name:        "test",
-				Description: "test",
+				Name:        testCertName,
+				Description: testCertName,
 			},
 			mockFunc: func() {
 				clientCAV.EXPECT().Refresh().Return(nil)
 				clientCAV.EXPECT().GetCertificateFromLibraryById(gomock.Any()).Return(&govcd.Certificate{
 					CertificateLibrary: &govcdtypes.CertificateLibraryItem{
 						Id:          generatedValidID,
-						Alias:       "test",
-						Description: "test",
-						Certificate: "test",
+						Alias:       testCertName,
+						Description: testCertName,
+						Certificate: testCertName,
 					},
 				}, nil)
 				updateCertificateInLibrary = func(_ internalCertificateClient) (*govcd.Certificate, error) {
 					return &govcd.Certificate{
 						CertificateLibrary: &govcdtypes.CertificateLibraryItem{
 							Id:          generatedValidID,
-							Alias:       "test",
-							Description: "test",
-							Certificate: "test",
+							Alias:       testCertName,
+							Description: testCertName,
+							Certificate: testCertName,
 						},
 					}, nil
 				}
 			},
 			expectedCertValue: CertificateModel{
 				ID:          generatedValidID,
-				Name:        "test",
-				Description: "test",
-				Certificate: "test",
+				Name:        testCertName,
+				Description: testCertName,
+				Certificate: testCertName,
 			},
 			expectedErr: false,
 			err:         nil,
@@ -446,34 +453,34 @@ func TestClient_UpdateCertificateInLibrary(t *testing.T) {
 			name:          "success-no-description",
 			certificateID: generatedValidID,
 			certificate: CertificateUpdateRequest{
-				Name: "test",
+				Name: testCertName,
 			},
 			mockFunc: func() {
 				clientCAV.EXPECT().Refresh().Return(nil)
 				clientCAV.EXPECT().GetCertificateFromLibraryById(gomock.Any()).Return(&govcd.Certificate{
 					CertificateLibrary: &govcdtypes.CertificateLibraryItem{
 						Id:          generatedValidID,
-						Alias:       "test",
-						Description: "test",
-						Certificate: "test",
+						Alias:       testCertName,
+						Description: testCertName,
+						Certificate: testCertName,
 					},
 				}, nil)
 				updateCertificateInLibrary = func(_ internalCertificateClient) (*govcd.Certificate, error) {
 					return &govcd.Certificate{
 						CertificateLibrary: &govcdtypes.CertificateLibraryItem{
 							Id:          generatedValidID,
-							Alias:       "test",
+							Alias:       testCertName,
 							Description: "",
-							Certificate: "test",
+							Certificate: testCertName,
 						},
 					}, nil
 				}
 			},
 			expectedCertValue: CertificateModel{
 				ID:          generatedValidID,
-				Name:        "test",
+				Name:        testCertName,
 				Description: "",
-				Certificate: "test",
+				Certificate: testCertName,
 			},
 			expectedErr: false,
 			err:         nil,
@@ -491,8 +498,8 @@ func TestClient_UpdateCertificateInLibrary(t *testing.T) {
 			expectedErr:       true,
 		},
 		{
-			name:          "refresh-error",
-			certificateID: "test",
+			name:          testRefreshError,
+			certificateID: testCertName,
 			mockFunc: func() {
 				clientCAV.EXPECT().Refresh().Return(errors.New("error"))
 			},
@@ -504,7 +511,7 @@ func TestClient_UpdateCertificateInLibrary(t *testing.T) {
 			name:          "error-get-cert",
 			certificateID: generatedValidID,
 			certificate: CertificateUpdateRequest{
-				Name: "test",
+				Name: testCertName,
 			},
 			mockFunc: func() {
 				clientCAV.EXPECT().Refresh().Return(nil)
@@ -517,16 +524,16 @@ func TestClient_UpdateCertificateInLibrary(t *testing.T) {
 			name:          "error-update-cert",
 			certificateID: generatedValidID,
 			certificate: CertificateUpdateRequest{
-				Name: "test",
+				Name: testCertName,
 			},
 			mockFunc: func() {
 				clientCAV.EXPECT().Refresh().Return(nil)
 				clientCAV.EXPECT().GetCertificateFromLibraryById(gomock.Any()).Return(&govcd.Certificate{
 					CertificateLibrary: &govcdtypes.CertificateLibraryItem{
 						Id:          generatedValidID,
-						Alias:       "test",
-						Description: "test",
-						Certificate: "test",
+						Alias:       testCertName,
+						Description: testCertName,
+						Certificate: testCertName,
 					},
 				}, nil)
 				updateCertificateInLibrary = func(_ internalCertificateClient) (*govcd.Certificate, error) {
@@ -578,16 +585,16 @@ func TestClient_DeleteCertificateFromLibrary(t *testing.T) {
 		err           error
 	}{
 		{
-			name:          "success",
+			name:          testSuccess,
 			certificateID: generatedValidID,
 			mockFunc: func() {
 				clientCAV.EXPECT().Refresh().Return(nil)
 				clientCAV.EXPECT().GetCertificateFromLibraryById(gomock.Any()).Return(&govcd.Certificate{
 					CertificateLibrary: &govcdtypes.CertificateLibraryItem{
 						Id:          generatedValidID,
-						Alias:       "test",
-						Description: "test",
-						Certificate: "test",
+						Alias:       testCertName,
+						Description: testCertName,
+						Certificate: testCertName,
 					},
 				}, nil)
 				deleteCertificateFromLibrary = func(_ internalCertificateClient) error {
@@ -614,9 +621,9 @@ func TestClient_DeleteCertificateFromLibrary(t *testing.T) {
 				clientCAV.EXPECT().GetCertificateFromLibraryById(gomock.Any()).Return(&govcd.Certificate{
 					CertificateLibrary: &govcdtypes.CertificateLibraryItem{
 						Id:          generatedValidID,
-						Alias:       "test",
-						Description: "test",
-						Certificate: "test",
+						Alias:       testCertName,
+						Description: testCertName,
+						Certificate: testCertName,
 					},
 				}, nil)
 				deleteCertificateFromLibrary = func(_ internalCertificateClient) error {
@@ -626,8 +633,8 @@ func TestClient_DeleteCertificateFromLibrary(t *testing.T) {
 			expectedErr: true,
 		},
 		{
-			name:          "refresh-error",
-			certificateID: "test",
+			name:          testRefreshError,
+			certificateID: testCertName,
 			mockFunc: func() {
 				clientCAV.EXPECT().Refresh().Return(errors.New("error"))
 			},

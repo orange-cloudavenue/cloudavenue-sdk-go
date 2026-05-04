@@ -20,6 +20,8 @@ import (
 	commonnetbackup "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/common/netbackup"
 )
 
+const vAppIDKey = "vAppID"
+
 // VApp - Is the response structure for the GetVApp API.
 type VApp struct {
 	ID               int    `json:"Id,omitempty"`
@@ -107,7 +109,7 @@ func (v *VcloudClient) GetVAppByID(id int) (resp *VApp, err error) {
 		SetResult(&VAppResponse{}).
 		SetError(&commonnetbackup.APIError{}).
 		SetPathParams(map[string]string{
-			"vAppID": fmt.Sprintf("%d", id),
+			vAppIDKey: fmt.Sprintf("%d", id),
 		}).
 		Get("/v6/vcloud/vapps/{vAppID}")
 	if err != nil {
@@ -222,7 +224,7 @@ func (v *VcloudClient) GetVAppMachines(vAppID int) (resp *GetVAppMachinesRespons
 		SetResult(&GetVAppMachinesResponse{}).
 		SetError(&commonnetbackup.APIError{}).
 		SetPathParams(map[string]string{
-			"vAppID": fmt.Sprintf("%d", vAppID),
+			vAppIDKey: fmt.Sprintf("%d", vAppID),
 		}).
 		Get("/v6/vcloud/vapps/{vAppID}/machines")
 	if err != nil {
@@ -274,7 +276,7 @@ func (vApp *VApp) ListProtectionLevels() (resp *ProtectionLevels, err error) {
 	r, err := c.R().
 		SetError(&commonnetbackup.APIError{}).
 		SetPathParams(map[string]string{
-			"vAppID": fmt.Sprintf("%d", vApp.GetID()),
+			vAppIDKey: fmt.Sprintf("%d", vApp.GetID()),
 		}).
 		SetResult(&protectionLevelAppliedResponse{}).
 		Get("/v6/vcloud/vapps/{vAppID}/protected")
@@ -329,7 +331,7 @@ func (vApp *VApp) Protect(req ProtectUnprotectRequest) (job *commonnetbackup.Job
 	r, err = c.R().
 		SetError(&commonnetbackup.APIError{}).
 		SetPathParams(map[string]string{
-			"vAppID": fmt.Sprintf("%d", vApp.GetID()),
+			vAppIDKey: fmt.Sprintf("%d", vApp.GetID()),
 		}).
 		SetBody(protectBody{
 			ProtectionLevelID: protectionLevel.GetID(),
@@ -381,7 +383,7 @@ func (vApp *VApp) Unprotect(req ProtectUnprotectRequest) (job *commonnetbackup.J
 	r, err = c.R().
 		SetError(&commonnetbackup.APIError{}).
 		SetPathParams(map[string]string{
-			"vAppID": fmt.Sprintf("%d", vApp.GetID()),
+			vAppIDKey: fmt.Sprintf("%d", vApp.GetID()),
 		}).
 		SetBody(protectBody{
 			ProtectionLevelID: protectionLevel.GetID(),

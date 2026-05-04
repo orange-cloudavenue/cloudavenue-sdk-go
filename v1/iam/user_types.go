@@ -92,7 +92,7 @@ func (u User) GetRoleName() string {
 func toGoVCDTypeUser(user any, roleReference *govcdtypes.Reference) *govcdtypes.User {
 	// toGoVCDTypeUser converts a user to a go-vcd user by reflecting.
 	x := reflect.ValueOf(user)
-	if x.Kind() == reflect.Ptr {
+	if x.Kind() == reflect.Pointer {
 		x = x.Elem()
 	}
 

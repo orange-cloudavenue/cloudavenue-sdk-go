@@ -16,6 +16,12 @@ import (
 	cavErrors "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/errors"
 )
 
+const (
+	testOrgName           = "cav01ev01ocb0001234"
+	testValidateErrFmt    = "Opts.Validate() error = %v, wantErr %v"
+	testNetbackupEndpoint = "https://backup4.cloudavenue.orange-business.com/NetBackupSelfService/Api"
+)
+
 func TestOpts_Validate(t *testing.T) {
 	tests := []struct {
 		name    string
@@ -40,22 +46,22 @@ func TestOpts_Validate(t *testing.T) {
 		{
 			name: "should not return an error if the endpoint or the url are not empty and the organization is provided",
 			opts: &Opts{
-				org:      "cav01ev01ocb0001234",
-				Endpoint: "https://backup4.cloudavenue.orange-business.com/NetBackupSelfService/Api",
+				org:      testOrgName,
+				Endpoint: testNetbackupEndpoint,
 			},
 			wantErr: nil,
 		},
 		{
 			name: "should not return an error if the endpoint or the url are not empty and the organization is empty",
 			opts: &Opts{
-				URL: "https://backup4.cloudavenue.orange-business.com/NetBackupSelfService/Api",
+				URL: testNetbackupEndpoint,
 			},
 			wantErr: nil,
 		},
 		{
 			name: "Validate console1",
 			opts: &Opts{
-				org: "cav01ev01ocb0001234",
+				org: testOrgName,
 			},
 			wantErr: nil,
 		},
@@ -66,15 +72,15 @@ func TestOpts_Validate(t *testing.T) {
 			err := tt.opts.Validate()
 
 			if tt.wantErr == nil && err != nil {
-				t.Errorf("Opts.Validate() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf(testValidateErrFmt, err, tt.wantErr)
 			}
 
 			if tt.wantErr != nil && err == nil {
-				t.Errorf("Opts.Validate() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf(testValidateErrFmt, err, tt.wantErr)
 			}
 
 			if !errors.Is(err, tt.wantErr) {
-				t.Errorf("Opts.Validate() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf(testValidateErrFmt, err, tt.wantErr)
 			}
 
 			if tt.wantErr == nil && err == nil {
@@ -107,9 +113,9 @@ func TestInit(t *testing.T) {
 		},
 		{
 			name: "should not set username, password, endpoint, and debug if not provided",
-			org:  "cav01ev01ocb0001234",
+			org:  testOrgName,
 			opts: &Opts{
-				Endpoint: "https://backup4.cloudavenue.orange-business.com/NetBackupSelfService/Api",
+				Endpoint: testNetbackupEndpoint,
 			},
 			expectedUser: "",
 			expectedPass: "",
@@ -117,7 +123,7 @@ func TestInit(t *testing.T) {
 		},
 		{
 			name: "should set username, password, and debug if provided",
-			org:  "cav01ev01ocb0001234",
+			org:  testOrgName,
 			opts: &Opts{
 				Username: "testuser",
 				Password: "testpass",

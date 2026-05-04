@@ -37,6 +37,8 @@ func (v *Query) Get() *Get {
 	return &Get{}
 }
 
+const filterKey = "filter"
+
 type objectType string
 
 const (
@@ -96,8 +98,8 @@ func queryGet(objectType objectType, name string) (govcd.Results, error) {
 	}
 
 	return c.Vmware.Query(map[string]string{
-		"type":   string(objectType),
-		"filter": "name==" + name,
+		"type":    string(objectType),
+		filterKey: "name==" + name,
 	})
 }
 
@@ -145,7 +147,7 @@ func (q *Get) VAPP(vappName string) (*types.QueryResultVAppRecordType, error) {
 // VM list all vm informations.
 func (q *List) VM(vAppName string) ([]*types.QueryResultVMRecordType, error) {
 	r, err := queryListWithOptionalFilter(typeVM, map[string]string{
-		"filter": "containerName==" + vAppName,
+		filterKey: "containerName==" + vAppName,
 	})
 
 	for _, vm := range r.Results.VMRecord {
@@ -163,8 +165,8 @@ func (q *List) VM(vAppName string) ([]*types.QueryResultVMRecordType, error) {
 // VM get a vm informations by name.
 func (q *Get) VM(vmName, vAppName string) (*types.QueryResultVMRecordType, error) {
 	r, err := queryGetWithOptionalFilter(typeVM, vmName, map[string]string{
-		"filter": "containerName==" + vAppName,
-		"name":   vmName,
+		filterKey: "containerName==" + vAppName,
+		"name":    vmName,
 	})
 	if r.Results.VMRecord == nil {
 		return nil, err

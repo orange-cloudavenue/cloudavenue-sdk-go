@@ -23,6 +23,8 @@ import (
 	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/urn"
 )
 
+const edgeIDKey = "EdgeID"
+
 type (
 	EdgeGateway struct{}
 	OwnerType   string
@@ -199,7 +201,7 @@ func (v *EdgeGateway) Get(edgeGatewayNameOrID string) (edgeClient *EdgeClient, e
 				SetResult(&EdgeGatewayType{}).
 				SetError(&commoncloudavenue.APIErrorResponse{}).
 				SetPathParams(map[string]string{
-					"EdgeID": strings.TrimPrefix(nameOrID.String(), urn.Gateway.String()),
+					edgeIDKey: strings.TrimPrefix(nameOrID.String(), urn.Gateway.String()),
 				}).
 				Get("/infrapicustomerproxy/v2.0/edges/{EdgeID}")
 			if err != nil {
@@ -260,7 +262,7 @@ func (e *EdgeGatewayType) Delete() (job *commoncloudavenue.JobStatus, err error)
 		SetResult(&commoncloudavenue.JobStatus{}).
 		SetError(&commoncloudavenue.APIErrorResponse{}).
 		SetPathParams(map[string]string{
-			"EdgeID": e.EdgeID,
+			edgeIDKey: e.EdgeID,
 		}).
 		Delete("/infrapicustomerproxy/v2.0/edges/{EdgeID}")
 	if err != nil {
@@ -295,7 +297,7 @@ func (e *EdgeGatewayType) UpdateBandwidth(rateLimit int) (job *commoncloudavenue
 			"rateLimit": rateLimit,
 		}).
 		SetPathParams(map[string]string{
-			"EdgeID": e.EdgeID,
+			edgeIDKey: e.EdgeID,
 		}).
 		Put("/infrapicustomerproxy/v2.0/edges/{EdgeID}")
 	if err != nil {
@@ -361,7 +363,7 @@ func (n NetworkType) GetEndAddress() string {
 	broadcast := numIPs - 1
 	end := make(net.IP, 4)
 	for i := 0; i < 4; i++ {
-		end[i] = start[i] + byte((broadcast>>uint(8*i))&0xff) //nolint:gosec
+		end[i] = start[i] + byte((broadcast>>uint(8*i))&0xff)
 	}
 
 	return end.String()
@@ -422,7 +424,7 @@ func (e *EdgeGatewayType) ListNetworksType() (response *NetworkTypes, err error)
 		SetResult(&NetworkTypes{}).
 		SetError(&commoncloudavenue.APIErrorResponse{}).
 		SetPathParams(map[string]string{
-			"EdgeID": e.EdgeID,
+			edgeIDKey: e.EdgeID,
 		}).
 		Get("/infrapicustomerproxy/v2.0/edges/{EdgeID}/networks")
 	if err != nil {

@@ -19,6 +19,8 @@ import (
 	commonnetbackup "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/common/netbackup"
 )
 
+const vdcIDKey = "vdcID"
+
 // VDC - Is the response structure for the GetVdc API.
 type VDC struct {
 	ID               int    `json:"Id,omitempty"`
@@ -126,7 +128,7 @@ func (v *VcloudClient) GetVDCByID(id int) (resp *VDC, err error) {
 		SetResult(&vdcResponse{}).
 		SetError(&commonnetbackup.APIError{}).
 		SetPathParams(map[string]string{
-			"vdcID": fmt.Sprintf("%d", id),
+			vdcIDKey: fmt.Sprintf("%d", id),
 		}).
 		Get("/v6/vcloud/vdcs/{vdcID}")
 	if err != nil {
@@ -227,7 +229,7 @@ func (vdc *VDC) ListProtectionLevels() (resp *ProtectionLevels, err error) {
 	r, err := c.R().
 		SetError(&commonnetbackup.APIError{}).
 		SetPathParams(map[string]string{
-			"vdcID": fmt.Sprintf("%d", vdc.GetID()),
+			vdcIDKey: fmt.Sprintf("%d", vdc.GetID()),
 		}).
 		SetResult(&protectionLevelAppliedResponse{}).
 		Get("/v6/vcloud/vdcs/{vdcID}/protected")
@@ -282,7 +284,7 @@ func (vdc *VDC) Protect(req ProtectUnprotectRequest) (job *commonnetbackup.JobAP
 	r, err = c.R().
 		SetError(&commonnetbackup.APIError{}).
 		SetPathParams(map[string]string{
-			"vdcID": fmt.Sprintf("%d", vdc.GetID()),
+			vdcIDKey: fmt.Sprintf("%d", vdc.GetID()),
 		}).
 		SetBody(protectBody{
 			ProtectionLevelID: protectionLevel.GetID(),
@@ -334,7 +336,7 @@ func (vdc *VDC) Unprotect(req ProtectUnprotectRequest) (job *commonnetbackup.Job
 	r, err = c.R().
 		SetError(&commonnetbackup.APIError{}).
 		SetPathParams(map[string]string{
-			"vdcID": fmt.Sprintf("%d", vdc.GetID()),
+			vdcIDKey: fmt.Sprintf("%d", vdc.GetID()),
 		}).
 		SetBody(protectBody{
 			ProtectionLevelID: protectionLevel.GetID(),

@@ -30,6 +30,24 @@ import (
 	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/urn"
 )
 
+const (
+	testSuccess            = "success"
+	testEdgeGatewayName    = "test-edge-gateway"
+	testEdgeGatewayDesc    = "test description"
+	testEdgeGatewayStatus  = "ACTIVE"
+	testVDCName            = "test-vdc"
+	testVRFName            = "prvrf01eocb0009999allsp01"
+	testEdgeID             = "edge-id"
+	testIPAddress          = "12.123.123.12"
+	testServiceName        = "tn99e99ocb0009999spt199-cav-services"
+	testServiceDisplayName = "Cloud Avenue Services"
+	testEdgeGatewayName2   = "test-edge-gateway-2"
+	testEdgeGatewayDesc2   = "test description 2"
+	testJobID              = "job-id"
+	testErrorGetJobStatus  = "error-get-job-status"
+	testServiceID          = "service-id"
+)
+
 func TestClient_GetEdgeGateway(t *testing.T) {
 	// Mock controller.
 	ctrl := gomock.NewController(t)
@@ -53,23 +71,23 @@ func TestClient_GetEdgeGateway(t *testing.T) {
 		err                 error
 	}{
 		{
-			name:                "success",
+			name:                testSuccess,
 			edgeGatewayNameOrID: edgeGatewayID,
 			mockFunc: func() {
 				clientCAV.EXPECT().Refresh().Return(nil)
 				clientCAV.EXPECT().GetNsxtEdgeGatewayById(edgeGatewayID).Return(&govcd.NsxtEdgeGateway{
 					EdgeGateway: &govcdtypes.OpenAPIEdgeGateway{
 						ID:          edgeGatewayID,
-						Name:        "test-edge-gateway",
-						Description: "test description",
-						Status:      "ACTIVE",
+						Name:        testEdgeGatewayName,
+						Description: testEdgeGatewayDesc,
+						Status:      testEdgeGatewayStatus,
 						OwnerRef: &govcdtypes.OpenApiReference{
 							ID:   vdcID,
-							Name: "test-vdc",
+							Name: testVDCName,
 						},
 						EdgeGatewayUplinks: []govcdtypes.EdgeGatewayUplinks{
 							{
-								UplinkName: "prvrf01eocb0009999allsp01",
+								UplinkName: testVRFName,
 							},
 						},
 					},
@@ -82,7 +100,7 @@ func TestClient_GetEdgeGateway(t *testing.T) {
 						t.Fatal(err)
 					}
 
-					httpmock.RegisterResponder("GET", endpoints.InlineTemplate(endpoints.EdgeGatewayGet, map[string]string{"edge-id": urn.ExtractUUID(edgeGatewayID)}), responder)
+					httpmock.RegisterResponder("GET", endpoints.InlineTemplate(endpoints.EdgeGatewayGet, map[string]string{testEdgeID: urn.ExtractUUID(edgeGatewayID)}), responder)
 					return clientcloudavenue.MockClient().R()
 				})
 				// mock getNetworkServices
@@ -157,14 +175,14 @@ func TestClient_GetEdgeGateway(t *testing.T) {
 			},
 			expectedEdgeGateway: &EdgeGatewayModel{
 				ID:          edgeGatewayID,
-				Name:        "test-edge-gateway",
-				Description: "test description",
+				Name:        testEdgeGatewayName,
+				Description: testEdgeGatewayDesc,
 				OwnerRef: &govcdtypes.OpenApiReference{
 					ID:   vdcID,
-					Name: "test-vdc",
+					Name: testVDCName,
 				},
-				Status:    "ACTIVE",
-				UplinkT0:  "prvrf01eocb0009999allsp01",
+				Status:    testEdgeGatewayStatus,
+				UplinkT0:  testVRFName,
 				Bandwidth: 10,
 				Services: NetworkServicesModelSvcs{
 					LoadBalancer: &NetworkServicesModelSvcLoadBalancer{
@@ -179,16 +197,16 @@ func TestClient_GetEdgeGateway(t *testing.T) {
 						{
 							NetworkServicesModelSvc: NetworkServicesModelSvc{
 								ID:   "ip-12-123-123-12",
-								Name: "12.123.123.12",
+								Name: testIPAddress,
 							},
-							IP:        "12.123.123.12",
+							IP:        testIPAddress,
 							Announced: true,
 						},
 					},
 					Service: &NetworkServicesModelSvcService{
 						NetworkServicesModelSvc: NetworkServicesModelSvc{
-							ID:   "tn99e99ocb0009999spt199-cav-services",
-							Name: "Cloud Avenue Services",
+							ID:   testServiceName,
+							Name: testServiceDisplayName,
 						},
 						Network:               "100.113.99.96/27",
 						DedicatedIPForService: "100.113.99.96",
@@ -200,22 +218,22 @@ func TestClient_GetEdgeGateway(t *testing.T) {
 		},
 		{
 			name:                "success-by-name",
-			edgeGatewayNameOrID: "test-edge-gateway",
+			edgeGatewayNameOrID: testEdgeGatewayName,
 			mockFunc: func() {
 				clientCAV.EXPECT().Refresh().Return(nil)
-				clientCAV.EXPECT().GetNsxtEdgeGatewayByName("test-edge-gateway").Return(&govcd.NsxtEdgeGateway{
+				clientCAV.EXPECT().GetNsxtEdgeGatewayByName(testEdgeGatewayName).Return(&govcd.NsxtEdgeGateway{
 					EdgeGateway: &govcdtypes.OpenAPIEdgeGateway{
 						ID:          edgeGatewayID,
-						Name:        "test-edge-gateway",
-						Description: "test description",
-						Status:      "ACTIVE",
+						Name:        testEdgeGatewayName,
+						Description: testEdgeGatewayDesc,
+						Status:      testEdgeGatewayStatus,
 						OwnerRef: &govcdtypes.OpenApiReference{
 							ID:   vdcID,
-							Name: "test-vdc",
+							Name: testVDCName,
 						},
 						EdgeGatewayUplinks: []govcdtypes.EdgeGatewayUplinks{
 							{
-								UplinkName: "prvrf01eocb0009999allsp01",
+								UplinkName: testVRFName,
 							},
 						},
 					},
@@ -228,7 +246,7 @@ func TestClient_GetEdgeGateway(t *testing.T) {
 						t.Fatal(err)
 					}
 
-					httpmock.RegisterResponder("GET", endpoints.InlineTemplate(endpoints.EdgeGatewayGet, map[string]string{"edge-id": urn.ExtractUUID(edgeGatewayID)}), responder)
+					httpmock.RegisterResponder("GET", endpoints.InlineTemplate(endpoints.EdgeGatewayGet, map[string]string{testEdgeID: urn.ExtractUUID(edgeGatewayID)}), responder)
 					return clientcloudavenue.MockClient().R()
 				})
 				// mock getNetworkServices
@@ -303,14 +321,14 @@ func TestClient_GetEdgeGateway(t *testing.T) {
 			},
 			expectedEdgeGateway: &EdgeGatewayModel{
 				ID:          edgeGatewayID,
-				Name:        "test-edge-gateway",
-				Description: "test description",
+				Name:        testEdgeGatewayName,
+				Description: testEdgeGatewayDesc,
 				OwnerRef: &govcdtypes.OpenApiReference{
 					ID:   vdcID,
-					Name: "test-vdc",
+					Name: testVDCName,
 				},
-				Status:    "ACTIVE",
-				UplinkT0:  "prvrf01eocb0009999allsp01",
+				Status:    testEdgeGatewayStatus,
+				UplinkT0:  testVRFName,
 				Bandwidth: 10,
 				Services: NetworkServicesModelSvcs{
 					LoadBalancer: &NetworkServicesModelSvcLoadBalancer{
@@ -325,16 +343,16 @@ func TestClient_GetEdgeGateway(t *testing.T) {
 						{
 							NetworkServicesModelSvc: NetworkServicesModelSvc{
 								ID:   "ip-12-123-123-12",
-								Name: "12.123.123.12",
+								Name: testIPAddress,
 							},
-							IP:        "12.123.123.12",
+							IP:        testIPAddress,
 							Announced: true,
 						},
 					},
 					Service: &NetworkServicesModelSvcService{
 						NetworkServicesModelSvc: NetworkServicesModelSvc{
-							ID:   "tn99e99ocb0009999spt199-cav-services",
-							Name: "Cloud Avenue Services",
+							ID:   testServiceName,
+							Name: testServiceDisplayName,
 						},
 						Network:               "100.113.99.96/27",
 						DedicatedIPForService: "100.113.99.96",
@@ -381,12 +399,12 @@ func TestClient_GetEdgeGateway(t *testing.T) {
 				clientCAV.EXPECT().GetNsxtEdgeGatewayById(edgeGatewayID).Return(&govcd.NsxtEdgeGateway{
 					EdgeGateway: &govcdtypes.OpenAPIEdgeGateway{
 						ID:          edgeGatewayID,
-						Name:        "test-edge-gateway",
-						Description: "test description",
-						Status:      "ACTIVE",
+						Name:        testEdgeGatewayName,
+						Description: testEdgeGatewayDesc,
+						Status:      testEdgeGatewayStatus,
 						OwnerRef: &govcdtypes.OpenApiReference{
 							ID:   vdcID,
-							Name: "test-vdc",
+							Name: testVDCName,
 						},
 					},
 				}, nil)
@@ -398,7 +416,7 @@ func TestClient_GetEdgeGateway(t *testing.T) {
 						t.Fatal(err)
 					}
 
-					httpmock.RegisterResponder("GET", endpoints.InlineTemplate(endpoints.EdgeGatewayGet, map[string]string{"edge-id": urn.ExtractUUID(edgeGatewayID)}), responder)
+					httpmock.RegisterResponder("GET", endpoints.InlineTemplate(endpoints.EdgeGatewayGet, map[string]string{testEdgeID: urn.ExtractUUID(edgeGatewayID)}), responder)
 					return clientcloudavenue.MockClient().R()
 				})
 				clientCAV.EXPECT().R().DoAndReturn(func() *resty.Request {
@@ -420,12 +438,12 @@ func TestClient_GetEdgeGateway(t *testing.T) {
 				clientCAV.EXPECT().GetNsxtEdgeGatewayById(edgeGatewayID).Return(&govcd.NsxtEdgeGateway{
 					EdgeGateway: &govcdtypes.OpenAPIEdgeGateway{
 						ID:          edgeGatewayID,
-						Name:        "test-edge-gateway",
-						Description: "test description",
-						Status:      "ACTIVE",
+						Name:        testEdgeGatewayName,
+						Description: testEdgeGatewayDesc,
+						Status:      testEdgeGatewayStatus,
 						OwnerRef: &govcdtypes.OpenApiReference{
 							ID:   vdcID,
-							Name: "test-vdc",
+							Name: testVDCName,
 						},
 					},
 				}, nil)
@@ -437,7 +455,7 @@ func TestClient_GetEdgeGateway(t *testing.T) {
 						t.Fatal(err)
 					}
 
-					httpmock.RegisterResponder("GET", endpoints.InlineTemplate(endpoints.EdgeGatewayGet, map[string]string{"edge-id": urn.ExtractUUID(edgeGatewayID)}), responder)
+					httpmock.RegisterResponder("GET", endpoints.InlineTemplate(endpoints.EdgeGatewayGet, map[string]string{testEdgeID: urn.ExtractUUID(edgeGatewayID)}), responder)
 					return clientcloudavenue.MockClient().R()
 				})
 				clientCAV.EXPECT().R().DoAndReturn(func() *resty.Request {
@@ -463,19 +481,19 @@ func TestClient_GetEdgeGateway(t *testing.T) {
 				clientCAV.EXPECT().GetNsxtEdgeGatewayById(edgeGatewayID).Return(&govcd.NsxtEdgeGateway{
 					EdgeGateway: &govcdtypes.OpenAPIEdgeGateway{
 						ID:          edgeGatewayID,
-						Name:        "test-edge-gateway",
-						Description: "test description",
-						Status:      "ACTIVE",
+						Name:        testEdgeGatewayName,
+						Description: testEdgeGatewayDesc,
+						Status:      testEdgeGatewayStatus,
 						OwnerRef: &govcdtypes.OpenApiReference{
 							ID:   vdcID,
-							Name: "test-vdc",
+							Name: testVDCName,
 						},
 					},
 				}, nil)
 				clientCAV.EXPECT().R().DoAndReturn(func() *resty.Request {
 					httpmock.ActivateNonDefault(clientcloudavenue.MockClient().GetClient())
 					responder := httpmock.NewErrorResponder(fmt.Errorf("error"))
-					httpmock.RegisterResponder("GET", endpoints.InlineTemplate(endpoints.EdgeGatewayGet, map[string]string{"edge-id": urn.ExtractUUID(edgeGatewayID)}), responder)
+					httpmock.RegisterResponder("GET", endpoints.InlineTemplate(endpoints.EdgeGatewayGet, map[string]string{testEdgeID: urn.ExtractUUID(edgeGatewayID)}), responder)
 					return clientcloudavenue.MockClient().R()
 				})
 			},
@@ -491,12 +509,12 @@ func TestClient_GetEdgeGateway(t *testing.T) {
 				clientCAV.EXPECT().GetNsxtEdgeGatewayById(edgeGatewayID).Return(&govcd.NsxtEdgeGateway{
 					EdgeGateway: &govcdtypes.OpenAPIEdgeGateway{
 						ID:          edgeGatewayID,
-						Name:        "test-edge-gateway",
-						Description: "test description",
-						Status:      "ACTIVE",
+						Name:        testEdgeGatewayName,
+						Description: testEdgeGatewayDesc,
+						Status:      testEdgeGatewayStatus,
 						OwnerRef: &govcdtypes.OpenApiReference{
 							ID:   vdcID,
-							Name: "test-vdc",
+							Name: testVDCName,
 						},
 					},
 				}, nil)
@@ -507,7 +525,7 @@ func TestClient_GetEdgeGateway(t *testing.T) {
 						t.Fatal(err)
 					}
 
-					httpmock.RegisterResponder("GET", endpoints.InlineTemplate(endpoints.EdgeGatewayGet, map[string]string{"edge-id": urn.ExtractUUID(edgeGatewayID)}), responder)
+					httpmock.RegisterResponder("GET", endpoints.InlineTemplate(endpoints.EdgeGatewayGet, map[string]string{testEdgeID: urn.ExtractUUID(edgeGatewayID)}), responder)
 					return clientcloudavenue.MockClient().R()
 				})
 			},
@@ -560,31 +578,31 @@ func TestClient_ListEdgeGateway(t *testing.T) {
 		err                 error
 	}{
 		{
-			name: "success",
+			name: testSuccess,
 			mockFunc: func() {
 				clientCAV.EXPECT().Refresh().Return(nil)
 				clientCAV.EXPECT().GetAllNsxtEdgeGateways(nil).Return([]*govcd.NsxtEdgeGateway{
 					{
 						EdgeGateway: &govcdtypes.OpenAPIEdgeGateway{
 							ID:          edgeGatewayID,
-							Name:        "test-edge-gateway",
-							Description: "test description",
-							Status:      "ACTIVE",
+							Name:        testEdgeGatewayName,
+							Description: testEdgeGatewayDesc,
+							Status:      testEdgeGatewayStatus,
 							OwnerRef: &govcdtypes.OpenApiReference{
 								ID:   vdcID,
-								Name: "test-vdc",
+								Name: testVDCName,
 							},
 						},
 					},
 					{
 						EdgeGateway: &govcdtypes.OpenAPIEdgeGateway{
 							ID:          edgeGatewayID2,
-							Name:        "test-edge-gateway-2",
-							Description: "test description 2",
-							Status:      "ACTIVE",
+							Name:        testEdgeGatewayName2,
+							Description: testEdgeGatewayDesc2,
+							Status:      testEdgeGatewayStatus,
 							OwnerRef: &govcdtypes.OpenApiReference{
 								ID:   vdcID,
-								Name: "test-vdc",
+								Name: testVDCName,
 							},
 						},
 					},
@@ -597,7 +615,7 @@ func TestClient_ListEdgeGateway(t *testing.T) {
 						t.Fatal(err)
 					}
 
-					httpmock.RegisterResponder("GET", endpoints.InlineTemplate(endpoints.EdgeGatewayGet, map[string]string{"edge-id": urn.ExtractUUID(edgeGatewayID)}), responder)
+					httpmock.RegisterResponder("GET", endpoints.InlineTemplate(endpoints.EdgeGatewayGet, map[string]string{testEdgeID: urn.ExtractUUID(edgeGatewayID)}), responder)
 					return clientcloudavenue.MockClient().R()
 				})
 				// mock getBandwidth test-edge-gateway-2
@@ -608,30 +626,30 @@ func TestClient_ListEdgeGateway(t *testing.T) {
 						t.Fatal(err)
 					}
 
-					httpmock.RegisterResponder("GET", endpoints.InlineTemplate(endpoints.EdgeGatewayGet, map[string]string{"edge-id": urn.ExtractUUID(edgeGatewayID2)}), responder)
+					httpmock.RegisterResponder("GET", endpoints.InlineTemplate(endpoints.EdgeGatewayGet, map[string]string{testEdgeID: urn.ExtractUUID(edgeGatewayID2)}), responder)
 					return clientcloudavenue.MockClient().R()
 				})
 			},
 			expectedEdgeGateway: []*EdgeGatewayModel{
 				{
 					ID:          edgeGatewayID,
-					Name:        "test-edge-gateway",
-					Description: "test description",
-					Status:      "ACTIVE",
+					Name:        testEdgeGatewayName,
+					Description: testEdgeGatewayDesc,
+					Status:      testEdgeGatewayStatus,
 					OwnerRef: &govcdtypes.OpenApiReference{
 						ID:   vdcID,
-						Name: "test-vdc",
+						Name: testVDCName,
 					},
 					Bandwidth: 10,
 				},
 				{
 					ID:          edgeGatewayID2,
-					Name:        "test-edge-gateway-2",
-					Description: "test description 2",
-					Status:      "ACTIVE",
+					Name:        testEdgeGatewayName2,
+					Description: testEdgeGatewayDesc2,
+					Status:      testEdgeGatewayStatus,
 					OwnerRef: &govcdtypes.OpenApiReference{
 						ID:   vdcID,
-						Name: "test-vdc",
+						Name: testVDCName,
 					},
 					Bandwidth: 100,
 				},
@@ -665,24 +683,24 @@ func TestClient_ListEdgeGateway(t *testing.T) {
 					{
 						EdgeGateway: &govcdtypes.OpenAPIEdgeGateway{
 							ID:          edgeGatewayID,
-							Name:        "test-edge-gateway",
-							Description: "test description",
-							Status:      "ACTIVE",
+							Name:        testEdgeGatewayName,
+							Description: testEdgeGatewayDesc,
+							Status:      testEdgeGatewayStatus,
 							OwnerRef: &govcdtypes.OpenApiReference{
 								ID:   vdcID,
-								Name: "test-vdc",
+								Name: testVDCName,
 							},
 						},
 					},
 					{
 						EdgeGateway: &govcdtypes.OpenAPIEdgeGateway{
 							ID:          edgeGatewayID2,
-							Name:        "test-edge-gateway-2",
-							Description: "test description 2",
-							Status:      "ACTIVE",
+							Name:        testEdgeGatewayName2,
+							Description: testEdgeGatewayDesc2,
+							Status:      testEdgeGatewayStatus,
 							OwnerRef: &govcdtypes.OpenApiReference{
 								ID:   vdcID,
-								Name: "test-vdc",
+								Name: testVDCName,
 							},
 						},
 					},
@@ -695,7 +713,7 @@ func TestClient_ListEdgeGateway(t *testing.T) {
 						t.Fatal(err)
 					}
 
-					httpmock.RegisterResponder("GET", endpoints.InlineTemplate(endpoints.EdgeGatewayGet, map[string]string{"edge-id": urn.ExtractUUID(edgeGatewayID)}), responder)
+					httpmock.RegisterResponder("GET", endpoints.InlineTemplate(endpoints.EdgeGatewayGet, map[string]string{testEdgeID: urn.ExtractUUID(edgeGatewayID)}), responder)
 					return clientcloudavenue.MockClient().R()
 				})
 
@@ -703,7 +721,7 @@ func TestClient_ListEdgeGateway(t *testing.T) {
 				clientCAV.EXPECT().R().DoAndReturn(func() *resty.Request {
 					httpmock.ActivateNonDefault(clientcloudavenue.MockClient().GetClient())
 					responder := httpmock.NewErrorResponder(fmt.Errorf("error"))
-					httpmock.RegisterResponder("GET", endpoints.InlineTemplate(endpoints.EdgeGatewayGet, map[string]string{"edge-id": urn.ExtractUUID(edgeGatewayID2)}), responder)
+					httpmock.RegisterResponder("GET", endpoints.InlineTemplate(endpoints.EdgeGatewayGet, map[string]string{testEdgeID: urn.ExtractUUID(edgeGatewayID2)}), responder)
 					return clientcloudavenue.MockClient().R()
 				})
 			},
@@ -792,7 +810,7 @@ func TestClient_UpdateEdgeGateway(t *testing.T) {
 		err           error
 	}{
 		{
-			name:   "success",
+			name:   testSuccess,
 			edgeID: edgeGatewayID,
 			mockFunc: func() {
 				clientCAV.EXPECT().Refresh().Return(nil)
@@ -807,7 +825,7 @@ func TestClient_UpdateEdgeGateway(t *testing.T) {
 						t.Fatal(err)
 					}
 
-					httpmock.RegisterResponder("PUT", endpoints.InlineTemplate(endpoints.EdgeGatewayUpdate, map[string]string{"edge-id": urn.ExtractUUID(edgeGatewayID)}), responder)
+					httpmock.RegisterResponder("PUT", endpoints.InlineTemplate(endpoints.EdgeGatewayUpdate, map[string]string{testEdgeID: urn.ExtractUUID(edgeGatewayID)}), responder)
 
 					// * mock getJobStatus
 					responderJob, err := httpmock.NewJsonResponder(200, json.RawMessage(`[{"actions":[],"description":"string","name":"string","status":"DONE"}]`))
@@ -815,7 +833,7 @@ func TestClient_UpdateEdgeGateway(t *testing.T) {
 						t.Fatal(err)
 					}
 
-					httpmock.RegisterResponder("GET", endpoints.InlineTemplate(endpoints.JobStatusGet, map[string]string{"job-id": jobStatusID}), responderJob)
+					httpmock.RegisterResponder("GET", endpoints.InlineTemplate(endpoints.JobStatusGet, map[string]string{testJobID: jobStatusID}), responderJob)
 					return clientcloudavenue.MockClient().R()
 				})
 			},
@@ -843,7 +861,7 @@ func TestClient_UpdateEdgeGateway(t *testing.T) {
 
 					// * mock getBandwidth
 					responder := httpmock.NewErrorResponder(fmt.Errorf("error"))
-					httpmock.RegisterResponder("PUT", endpoints.InlineTemplate(endpoints.EdgeGatewayUpdate, map[string]string{"edge-id": urn.ExtractUUID(edgeGatewayID)}), responder)
+					httpmock.RegisterResponder("PUT", endpoints.InlineTemplate(endpoints.EdgeGatewayUpdate, map[string]string{testEdgeID: urn.ExtractUUID(edgeGatewayID)}), responder)
 					return clientcloudavenue.MockClient().R()
 				})
 			},
@@ -926,7 +944,7 @@ func TestClient_EnableNetworkService(t *testing.T) {
 						t.Fatal(err)
 					}
 
-					httpmock.RegisterResponder("GET", endpoints.InlineTemplate(endpoints.JobStatusGet, map[string]string{"job-id": jobStatusID}), responderJob)
+					httpmock.RegisterResponder("GET", endpoints.InlineTemplate(endpoints.JobStatusGet, map[string]string{testJobID: jobStatusID}), responderJob)
 
 					return clientcloudavenue.MockClient().R()
 				})
@@ -1038,7 +1056,7 @@ func TestClient_EnableNetworkService(t *testing.T) {
 			err:           fmt.Errorf("error"),
 		},
 		{
-			name: "error-get-job-status",
+			name: testErrorGetJobStatus,
 			mockFunc: func() {
 				clientCAV.EXPECT().R().DoAndReturn(func() *resty.Request {
 					httpmock.ActivateNonDefault(clientcloudavenue.MockClient().GetClient())
@@ -1053,7 +1071,7 @@ func TestClient_EnableNetworkService(t *testing.T) {
 
 					// * mock getJobStatus
 					responderJob := httpmock.NewErrorResponder(fmt.Errorf("error"))
-					httpmock.RegisterResponder("GET", endpoints.InlineTemplate(endpoints.JobStatusGet, map[string]string{"job-id": jobStatusID}), responderJob)
+					httpmock.RegisterResponder("GET", endpoints.InlineTemplate(endpoints.JobStatusGet, map[string]string{testJobID: jobStatusID}), responderJob)
 
 					return clientcloudavenue.MockClient().R()
 				})
@@ -1069,10 +1087,10 @@ func TestClient_EnableNetworkService(t *testing.T) {
 
 			e.EdgeGatewayModel = &EdgeGatewayModel{
 				ID:   edgeGatewayID,
-				Name: "test-edge-gateway",
+				Name: testEdgeGatewayName,
 				OwnerRef: &govcdtypes.OpenApiReference{
 					ID:   vdcID,
-					Name: "test-vdc",
+					Name: testVDCName,
 				},
 			}
 
@@ -1120,7 +1138,7 @@ func TestClient_DisableNetworkService(t *testing.T) {
 						t.Fatal(err)
 					}
 
-					httpmock.RegisterResponder("DELETE", endpoints.InlineTemplate(endpoints.NetworkServiceDelete, map[string]string{"service-id": "tn99e99ocb0009999spt199-cav-services"}), responder)
+					httpmock.RegisterResponder("DELETE", endpoints.InlineTemplate(endpoints.NetworkServiceDelete, map[string]string{testServiceID: testServiceName}), responder)
 
 					// * mock getJobStatus
 					responderJob, err := httpmock.NewJsonResponder(200, json.RawMessage(`[{"actions":[],"description":"string","name":"string","status":"DONE"}]`))
@@ -1128,7 +1146,7 @@ func TestClient_DisableNetworkService(t *testing.T) {
 						t.Fatal(err)
 					}
 
-					httpmock.RegisterResponder("GET", endpoints.InlineTemplate(endpoints.JobStatusGet, map[string]string{"job-id": jobStatusID}), responderJob)
+					httpmock.RegisterResponder("GET", endpoints.InlineTemplate(endpoints.JobStatusGet, map[string]string{testJobID: jobStatusID}), responderJob)
 					return clientcloudavenue.MockClient().R()
 				})
 
@@ -1211,7 +1229,7 @@ func TestClient_DisableNetworkService(t *testing.T) {
 
 					// * mock disableNetworkService
 					responder := httpmock.NewErrorResponder(fmt.Errorf("error"))
-					httpmock.RegisterResponder("DELETE", endpoints.InlineTemplate(endpoints.NetworkServiceDelete, map[string]string{"service-id": "tn99e99ocb0009999spt199-cav-services"}), responder)
+					httpmock.RegisterResponder("DELETE", endpoints.InlineTemplate(endpoints.NetworkServiceDelete, map[string]string{testServiceID: testServiceName}), responder)
 					return clientcloudavenue.MockClient().R()
 				})
 			},
@@ -1230,7 +1248,7 @@ func TestClient_DisableNetworkService(t *testing.T) {
 						t.Fatal(err)
 					}
 
-					httpmock.RegisterResponder("DELETE", endpoints.InlineTemplate(endpoints.NetworkServiceDelete, map[string]string{"service-id": "tn99e99ocb0009999spt199-cav-services"}), responder)
+					httpmock.RegisterResponder("DELETE", endpoints.InlineTemplate(endpoints.NetworkServiceDelete, map[string]string{testServiceID: testServiceName}), responder)
 					return clientcloudavenue.MockClient().R()
 				})
 			},
@@ -1238,7 +1256,7 @@ func TestClient_DisableNetworkService(t *testing.T) {
 			err:           fmt.Errorf("error"),
 		},
 		{
-			name: "error-get-job-status",
+			name: testErrorGetJobStatus,
 			mockFunc: func() {
 				clientCAV.EXPECT().R().DoAndReturn(func() *resty.Request {
 					httpmock.ActivateNonDefault(clientcloudavenue.MockClient().GetClient())
@@ -1249,11 +1267,11 @@ func TestClient_DisableNetworkService(t *testing.T) {
 						t.Fatal(err)
 					}
 
-					httpmock.RegisterResponder("DELETE", endpoints.InlineTemplate(endpoints.NetworkServiceDelete, map[string]string{"service-id": "tn99e99ocb0009999spt199-cav-services"}), responder)
+					httpmock.RegisterResponder("DELETE", endpoints.InlineTemplate(endpoints.NetworkServiceDelete, map[string]string{testServiceID: testServiceName}), responder)
 
 					// * mock getJobStatus
 					responderJob := httpmock.NewErrorResponder(fmt.Errorf("error"))
-					httpmock.RegisterResponder("GET", endpoints.InlineTemplate(endpoints.JobStatusGet, map[string]string{"job-id": jobStatusID}), responderJob)
+					httpmock.RegisterResponder("GET", endpoints.InlineTemplate(endpoints.JobStatusGet, map[string]string{testJobID: jobStatusID}), responderJob)
 
 					return clientcloudavenue.MockClient().R()
 				})
@@ -1269,16 +1287,16 @@ func TestClient_DisableNetworkService(t *testing.T) {
 
 			e.EdgeGatewayModel = &EdgeGatewayModel{
 				ID:   edgeGatewayID,
-				Name: "test-edge-gateway",
+				Name: testEdgeGatewayName,
 				OwnerRef: &govcdtypes.OpenApiReference{
 					ID:   vdcID,
-					Name: "test-vdc",
+					Name: testVDCName,
 				},
 				Services: NetworkServicesModelSvcs{
 					Service: &NetworkServicesModelSvcService{
 						NetworkServicesModelSvc: NetworkServicesModelSvc{
-							ID:   "tn99e99ocb0009999spt199-cav-services",
-							Name: "Cloud Avenue Services",
+							ID:   testServiceName,
+							Name: testServiceDisplayName,
 						},
 					},
 				},
@@ -1323,16 +1341,16 @@ func TestClient_DeleteEdgeGateway(t *testing.T) {
 				clientCAV.EXPECT().GetNsxtEdgeGatewayById(edgeGatewayID).Return(&govcd.NsxtEdgeGateway{
 					EdgeGateway: &govcdtypes.OpenAPIEdgeGateway{
 						ID:          edgeGatewayID,
-						Name:        "test-edge-gateway",
-						Description: "test description",
-						Status:      "ACTIVE",
+						Name:        testEdgeGatewayName,
+						Description: testEdgeGatewayDesc,
+						Status:      testEdgeGatewayStatus,
 						OwnerRef: &govcdtypes.OpenApiReference{
 							ID:   vdcID,
-							Name: "test-vdc",
+							Name: testVDCName,
 						},
 						EdgeGatewayUplinks: []govcdtypes.EdgeGatewayUplinks{
 							{
-								UplinkName: "prvrf01eocb0009999allsp01",
+								UplinkName: testVRFName,
 							},
 						},
 					},
@@ -1345,7 +1363,7 @@ func TestClient_DeleteEdgeGateway(t *testing.T) {
 						t.Fatal(err)
 					}
 
-					httpmock.RegisterResponder("GET", endpoints.InlineTemplate(endpoints.EdgeGatewayGet, map[string]string{"edge-id": urn.ExtractUUID(edgeGatewayID)}), responder)
+					httpmock.RegisterResponder("GET", endpoints.InlineTemplate(endpoints.EdgeGatewayGet, map[string]string{testEdgeID: urn.ExtractUUID(edgeGatewayID)}), responder)
 					return clientcloudavenue.MockClient().R()
 				})
 				clientCAV.EXPECT().R().DoAndReturn(func() *resty.Request {
@@ -1357,7 +1375,7 @@ func TestClient_DeleteEdgeGateway(t *testing.T) {
 						t.Fatal(err)
 					}
 
-					httpmock.RegisterResponder("DELETE", endpoints.InlineTemplate(endpoints.EdgeGatewayDelete, map[string]string{"edge-id": urn.ExtractUUID(edgeGatewayID)}), responder)
+					httpmock.RegisterResponder("DELETE", endpoints.InlineTemplate(endpoints.EdgeGatewayDelete, map[string]string{testEdgeID: urn.ExtractUUID(edgeGatewayID)}), responder)
 
 					// * mock getJobStatus
 					responderJob, err := httpmock.NewJsonResponder(200, json.RawMessage(`[{"actions":[],"description":"string","name":"string","status":"DONE"}]`))
@@ -1365,7 +1383,7 @@ func TestClient_DeleteEdgeGateway(t *testing.T) {
 						t.Fatal(err)
 					}
 
-					httpmock.RegisterResponder("GET", endpoints.InlineTemplate(endpoints.JobStatusGet, map[string]string{"job-id": jobStatusID}), responderJob)
+					httpmock.RegisterResponder("GET", endpoints.InlineTemplate(endpoints.JobStatusGet, map[string]string{testJobID: jobStatusID}), responderJob)
 					return clientcloudavenue.MockClient().R()
 				})
 			},
@@ -1378,16 +1396,16 @@ func TestClient_DeleteEdgeGateway(t *testing.T) {
 				clientCAV.EXPECT().GetNsxtEdgeGatewayById(edgeGatewayID).Return(&govcd.NsxtEdgeGateway{
 					EdgeGateway: &govcdtypes.OpenAPIEdgeGateway{
 						ID:          edgeGatewayID,
-						Name:        "test-edge-gateway",
-						Description: "test description",
-						Status:      "ACTIVE",
+						Name:        testEdgeGatewayName,
+						Description: testEdgeGatewayDesc,
+						Status:      testEdgeGatewayStatus,
 						OwnerRef: &govcdtypes.OpenApiReference{
 							ID:   vdcID,
-							Name: "test-vdc",
+							Name: testVDCName,
 						},
 						EdgeGatewayUplinks: []govcdtypes.EdgeGatewayUplinks{
 							{
-								UplinkName: "prvrf01eocb0009999allsp01",
+								UplinkName: testVRFName,
 							},
 						},
 					},
@@ -1400,7 +1418,7 @@ func TestClient_DeleteEdgeGateway(t *testing.T) {
 						t.Fatal(err)
 					}
 
-					httpmock.RegisterResponder("GET", endpoints.InlineTemplate(endpoints.EdgeGatewayGet, map[string]string{"edge-id": urn.ExtractUUID(edgeGatewayID)}), responder)
+					httpmock.RegisterResponder("GET", endpoints.InlineTemplate(endpoints.EdgeGatewayGet, map[string]string{testEdgeID: urn.ExtractUUID(edgeGatewayID)}), responder)
 					return clientcloudavenue.MockClient().R()
 				})
 				clientCAV.EXPECT().R().DoAndReturn(func() *resty.Request {
@@ -1411,7 +1429,7 @@ func TestClient_DeleteEdgeGateway(t *testing.T) {
 					if err != nil {
 						t.Fatal(err)
 					}
-					httpmock.RegisterResponder("DELETE", endpoints.InlineTemplate(endpoints.EdgeGatewayDelete, map[string]string{"edge-id": urn.ExtractUUID(edgeGatewayID)}), responder)
+					httpmock.RegisterResponder("DELETE", endpoints.InlineTemplate(endpoints.EdgeGatewayDelete, map[string]string{testEdgeID: urn.ExtractUUID(edgeGatewayID)}), responder)
 					return clientcloudavenue.MockClient().R()
 				})
 			},
@@ -1425,16 +1443,16 @@ func TestClient_DeleteEdgeGateway(t *testing.T) {
 				clientCAV.EXPECT().GetNsxtEdgeGatewayById(edgeGatewayID).Return(&govcd.NsxtEdgeGateway{
 					EdgeGateway: &govcdtypes.OpenAPIEdgeGateway{
 						ID:          edgeGatewayID,
-						Name:        "test-edge-gateway",
-						Description: "test description",
-						Status:      "ACTIVE",
+						Name:        testEdgeGatewayName,
+						Description: testEdgeGatewayDesc,
+						Status:      testEdgeGatewayStatus,
 						OwnerRef: &govcdtypes.OpenApiReference{
 							ID:   vdcID,
-							Name: "test-vdc",
+							Name: testVDCName,
 						},
 						EdgeGatewayUplinks: []govcdtypes.EdgeGatewayUplinks{
 							{
-								UplinkName: "prvrf01eocb0009999allsp01",
+								UplinkName: testVRFName,
 							},
 						},
 					},
@@ -1447,7 +1465,7 @@ func TestClient_DeleteEdgeGateway(t *testing.T) {
 						t.Fatal(err)
 					}
 
-					httpmock.RegisterResponder("GET", endpoints.InlineTemplate(endpoints.EdgeGatewayGet, map[string]string{"edge-id": urn.ExtractUUID(edgeGatewayID)}), responder)
+					httpmock.RegisterResponder("GET", endpoints.InlineTemplate(endpoints.EdgeGatewayGet, map[string]string{testEdgeID: urn.ExtractUUID(edgeGatewayID)}), responder)
 					return clientcloudavenue.MockClient().R()
 				})
 				clientCAV.EXPECT().R().DoAndReturn(func() *resty.Request {
@@ -1455,7 +1473,7 @@ func TestClient_DeleteEdgeGateway(t *testing.T) {
 
 					// * mock deleteEdgeGateway
 					responder := httpmock.NewErrorResponder(fmt.Errorf("error"))
-					httpmock.RegisterResponder("DELETE", endpoints.InlineTemplate(endpoints.EdgeGatewayDelete, map[string]string{"edge-id": urn.ExtractUUID(edgeGatewayID)}), responder)
+					httpmock.RegisterResponder("DELETE", endpoints.InlineTemplate(endpoints.EdgeGatewayDelete, map[string]string{testEdgeID: urn.ExtractUUID(edgeGatewayID)}), responder)
 					return clientcloudavenue.MockClient().R()
 				})
 			},
@@ -1463,22 +1481,22 @@ func TestClient_DeleteEdgeGateway(t *testing.T) {
 			err:           fmt.Errorf("error"),
 		},
 		{
-			name: "error-get-job-status",
+			name: testErrorGetJobStatus,
 			mockFunc: func() {
 				clientCAV.EXPECT().Refresh().Return(nil)
 				clientCAV.EXPECT().GetNsxtEdgeGatewayById(edgeGatewayID).Return(&govcd.NsxtEdgeGateway{
 					EdgeGateway: &govcdtypes.OpenAPIEdgeGateway{
 						ID:          edgeGatewayID,
-						Name:        "test-edge-gateway",
-						Description: "test description",
-						Status:      "ACTIVE",
+						Name:        testEdgeGatewayName,
+						Description: testEdgeGatewayDesc,
+						Status:      testEdgeGatewayStatus,
 						OwnerRef: &govcdtypes.OpenApiReference{
 							ID:   vdcID,
-							Name: "test-vdc",
+							Name: testVDCName,
 						},
 						EdgeGatewayUplinks: []govcdtypes.EdgeGatewayUplinks{
 							{
-								UplinkName: "prvrf01eocb0009999allsp01",
+								UplinkName: testVRFName,
 							},
 						},
 					},
@@ -1491,7 +1509,7 @@ func TestClient_DeleteEdgeGateway(t *testing.T) {
 						t.Fatal(err)
 					}
 
-					httpmock.RegisterResponder("GET", endpoints.InlineTemplate(endpoints.EdgeGatewayGet, map[string]string{"edge-id": urn.ExtractUUID(edgeGatewayID)}), responder)
+					httpmock.RegisterResponder("GET", endpoints.InlineTemplate(endpoints.EdgeGatewayGet, map[string]string{testEdgeID: urn.ExtractUUID(edgeGatewayID)}), responder)
 					return clientcloudavenue.MockClient().R()
 				})
 				clientCAV.EXPECT().R().DoAndReturn(func() *resty.Request {
@@ -1503,11 +1521,11 @@ func TestClient_DeleteEdgeGateway(t *testing.T) {
 						t.Fatal(err)
 					}
 
-					httpmock.RegisterResponder("DELETE", endpoints.InlineTemplate(endpoints.EdgeGatewayDelete, map[string]string{"edge-id": urn.ExtractUUID(edgeGatewayID)}), responder)
+					httpmock.RegisterResponder("DELETE", endpoints.InlineTemplate(endpoints.EdgeGatewayDelete, map[string]string{testEdgeID: urn.ExtractUUID(edgeGatewayID)}), responder)
 
 					// * mock getJobStatus
 					responderJob := httpmock.NewErrorResponder(fmt.Errorf("error"))
-					httpmock.RegisterResponder("GET", endpoints.InlineTemplate(endpoints.JobStatusGet, map[string]string{"job-id": jobStatusID}), responderJob)
+					httpmock.RegisterResponder("GET", endpoints.InlineTemplate(endpoints.JobStatusGet, map[string]string{testJobID: jobStatusID}), responderJob)
 
 					return clientcloudavenue.MockClient().R()
 				})

@@ -24,6 +24,8 @@ import (
 	mock "github.com/orange-cloudavenue/cloudavenue-sdk-go/v1/iam/mock"
 )
 
+const testUserName = "test"
+
 func TestClient_CreateLocalUser(t *testing.T) {
 	// Mock controller.
 	ctrl := gomock.NewController(t)
@@ -54,9 +56,9 @@ func TestClient_CreateLocalUser(t *testing.T) {
 				func() {
 					clientAdminOrg.EXPECT().CreateUser(gomock.Any()).Return(&govcd.OrgUser{
 						User: &govcdtypes.User{
-							Name: "test",
+							Name: testUserName,
 							Role: &govcdtypes.Reference{
-								Name: "test",
+								Name: testUserName,
 							},
 							ID: urn.VcloudPrefix + urn.User.String() + uuid.NewString(),
 						},
@@ -67,23 +69,23 @@ func TestClient_CreateLocalUser(t *testing.T) {
 				},
 				func() {
 					clientAdminOrg.EXPECT().GetRoleReference(gomock.Any()).Return(&govcdtypes.Reference{
-						Name: "test",
+						Name: testUserName,
 						HREF: "https://foo.bar/api/admin/role/test",
 					}, nil)
 				},
 			},
 			userValue: LocalUser{
 				User: User{
-					Name:     "test",
-					RoleName: "test",
+					Name:     testUserName,
+					RoleName: testUserName,
 				},
 
 				Password: "1234567",
 			},
 			expectedUserValue: &LocalUser{
 				User: User{
-					Name:     "test",
-					RoleName: "test",
+					Name:     testUserName,
+					RoleName: testUserName,
 					ID:       urn.VcloudPrefix + urn.User.String(),
 				},
 			},
@@ -100,8 +102,8 @@ func TestClient_CreateLocalUser(t *testing.T) {
 			},
 			userValue: LocalUser{
 				User: User{
-					Name:     "test",
-					RoleName: "test",
+					Name:     testUserName,
+					RoleName: testUserName,
 				},
 				Password: "",
 			},
@@ -130,15 +132,15 @@ func TestClient_CreateLocalUser(t *testing.T) {
 				},
 				func() {
 					clientAdminOrg.EXPECT().GetRoleReference(gomock.Any()).Return(&govcdtypes.Reference{
-						Name: "test",
+						Name: testUserName,
 						HREF: "https://foo.bar/api/admin/role/test",
 					}, nil)
 				},
 			},
 			userValue: LocalUser{
 				User: User{
-					Name:     "test",
-					RoleName: "test",
+					Name:     testUserName,
+					RoleName: testUserName,
 				},
 				Password: "1234567",
 			},
@@ -156,8 +158,8 @@ func TestClient_CreateLocalUser(t *testing.T) {
 			},
 			userValue: LocalUser{
 				User: User{
-					Name:     "test",
-					RoleName: "test",
+					Name:     testUserName,
+					RoleName: testUserName,
 				},
 				Password: "1234567",
 			},
@@ -225,9 +227,9 @@ func TestClient_GetUser(t *testing.T) {
 				func() {
 					clientAdminOrg.EXPECT().GetUserByNameOrId(gomock.Any(), true).Return(&govcd.OrgUser{
 						User: &govcdtypes.User{
-							Name: "test",
+							Name: testUserName,
 							Role: &govcdtypes.Reference{
-								Name: "test",
+								Name: testUserName,
 							},
 							ProviderType: govcd.OrgUserProviderIntegrated,
 							ID:           urn.VcloudPrefix + urn.User.String() + uuid.NewString(),
@@ -238,10 +240,10 @@ func TestClient_GetUser(t *testing.T) {
 					clientCAV.EXPECT().Refresh().Return(nil)
 				},
 			},
-			nameOrID: "test",
+			nameOrID: testUserName,
 			expectedUserValue: &User{
-				Name:     "test",
-				RoleName: "test",
+				Name:     testUserName,
+				RoleName: testUserName,
 				ID:       urn.VcloudPrefix + urn.User.String(),
 			},
 			expectedErr: false,
@@ -253,9 +255,9 @@ func TestClient_GetUser(t *testing.T) {
 				func() {
 					clientAdminOrg.EXPECT().GetUserByNameOrId(gomock.Any(), true).Return(&govcd.OrgUser{
 						User: &govcdtypes.User{
-							Name: "test",
+							Name: testUserName,
 							Role: &govcdtypes.Reference{
-								Name: "test",
+								Name: testUserName,
 							},
 							ProviderType: govcd.OrgUserProviderSAML,
 							ID:           urn.VcloudPrefix + urn.User.String() + uuid.NewString(),
@@ -266,10 +268,10 @@ func TestClient_GetUser(t *testing.T) {
 					clientCAV.EXPECT().Refresh().Return(nil)
 				},
 			},
-			nameOrID: "test",
+			nameOrID: testUserName,
 			expectedUserValue: &User{
-				Name:     "test",
-				RoleName: "test",
+				Name:     testUserName,
+				RoleName: testUserName,
 				ID:       urn.VcloudPrefix + urn.User.String(),
 			},
 			expectedErr: false,
@@ -283,7 +285,7 @@ func TestClient_GetUser(t *testing.T) {
 					clientCAV.EXPECT().Refresh().Return(errors.New("error"))
 				},
 			},
-			nameOrID:    "test",
+			nameOrID:    testUserName,
 			expectedErr: true,
 		},
 		{
@@ -296,7 +298,7 @@ func TestClient_GetUser(t *testing.T) {
 					clientCAV.EXPECT().Refresh().Return(nil)
 				},
 			},
-			nameOrID:    "test",
+			nameOrID:    testUserName,
 			expectedErr: true,
 		},
 	}
