@@ -20,6 +20,8 @@ import (
 	commonnetbackup "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/common/netbackup"
 )
 
+const machineIDKey = "machineID"
+
 type MachineClient struct{}
 
 // Machine - Is the response structure for the Machines APIs.
@@ -340,7 +342,7 @@ func (m *Machine) ListProtectionLevels() (resp *ProtectionLevels, err error) {
 	r, err := c.R().
 		SetError(&commonnetbackup.APIError{}).
 		SetPathParams(map[string]string{
-			"machineID": fmt.Sprintf("%d", m.GetID()),
+			machineIDKey: fmt.Sprintf("%d", m.GetID()),
 		}).
 		SetResult(&protectionLevelAppliedResponse{}).
 		Get("/v6/machines/{machineID}/protected")
@@ -395,7 +397,7 @@ func (m *Machine) Protect(req ProtectUnprotectRequest) (job *commonnetbackup.Job
 	r, err = c.R().
 		SetError(&commonnetbackup.APIError{}).
 		SetPathParams(map[string]string{
-			"machineID": fmt.Sprintf("%d", m.GetID()),
+			machineIDKey: fmt.Sprintf("%d", m.GetID()),
 		}).
 		SetBody(protectBody{
 			ProtectionLevelID: protectionLevel.GetID(),
@@ -447,7 +449,7 @@ func (m *Machine) Unprotect(req ProtectUnprotectRequest) (job *commonnetbackup.J
 	r, err = c.R().
 		SetError(&commonnetbackup.APIError{}).
 		SetPathParams(map[string]string{
-			"machineID": fmt.Sprintf("%d", m.GetID()),
+			machineIDKey: fmt.Sprintf("%d", m.GetID()),
 		}).
 		SetBody(protectBody{
 			ProtectionLevelID: protectionLevel.GetID(),

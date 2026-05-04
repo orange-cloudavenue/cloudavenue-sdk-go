@@ -18,6 +18,8 @@ import (
 	commonnetbackup "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/common/netbackup"
 )
 
+const protectionLevelIDKey = "ProtectionLevelId"
+
 type getProtectionLevelResponse struct {
 	Data ProtectionLevel `json:"data,omitempty"`
 }
@@ -57,22 +59,22 @@ func (p *ProtectionLevelClient) getProtectionLevelByID(req getProtectionLevelByI
 	case req.VAppID != nil:
 		r, err = hReq.
 			SetPathParams(map[string]string{
-				"VAppId":            fmt.Sprintf("%d", *req.VAppID),
-				"ProtectionLevelId": fmt.Sprintf("%d", *req.ProtectionLevelID),
+				"VAppId":             fmt.Sprintf("%d", *req.VAppID),
+				protectionLevelIDKey: fmt.Sprintf("%d", *req.ProtectionLevelID),
 			}).
 			Get("/v6/vcloud/vapps/{VAppId}/protection/levels/{ProtectionLevelId}")
 	case req.VDCID != nil:
 		r, err = hReq.
 			SetPathParams(map[string]string{
-				"VdcId":             fmt.Sprintf("%d", *req.VDCID),
-				"ProtectionLevelId": fmt.Sprintf("%d", *req.ProtectionLevelID),
+				"VdcId":              fmt.Sprintf("%d", *req.VDCID),
+				protectionLevelIDKey: fmt.Sprintf("%d", *req.ProtectionLevelID),
 			}).
 			Get("/v6/vcloud/vdcs/{VdcId}/protection/levels/{ProtectionLevelId}")
 	case req.MachineID != nil:
 		r, err = hReq.
 			SetPathParams(map[string]string{
-				"MachineId":         fmt.Sprintf("%d", *req.MachineID),
-				"ProtectionLevelId": fmt.Sprintf("%d", *req.ProtectionLevelID),
+				"MachineId":          fmt.Sprintf("%d", *req.MachineID),
+				protectionLevelIDKey: fmt.Sprintf("%d", *req.ProtectionLevelID),
 			}).
 			Get("/v6/machines/{MachineId}/protection/levels/{ProtectionLevelId}")
 	}

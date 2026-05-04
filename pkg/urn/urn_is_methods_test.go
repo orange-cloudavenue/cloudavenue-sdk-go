@@ -24,11 +24,11 @@ func TestURN_IsVM(t *testing.T) {
 		},
 		{
 			name: "IsNotVM",
-			urn:  URN("urn:vcloud:user:f47ac10b-58cc-4372-a567-0e02b2c3d479"),
+			urn:  URN(testInvalidUserURN),
 			want: false,
 		},
 		{ // Empty string
-			name: "EmptyString",
+			name: testEmptyStringName,
 			urn:  URN(""),
 			want: false,
 		},
@@ -55,11 +55,11 @@ func TestURN_IsUser(t *testing.T) {
 		},
 		{
 			name: "IsNotUser",
-			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d479"),
+			urn:  URN(testInvalidVMURN),
 			want: false,
 		},
 		{ // Empty string
-			name: "EmptyString",
+			name: testEmptyStringName,
 			urn:  URN(""),
 			want: false,
 		},
@@ -87,11 +87,11 @@ func TestURN_IsGroup(t *testing.T) {
 		},
 		{
 			name: "IsNotGroup",
-			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d479"),
+			urn:  URN(testInvalidVMURN),
 			want: false,
 		},
 		{ // Empty string
-			name: "EmptyString",
+			name: testEmptyStringName,
 			urn:  URN(""),
 			want: false,
 		},
@@ -119,11 +119,11 @@ func TestURN_IsGateway(t *testing.T) {
 		},
 		{
 			name: "IsNotGateway",
-			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d479"),
+			urn:  URN(testInvalidVMURN),
 			want: false,
 		},
 		{ // Empty string
-			name: "EmptyString",
+			name: testEmptyStringName,
 			urn:  URN(""),
 			want: false,
 		},
@@ -151,11 +151,11 @@ func TestURN_IsAppPortProfile(t *testing.T) {
 		},
 		{ // IsNotAppProfile
 			name: "IsNotAppProfile",
-			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d4791"),
+			urn:  URN(testInvalidVMURNLong),
 			want: false,
 		},
 		{ // Empty string
-			name: "EmptyString",
+			name: testEmptyStringName,
 			urn:  URN(""),
 			want: false,
 		},
@@ -183,11 +183,11 @@ func TestURN_IsVDC(t *testing.T) {
 		},
 		{
 			name: "IsNotVDC",
-			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d479"),
+			urn:  URN(testInvalidVMURN),
 			want: false,
 		},
 		{ // Empty string
-			name: "EmptyString",
+			name: testEmptyStringName,
 			urn:  URN(""),
 			want: false,
 		},
@@ -215,11 +215,11 @@ func TestURN_IsVDCGroup(t *testing.T) {
 		},
 		{ // IsNotVDCGroup
 			name: "IsNotVDCGroup",
-			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d479"),
+			urn:  URN(testInvalidVMURN),
 			want: false,
 		},
 		{ // Empty string
-			name: "EmptyString",
+			name: testEmptyStringName,
 			urn:  URN(""),
 			want: false,
 		},
@@ -247,11 +247,11 @@ func TestURN_IsNetwork(t *testing.T) {
 		},
 		{
 			name: "IsNotNetwork",
-			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d479"),
+			urn:  URN(testInvalidVMURN),
 			want: false,
 		},
 		{ // Empty string
-			name: "EmptyString",
+			name: testEmptyStringName,
 			urn:  URN(""),
 			want: false,
 		},
@@ -279,11 +279,11 @@ func TestURN_IsLoadBalancerPool(t *testing.T) {
 		},
 		{
 			name: "IsNotLoadBalancerPool",
-			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d479"),
+			urn:  URN(testInvalidVMURN),
 			want: false,
 		},
 		{ // Empty string
-			name: "EmptyString",
+			name: testEmptyStringName,
 			urn:  URN(""),
 			want: false,
 		},
@@ -311,11 +311,11 @@ func TestURN_IsVDCStorageProfile(t *testing.T) {
 		},
 		{
 			name: "IsNotVDCStorageProfile",
-			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d479"),
+			urn:  URN(testInvalidVMURN),
 			want: false,
 		},
 		{ // Empty string
-			name: "EmptyString",
+			name: testEmptyStringName,
 			urn:  URN(""),
 			want: false,
 		},
@@ -343,11 +343,11 @@ func TestURN_IsVAPP(t *testing.T) {
 		},
 		{
 			name: "IsNotVAPP",
-			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d479"),
+			urn:  URN(testInvalidVMURN),
 			want: false,
 		},
 		{ // Empty string
-			name: "EmptyString",
+			name: testEmptyStringName,
 			urn:  URN(""),
 			want: false,
 		},
@@ -375,11 +375,11 @@ func TestURN_IsDisk(t *testing.T) {
 		},
 		{
 			name: "IsNotDisk",
-			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d479"),
+			urn:  URN(testInvalidVMURN),
 			want: false,
 		},
 		{ // Empty string
-			name: "EmptyString",
+			name: testEmptyStringName,
 			urn:  URN(""),
 			want: false,
 		},
@@ -407,11 +407,11 @@ func TestURN_IsSecurityGroup(t *testing.T) {
 		},
 		{
 			name: "IsNotSecurityGroup",
-			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d479"),
+			urn:  URN(testInvalidVMURN),
 			want: false,
 		},
 		{ // Empty string
-			name: "EmptyString",
+			name: testEmptyStringName,
 			urn:  URN(""),
 			want: false,
 		},
@@ -439,11 +439,11 @@ func TestURN_IsVAPPTemplate(t *testing.T) {
 		},
 		{ // IsNotVAPPTemplate
 			name: "IsNotVAPPTemplate",
-			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d4791"),
+			urn:  URN(testInvalidVMURNLong),
 			want: false,
 		},
 		{ // Empty string
-			name: "EmptyString",
+			name: testEmptyStringName,
 			urn:  URN(""),
 			want: false,
 		},
@@ -471,11 +471,11 @@ func TestURN_IsCatalog(t *testing.T) {
 		},
 		{ // IsNotCatalog
 			name: "IsNotCatalog",
-			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d4791"),
+			urn:  URN(testInvalidVMURNLong),
 			want: false,
 		},
 		{ // Empty string
-			name: "EmptyString",
+			name: testEmptyStringName,
 			urn:  URN(""),
 			want: false,
 		},
@@ -503,11 +503,11 @@ func TestURN_IsToken(t *testing.T) {
 		},
 		{ // IsNotToken
 			name: "IsNotToken",
-			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d4791"),
+			urn:  URN(testInvalidVMURNLong),
 			want: false,
 		},
 		{ // Empty string
-			name: "EmptyString",
+			name: testEmptyStringName,
 			urn:  URN(""),
 			want: false,
 		},
@@ -535,11 +535,11 @@ func TestVcloudURN_IsCatalog(t *testing.T) {
 		},
 		{ // IsNotCatalog
 			name: "IsNotCatalog",
-			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d4791"),
+			urn:  URN(testInvalidVMURNLong),
 			want: false,
 		},
 		{ // Empty string
-			name: "EmptyString",
+			name: testEmptyStringName,
 			urn:  URN(""),
 			want: false,
 		},
@@ -567,11 +567,11 @@ func TestURN_IsOrg(t *testing.T) {
 		},
 		{ // IsNotOrg
 			name: "IsNotOrg",
-			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d4791"),
+			urn:  URN(testInvalidVMURNLong),
 			want: false,
 		},
 		{ // Empty string
-			name: "EmptyString",
+			name: testEmptyStringName,
 			urn:  URN(""),
 			want: false,
 		},
@@ -599,11 +599,11 @@ func TestURN_IsVDCComputePolicy(t *testing.T) {
 		},
 		{ // IsNotVDCComputePolicy
 			name: "IsNotVDCComputePolicy",
-			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d4791"),
+			urn:  URN(testInvalidVMURNLong),
 			want: false,
 		},
 		{ // Empty string
-			name: "EmptyString",
+			name: testEmptyStringName,
 			urn:  URN(""),
 			want: false,
 		},
@@ -631,11 +631,11 @@ func TestURN_IsLoadBalancerVirtualService(t *testing.T) {
 		},
 		{ // IsNotLoadBalancerVirtualService
 			name: "IsNotLoadBalancerVirtualService",
-			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d4791"),
+			urn:  URN(testInvalidVMURNLong),
 			want: false,
 		},
 		{ // Empty string
-			name: "EmptyString",
+			name: testEmptyStringName,
 			urn:  URN(""),
 			want: false,
 		},
@@ -663,11 +663,11 @@ func TestURN_IsCertificateLibraryItem(t *testing.T) {
 		},
 		{ // IsNotCertificateLibraryItem
 			name: "IsNotCertificateLibraryItem",
-			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d4791"),
+			urn:  URN(testInvalidVMURNLong),
 			want: false,
 		},
 		{ // Empty string
-			name: "EmptyString",
+			name: testEmptyStringName,
 			urn:  URN(""),
 			want: false,
 		},
@@ -695,11 +695,11 @@ func TestURN_IsServiceEngineGroup(t *testing.T) {
 		},
 		{ // IsNotServiceEngineGroup
 			name: "IsNotServiceEngineGroup",
-			urn:  URN("urn:vcloud:vm:f47ac10b-58cc-4372-a567-0e02b2c3d4791"),
+			urn:  URN(testInvalidVMURNLong),
 			want: false,
 		},
 		{ // Empty string
-			name: "EmptyString",
+			name: testEmptyStringName,
 			urn:  URN(""),
 			want: false,
 		},

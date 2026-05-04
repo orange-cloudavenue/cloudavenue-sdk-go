@@ -102,6 +102,11 @@ func (c *S3Credential) IsProviderOwner() bool {
 	return c.ProviderOwner
 }
 
+const (
+	orgIDKey    = "orgID"
+	userNameKey = "userName"
+)
+
 // GetCredentials - Get a list of credentials.
 func (s *S3User) GetCredentials() (resp *S3Credentials, err error) {
 	type allCredentials struct {
@@ -111,8 +116,8 @@ func (s *S3User) GetCredentials() (resp *S3Credentials, err error) {
 	r, err := clients3.NewOSE().R().
 		SetResult(&allCredentials{}).
 		SetPathParams(map[string]string{
-			"orgID":    clients3.GetOrganizationID(),
-			"userName": s.GetName(),
+			orgIDKey:    clients3.GetOrganizationID(),
+			userNameKey: s.GetName(),
 		}).
 		Get("/api/v1/core/tenants/{orgID}/users/{userName}/credentials")
 	if err != nil {
@@ -131,8 +136,8 @@ func (s *S3User) GetCredential(accessKey string) (resp *S3Credential, err error)
 	r, err := clients3.NewOSE().R().
 		SetResult(&S3Credential{}).
 		SetPathParams(map[string]string{
-			"orgID":     clients3.GetOrganizationID(),
-			"userName":  s.GetName(),
+			orgIDKey:    clients3.GetOrganizationID(),
+			userNameKey: s.GetName(),
 			"accessKey": accessKey,
 		}).
 		Get("/api/v1/core/tenants/{orgID}/users/{userName}/credentials/{accessKey}")
@@ -152,8 +157,8 @@ func (s *S3User) NewCredential() (resp *S3Credential, err error) {
 	r, err := clients3.NewOSE().R().
 		SetResult(&S3Credential{}).
 		SetPathParams(map[string]string{
-			"orgID":    clients3.GetOrganizationID(),
-			"userName": s.Name,
+			orgIDKey:    clients3.GetOrganizationID(),
+			userNameKey: s.Name,
 		}).
 		Post("/api/v1/core/tenants/{orgID}/users/{userName}/credentials")
 	if err != nil {
@@ -171,8 +176,8 @@ func (s *S3User) NewCredential() (resp *S3Credential, err error) {
 func (c *S3Credential) Delete() (err error) {
 	r, err := clients3.NewOSE().R().
 		SetPathParams(map[string]string{
-			"orgID":     clients3.GetOrganizationID(),
-			"userName":  c.GetOwner(),
+			orgIDKey:    clients3.GetOrganizationID(),
+			userNameKey: c.GetOwner(),
 			"accessKey": c.GetAccessKey(),
 		}).
 		Delete("/api/v1/core/tenants/{orgID}/users/{userName}/credentials/{accessKey}")

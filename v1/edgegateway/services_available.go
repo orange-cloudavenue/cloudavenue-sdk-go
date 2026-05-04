@@ -9,6 +9,11 @@
 
 package edgegateway
 
+const (
+	serviceProtocolTCP = "tcp"
+	serviceProtocolUDP = "udp"
+)
+
 type (
 	ServiceModel struct {
 		IPAllocated string
@@ -53,7 +58,7 @@ var ListOfServices = []ServiceModelDetails{
 				Ports: []NetworkServicesModelSvcServiceDetailsPorts{
 					{
 						Port:     3142,
-						Protocol: "tcp",
+						Protocol: serviceProtocolTCP,
 					},
 				},
 			},
@@ -65,7 +70,7 @@ var ListOfServices = []ServiceModelDetails{
 				Ports: []NetworkServicesModelSvcServiceDetailsPorts{
 					{
 						Port:     8080,
-						Protocol: "tcp",
+						Protocol: serviceProtocolTCP,
 					},
 				},
 			},
@@ -77,11 +82,11 @@ var ListOfServices = []ServiceModelDetails{
 				Ports: []NetworkServicesModelSvcServiceDetailsPorts{
 					{
 						Port:     8530,
-						Protocol: "tcp",
+						Protocol: serviceProtocolTCP,
 					},
 					{
 						Port:     8531,
-						Protocol: "tcp",
+						Protocol: serviceProtocolTCP,
 					},
 				},
 			},
@@ -95,7 +100,7 @@ var ListOfServices = []ServiceModelDetails{
 				Ports: []NetworkServicesModelSvcServiceDetailsPorts{
 					{
 						Port:     1688,
-						Protocol: "tcp",
+						Protocol: serviceProtocolTCP,
 					},
 				},
 			},
@@ -113,7 +118,7 @@ var ListOfServices = []ServiceModelDetails{
 				Ports: []NetworkServicesModelSvcServiceDetailsPorts{
 					{
 						Port:     123,
-						Protocol: "udp",
+						Protocol: serviceProtocolUDP,
 					},
 				},
 			},
@@ -129,11 +134,11 @@ var ListOfServices = []ServiceModelDetails{
 				Ports: []NetworkServicesModelSvcServiceDetailsPorts{
 					{
 						Port:     53,
-						Protocol: "tcp",
+						Protocol: serviceProtocolTCP,
 					},
 					{
 						Port:     53,
-						Protocol: "udp",
+						Protocol: serviceProtocolUDP,
 					},
 				},
 			},
@@ -149,11 +154,11 @@ var ListOfServices = []ServiceModelDetails{
 				Ports: []NetworkServicesModelSvcServiceDetailsPorts{
 					{
 						Port:     53,
-						Protocol: "tcp",
+						Protocol: serviceProtocolTCP,
 					},
 					{
 						Port:     53,
-						Protocol: "udp",
+						Protocol: serviceProtocolUDP,
 					},
 				},
 			},
@@ -168,7 +173,7 @@ var ListOfServices = []ServiceModelDetails{
 				Ports: []NetworkServicesModelSvcServiceDetailsPorts{
 					{
 						Port:     25,
-						Protocol: "tcp",
+						Protocol: serviceProtocolTCP,
 					},
 				},
 			},
@@ -189,7 +194,7 @@ var ListOfServices = []ServiceModelDetails{
 				Ports: []NetworkServicesModelSvcServiceDetailsPorts{
 					{
 						Port:     443,
-						Protocol: "tcp",
+						Protocol: serviceProtocolTCP,
 					},
 				},
 			},

@@ -107,7 +107,7 @@ func (v *VcloudClient) GetOrg(id int) (resp *Org, err error) {
 		SetResult(&orgResponse{}).
 		SetError(commonnetbackup.APIError{}).
 		SetPathParams(map[string]string{
-			"vAppID": fmt.Sprintf("%d", id),
+			vAppIDKey: fmt.Sprintf("%d", id),
 		}).
 		Get("/v6/vcloud/orgs/{orgID}")
 	if err != nil {

@@ -19,6 +19,8 @@ import (
 	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/urn"
 )
 
+const serviceIDKey = "service-id"
+
 func (e *EdgeGateway) getNetworkServices(ctx context.Context) error {
 	// Clean up the previous services
 	e.EdgeGatewayModel.Services = NetworkServicesModelSvcs{
@@ -176,7 +178,7 @@ func (e *EdgeGateway) DisableNetworkService(ctx context.Context) error {
 		SetContext(ctx).
 		SetResult(&commoncloudavenue.JobStatus{}).
 		Delete(endpoints.InlineTemplate(endpoints.NetworkServiceDelete, map[string]string{
-			"service-id": e.EdgeGatewayModel.Services.Service.ID,
+			serviceIDKey: e.EdgeGatewayModel.Services.Service.ID,
 		}))
 	if err != nil {
 		return fmt.Errorf("error disabling network services: %w", err)

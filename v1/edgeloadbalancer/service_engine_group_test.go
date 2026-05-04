@@ -61,11 +61,11 @@ func TestClient_ListServiceEngineGroups(t *testing.T) {
 						NsxtAlbServiceEngineGroupAssignment: &govcdtypes.NsxtAlbServiceEngineGroupAssignment{
 							ServiceEngineGroupRef: &govcdtypes.OpenApiReference{
 								ID:   urnServiceEngineGroup,
-								Name: "name",
+								Name: testName,
 							},
 							GatewayRef: &govcdtypes.OpenApiReference{
 								ID:   urnEdgeGateway,
-								Name: "edge_name",
+								Name: testEdgeName,
 							},
 							MaxVirtualServices:         utils.ToPTR(10),
 							MinVirtualServices:         utils.ToPTR(1),
@@ -77,10 +77,10 @@ func TestClient_ListServiceEngineGroups(t *testing.T) {
 			expectedCertValue: []*ServiceEngineGroupModel{
 				{
 					ID:   urnServiceEngineGroup,
-					Name: "name",
+					Name: testName,
 					GatewayRef: &govcdtypes.OpenApiReference{
 						ID:   urnEdgeGateway,
-						Name: "edge_name",
+						Name: testEdgeName,
 					},
 					MaxVirtualServices:         utils.ToPTR(10),
 					MinVirtualServices:         utils.ToPTR(1),
@@ -91,7 +91,7 @@ func TestClient_ListServiceEngineGroups(t *testing.T) {
 			err:         nil,
 		},
 		{
-			name:          "refresh-error",
+			name:          testErrorRefreshShort,
 			edgeGatewayID: urnEdgeGateway,
 			mockFunc: func() {
 				clientCAV.EXPECT().Refresh().Return(errors.New("error"))
@@ -101,7 +101,7 @@ func TestClient_ListServiceEngineGroups(t *testing.T) {
 			err:               errors.New("error"),
 		},
 		{
-			name:          "error-get-all-certificates",
+			name:          testErrorGetAllCerts,
 			edgeGatewayID: urnEdgeGateway,
 			mockFunc: func() {
 				clientCAV.EXPECT().Refresh().Return(nil)
@@ -205,11 +205,11 @@ func TestClient_GetServiceEngineGroup(t *testing.T) {
 						NsxtAlbServiceEngineGroupAssignment: &govcdtypes.NsxtAlbServiceEngineGroupAssignment{
 							ServiceEngineGroupRef: &govcdtypes.OpenApiReference{
 								ID:   urnServiceEngineGroup,
-								Name: "name",
+								Name: testName,
 							},
 							GatewayRef: &govcdtypes.OpenApiReference{
 								ID:   urnEdgeGateway,
-								Name: "edge_name",
+								Name: testEdgeName,
 							},
 							MaxVirtualServices:         utils.ToPTR(10),
 							MinVirtualServices:         utils.ToPTR(1),
@@ -220,10 +220,10 @@ func TestClient_GetServiceEngineGroup(t *testing.T) {
 			},
 			expectedCertValue: &ServiceEngineGroupModel{
 				ID:   urnServiceEngineGroup,
-				Name: "name",
+				Name: testName,
 				GatewayRef: &govcdtypes.OpenApiReference{
 					ID:   urnEdgeGateway,
-					Name: "edge_name",
+					Name: testEdgeName,
 				},
 				MaxVirtualServices:         utils.ToPTR(10),
 				MinVirtualServices:         utils.ToPTR(1),
@@ -235,7 +235,7 @@ func TestClient_GetServiceEngineGroup(t *testing.T) {
 		{
 			name:          "success-name",
 			edgeGatewayID: urnEdgeGateway,
-			nameOrID:      "name",
+			nameOrID:      testName,
 			mockFunc: func() {
 				clientCAV.EXPECT().Refresh().Return(nil)
 
@@ -246,11 +246,11 @@ func TestClient_GetServiceEngineGroup(t *testing.T) {
 						NsxtAlbServiceEngineGroupAssignment: &govcdtypes.NsxtAlbServiceEngineGroupAssignment{
 							ServiceEngineGroupRef: &govcdtypes.OpenApiReference{
 								ID:   urnServiceEngineGroup,
-								Name: "name",
+								Name: testName,
 							},
 							GatewayRef: &govcdtypes.OpenApiReference{
 								ID:   urnEdgeGateway,
-								Name: "edge_name",
+								Name: testEdgeName,
 							},
 							MaxVirtualServices:         utils.ToPTR(10),
 							MinVirtualServices:         utils.ToPTR(1),
@@ -261,10 +261,10 @@ func TestClient_GetServiceEngineGroup(t *testing.T) {
 			},
 			expectedCertValue: &ServiceEngineGroupModel{
 				ID:   urnServiceEngineGroup,
-				Name: "name",
+				Name: testName,
 				GatewayRef: &govcdtypes.OpenApiReference{
 					ID:   urnEdgeGateway,
-					Name: "edge_name",
+					Name: testEdgeName,
 				},
 				MaxVirtualServices:         utils.ToPTR(10),
 				MinVirtualServices:         utils.ToPTR(1),
@@ -274,7 +274,7 @@ func TestClient_GetServiceEngineGroup(t *testing.T) {
 			err:         nil,
 		},
 		{
-			name:          "refresh-error",
+			name:          testErrorRefreshShort,
 			edgeGatewayID: urnEdgeGateway,
 			nameOrID:      urnServiceEngineGroup,
 			mockFunc: func() {
@@ -285,7 +285,7 @@ func TestClient_GetServiceEngineGroup(t *testing.T) {
 			err:               errors.New("error"),
 		},
 		{
-			name:          "error-get-all-certificates",
+			name:          testErrorGetAllCerts,
 			edgeGatewayID: urnEdgeGateway,
 			nameOrID:      urnServiceEngineGroup,
 			mockFunc: func() {
@@ -312,11 +312,11 @@ func TestClient_GetServiceEngineGroup(t *testing.T) {
 						NsxtAlbServiceEngineGroupAssignment: &govcdtypes.NsxtAlbServiceEngineGroupAssignment{
 							ServiceEngineGroupRef: &govcdtypes.OpenApiReference{
 								ID:   urnServiceEngineGroup,
-								Name: "name",
+								Name: testName,
 							},
 							GatewayRef: &govcdtypes.OpenApiReference{
 								ID:   urnEdgeGateway,
-								Name: "edge_name",
+								Name: testEdgeName,
 							},
 							MaxVirtualServices:         utils.ToPTR(10),
 							MinVirtualServices:         utils.ToPTR(1),
@@ -385,11 +385,11 @@ func TestClient_GetFirstServiceEngineGroup(t *testing.T) {
 						NsxtAlbServiceEngineGroupAssignment: &govcdtypes.NsxtAlbServiceEngineGroupAssignment{
 							ServiceEngineGroupRef: &govcdtypes.OpenApiReference{
 								ID:   serviceEngineID,
-								Name: "name",
+								Name: testName,
 							},
 							GatewayRef: &govcdtypes.OpenApiReference{
 								ID:   edgeGatewayID,
-								Name: "edge_name",
+								Name: testEdgeName,
 							},
 							MaxVirtualServices:         utils.ToPTR(10),
 							MinVirtualServices:         utils.ToPTR(1),
@@ -400,10 +400,10 @@ func TestClient_GetFirstServiceEngineGroup(t *testing.T) {
 			},
 			expectedValue: &ServiceEngineGroupModel{
 				ID:   serviceEngineID,
-				Name: "name",
+				Name: testName,
 				GatewayRef: &govcdtypes.OpenApiReference{
 					ID:   edgeGatewayID,
-					Name: "edge_name",
+					Name: testEdgeName,
 				},
 				MaxVirtualServices:         utils.ToPTR(10),
 				MinVirtualServices:         utils.ToPTR(1),
@@ -425,11 +425,11 @@ func TestClient_GetFirstServiceEngineGroup(t *testing.T) {
 						NsxtAlbServiceEngineGroupAssignment: &govcdtypes.NsxtAlbServiceEngineGroupAssignment{
 							ServiceEngineGroupRef: &govcdtypes.OpenApiReference{
 								ID:   serviceEngineID,
-								Name: "name",
+								Name: testName,
 							},
 							GatewayRef: &govcdtypes.OpenApiReference{
 								ID:   edgeGatewayID,
-								Name: "edge_name",
+								Name: testEdgeName,
 							},
 							MaxVirtualServices:         utils.ToPTR(10),
 							MinVirtualServices:         utils.ToPTR(1),
@@ -440,11 +440,11 @@ func TestClient_GetFirstServiceEngineGroup(t *testing.T) {
 						NsxtAlbServiceEngineGroupAssignment: &govcdtypes.NsxtAlbServiceEngineGroupAssignment{
 							ServiceEngineGroupRef: &govcdtypes.OpenApiReference{
 								ID:   serviceEngineID,
-								Name: "name",
+								Name: testName,
 							},
 							GatewayRef: &govcdtypes.OpenApiReference{
 								ID:   edgeGatewayID,
-								Name: "edge_name",
+								Name: testEdgeName,
 							},
 							MaxVirtualServices:         utils.ToPTR(10),
 							MinVirtualServices:         utils.ToPTR(1),
@@ -457,7 +457,7 @@ func TestClient_GetFirstServiceEngineGroup(t *testing.T) {
 			err:         errors.New("more than one service engine group available for edge gateway"),
 		},
 		{
-			name:          "refresh-error",
+			name:          testErrorRefreshShort,
 			edgeGatewayID: edgeGatewayID,
 			mockFunc: func() {
 				clientCAV.EXPECT().Refresh().Return(errors.New("error"))
@@ -467,7 +467,7 @@ func TestClient_GetFirstServiceEngineGroup(t *testing.T) {
 			err:           errors.New("error"),
 		},
 		{
-			name:          "error-get-all-certificates",
+			name:          testErrorGetAllCerts,
 			edgeGatewayID: edgeGatewayID,
 			mockFunc: func() {
 				clientCAV.EXPECT().Refresh().Return(nil)

@@ -24,6 +24,12 @@ import (
 	commoncloudavenue "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/common/cloudavenue"
 )
 
+const (
+	testOwnerName        = "John Doe"
+	testOwnerDescription = "John Doe description"
+	testBillingModel     = "PAYG"
+)
+
 func TestClient_GetProperties(t *testing.T) {
 	// Mock controller.
 	ctrl := gomock.NewController(t)
@@ -56,10 +62,10 @@ func TestClient_GetProperties(t *testing.T) {
 				})
 			},
 			expectedValues: PropertiesModel{
-				FullName:     "John Doe",
-				Description:  "John Doe description",
+				FullName:     testOwnerName,
+				Description:  testOwnerDescription,
 				Email:        "",
-				BillingModel: "PAYG",
+				BillingModel: testBillingModel,
 			},
 			expectedErr: false,
 		},
@@ -168,10 +174,10 @@ func TestClient_UpdateProperties(t *testing.T) {
 				})
 			},
 			properties: PropertiesRequest{
-				FullName:     "John Doe",
-				Description:  "John Doe description",
+				FullName:     testOwnerName,
+				Description:  testOwnerDescription,
 				Email:        "",
-				BillingModel: "PAYG",
+				BillingModel: testBillingModel,
 			},
 			expectedErr: false,
 		},
@@ -224,10 +230,10 @@ func TestClient_UpdateProperties(t *testing.T) {
 				})
 			},
 			properties: PropertiesRequest{
-				FullName:     "John Doe",
-				Description:  "John Doe description",
+				FullName:     testOwnerName,
+				Description:  testOwnerDescription,
 				Email:        "",
-				BillingModel: "PAYG",
+				BillingModel: testBillingModel,
 			},
 			expectedErr: true,
 		},
@@ -247,10 +253,10 @@ func TestClient_UpdateProperties(t *testing.T) {
 				})
 			},
 			properties: PropertiesRequest{
-				FullName:     "John Doe",
-				Description:  "John Doe description",
+				FullName:     testOwnerName,
+				Description:  testOwnerDescription,
 				Email:        "",
-				BillingModel: "PAYG",
+				BillingModel: testBillingModel,
 			},
 			expectedErr: true,
 		},

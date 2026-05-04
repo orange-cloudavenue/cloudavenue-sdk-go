@@ -13,6 +13,8 @@ import (
 	"testing"
 )
 
+const testConsole9Name = "should return the correct site name for Console9"
+
 func TestConsoles(t *testing.T) {
 	tests := []struct {
 		name    string
@@ -57,19 +59,19 @@ func TestConsoles(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name:    "should return the correct site name for Console9",
+			name:    testConsole9Name,
 			console: Console9,
 			orgName: "cav00vv09ocb0001234",
 			wantErr: false,
 		},
 		{
-			name:    "should return the correct site name for Console9",
+			name:    testConsole9Name,
 			console: Console9,
 			orgName: "cav01vv09ocb0001234",
 			wantErr: false,
 		},
 		{
-			name:    "should return the correct site name for Console9",
+			name:    testConsole9Name,
 			console: Console9,
 			orgName: "cav02vv09ocb0001234",
 			wantErr: false,
