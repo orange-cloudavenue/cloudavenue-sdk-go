@@ -129,6 +129,12 @@ func (c ClassService) IsVRFDedicatedLarge() bool {
 	return c == T0ClassServiceVRFDedicatedLarge
 }
 
+// IsVRFDedicated returns true if the class service is VRF_DEDICATED_MEDIUM or VRF_DEDICATED_LARGE.
+// Update this method when new dedicated VRF classes are added.
+func (c ClassService) IsVRFDedicated() bool {
+	return c.IsVRFDedicatedMedium() || c.IsVRFDedicatedLarge()
+}
+
 // * List
 
 // GetT0s - Returns the list of T0s.
