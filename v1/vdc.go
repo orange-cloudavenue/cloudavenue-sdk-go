@@ -11,6 +11,7 @@ package v1
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"sync"
 
@@ -40,10 +41,10 @@ var (
 // It returns a pointer to the VDC and an error if any.
 // The function performs concurrent requests to retrieve the VDC from both the VMware and the infrapi.
 // It uses goroutines and channels to handle the concurrent requests and waits for all goroutines to finish using a WaitGroup.
-// The function returns the VDC that was successfully retrieved from either the VMware or the infrapi.
+// Both lookups (VMware and InfrAPI) must succeed: if either source returns an error, the function returns nil and the error.
 func (v *CAVVdc) GetVDC(vdcName string) (*VDC, error) {
 	if vdcName == "" {
-		return nil, fmt.Errorf("%w", ErrEmptyVDCNameProvided)
+		return nil, ErrEmptyVDCNameProvided
 	}
 
 	c, err := clientcloudavenue.New()
@@ -57,12 +58,8 @@ func (v *CAVVdc) GetVDC(vdcName string) (*VDC, error) {
 	// channels
 	var (
 		errChan = make(chan error, 2)
-		vdcChan = make(chan interface{}, 2)
-		done    = make(chan bool)
+		vdcChan = make(chan any, 2)
 	)
-
-	defer close(errChan)
-	defer close(vdcChan)
 
 	getVDC := new(VDC)
 
@@ -91,10 +88,7 @@ func (v *CAVVdc) GetVDC(vdcName string) (*VDC, error) {
 		vdcChan <- vdc
 	}()
 
-	go func() {
-		wg.Wait()
-		done <- true
-	}()
+	wg.Wait()
 
 	errs := []error{}
 
@@ -102,9 +96,6 @@ func (v *CAVVdc) GetVDC(vdcName string) (*VDC, error) {
 		select {
 		case err := <-errChan:
 			errs = append(errs, err)
-			if len(errs) == 2 {
-				return nil, fmt.Errorf("errors: %v", errs)
-			}
 		case vdc := <-vdcChan:
 			switch x := vdc.(type) {
 			case *govcd.Vdc:
@@ -114,9 +105,16 @@ func (v *CAVVdc) GetVDC(vdcName string) (*VDC, error) {
 			default:
 				return nil, fmt.Errorf("unknown type %T", x)
 			}
-		case <-done:
-			break
 		}
+	}
+
+	if len(errs) > 0 {
+		return nil, fmt.Errorf("%w: %s: %w", ErrRetrievingVDC, vdcName, errors.Join(errs...))
+	}
+
+	// Defensive guard: should not be reachable under current logic, but protects against future goroutine changes.
+	if getVDC.Vdc == nil || getVDC.infrapi == nil {
+		return nil, fmt.Errorf("%w: %s: incomplete VDC object retrieved", ErrRetrievingVDC, vdcName)
 	}
 
 	return getVDC, nil
