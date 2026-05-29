@@ -1,9 +1,11 @@
 ## 0.28.0 (Unreleased)
+
 ## 0.27.3 (May 29, 2026)
 
 ### :bug: **Bug Fixes**
 
 * `v1/edgegw` - Add sentinel errors `ErrNoBandwidthCapacityRemaining` and `ErrDedicatedT0BandwidthNotComputable` to properly surface bandwidth capacity issues. Fix silent overcommit in `GetBandwidthCapacityRemaining()` for dedicated VRF T0 types (`VRF_DEDICATED_MEDIUM`, `VRF_DEDICATED_LARGE`) where the API returns `rateLimit=0`; the calculation is now bypassed and returns `ErrDedicatedT0BandwidthNotComputable` for these types. Add `IsVRFDedicated()` helper on T0 to identify dedicated VRF gateways. Related to provider issue #1229 and SDK issue #311. (GH-312)
+* `v1/vdc` - Fix nil pointer panic when `GetVDC` returns a partial object if one of the two concurrent backend lookups (VMware or InfrAPI) fails. (GH-313)
 
 ## 0.27.2 (May  4, 2026)
 
