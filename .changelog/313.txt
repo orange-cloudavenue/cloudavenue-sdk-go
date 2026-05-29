@@ -1,0 +1,3 @@
+```release-note:bug
+`v1/vdc` - Fix nil pointer panic when `GetVDC` returns a partial object if one of the two concurrent backend lookups (VMware or InfrAPI) fails.
+```
