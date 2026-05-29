@@ -10,7 +10,6 @@
 package v1
 
 import (
-	"errors"
 	"fmt"
 	"net"
 	"strings"
@@ -25,15 +24,6 @@ import (
 )
 
 const edgeIDKey = "EdgeID"
-
-var (
-	// ErrNoBandwidthCapacityRemaining is returned when the T0 VRF has no remaining bandwidth capacity.
-	ErrNoBandwidthCapacityRemaining = errors.New("no bandwidth capacity remaining")
-	// ErrDedicatedT0BandwidthNotComputable is returned when the T0 VRF is dedicated and the API
-	// returns rateLimit=0 for all edge gateways, making the calculation unreliable.
-	// See: https://github.com/orange-cloudavenue/terraform-provider-cloudavenue/issues/1229
-	ErrDedicatedT0BandwidthNotComputable = errors.New("dedicated T0 bandwidth not computable")
-)
 
 type (
 	EdgeGateway struct{}
@@ -103,18 +93,6 @@ func (e *EdgeGateways) GetBandwidthCapacityRemaining(t0VrfName string) (response
 		return response, err
 	}
 
-	// WORKAROUND: The CloudAvenue API returns rateLimit=0 for all edge gateways
-	// attached to a VRF_DEDICATED_MEDIUM or VRF_DEDICATED_LARGE T0. As a result,
-	// subtracting each edge's bandwidth from the total would always yield the full
-	// T0 capacity, as if no edge were consuming any bandwidth — which is incorrect
-	// and could lead to silent overcommit.
-	// This guard bypasses the unreliable calculation until the API is fixed.
-	// See: https://github.com/orange-cloudavenue/terraform-provider-cloudavenue/issues/1229
-	if t0.GetClassService().IsVRFDedicated() {
-		return 0, fmt.Errorf("%w: dedicated T0 %q (class %s) — API returns rateLimit=0 for edge gateways, calculation unreliable",
-			ErrDedicatedT0BandwidthNotComputable, t0VrfName, t0.GetClassService())
-	}
-
 	t0BandwidthCapacity, err := t0.GetBandwidthCapacity()
 	if err != nil {
 		return response, err
@@ -128,7 +106,7 @@ func (e *EdgeGateways) GetBandwidthCapacityRemaining(t0VrfName string) (response
 
 	// 5 Mbps is the minimum bandwidth capacity
 	if t0BandwidthCapacity < 5 {
-		return 0, fmt.Errorf("%w for T0 %q", ErrNoBandwidthCapacityRemaining, t0VrfName)
+		return 0, fmt.Errorf("no bandwidth capacity remaining")
 	}
 
 	return t0BandwidthCapacity, nil
@@ -385,7 +363,7 @@ func (n NetworkType) GetEndAddress() string {
 	broadcast := numIPs - 1
 	end := make(net.IP, 4)
 	for i := 0; i < 4; i++ {
-		end[i] = start[i] + byte((broadcast>>uint(8*i))&0xff) //#nosec G115 -- safe: masked to 8 bits before conversion
+		end[i] = start[i] + byte((broadcast>>uint(8*i))&0xff) //nolint:gosec // G115: intentional network mask calculation, &0xff guarantees byte range
 	}
 
 	return end.String()
