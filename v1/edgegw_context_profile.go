@@ -69,9 +69,14 @@ type networkContextProfileOrgRef struct {
 }
 
 type networkContextProfileAttributeAPIPayload struct {
-	Type          string   `json:"type"`
-	Values        []string `json:"values"`
-	SubAttributes any      `json:"subAttributes"`
+	Type          string                                   `json:"type"`
+	Values        []string                                 `json:"values"`
+	SubAttributes []networkContextProfileSubAttrAPIPayload `json:"subAttributes"`
+}
+
+type networkContextProfileSubAttrAPIPayload struct {
+	Type   string   `json:"type"`
+	Values []string `json:"values"`
 }
 
 // getGovcdClient returns the underlying govcd.Client from the cloudavenue client pool.
@@ -368,10 +373,17 @@ func (e *EdgeClient) DeleteNetworkContextProfile(id string) error {
 func networkContextProfileToAPIPayload(p *NetworkContextProfile, ownerVDCID, orgID string) *networkContextProfileAPIPayload {
 	attrs := make([]networkContextProfileAttributeAPIPayload, len(p.Attributes))
 	for i, a := range p.Attributes {
+		subAttrs := make([]networkContextProfileSubAttrAPIPayload, len(a.SubAttributes))
+		for j, s := range a.SubAttributes {
+			subAttrs[j] = networkContextProfileSubAttrAPIPayload{
+				Type:   string(s.Type),
+				Values: s.Values,
+			}
+		}
 		attrs[i] = networkContextProfileAttributeAPIPayload{
 			Type:          string(a.Type),
 			Values:        a.Values,
-			SubAttributes: nil,
+			SubAttributes: subAttrs,
 		}
 	}
 
@@ -395,9 +407,17 @@ func networkContextProfileToAPIPayload(p *NetworkContextProfile, ownerVDCID, org
 func networkContextProfileFromAPIPayload(p *networkContextProfileAPIPayload) *NetworkContextProfile {
 	attrs := make([]NetworkContextProfileAttribute, len(p.Attributes))
 	for i, a := range p.Attributes {
+		subAttrs := make([]NetworkContextProfileSubAttribute, len(a.SubAttributes))
+		for j, s := range a.SubAttributes {
+			subAttrs[j] = NetworkContextProfileSubAttribute{
+				Type:   NetworkContextProfileSubAttributeType(s.Type),
+				Values: s.Values,
+			}
+		}
 		attrs[i] = NetworkContextProfileAttribute{
-			Type:   NetworkContextProfileAttributeType(a.Type),
-			Values: a.Values,
+			Type:          NetworkContextProfileAttributeType(a.Type),
+			Values:        a.Values,
+			SubAttributes: subAttrs,
 		}
 	}
 

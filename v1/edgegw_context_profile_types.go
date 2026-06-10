@@ -26,6 +26,55 @@ const (
 	NetworkContextProfileAttributeTypeAppID NetworkContextProfileAttributeType = "APP_ID"
 )
 
+// NetworkContextProfileSubAttributeType represents the type of a sub-attribute.
+type NetworkContextProfileSubAttributeType string
+
+const (
+	NetworkContextProfileSubAttributeTypeTLSVersion     NetworkContextProfileSubAttributeType = "TLS_VERSION"
+	NetworkContextProfileSubAttributeTypeTLSCipherSuite NetworkContextProfileSubAttributeType = "TLS_CIPHER_SUITE"
+	NetworkContextProfileSubAttributeTypeCIFSSMBVersion NetworkContextProfileSubAttributeType = "CIFS_SMB_VERSION"
+)
+
+// NetworkContextProfileKnownSubAttributeTypes lists all known sub-attribute types.
+var NetworkContextProfileKnownSubAttributeTypes = []string{
+	string(NetworkContextProfileSubAttributeTypeTLSVersion),
+	string(NetworkContextProfileSubAttributeTypeTLSCipherSuite),
+	string(NetworkContextProfileSubAttributeTypeCIFSSMBVersion),
+}
+
+// NetworkContextProfileKnownTLSVersions lists valid TLS_VERSION sub-attribute values.
+var NetworkContextProfileKnownTLSVersions = []string{
+	"TLS_V10", "TLS_V11", "TLS_V12", "TLS_V13",
+}
+
+// NetworkContextProfileKnownTLSCipherSuites lists valid TLS_CIPHER_SUITE sub-attribute values.
+var NetworkContextProfileKnownTLSCipherSuites = []string{
+	"TLS_DHE_RSA_WITH_AES_128_CBC_SHA",
+	"TLS_DHE_RSA_WITH_AES_128_CBC_SHA256",
+	"TLS_DHE_RSA_WITH_AES_128_GCM_SHA256",
+	"TLS_DHE_RSA_WITH_AES_256_CBC_SHA",
+	"TLS_DHE_RSA_WITH_AES_256_CBC_SHA256",
+	"TLS_DHE_RSA_WITH_AES_256_GCM_SHA384",
+	"TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA",
+	"TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256",
+	"TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
+	"TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA",
+	"TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384",
+	"TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384",
+	"TLS_RSA_WITH_3DES_EDE_CBC_SHA",
+	"TLS_RSA_WITH_AES_128_CBC_SHA",
+	"TLS_RSA_WITH_AES_128_CBC_SHA256",
+	"TLS_RSA_WITH_AES_128_GCM_SHA256",
+	"TLS_RSA_WITH_AES_256_CBC_SHA",
+	"TLS_RSA_WITH_AES_256_CBC_SHA256",
+	"TLS_RSA_WITH_AES_256_GCM_SHA384",
+}
+
+// NetworkContextProfileKnownCIFSSMBVersions lists valid CIFS_SMB_VERSION sub-attribute values.
+var NetworkContextProfileKnownCIFSSMBVersions = []string{
+	"CIFS_SMB_V1", "CIFS_SMB_V2", "CIFS_SMB_V3",
+}
+
 // NetworkContextProfileKnownAppIDs lists all APP_ID values known to be available
 // on Cloud Avenue (sourced from SYSTEM profiles via the VCD API).
 var NetworkContextProfileKnownAppIDs = []string{
@@ -62,11 +111,23 @@ type NetworkContextProfile struct {
 	Attributes []NetworkContextProfileAttribute
 }
 
-// NetworkContextProfileAttribute is a single attribute of a Network Context Profile.
+// NetworkContextProfileAttribute is a single APP_ID attribute of a Network Context Profile.
 type NetworkContextProfileAttribute struct {
-	// Type is the attribute type, e.g. "APP_ID".
+	// Type is the attribute type — always APP_ID for user-managed profiles.
 	Type NetworkContextProfileAttributeType
 
-	// Values is the list of values for this attribute (e.g. ["SSL"]).
+	// Values is the list of app identifiers for this attribute (e.g. ["SSL"]).
+	Values []string
+
+	// SubAttributes provides optional refinements (e.g. TLS version, cipher suites).
+	SubAttributes []NetworkContextProfileSubAttribute
+}
+
+// NetworkContextProfileSubAttribute is a typed sub-attribute within an APP_ID attribute.
+type NetworkContextProfileSubAttribute struct {
+	// Type identifies the sub-attribute (e.g. TLS_VERSION, TLS_CIPHER_SUITE, CIFS_SMB_VERSION).
+	Type NetworkContextProfileSubAttributeType
+
+	// Values is the list of allowed values for this sub-attribute.
 	Values []string
 }
