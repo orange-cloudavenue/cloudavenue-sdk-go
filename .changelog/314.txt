@@ -1,0 +1,11 @@
+```release-note:enhancement
+`v1/edgegw` - Add `GetFirewallExtended` and `UpdateFirewallExtended` methods on `EdgeClient` to support `networkContextProfiles` in Edge Gateway firewall rules, bypassing the upstream govcd SDK limitation.
+```
+
+```release-note:feature
+`v1/edgegw` - Add full CRUD support for TENANT-scoped Network Context Profiles: `CreateNetworkContextProfile`, `GetNetworkContextProfileByID`, `GetNetworkContextProfileByName`, `GetAllNetworkContextProfiles`, `UpdateNetworkContextProfile`, `DeleteNetworkContextProfile`.
+```
+
+```release-note:enhancement
+`pkg/urn` - Add `NetworkContextProfile` URN type (`urn:vcloud:networkContextProfile:`).
+```
