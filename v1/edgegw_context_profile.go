@@ -17,6 +17,7 @@ import (
 	govcdtypes "github.com/vmware/go-vcloud-director/v2/types/v56"
 
 	clientcloudavenue "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/clients/cloudavenue"
+	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/urn"
 )
 
 // NsxtFirewallRuleContainerExtended mirrors govcdtypes.NsxtFirewallRuleContainer
@@ -46,10 +47,6 @@ type NsxtFirewallRuleExtended struct {
 type NsxtFirewallRuleExtendedVersion struct {
 	Version *int `json:"version,omitempty"`
 }
-
-// nsxtFirewallRulesMinAPIVersion is the minimum API version for the Edge Gateway firewall rules endpoint.
-// See: govcd/openapi_endpoints.go - OpenApiEndpointNsxtFirewallRules requires API version 34.0.
-const nsxtFirewallRulesMinAPIVersion = "34.0"
 
 // networkContextProfileAPIPayload is the JSON payload sent to the VCD API on
 // POST and PUT. It mirrors NsxtNetworkContextProfile but adds contextEntityId
@@ -88,39 +85,6 @@ func getGovcdClient() (*govcd.Client, error) {
 	return &c.Vmware.Client, nil
 }
 
-// resolveFirewallAPIVersion replicates the logic of govcd's unexported
-// checkOpenApiEndpointCompatibility using only exported Client methods:
-//
-//   - If the VCD instance maximum version is below the endpoint minimum → error
-//   - If the client's configured APIVersion is higher than the minimum → use client's version
-//   - Otherwise → fall back to the endpoint minimum
-//
-// This ensures we never send a version the server doesn't support, while still
-// honouring the minimum contract for the endpoint.
-func resolveFirewallAPIVersion(client *govcd.Client) (string, error) {
-	// Check the VCD instance can support this endpoint at all.
-	if client.APIVCDMaxVersionIs("< " + nsxtFirewallRulesMinAPIVersion) {
-		maxVer, err := client.MaxSupportedVersion()
-		if err != nil {
-			maxVer = "unknown"
-		}
-		return "", fmt.Errorf(
-			"edge gateway firewall endpoint requires API >= %s; this VCD instance supports up to %s",
-			nsxtFirewallRulesMinAPIVersion, maxVer,
-		)
-	}
-
-	// Use the client's configured version only when it is strictly above the minimum
-	// AND does not exceed the VCD instance's maximum supported version.
-	// This prevents sending a version the server does not understand.
-	if client.APIClientVersionIs("> "+nsxtFirewallRulesMinAPIVersion) &&
-		!client.APIVCDMaxVersionIs("< "+client.APIVersion) {
-		return client.APIVersion, nil
-	}
-
-	return nsxtFirewallRulesMinAPIVersion, nil
-}
-
 // GetFirewallExtended retrieves the Edge Gateway firewall rules using the extended struct
 // that includes NetworkContextProfiles, bypassing the govcd SDK limitation.
 func (e *EdgeClient) GetFirewallExtended() (*NsxtFirewallRuleContainerExtended, error) {
@@ -141,13 +105,8 @@ func (e *EdgeClient) GetFirewallExtended() (*NsxtFirewallRuleContainerExtended, 
 		return nil, fmt.Errorf("error building firewall endpoint URL: %w", err)
 	}
 
-	apiVersion, err := resolveFirewallAPIVersion(client)
-	if err != nil {
-		return nil, err
-	}
-
 	result := &NsxtFirewallRuleContainerExtended{}
-	if err := client.OpenApiGetItem(apiVersion, urlRef, nil, result, nil); err != nil {
+	if err := client.OpenApiGetItem(client.APIVersion, urlRef, nil, result, nil); err != nil {
 		return nil, fmt.Errorf("error retrieving NSX-T Firewall with context profiles: %w", err)
 	}
 
@@ -174,13 +133,8 @@ func (e *EdgeClient) UpdateFirewallExtended(container *NsxtFirewallRuleContainer
 		return nil, fmt.Errorf("error building firewall endpoint URL: %w", err)
 	}
 
-	apiVersion, err := resolveFirewallAPIVersion(client)
-	if err != nil {
-		return nil, err
-	}
-
 	result := &NsxtFirewallRuleContainerExtended{}
-	if err := client.OpenApiPutItem(apiVersion, urlRef, nil, container, result, nil); err != nil {
+	if err := client.OpenApiPutItem(client.APIVersion, urlRef, nil, container, result, nil); err != nil {
 		return nil, fmt.Errorf("error updating NSX-T Firewall with context profiles: %w", err)
 	}
 
@@ -190,32 +144,6 @@ func (e *EdgeClient) UpdateFirewallExtended(container *NsxtFirewallRuleContainer
 // networkContextProfilesEndpoint returns the base API endpoint for network context profiles.
 func networkContextProfilesEndpoint() string {
 	return govcdtypes.OpenApiPathVersion1_0_0 + "networkContextProfiles"
-}
-
-// resolveNetworkContextProfilesAPIVersion resolves the best API version for
-// networkContextProfiles using the same strategy as resolveFirewallAPIVersion.
-const nsxtNetworkContextProfilesMinAPIVersion = "35.0"
-
-func resolveNetworkContextProfilesAPIVersion(client *govcd.Client) (string, error) {
-	if client.APIVCDMaxVersionIs("< " + nsxtNetworkContextProfilesMinAPIVersion) {
-		maxVer, err := client.MaxSupportedVersion()
-		if err != nil {
-			maxVer = "unknown"
-		}
-		return "", fmt.Errorf(
-			"networkContextProfiles endpoint requires API >= %s; this VCD instance supports up to %s",
-			nsxtNetworkContextProfilesMinAPIVersion, maxVer,
-		)
-	}
-
-	// Use the client's configured version only when it is strictly above the minimum
-	// AND does not exceed the VCD instance's maximum supported version.
-	if client.APIClientVersionIs("> "+nsxtNetworkContextProfilesMinAPIVersion) &&
-		!client.APIVCDMaxVersionIs("< "+client.APIVersion) {
-		return client.APIVersion, nil
-	}
-
-	return nsxtNetworkContextProfilesMinAPIVersion, nil
 }
 
 // CreateNetworkContextProfile creates a new TENANT-scoped Network Context Profile.
@@ -240,11 +168,6 @@ func (e *EdgeClient) CreateNetworkContextProfile(profile *NetworkContextProfile)
 	}
 	client := &cavc.Vmware.Client
 
-	apiVersion, err := resolveNetworkContextProfilesAPIVersion(client)
-	if err != nil {
-		return nil, err
-	}
-
 	urlRef, err := client.OpenApiBuildEndpoint(networkContextProfilesEndpoint())
 	if err != nil {
 		return nil, fmt.Errorf("error building networkContextProfiles endpoint: %w", err)
@@ -253,7 +176,7 @@ func (e *EdgeClient) CreateNetworkContextProfile(profile *NetworkContextProfile)
 	payload := networkContextProfileToAPIPayload(profile, vcdEdge.EdgeGateway.OwnerRef.ID, cavc.Org.Org.ID)
 
 	// POST returns 202 Accepted with a task — use async variant and wait.
-	task, err := client.OpenApiPostItemAsync(apiVersion, urlRef, nil, payload)
+	task, err := client.OpenApiPostItemAsync(client.APIVersion, urlRef, nil, payload)
 	if err != nil {
 		return nil, fmt.Errorf("error creating Network Context Profile: %w", err)
 	}
@@ -277,18 +200,13 @@ func (e *EdgeClient) GetNetworkContextProfileByID(id string) (*NetworkContextPro
 		return nil, err
 	}
 
-	apiVersion, err := resolveNetworkContextProfilesAPIVersion(c)
-	if err != nil {
-		return nil, err
-	}
-
 	urlRef, err := c.OpenApiBuildEndpoint(networkContextProfilesEndpoint() + "/" + id)
 	if err != nil {
 		return nil, fmt.Errorf("error building networkContextProfiles endpoint: %w", err)
 	}
 
 	result := &networkContextProfileAPIPayload{}
-	if err := c.OpenApiGetItem(apiVersion, urlRef, nil, result, nil); err != nil {
+	if err := c.OpenApiGetItem(c.APIVersion, urlRef, nil, result, nil); err != nil {
 		return nil, fmt.Errorf("error retrieving Network Context Profile %q: %w", id, err)
 	}
 
@@ -315,11 +233,6 @@ func (e *EdgeClient) UpdateNetworkContextProfile(profile *NetworkContextProfile)
 	}
 	client := &cavc.Vmware.Client
 
-	apiVersion, err := resolveNetworkContextProfilesAPIVersion(client)
-	if err != nil {
-		return nil, err
-	}
-
 	urlRef, err := client.OpenApiBuildEndpoint(networkContextProfilesEndpoint() + "/" + profile.ID)
 	if err != nil {
 		return nil, fmt.Errorf("error building networkContextProfiles endpoint: %w", err)
@@ -328,7 +241,7 @@ func (e *EdgeClient) UpdateNetworkContextProfile(profile *NetworkContextProfile)
 	payload := networkContextProfileToAPIPayload(profile, vcdEdge.EdgeGateway.OwnerRef.ID, cavc.Org.Org.ID)
 
 	// PUT also returns 202 Accepted — use async variant and wait.
-	task, err := client.OpenApiPutItemAsync(apiVersion, urlRef, nil, payload, nil)
+	task, err := client.OpenApiPutItemAsync(client.APIVersion, urlRef, nil, payload, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error updating Network Context Profile %q: %w", profile.ID, err)
 	}
@@ -352,17 +265,12 @@ func (e *EdgeClient) DeleteNetworkContextProfile(id string) error {
 		return err
 	}
 
-	apiVersion, err := resolveNetworkContextProfilesAPIVersion(c)
-	if err != nil {
-		return err
-	}
-
 	urlRef, err := c.OpenApiBuildEndpoint(networkContextProfilesEndpoint() + "/" + id)
 	if err != nil {
 		return fmt.Errorf("error building networkContextProfiles endpoint: %w", err)
 	}
 
-	if err := c.OpenApiDeleteItem(apiVersion, urlRef, nil, nil); err != nil {
+	if err := c.OpenApiDeleteItem(c.APIVersion, urlRef, nil, nil); err != nil {
 		return fmt.Errorf("error deleting Network Context Profile %q: %w", id, err)
 	}
 
@@ -447,10 +355,16 @@ func (e *EdgeClient) GetAllNetworkContextProfiles() ([]*NetworkContextProfile, e
 		return nil, err
 	}
 
-	// Network Context Profiles are scoped to VDC/VDC Group, not to the edge gateway directly.
-	// The _context filter must be the owning VDC or VDC Group ID.
+	// Network Context Profiles are scoped to VDC or VDC Group.
+	// Use the named filter parameters (orgVdcId / vdcGroupId) introduced in API 38.0,
+	// replacing the deprecated _context== format.
+	ownerID := vcdEdge.EdgeGateway.OwnerRef.ID
 	queryParams := url.Values{}
-	queryParams.Set("filter", fmt.Sprintf("_context==%s", vcdEdge.EdgeGateway.OwnerRef.ID))
+	if urn.IsVDCGroup(ownerID) {
+		queryParams.Set("filter", fmt.Sprintf("vdcGroupId==%s", ownerID))
+	} else {
+		queryParams.Set("filter", fmt.Sprintf("orgVdcId==%s", ownerID))
+	}
 
 	raw, err := govcd.GetAllNetworkContextProfiles(client, queryParams)
 	if err != nil {

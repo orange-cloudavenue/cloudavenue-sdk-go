@@ -118,3 +118,8 @@ func IsLoadBalancerVirtualService(urn string) bool {
 func IsServiceEngineGroup(urn string) bool {
 	return URN(urn).IsType(ServiceEngineGroup)
 }
+
+// IsNetworkContextProfile returns true if the URN is a NetworkContextProfile URN.
+func IsNetworkContextProfile(urn string) bool {
+	return URN(urn).IsType(NetworkContextProfile)
+}

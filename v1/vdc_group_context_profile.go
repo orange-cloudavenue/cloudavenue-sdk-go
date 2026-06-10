@@ -26,8 +26,10 @@ func (g VDCGroup) GetAllNetworkContextProfiles() ([]*NetworkContextProfile, erro
 		return nil, err
 	}
 
+	// Use the named filter parameter introduced in API 38.0,
+	// replacing the deprecated _context== format.
 	queryParams := url.Values{}
-	queryParams.Set("filter", fmt.Sprintf("_context==%s", g.vg.VdcGroup.Id))
+	queryParams.Set("filter", fmt.Sprintf("vdcGroupId==%s", g.vg.VdcGroup.Id))
 
 	raw, err := govcd.GetAllNetworkContextProfiles(client, queryParams)
 	if err != nil {
@@ -78,18 +80,13 @@ func (g VDCGroup) GetNetworkContextProfileByID(id string) (*NetworkContextProfil
 		return nil, err
 	}
 
-	apiVersion, err := resolveNetworkContextProfilesAPIVersion(c)
-	if err != nil {
-		return nil, err
-	}
-
 	urlRef, err := c.OpenApiBuildEndpoint(networkContextProfilesEndpoint() + "/" + id)
 	if err != nil {
 		return nil, fmt.Errorf("error building networkContextProfiles endpoint: %w", err)
 	}
 
 	result := &networkContextProfileAPIPayload{}
-	if err := c.OpenApiGetItem(apiVersion, urlRef, nil, result, nil); err != nil {
+	if err := c.OpenApiGetItem(c.APIVersion, urlRef, nil, result, nil); err != nil {
 		return nil, fmt.Errorf("error retrieving Network Context Profile %q: %w", id, err)
 	}
 
@@ -112,11 +109,6 @@ func (g VDCGroup) CreateNetworkContextProfile(profile *NetworkContextProfile) (*
 	}
 	client := &cavc.Vmware.Client
 
-	apiVersion, err := resolveNetworkContextProfilesAPIVersion(client)
-	if err != nil {
-		return nil, err
-	}
-
 	urlRef, err := client.OpenApiBuildEndpoint(networkContextProfilesEndpoint())
 	if err != nil {
 		return nil, fmt.Errorf("error building networkContextProfiles endpoint: %w", err)
@@ -124,7 +116,7 @@ func (g VDCGroup) CreateNetworkContextProfile(profile *NetworkContextProfile) (*
 
 	payload := networkContextProfileToAPIPayload(profile, g.vg.VdcGroup.Id, cavc.Org.Org.ID)
 
-	task, err := client.OpenApiPostItemAsync(apiVersion, urlRef, nil, payload)
+	task, err := client.OpenApiPostItemAsync(client.APIVersion, urlRef, nil, payload)
 	if err != nil {
 		return nil, fmt.Errorf("error creating Network Context Profile: %w", err)
 	}
@@ -151,11 +143,6 @@ func (g VDCGroup) UpdateNetworkContextProfile(profile *NetworkContextProfile) (*
 	}
 	client := &cavc.Vmware.Client
 
-	apiVersion, err := resolveNetworkContextProfilesAPIVersion(client)
-	if err != nil {
-		return nil, err
-	}
-
 	urlRef, err := client.OpenApiBuildEndpoint(networkContextProfilesEndpoint() + "/" + profile.ID)
 	if err != nil {
 		return nil, fmt.Errorf("error building networkContextProfiles endpoint: %w", err)
@@ -163,7 +150,7 @@ func (g VDCGroup) UpdateNetworkContextProfile(profile *NetworkContextProfile) (*
 
 	payload := networkContextProfileToAPIPayload(profile, g.vg.VdcGroup.Id, cavc.Org.Org.ID)
 
-	task, err := client.OpenApiPutItemAsync(apiVersion, urlRef, nil, payload, nil)
+	task, err := client.OpenApiPutItemAsync(client.APIVersion, urlRef, nil, payload, nil)
 	if err != nil {
 		return nil, fmt.Errorf("error updating Network Context Profile %q: %w", profile.ID, err)
 	}
@@ -186,17 +173,12 @@ func (g VDCGroup) DeleteNetworkContextProfile(id string) error {
 		return err
 	}
 
-	apiVersion, err := resolveNetworkContextProfilesAPIVersion(c)
-	if err != nil {
-		return err
-	}
-
 	urlRef, err := c.OpenApiBuildEndpoint(networkContextProfilesEndpoint() + "/" + id)
 	if err != nil {
 		return fmt.Errorf("error building networkContextProfiles endpoint: %w", err)
 	}
 
-	if err := c.OpenApiDeleteItem(apiVersion, urlRef, nil, nil); err != nil {
+	if err := c.OpenApiDeleteItem(c.APIVersion, urlRef, nil, nil); err != nil {
 		return fmt.Errorf("error deleting Network Context Profile %q: %w", id, err)
 	}
 

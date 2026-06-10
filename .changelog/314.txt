@@ -3,7 +3,15 @@
 ```
 
 ```release-note:feature
-`v1/edgegw` - Add full CRUD support for TENANT-scoped Network Context Profiles: `CreateNetworkContextProfile`, `GetNetworkContextProfileByID`, `GetNetworkContextProfileByName`, `GetAllNetworkContextProfiles`, `UpdateNetworkContextProfile`, `DeleteNetworkContextProfile`.
+`v1/edgegw` - Add full CRUD support for TENANT-scoped Network Context Profiles on Edge Gateways: `CreateNetworkContextProfile`, `GetNetworkContextProfileByID`, `GetNetworkContextProfileByName`, `GetAllNetworkContextProfiles`, `UpdateNetworkContextProfile`, `DeleteNetworkContextProfile`.
+```
+
+```release-note:feature
+`v1/vdcg` - Add full CRUD support for TENANT-scoped Network Context Profiles on VDC Groups: `CreateNetworkContextProfile`, `GetNetworkContextProfileByID`, `GetNetworkContextProfileByName`, `GetAllNetworkContextProfiles`, `UpdateNetworkContextProfile`, `DeleteNetworkContextProfile`.
+```
+
+```release-note:enhancement
+`v1/vdcg` - Add `NetworkContextProfiles` field to `VDCGroupFirewallTypeRule` and wire it through `rulesToVCDRules` / `vcdRulesToRules` conversion functions.
 ```
 
 ```release-note:enhancement
