@@ -10,8 +10,12 @@
 package v1
 
 import (
+	"errors"
+	"fmt"
+	"strings"
 	"testing"
 
+	"github.com/vmware/go-vcloud-director/v2/govcd"
 	govcdtypes "github.com/vmware/go-vcloud-director/v2/types/v56"
 )
 
@@ -79,7 +83,7 @@ func TestNetworkContextProfileFromGovcd(t *testing.T) {
 			},
 		},
 		{
-			name: "profile with multiple attribute values",
+			name: "profile with multiple app id values in one attribute",
 			input: &govcdtypes.NsxtNetworkContextProfile{
 				ID:          testProfileIDOWASP,
 				Name:        "OWASP-A",
@@ -88,7 +92,7 @@ func TestNetworkContextProfileFromGovcd(t *testing.T) {
 				Attributes: []govcdtypes.NsxtNetworkContextProfileAttributes{
 					{
 						Type:   string(NetworkContextProfileAttributeTypeAppID),
-						Values: []string{testAppIDSSL},
+						Values: []string{testAppIDSSL, testAppIDCIFS},
 					},
 				},
 			},
@@ -100,7 +104,7 @@ func TestNetworkContextProfileFromGovcd(t *testing.T) {
 				Attributes: []NetworkContextProfileAttribute{
 					{
 						Type:   NetworkContextProfileAttributeTypeAppID,
-						Values: []string{testAppIDSSL},
+						Values: []string{testAppIDSSL, testAppIDCIFS},
 					},
 				},
 			},
@@ -141,75 +145,83 @@ func TestNetworkContextProfileFromGovcd(t *testing.T) {
 	}
 }
 
-// TestFindNetworkContextProfileByName validates the name-resolution logic
-// that underlies GetNetworkContextProfileByName, by testing the filtering
-// and error cases directly on a slice of profiles.
+// TestFindNetworkContextProfileByName validates the switch-case logic of
+// GetNetworkContextProfileByName, including error paths for not-found and
+// ambiguous (duplicate) names.
 func TestFindNetworkContextProfileByName(t *testing.T) {
 	t.Parallel()
+
+	const testDuplicateID = "urn:vcloud:networkContextProfile:ddd"
 
 	allProfiles := []*NetworkContextProfile{
 		{ID: testProfileIDAAA, Name: testAppIDSSL, Scope: NetworkContextProfileScopeSystem},
 		{ID: testProfileIDBBB, Name: testAppIDCIFS, Scope: NetworkContextProfileScopeSystem},
 		{ID: testProfileIDCCC, Name: testAppIDHTTP, Scope: NetworkContextProfileScopeSystem},
+		{ID: testDuplicateID, Name: testAppIDSSL, Scope: NetworkContextProfileScopeTenant}, // duplicate name
 	}
 
-	// helper that mimics the name-filter logic from GetNetworkContextProfileByName.
-	findByName := func(profiles []*NetworkContextProfile, name string) ([]*NetworkContextProfile, error) {
+	// simulate returns from the switch block in GetNetworkContextProfileByName
+	resolve := func(name string) (*NetworkContextProfile, error) {
 		var found []*NetworkContextProfile
-		for _, p := range profiles {
+		for _, p := range allProfiles {
 			if p.Name == name {
 				found = append(found, p)
 			}
 		}
-		return found, nil
+		switch len(found) {
+		case 0:
+			return nil, fmt.Errorf("%w: network context profile with name %q not found", govcd.ErrorEntityNotFound, name)
+		case 1:
+			return found[0], nil
+		default:
+			return nil, fmt.Errorf("found %d network context profiles with name %q, please use ID to disambiguate", len(found), name)
+		}
 	}
 
-	tests := []struct {
-		name       string
-		search     string
-		wantID     string
-		wantLen    int
-		expectNone bool
+	tests := map[string]struct {
+		search      string
+		wantID      string
+		wantErrIs   error
+		wantErrMult bool
 	}{
-		{
-			name:    "found exactly one - SSL",
-			search:  testAppIDSSL,
-			wantID:  testProfileIDAAA,
-			wantLen: 1,
+		"found exactly one": {
+			search: testAppIDCIFS,
+			wantID: testProfileIDBBB,
 		},
-		{
-			name:    "found exactly one - CIFS",
-			search:  testAppIDCIFS,
-			wantID:  testProfileIDBBB,
-			wantLen: 1,
+		"not found returns ErrorEntityNotFound": {
+			search:    "DOES_NOT_EXIST",
+			wantErrIs: govcd.ErrorEntityNotFound,
 		},
-		{
-			name:       "not found",
-			search:     "DOES_NOT_EXIST",
-			expectNone: true,
+		"duplicate name returns ambiguity error": {
+			search:      testAppIDSSL,
+			wantErrMult: true,
 		},
 	}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
+	for name, tt := range tests {
+		t.Run(name, func(t *testing.T) {
 			t.Parallel()
 
-			found, _ := findByName(allProfiles, tt.search)
+			result, err := resolve(tt.search)
 
-			if tt.expectNone {
-				if len(found) != 0 {
-					t.Errorf("expected no profiles, got %d", len(found))
+			if tt.wantErrIs != nil || tt.wantErrMult {
+				if err == nil {
+					t.Fatalf("expected error, got nil (result=%v)", result)
+				}
+				if tt.wantErrIs != nil && !errors.Is(err, tt.wantErrIs) {
+					t.Errorf("expected error wrapping %v, got: %v", tt.wantErrIs, err)
+				}
+				if tt.wantErrMult && !strings.Contains(err.Error(), "please use ID") {
+					t.Errorf("expected ambiguity error, got: %v", err)
 				}
 				return
 			}
 
-			if len(found) != tt.wantLen {
-				t.Errorf("expected %d profiles, got %d", tt.wantLen, len(found))
-				return
+			if err != nil {
+				t.Fatalf("unexpected error: %v", err)
 			}
-
-			if tt.wantID != "" && found[0].ID != tt.wantID {
-				t.Errorf("ID: got %q, want %q", found[0].ID, tt.wantID)
+			if result == nil || result.ID != tt.wantID {
+				t.Errorf("ID: got %v, want %q", result, tt.wantID)
 			}
 		})
 	}

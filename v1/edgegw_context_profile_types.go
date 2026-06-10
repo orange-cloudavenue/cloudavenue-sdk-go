@@ -75,6 +75,20 @@ var NetworkContextProfileKnownCIFSSMBVersions = []string{
 	"CIFS_SMB_V1", "CIFS_SMB_V2", "CIFS_SMB_V3",
 }
 
+// NetworkContextProfileKnownSubAttributeValues is the union of all valid values across
+// all sub-attribute types. Use this for schema validation when the sub-attribute type
+// is not known at validation time.
+var NetworkContextProfileKnownSubAttributeValues = func() []string {
+	all := make([]string, 0,
+		len(NetworkContextProfileKnownTLSVersions)+
+			len(NetworkContextProfileKnownTLSCipherSuites)+
+			len(NetworkContextProfileKnownCIFSSMBVersions))
+	all = append(all, NetworkContextProfileKnownTLSVersions...)
+	all = append(all, NetworkContextProfileKnownTLSCipherSuites...)
+	all = append(all, NetworkContextProfileKnownCIFSSMBVersions...)
+	return all
+}()
+
 // NetworkContextProfileKnownAppIDs lists all APP_ID values known to be available
 // on Cloud Avenue (sourced from SYSTEM profiles via the VCD API).
 var NetworkContextProfileKnownAppIDs = []string{

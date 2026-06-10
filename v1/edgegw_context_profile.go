@@ -10,6 +10,7 @@
 package v1
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/url"
 
@@ -76,7 +77,8 @@ type networkContextProfileSubAttrAPIPayload struct {
 	Values []string `json:"values"`
 }
 
-// getGovcdClient returns the underlying govcd.Client from the cloudavenue client pool.
+// getGovcdClient initialises the CloudAvenue client and returns the underlying govcd.Client.
+// Note: a new client instance is created on each call.
 func getGovcdClient() (*govcd.Client, error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {
@@ -404,6 +406,8 @@ func (e *EdgeClient) GetNetworkContextProfileByName(name string) (*NetworkContex
 }
 
 // networkContextProfileFromGovcd converts a govcd NsxtNetworkContextProfile to the SDK model.
+// SubAttributes in the govcd type are typed as interface{} — we decode them via JSON
+// re-encoding to recover their structure when present.
 func networkContextProfileFromGovcd(raw *govcdtypes.NsxtNetworkContextProfile) *NetworkContextProfile {
 	p := &NetworkContextProfile{
 		ID:          raw.ID,
@@ -418,10 +422,28 @@ func networkContextProfileFromGovcd(raw *govcdtypes.NsxtNetworkContextProfile) *
 	}
 
 	for i, a := range raw.Attributes {
-		p.Attributes[i] = NetworkContextProfileAttribute{
+		attr := NetworkContextProfileAttribute{
 			Type:   NetworkContextProfileAttributeType(a.Type),
 			Values: a.Values,
 		}
+
+		if a.SubAttributes != nil {
+			// SubAttributes is interface{} in the govcd type; re-encode to recover structure.
+			if b, err := json.Marshal(a.SubAttributes); err == nil {
+				var subs []networkContextProfileSubAttrAPIPayload
+				if err := json.Unmarshal(b, &subs); err == nil {
+					attr.SubAttributes = make([]NetworkContextProfileSubAttribute, len(subs))
+					for j, s := range subs {
+						attr.SubAttributes[j] = NetworkContextProfileSubAttribute{
+							Type:   NetworkContextProfileSubAttributeType(s.Type),
+							Values: s.Values,
+						}
+					}
+				}
+			}
+		}
+
+		p.Attributes[i] = attr
 	}
 
 	return p
