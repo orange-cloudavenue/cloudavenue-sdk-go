@@ -105,8 +105,11 @@ func resolveFirewallAPIVersion(client *govcd.Client) (string, error) {
 		)
 	}
 
-	// If the client's configured version is already higher than the minimum, use it.
-	if client.APIClientVersionIs("> " + nsxtFirewallRulesMinAPIVersion) {
+	// Use the client's configured version only when it is strictly above the minimum
+	// AND does not exceed the VCD instance's maximum supported version.
+	// This prevents sending a version the server does not understand.
+	if client.APIClientVersionIs("> "+nsxtFirewallRulesMinAPIVersion) &&
+		!client.APIVCDMaxVersionIs("< "+client.APIVersion) {
 		return client.APIVersion, nil
 	}
 
@@ -199,9 +202,14 @@ func resolveNetworkContextProfilesAPIVersion(client *govcd.Client) (string, erro
 			nsxtNetworkContextProfilesMinAPIVersion, maxVer,
 		)
 	}
-	if client.APIClientVersionIs("> " + nsxtNetworkContextProfilesMinAPIVersion) {
+
+	// Use the client's configured version only when it is strictly above the minimum
+	// AND does not exceed the VCD instance's maximum supported version.
+	if client.APIClientVersionIs("> "+nsxtNetworkContextProfilesMinAPIVersion) &&
+		!client.APIVCDMaxVersionIs("< "+client.APIVersion) {
 		return client.APIVersion, nil
 	}
+
 	return nsxtNetworkContextProfilesMinAPIVersion, nil
 }
 
@@ -209,6 +217,13 @@ func resolveNetworkContextProfilesAPIVersion(client *govcd.Client) (string, erro
 // The VCD API responds with 202 Accepted + a task; we wait for the task then
 // fetch the profile by name to obtain its assigned ID.
 func (e *EdgeClient) CreateNetworkContextProfile(profile *NetworkContextProfile) (*NetworkContextProfile, error) {
+	if profile == nil {
+		return nil, fmt.Errorf("profile must not be nil")
+	}
+	if profile.Name == "" {
+		return nil, fmt.Errorf("profile.Name must not be empty")
+	}
+
 	vcdEdge, err := e.GetVmwareEdgeGateway()
 	if err != nil {
 		return nil, fmt.Errorf("error retrieving VMware Edge Gateway: %w", err)
@@ -248,6 +263,10 @@ func (e *EdgeClient) CreateNetworkContextProfile(profile *NetworkContextProfile)
 
 // GetNetworkContextProfileByID retrieves a Network Context Profile by its URN ID.
 func (e *EdgeClient) GetNetworkContextProfileByID(id string) (*NetworkContextProfile, error) {
+	if id == "" {
+		return nil, fmt.Errorf("id must not be empty")
+	}
+
 	c, err := getGovcdClient()
 	if err != nil {
 		return nil, err
@@ -273,6 +292,13 @@ func (e *EdgeClient) GetNetworkContextProfileByID(id string) (*NetworkContextPro
 
 // UpdateNetworkContextProfile updates an existing TENANT-scoped Network Context Profile.
 func (e *EdgeClient) UpdateNetworkContextProfile(profile *NetworkContextProfile) (*NetworkContextProfile, error) {
+	if profile == nil {
+		return nil, fmt.Errorf("profile must not be nil")
+	}
+	if profile.ID == "" {
+		return nil, fmt.Errorf("profile.ID must not be empty")
+	}
+
 	vcdEdge, err := e.GetVmwareEdgeGateway()
 	if err != nil {
 		return nil, fmt.Errorf("error retrieving VMware Edge Gateway: %w", err)
@@ -312,6 +338,10 @@ func (e *EdgeClient) UpdateNetworkContextProfile(profile *NetworkContextProfile)
 
 // DeleteNetworkContextProfile deletes a TENANT-scoped Network Context Profile by ID.
 func (e *EdgeClient) DeleteNetworkContextProfile(id string) error {
+	if id == "" {
+		return fmt.Errorf("id must not be empty")
+	}
+
 	c, err := getGovcdClient()
 	if err != nil {
 		return err

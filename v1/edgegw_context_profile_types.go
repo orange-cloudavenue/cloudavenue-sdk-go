@@ -54,11 +54,9 @@ type NetworkContextProfile struct {
 	// Scope is one of SYSTEM, PROVIDER, TENANT.
 	Scope NetworkContextProfileScope
 
-	// OrgID is the URN of the owning organisation (required for TENANT profiles).
+	// OrgID is the URN of the owning organisation, populated from the API response
+	// for TENANT profiles.
 	OrgID string
-
-	// OwnerVDCID is the URN of the owning VDC (used as contextEntityId on create).
-	OwnerVDCID string
 
 	// Attributes describes the Layer 7 characteristics of the profile.
 	Attributes []NetworkContextProfileAttribute
