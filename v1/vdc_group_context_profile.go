@@ -21,10 +21,11 @@ import (
 // GetAllNetworkContextProfiles returns all Network Context Profiles available
 // in the context of the VDC Group (SYSTEM + PROVIDER + TENANT scopes).
 func (g VDCGroup) GetAllNetworkContextProfiles() ([]*NetworkContextProfile, error) {
-	client, err := getGovcdClient()
+	cavc, err := clientcloudavenue.New()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error initialising CloudAvenue client: %w", err)
 	}
+	client := &cavc.Vmware.Client
 
 	// Use the named filter parameter introduced in API 38.0,
 	// replacing the deprecated _context== format.
@@ -75,10 +76,11 @@ func (g VDCGroup) GetNetworkContextProfileByID(id string) (*NetworkContextProfil
 		return nil, fmt.Errorf("id must not be empty")
 	}
 
-	c, err := getGovcdClient()
+	cavc, err := clientcloudavenue.New()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error initialising CloudAvenue client: %w", err)
 	}
+	c := &cavc.Vmware.Client
 
 	urlRef, err := c.OpenApiBuildEndpoint(networkContextProfilesEndpoint() + "/" + id)
 	if err != nil {
@@ -168,10 +170,11 @@ func (g VDCGroup) DeleteNetworkContextProfile(id string) error {
 		return fmt.Errorf("id must not be empty")
 	}
 
-	c, err := getGovcdClient()
+	cavc, err := clientcloudavenue.New()
 	if err != nil {
-		return err
+		return fmt.Errorf("error initialising CloudAvenue client: %w", err)
 	}
+	c := &cavc.Vmware.Client
 
 	urlRef, err := c.OpenApiBuildEndpoint(networkContextProfilesEndpoint() + "/" + id)
 	if err != nil {
@@ -183,4 +186,31 @@ func (g VDCGroup) DeleteNetworkContextProfile(id string) error {
 	}
 
 	return nil
+}
+
+// GetNetworkContextProfileAttributes returns the server-side catalog of valid attribute
+// values for Network Context Profiles, scoped to this VDC Group.
+// The returned catalog lists valid DOMAIN_NAME and APP_ID values for this platform instance.
+// Only values present in this catalog can be used when creating or updating a profile.
+func (g VDCGroup) GetNetworkContextProfileAttributes() (*NetworkContextProfileAttributesCatalog, error) {
+	cavc, err := clientcloudavenue.New()
+	if err != nil {
+		return nil, fmt.Errorf("error initialising CloudAvenue client: %w", err)
+	}
+	client := &cavc.Vmware.Client
+
+	queryParams := url.Values{}
+	queryParams.Set("filter", fmt.Sprintf("vdcGroupId==%s", g.vg.VdcGroup.Id))
+
+	urlRef, err := client.OpenApiBuildEndpoint(networkContextProfilesEndpoint() + "/attributes")
+	if err != nil {
+		return nil, fmt.Errorf("error building networkContextProfiles/attributes endpoint: %w", err)
+	}
+
+	result := &networkContextProfileAttributesAPIResponse{}
+	if err := client.OpenApiGetItem(client.APIVersion, urlRef, queryParams, result, nil); err != nil {
+		return nil, fmt.Errorf("error retrieving Network Context Profile attributes: %w", err)
+	}
+
+	return networkContextProfileAttributesFromAPIResponse(result), nil
 }

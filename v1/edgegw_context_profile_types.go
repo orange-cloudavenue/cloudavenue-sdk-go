@@ -24,6 +24,10 @@ type NetworkContextProfileAttributeType string
 const (
 	// NetworkContextProfileAttributeTypeAppID identifies Layer 7 applications.
 	NetworkContextProfileAttributeTypeAppID NetworkContextProfileAttributeType = "APP_ID"
+
+	// NetworkContextProfileAttributeTypeDomainName matches traffic by FQDN or wildcard domain name.
+	// Values are wildcard-capable domain strings, e.g. "*.example.com" or "myhost.corp.local".
+	NetworkContextProfileAttributeTypeDomainName NetworkContextProfileAttributeType = "DOMAIN_NAME"
 )
 
 // NetworkContextProfileSubAttributeType represents the type of a sub-attribute.
@@ -125,7 +129,8 @@ type NetworkContextProfile struct {
 	Attributes []NetworkContextProfileAttribute
 }
 
-// NetworkContextProfileAttribute is a single APP_ID attribute of a Network Context Profile.
+// NetworkContextProfileAttribute is a single attribute of a Network Context Profile.
+// The Type field determines whether this is an APP_ID or DOMAIN_NAME attribute.
 type NetworkContextProfileAttribute struct {
 	// Type is the attribute type — always APP_ID for user-managed profiles.
 	Type NetworkContextProfileAttributeType
@@ -144,4 +149,27 @@ type NetworkContextProfileSubAttribute struct {
 
 	// Values is the list of allowed values for this sub-attribute.
 	Values []string
+}
+
+// NetworkContextProfileAttributesCatalog holds the server-side allowlist of valid
+// attribute values returned by GET /cloudapi/1.0.0/networkContextProfiles/attributes.
+type NetworkContextProfileAttributesCatalog struct {
+	// DomainNameValues is the list of valid DOMAIN_NAME values on this platform.
+	// Only values in this list can be used in a domain_name attribute block.
+	DomainNameValues []string
+
+	// AppIDValues is the list of valid APP_ID values on this platform.
+	AppIDValues []string
+}
+
+// networkContextProfileAttributesAPIResponse is the raw API response shape.
+type networkContextProfileAttributesAPIResponse struct {
+	Attributes []struct {
+		Type          string   `json:"type"`
+		Values        []string `json:"values"`
+		SubAttributes []struct {
+			Type   string   `json:"type"`
+			Values []string `json:"values"`
+		} `json:"subAttributes"`
+	} `json:"attributes"`
 }

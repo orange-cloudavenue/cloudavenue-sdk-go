@@ -77,29 +77,20 @@ type networkContextProfileSubAttrAPIPayload struct {
 	Values []string `json:"values"`
 }
 
-// getGovcdClient initialises the CloudAvenue client and returns the underlying govcd.Client.
-// Note: a new client instance is created on each call.
-func getGovcdClient() (*govcd.Client, error) {
-	c, err := clientcloudavenue.New()
-	if err != nil {
-		return nil, fmt.Errorf("error initialising CloudAvenue client: %w", err)
-	}
-	return &c.Vmware.Client, nil
-}
-
 // GetFirewallExtended retrieves the Edge Gateway firewall rules using the extended struct
 // that includes NetworkContextProfiles, bypassing the govcd SDK limitation.
 func (e *EdgeClient) GetFirewallExtended() (*NsxtFirewallRuleContainerExtended, error) {
-	vcdEdge, err := e.GetVmwareEdgeGateway()
+	cavc, err := clientcloudavenue.New()
+	if err != nil {
+		return nil, fmt.Errorf("error initialising CloudAvenue client: %w", err)
+	}
+
+	vcdEdge, err := cavc.Org.GetNsxtEdgeGatewayById(urn.Normalize(urn.Gateway, e.GetID()).String())
 	if err != nil {
 		return nil, fmt.Errorf("error retrieving VMware Edge Gateway: %w", err)
 	}
 
-	client, err := getGovcdClient()
-	if err != nil {
-		return nil, err
-	}
-
+	client := &cavc.Vmware.Client
 	endpoint := fmt.Sprintf(govcdtypes.OpenApiPathVersion1_0_0+govcdtypes.OpenApiEndpointNsxtFirewallRules, vcdEdge.EdgeGateway.ID)
 
 	urlRef, err := client.OpenApiBuildEndpoint(endpoint)
@@ -118,16 +109,17 @@ func (e *EdgeClient) GetFirewallExtended() (*NsxtFirewallRuleContainerExtended, 
 // UpdateFirewallExtended updates the Edge Gateway firewall rules using the extended struct
 // that includes NetworkContextProfiles, bypassing the govcd SDK limitation.
 func (e *EdgeClient) UpdateFirewallExtended(container *NsxtFirewallRuleContainerExtended) (*NsxtFirewallRuleContainerExtended, error) {
-	vcdEdge, err := e.GetVmwareEdgeGateway()
+	cavc, err := clientcloudavenue.New()
+	if err != nil {
+		return nil, fmt.Errorf("error initialising CloudAvenue client: %w", err)
+	}
+
+	vcdEdge, err := cavc.Org.GetNsxtEdgeGatewayById(urn.Normalize(urn.Gateway, e.GetID()).String())
 	if err != nil {
 		return nil, fmt.Errorf("error retrieving VMware Edge Gateway: %w", err)
 	}
 
-	client, err := getGovcdClient()
-	if err != nil {
-		return nil, err
-	}
-
+	client := &cavc.Vmware.Client
 	endpoint := fmt.Sprintf(govcdtypes.OpenApiPathVersion1_0_0+govcdtypes.OpenApiEndpointNsxtFirewallRules, vcdEdge.EdgeGateway.ID)
 
 	urlRef, err := client.OpenApiBuildEndpoint(endpoint)
@@ -159,15 +151,16 @@ func (e *EdgeClient) CreateNetworkContextProfile(profile *NetworkContextProfile)
 		return nil, fmt.Errorf("profile.Name must not be empty")
 	}
 
-	vcdEdge, err := e.GetVmwareEdgeGateway()
-	if err != nil {
-		return nil, fmt.Errorf("error retrieving VMware Edge Gateway: %w", err)
-	}
-
 	cavc, err := clientcloudavenue.New()
 	if err != nil {
 		return nil, fmt.Errorf("error initialising CloudAvenue client: %w", err)
 	}
+
+	vcdEdge, err := cavc.Org.GetNsxtEdgeGatewayById(urn.Normalize(urn.Gateway, e.GetID()).String())
+	if err != nil {
+		return nil, fmt.Errorf("error retrieving VMware Edge Gateway: %w", err)
+	}
+
 	client := &cavc.Vmware.Client
 
 	urlRef, err := client.OpenApiBuildEndpoint(networkContextProfilesEndpoint())
@@ -197,10 +190,11 @@ func (e *EdgeClient) GetNetworkContextProfileByID(id string) (*NetworkContextPro
 		return nil, fmt.Errorf("id must not be empty")
 	}
 
-	c, err := getGovcdClient()
+	cavc, err := clientcloudavenue.New()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error initialising CloudAvenue client: %w", err)
 	}
+	c := &cavc.Vmware.Client
 
 	urlRef, err := c.OpenApiBuildEndpoint(networkContextProfilesEndpoint() + "/" + id)
 	if err != nil {
@@ -224,15 +218,16 @@ func (e *EdgeClient) UpdateNetworkContextProfile(profile *NetworkContextProfile)
 		return nil, fmt.Errorf("profile.ID must not be empty")
 	}
 
-	vcdEdge, err := e.GetVmwareEdgeGateway()
-	if err != nil {
-		return nil, fmt.Errorf("error retrieving VMware Edge Gateway: %w", err)
-	}
-
 	cavc, err := clientcloudavenue.New()
 	if err != nil {
 		return nil, fmt.Errorf("error initialising CloudAvenue client: %w", err)
 	}
+
+	vcdEdge, err := cavc.Org.GetNsxtEdgeGatewayById(urn.Normalize(urn.Gateway, e.GetID()).String())
+	if err != nil {
+		return nil, fmt.Errorf("error retrieving VMware Edge Gateway: %w", err)
+	}
+
 	client := &cavc.Vmware.Client
 
 	urlRef, err := client.OpenApiBuildEndpoint(networkContextProfilesEndpoint() + "/" + profile.ID)
@@ -262,10 +257,11 @@ func (e *EdgeClient) DeleteNetworkContextProfile(id string) error {
 		return fmt.Errorf("id must not be empty")
 	}
 
-	c, err := getGovcdClient()
+	cavc, err := clientcloudavenue.New()
 	if err != nil {
-		return err
+		return fmt.Errorf("error initialising CloudAvenue client: %w", err)
 	}
+	c := &cavc.Vmware.Client
 
 	urlRef, err := c.OpenApiBuildEndpoint(networkContextProfilesEndpoint() + "/" + id)
 	if err != nil {
@@ -347,15 +343,17 @@ func networkContextProfileFromAPIPayload(p *networkContextProfileAPIPayload) *Ne
 // GetAllNetworkContextProfiles returns all Network Context Profiles available
 // in the context of the Edge Gateway (SYSTEM + PROVIDER + TENANT scopes).
 func (e *EdgeClient) GetAllNetworkContextProfiles() ([]*NetworkContextProfile, error) {
-	vcdEdge, err := e.GetVmwareEdgeGateway()
+	cavc, err := clientcloudavenue.New()
+	if err != nil {
+		return nil, fmt.Errorf("error initialising CloudAvenue client: %w", err)
+	}
+
+	vcdEdge, err := cavc.Org.GetNsxtEdgeGatewayById(urn.Normalize(urn.Gateway, e.GetID()).String())
 	if err != nil {
 		return nil, fmt.Errorf("error retrieving VMware Edge Gateway: %w", err)
 	}
 
-	client, err := getGovcdClient()
-	if err != nil {
-		return nil, err
-	}
+	client := &cavc.Vmware.Client
 
 	// Network Context Profiles are scoped to VDC or VDC Group.
 	// Use the named filter parameters (orgVdcId / vdcGroupId) introduced in API 38.0,
@@ -403,6 +401,58 @@ func (e *EdgeClient) GetNetworkContextProfileByName(name string) (*NetworkContex
 	default:
 		return nil, fmt.Errorf("found %d network context profiles with name %q, please use ID to disambiguate", len(found), name)
 	}
+}
+
+// networkContextProfileAttributesFromAPIResponse converts the raw API response to the typed catalog.
+func networkContextProfileAttributesFromAPIResponse(r *networkContextProfileAttributesAPIResponse) *NetworkContextProfileAttributesCatalog {
+	catalog := &NetworkContextProfileAttributesCatalog{}
+	for _, a := range r.Attributes {
+		switch a.Type {
+		case string(NetworkContextProfileAttributeTypeAppID):
+			catalog.AppIDValues = append(catalog.AppIDValues, a.Values...)
+		case string(NetworkContextProfileAttributeTypeDomainName):
+			catalog.DomainNameValues = append(catalog.DomainNameValues, a.Values...)
+		}
+	}
+	return catalog
+}
+
+// GetNetworkContextProfileAttributes returns the server-side catalog of valid attribute
+// values for Network Context Profiles, scoped to this Edge Gateway's owning VDC or VDC Group.
+// The returned catalog lists valid DOMAIN_NAME and APP_ID values for this platform instance.
+// Only values present in this catalog can be used when creating or updating a profile.
+func (e *EdgeClient) GetNetworkContextProfileAttributes() (*NetworkContextProfileAttributesCatalog, error) {
+	cavc, err := clientcloudavenue.New()
+	if err != nil {
+		return nil, fmt.Errorf("error initialising CloudAvenue client: %w", err)
+	}
+
+	vcdEdge, err := cavc.Org.GetNsxtEdgeGatewayById(urn.Normalize(urn.Gateway, e.GetID()).String())
+	if err != nil {
+		return nil, fmt.Errorf("error retrieving VMware Edge Gateway: %w", err)
+	}
+
+	client := &cavc.Vmware.Client
+
+	ownerID := vcdEdge.EdgeGateway.OwnerRef.ID
+	queryParams := url.Values{}
+	if urn.IsVDCGroup(ownerID) {
+		queryParams.Set("filter", fmt.Sprintf("vdcGroupId==%s", ownerID))
+	} else {
+		queryParams.Set("filter", fmt.Sprintf("orgVdcId==%s", ownerID))
+	}
+
+	urlRef, err := client.OpenApiBuildEndpoint(networkContextProfilesEndpoint() + "/attributes")
+	if err != nil {
+		return nil, fmt.Errorf("error building networkContextProfiles/attributes endpoint: %w", err)
+	}
+
+	result := &networkContextProfileAttributesAPIResponse{}
+	if err := client.OpenApiGetItem(client.APIVersion, urlRef, queryParams, result, nil); err != nil {
+		return nil, fmt.Errorf("error retrieving Network Context Profile attributes: %w", err)
+	}
+
+	return networkContextProfileAttributesFromAPIResponse(result), nil
 }
 
 // networkContextProfileFromGovcd converts a govcd NsxtNetworkContextProfile to the SDK model.
