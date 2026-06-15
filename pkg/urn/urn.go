@@ -37,6 +37,7 @@ const (
 	Catalog                    = URN(VcloudPrefix + "catalog:")
 	Token                      = URN(VcloudPrefix + "token:")
 	AppPortProfile             = URN(VcloudPrefix + "applicationPortProfile:")
+	NetworkContextProfile      = URN(VcloudPrefix + "networkContextProfile:")
 	CertificateLibraryItem     = URN(VcloudPrefix + "certificateLibraryItem:")
 	LoadBalancerPool           = URN(VcloudPrefix + "loadBalancerPool:")
 	LoadBalancerVirtualService = URN(VcloudPrefix + "loadBalancerVirtualService:")
@@ -64,6 +65,7 @@ var URNs = []URN{
 	Catalog,
 	Token,
 	AppPortProfile,
+	NetworkContextProfile,
 	CertificateLibraryItem,
 	LoadBalancerPool,
 	LoadBalancerVirtualService,
@@ -88,6 +90,7 @@ var URNByNames = map[string]URN{
 	"catalog":                    Catalog,
 	"token":                      Token,
 	"applicationPortProfile":     AppPortProfile,
+	"networkContextProfile":      NetworkContextProfile,
 	"certificateLibraryItem":     CertificateLibraryItem,
 	"loadBalancerPool":           LoadBalancerPool,
 	"loadBalancerVirtualService": LoadBalancerVirtualService,

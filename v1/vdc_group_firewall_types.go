@@ -67,6 +67,10 @@ type (
 		// list means 'Any'
 		ApplicationPortProfiles []govcdtypes.OpenApiReference
 
+		// NetworkContextProfiles contains a list of references to Network Context Profiles (Layer 7).
+		// Empty list means 'Any'.
+		NetworkContextProfiles []govcdtypes.OpenApiReference
+
 		// SourceFirewallGroups contains a list of references to Firewall Groups. Empty list means 'Any'
 		SourceFirewallGroups []govcdtypes.OpenApiReference
 		// DestinationFirewallGroups contains a list of references to Firewall Groups. Empty list means
