@@ -1,4 +1,16 @@
 ## 0.28.0 (Unreleased)
+
+### :rocket: **New Features**
+
+* `v1/edgegw` - Add full CRUD support for TENANT-scoped Network Context Profiles on Edge Gateways: `CreateNetworkContextProfile`, `GetNetworkContextProfileByID`, `GetNetworkContextProfileByName`, `GetAllNetworkContextProfiles`, `UpdateNetworkContextProfile`, `DeleteNetworkContextProfile`. (GH-314)
+* `v1/vdcg` - Add full CRUD support for TENANT-scoped Network Context Profiles on VDC Groups: `CreateNetworkContextProfile`, `GetNetworkContextProfileByID`, `GetNetworkContextProfileByName`, `GetAllNetworkContextProfiles`, `UpdateNetworkContextProfile`, `DeleteNetworkContextProfile`. (GH-314)
+
+### :tada: **Improvements**
+
+* `pkg/urn` - Add `NetworkContextProfile` URN type (`urn:vcloud:networkContextProfile:`). (GH-314)
+* `v1/edgegw` - Add `GetFirewallExtended` and `UpdateFirewallExtended` methods on `EdgeClient` to support `networkContextProfiles` in Edge Gateway firewall rules, bypassing the upstream govcd SDK limitation. (GH-314)
+* `v1/vdcg` - Add `NetworkContextProfiles` field to `VDCGroupFirewallTypeRule` and wire it through `rulesToVCDRules` / `vcdRulesToRules` conversion functions. (GH-314)
+
 ## 0.27.4 (May 29, 2026)
 
 ## 0.27.3 (May 29, 2026)
