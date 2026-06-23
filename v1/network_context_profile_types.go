@@ -99,7 +99,7 @@ func (a NetworkContextProfileAttributeDefinition) ValuesOnly() []string {
 
 // NetworkContextProfileTLSVersionDefinition defines valid TLS protocol versions.
 var NetworkContextProfileTLSVersionDefinition = NetworkContextProfileAttributeDefinition{
-	Name:        NetworkContextProfileAttributeTypeDomainName,
+	Name:        NetworkContextProfileAttributeTypeAppID,
 	Description: "TLS protocol version classifications. Restricts encrypted traffic by protocol version to enforce minimum security standards (e.g., block TLS 1.0/1.1 for compliance).",
 	Values: []NetworkContextProfileValueDefinition{
 		{Value: "TLS_V10", Description: "TLS 1.0"},
@@ -111,7 +111,7 @@ var NetworkContextProfileTLSVersionDefinition = NetworkContextProfileAttributeDe
 
 // NetworkContextProfileTLSCipherSuiteDefinition defines valid TLS cipher suites.
 var NetworkContextProfileTLSCipherSuiteDefinition = NetworkContextProfileAttributeDefinition{
-	Name:        NetworkContextProfileAttributeTypeDomainName,
+	Name:        NetworkContextProfileAttributeTypeAppID,
 	Description: "TLS cipher suite classifications. Enables security policies based on specific cipher algorithms (e.g., reject weak ciphers, enforce FIPS-140 compliance).",
 	Values: []NetworkContextProfileValueDefinition{
 		{Value: "TLS_DHE_RSA_WITH_AES_128_CBC_SHA"},
@@ -138,7 +138,7 @@ var NetworkContextProfileTLSCipherSuiteDefinition = NetworkContextProfileAttribu
 
 // NetworkContextProfileCIFSSMBVersionDefinition defines valid CIFS/SMB protocol versions.
 var NetworkContextProfileCIFSSMBVersionDefinition = NetworkContextProfileAttributeDefinition{
-	Name:        NetworkContextProfileAttributeTypeDomainName,
+	Name:        NetworkContextProfileAttributeTypeAppID,
 	Description: "CIFS/SMB protocol version classifications. Controls Windows file sharing traffic by SMB version for security (e.g., isolate legacy SMB v1 for ransomware protection).",
 	Values: []NetworkContextProfileValueDefinition{
 		{
