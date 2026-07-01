@@ -65,6 +65,9 @@ func (t *token) newBackendClient() *resty.Client {
 		SetHeader("Accept", "application/json").
 		SetBaseURL(t.effectiveCoreAPI()).
 		SetAuthScheme("Bearer").
+		OnBeforeRequest(func(c *resty.Client, r *resty.Request) error {
+			return t.RefreshToken()
+		}).
 		SetAuthToken(t.GetToken()).
 		SetHeader("User-Agent", "Cloudavenue-SDK-v1")
 }
@@ -193,22 +196,4 @@ func (e *CerberusErrorResponse) FormatError() string {
 		return fmt.Sprintf("ErrorCode:%d - Message:%s - Description:%s", e.Code, e.Message, e.Description)
 	}
 	return fmt.Sprintf("ErrorCode:%d - Message:%s", e.Code, e.Message)
-}
-
-// APIErrorResponse - Generic API error response.
-// Kept for backward compatibility with existing code.
-type APIErrorResponse struct {
-	Code    string `json:"code"`
-	Reason  string `json:"reason"`
-	Message string `json:"message"`
-}
-
-// FormatError - Formats the error.
-func (e *APIErrorResponse) FormatError() string {
-	return fmt.Sprintf("ErrorCode:%s - ErrorReason:%s - ErrorMessage:%s", e.Code, e.Reason, e.Message)
-}
-
-// ToError - Converts an APIErrorResponse to an error.
-func ToError(e *APIErrorResponse) error {
-	return fmt.Errorf("error on API call: %s", e.FormatError())
 }
