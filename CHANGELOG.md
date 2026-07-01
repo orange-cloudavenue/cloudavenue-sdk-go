@@ -1,4 +1,18 @@
 ## 0.29.0 (Unreleased)
+
+### :tada: **Improvements**
+
+* `pkg/common/cloudavenue` - Enhance `APIErrorResponse` with custom `UnmarshalJSON` to handle both string and integer `code` fields from the API. (GH-316)
+* `v1/network_context_profile_types` - Add structured attribute definitions with descriptions for APP_ID, TLS versions, cipher suites, and CIFS/SMB versions. Introduce `NetworkContextProfileAttributeDefinition`, `NetworkContextProfileValueDefinition` types and `ValuesOnly()` helper. Consolidate type definitions from `v1/edgegw_context_profile_types`. (GH-316)
+
+### :bug: **Bug Fixes**
+
+* `pkg/clients/cloudavenue` - Fix token refresh by adding `OnBeforeRequest` callback to the backend resty client, ensuring `RefreshToken()` is called before every API request. (GH-316)
+### :information_source: **Notes**
+
+* Add README.md with SDK overview, features, installation, authentication, API overview, usage examples, development guide, project structure, and design patterns. (GH-316)
+* `v1/edgeloadbalancer` - Regenerate mocks for `PoliciesHTTPSecurity` methods (`GetPoliciesHTTPSecurity`, `UpdatePoliciesHTTPSecurity`, `DeletePoliciesHTTPSecurity`). (GH-316)
+
 ## 0.28.0 (June 15, 2026)
 
 ### :rocket: **New Features**
