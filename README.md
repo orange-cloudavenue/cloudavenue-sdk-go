@@ -393,3 +393,9 @@ cloudavenue-sdk-go/
 Mozilla Public License 2.0. See [LICENSE](./LICENSE).
 
 Copyright © Orange Business, 2025–2026.
+
+---
+
+## Changelog
+
+See [CHANGELOG.md](./CHANGELOG.md) for the full release history.
