@@ -10,7 +10,9 @@
 package commoncloudavenue
 
 import (
+	"encoding/json"
 	"fmt"
+	"strconv"
 	"strings"
 )
 
@@ -18,6 +20,37 @@ type APIErrorResponse struct {
 	Code    string `json:"code"`
 	Reason  string `json:"reason"`
 	Message string `json:"message"`
+}
+
+func (e *APIErrorResponse) UnmarshalJSON(data []byte) error {
+	type Alias APIErrorResponse
+
+	aux := &struct {
+		Code json.RawMessage `json:"code"`
+		*Alias
+	}{
+		Alias: (*Alias)(e),
+	}
+
+	if err := json.Unmarshal(data, aux); err != nil {
+		return err
+	}
+
+	// Try string first.
+	var s string
+	if err := json.Unmarshal(aux.Code, &s); err == nil {
+		e.Code = s
+		return nil
+	}
+
+	// Then try integer.
+	var i int64
+	if err := json.Unmarshal(aux.Code, &i); err == nil {
+		e.Code = strconv.FormatInt(i, 10)
+		return nil
+	}
+
+	return fmt.Errorf("invalid code field: %s", aux.Code)
 }
 
 // FormatError - Formats the error.
