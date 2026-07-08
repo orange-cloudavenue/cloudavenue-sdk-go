@@ -1,8 +1,6 @@
 module github.com/orange-cloudavenue/cloudavenue-sdk-go
 
-go 1.23.0
-
-toolchain go1.24.1
+go 1.25.0
 
 require (
 	github.com/avast/retry-go/v4 v4.6.1
@@ -18,7 +16,7 @@ require (
 	github.com/vmware/go-vcloud-director/v2 v2.26.1
 	go.uber.org/mock v0.5.2
 	golang.org/x/exp v0.0.0-20240119083558-1b970713d09a
-	golang.org/x/sync v0.15.0
+	golang.org/x/sync v0.22.0
 )
 
 require (
