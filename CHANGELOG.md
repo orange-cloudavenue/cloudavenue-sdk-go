@@ -1,4 +1,23 @@
 ## 0.29.0 (Unreleased)
+
+### :tada: **Improvements**
+
+* `v1/cloudavenue_vcda` - Replace `golang.org/x/exp/slices` with standard library `slices` from Go 1.25 stdlib. (GH-320)
+### :information_source: **Notes**
+
+* `go` - Bump Go version from 1.23.0 to 1.25.8 and update all project dependencies including `terraform-plugin-sdk/v2` to v2.40.1, `go-resty/resty/v2` to v2.17.2, `go-vcloud-director/v2` to v2.26.2, `common-go/validators` to v1.2.0, `validator/v10` to v10.30.3, and various other indirect dependencies. (GH-320)
+
+### :dependabot: **Dependencies**
+
+* deps: bumps github.com/avast/retry-go/v4 from 4.6.1 to 4.7.0 (GH-320)
+* deps: bumps github.com/aws/aws-sdk-go from 1.55.7 to 1.55.8 (GH-320)
+* deps: bumps github.com/go-resty/resty/v2 from 2.16.5 to 2.17.2 (GH-320)
+* deps: bumps github.com/hashicorp/terraform-plugin-sdk/v2 from 2.37.0 to 2.40.1 (GH-320)
+* deps: bumps github.com/orange-cloudavenue/common-go/validators from 0.2.2 to 1.2.0 (GH-320)
+* deps: bumps github.com/stretchr/testify from 1.10.0 to 1.11.1 (GH-320)
+* deps: bumps github.com/vmware/go-vcloud-director/v2 from 2.26.1 to 2.26.2 (GH-320)
+* deps: bumps golang.org/x/sync from 0.15.0 to 0.22.0 (GH-320)
+
 ## 0.28.1 (July  1, 2026)
 
 ### :tada: **Improvements**
