@@ -9,12 +9,12 @@ require (
 	github.com/go-resty/resty/v2 v2.17.2
 	github.com/google/uuid v1.6.0
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.40.1
-	github.com/jarcoal/httpmock v1.4.0
+	github.com/jarcoal/httpmock v1.4.1
 	github.com/orange-cloudavenue/common-go/validators v1.2.0
-	github.com/sethvargo/go-envconfig v1.3.0
+	github.com/sethvargo/go-envconfig v1.3.1
 	github.com/stretchr/testify v1.11.1
 	github.com/vmware/go-vcloud-director/v2 v2.26.2
-	go.uber.org/mock v0.5.2
+	go.uber.org/mock v0.6.0
 	golang.org/x/sync v0.22.0
 )
 
