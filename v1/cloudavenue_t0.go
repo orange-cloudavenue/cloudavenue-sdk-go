@@ -153,7 +153,7 @@ func (t *Tier0) GetT0s() (listOfT0s *T0s, err error) {
 	}
 
 	if r.IsError() {
-		return listOfT0s, fmt.Errorf("error on list T0s: %s", r.Error().(*commoncloudavenue.APIErrorResponse).FormatError())
+		return listOfT0s, fmt.Errorf("error on list T0s: %w", commoncloudavenue.ToError(r))
 	}
 
 	listOfT0s = &T0s{}
@@ -187,7 +187,7 @@ func (t *Tier0) GetT0(t0 string) (response *T0, err error) {
 	}
 
 	if r.IsError() {
-		return response, fmt.Errorf("error on get T0: %s", r.Error().(*commoncloudavenue.APIErrorResponse).FormatError())
+		return response, fmt.Errorf("error on get T0: %w", commoncloudavenue.ToError(r))
 	}
 
 	return r.Result().(*T0), nil

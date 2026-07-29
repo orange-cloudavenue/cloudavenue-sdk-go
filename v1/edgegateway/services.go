@@ -11,6 +11,7 @@ package edgegateway
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net"
 
@@ -44,7 +45,7 @@ func (e *EdgeGateway) getNetworkServices(ctx context.Context) error {
 
 	originalResponse := resp.Result().(*networkServicesResponse)
 	if originalResponse == nil || len(*originalResponse) == 0 {
-		return fmt.Errorf("no network services found")
+		return errors.New("no network services found")
 	}
 
 	// Parse the original response and populate the NetworkServicesModel
@@ -141,7 +142,7 @@ func (e *EdgeGateway) EnableNetworkService(ctx context.Context) error {
 	}
 
 	if e.NetworkServiceIsEnabled() {
-		return fmt.Errorf("the service is already enabled")
+		return errors.New("the service is already enabled")
 	}
 
 	// Enable network services
@@ -170,7 +171,7 @@ func (e *EdgeGateway) EnableNetworkService(ctx context.Context) error {
 
 func (e *EdgeGateway) DisableNetworkService(ctx context.Context) error {
 	if e.EdgeGatewayModel.Services.Service == nil {
-		return fmt.Errorf("network service is not enabled")
+		return errors.New("network service is not enabled")
 	}
 
 	// Disable network services

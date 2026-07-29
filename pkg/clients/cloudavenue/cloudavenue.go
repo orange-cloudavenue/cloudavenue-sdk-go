@@ -14,6 +14,7 @@ import (
 	"fmt"
 	"log"
 	"net/url"
+	"sync"
 
 	"github.com/go-resty/resty/v2"
 	"github.com/sethvargo/go-envconfig"
@@ -134,7 +135,14 @@ type Client struct {
 	AdminOrg *govcd.AdminOrg
 }
 
-var cache *Client
+var (
+	cache *Client
+	// cacheMu guards the package-level cache variable: New() does a
+	// check-then-act (read cache, then possibly reassign it) which is a
+	// race across concurrent callers without a lock, independent of the
+	// token's own mutex.
+	cacheMu sync.Mutex
+)
 
 // Refresh - Refreshes the client.
 func (v *Client) Refresh() error {
@@ -149,11 +157,17 @@ func (v *Client) Refresh() error {
 
 // GetClient - Returns the client.
 func GetClient() *Client {
+	cacheMu.Lock()
+	defer cacheMu.Unlock()
+
 	return cache
 }
 
 // New creates a new cloudavenue client.
 func New() (*Client, error) {
+	cacheMu.Lock()
+	defer cacheMu.Unlock()
+
 	if cache != nil && !c.token.IsExpired() {
 		return cache, nil
 	}
@@ -170,7 +184,7 @@ func New() (*Client, error) {
 	// Setup vmware client
 	vmwareURL, err := url.Parse(fmt.Sprintf("%s/api", c.token.GetEndpoint()))
 	if err != nil {
-		return nil, fmt.Errorf("%s : %w", "Failed to parse vmware url", err)
+		return nil, fmt.Errorf("failed to parse vmware url: %w", err)
 	}
 
 	cache.Vmware = govcd.NewVCDClient(
@@ -180,7 +194,7 @@ func New() (*Client, error) {
 	)
 
 	if err := cache.Vmware.Authenticate(c.token.clientID, c.token.clientSecret, c.token.org); err != nil {
-		return nil, fmt.Errorf("%s : %w", "Failed to authenticate vmware client", err)
+		return nil, fmt.Errorf("failed to authenticate vmware client: %w", err)
 	}
 
 	// goroutine to get the org from client

@@ -40,7 +40,7 @@ func (i *InventoryClient) Refresh() (job *commonnetbackup.JobAPIResponse, err er
 	}
 
 	if r.IsError() {
-		return job, commonnetbackup.ToError(r.Error().(*commonnetbackup.APIError))
+		return job, commonnetbackup.ToError(r)
 	}
 
 	jAPIResponse := &commonnetbackup.JobAPIResponse{

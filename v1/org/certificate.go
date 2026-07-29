@@ -11,6 +11,7 @@ package org
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/orange-cloudavenue/common-go/validators"
@@ -31,7 +32,7 @@ func (c *client) ListCertificatesInLibrary(_ context.Context) (CertificatesModel
 		return nil, err
 	}
 	if len(certificates) == 0 {
-		return nil, fmt.Errorf("no certificates found in the library")
+		return nil, errors.New("no certificates found in the library")
 	}
 
 	x := make(CertificatesModel, 0)
@@ -101,7 +102,7 @@ func (c *client) CreateCertificateInLibrary(ctx context.Context, cert *Certifica
 	// Create the certificate library
 	certCreated, err := c.clientGoVCDAdminOrg.AddCertificateToLibrary(govcdCert)
 	if err != nil {
-		return nil, fmt.Errorf("error while creating certificate library: %s", err.Error())
+		return nil, fmt.Errorf("error while creating certificate library: %w", err)
 	}
 
 	return &CertificateModel{
@@ -132,7 +133,7 @@ func (c *client) UpdateCertificateInLibrary(ctx context.Context, certificateID s
 
 	certUpdated, err := updateCertificateInLibrary(certificate)
 	if err != nil {
-		return nil, fmt.Errorf("error while updating certificate library: %s", err.Error())
+		return nil, fmt.Errorf("error while updating certificate library: %w", err)
 	}
 
 	return &CertificateModel{

@@ -10,6 +10,7 @@
 package netbackup
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 	"time"
@@ -223,7 +224,7 @@ func (m *MachineClient) GetMachines() (resp *Machines, err error) {
 	}
 
 	if r.IsError() {
-		return resp, commonnetbackup.ToError(r.Error().(*commonnetbackup.APIError))
+		return resp, commonnetbackup.ToError(r)
 	}
 
 	return &r.Result().(*machinesResponse).Data, nil
@@ -250,7 +251,7 @@ func (m *MachineClient) GetMachineByID(id int) (resp *Machine, err error) {
 	}
 
 	if r.IsError() {
-		return resp, commonnetbackup.ToError(r.Error().(*commonnetbackup.APIError))
+		return resp, commonnetbackup.ToError(r)
 	}
 
 	return &r.Result().(*machineResponse).Data, nil
@@ -269,7 +270,7 @@ func (m *MachineClient) GetMachineByName(name string) (resp *Machine, err error)
 		}
 	}
 
-	return resp, fmt.Errorf("Machine with name %s not found", name)
+	return resp, fmt.Errorf("machine with name %s not found", name)
 }
 
 // GetMachineByIdentifier - Get a NetBackup Machine by Identifier.
@@ -285,7 +286,7 @@ func (m *MachineClient) GetMachineByIdentifier(identifier string) (resp *Machine
 		}
 	}
 
-	return resp, fmt.Errorf("Machine with identifier %s not found", identifier)
+	return resp, fmt.Errorf("machine with identifier %s not found", identifier)
 }
 
 // GetMachineByNameOrIdentifier - Get a NetBackup Machine by Name or Identifier.
@@ -301,7 +302,7 @@ func (m *MachineClient) GetMachineByNameOrIdentifier(nameOrIdentifier string) (r
 		}
 	}
 
-	return resp, fmt.Errorf("Machine with name or identifier %s not found", nameOrIdentifier)
+	return resp, fmt.Errorf("machine with name or identifier %s not found", nameOrIdentifier)
 }
 
 // * Protection Level
@@ -351,7 +352,7 @@ func (m *Machine) ListProtectionLevels() (resp *ProtectionLevels, err error) {
 	}
 
 	if r.IsError() {
-		return resp, commonnetbackup.ToError(r.Error().(*commonnetbackup.APIError))
+		return resp, commonnetbackup.ToError(r)
 	}
 
 	resp = &ProtectionLevels{}
@@ -374,7 +375,7 @@ func (m *Machine) Protect(req ProtectUnprotectRequest) (job *commonnetbackup.Job
 	}
 
 	if req.ProtectionLevelID == nil && req.ProtectionLevelName == "" {
-		return job, fmt.Errorf("you must specify a ProtectionLevelID or ProtectionLevelName")
+		return job, errors.New("you must specify a ProtectionLevelID or ProtectionLevelName")
 	}
 
 	var (
@@ -410,7 +411,7 @@ func (m *Machine) Protect(req ProtectUnprotectRequest) (job *commonnetbackup.Job
 	}
 
 	if r.IsError() {
-		return job, commonnetbackup.ToError(r.Error().(*commonnetbackup.APIError))
+		return job, commonnetbackup.ToError(r)
 	}
 
 	return r.Result().(*commonnetbackup.JobAPIResponse), nil
@@ -426,7 +427,7 @@ func (m *Machine) Unprotect(req ProtectUnprotectRequest) (job *commonnetbackup.J
 	}
 
 	if req.ProtectionLevelID == nil && req.ProtectionLevelName == "" {
-		return job, fmt.Errorf("you must specify a ProtectionLevelID or ProtectionLevelName")
+		return job, errors.New("you must specify a ProtectionLevelID or ProtectionLevelName")
 	}
 
 	var (
@@ -462,7 +463,7 @@ func (m *Machine) Unprotect(req ProtectUnprotectRequest) (job *commonnetbackup.J
 	}
 
 	if r.IsError() {
-		return job, commonnetbackup.ToError(r.Error().(*commonnetbackup.APIError))
+		return job, commonnetbackup.ToError(r)
 	}
 
 	return r.Result().(*commonnetbackup.JobAPIResponse), nil

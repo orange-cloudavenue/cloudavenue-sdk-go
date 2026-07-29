@@ -210,7 +210,7 @@ func (v *CAVVDC) Get(vdcName string) (*CAVVirtualDataCenter, error) {
 	}
 
 	if r.IsError() {
-		return nil, fmt.Errorf("error on get VDC: %s", r.Error().(*commoncloudavenue.APIErrorResponse).FormatError())
+		return nil, fmt.Errorf("error on get VDC: %w", commoncloudavenue.ToError(r))
 	}
 
 	return r.Result().(*CAVVirtualDataCenter), nil
@@ -237,7 +237,7 @@ func (v *CAVVDC) List() (*VDCs, error) {
 	}
 
 	if r.IsError() {
-		return nil, fmt.Errorf("error on list VDCs: %s", r.Error().(*commoncloudavenue.APIErrorResponse).FormatError())
+		return nil, fmt.Errorf("error on list VDCs: %w", commoncloudavenue.ToError(r))
 	}
 
 	vdcS := &VDCs{}
@@ -272,7 +272,7 @@ func (v *CAVVirtualDataCenter) Delete(ctx context.Context) (err error) {
 	}
 
 	if r.IsError() {
-		return fmt.Errorf("error on delete VDC: %s", r.Error().(*commoncloudavenue.APIErrorResponse).FormatError())
+		return fmt.Errorf("error on delete VDC: %w", commoncloudavenue.ToError(r))
 	}
 
 	return r.Result().(*commoncloudavenue.JobStatus).WaitWithContext(ctx, 5)
@@ -296,7 +296,7 @@ func (v *CAVVirtualDataCenter) Update(ctx context.Context) (err error) {
 	}
 
 	if r.IsError() {
-		return fmt.Errorf("error on update VDC: %s", r.Error().(*commoncloudavenue.APIErrorResponse).FormatError())
+		return fmt.Errorf("error on update VDC: %w", commoncloudavenue.ToError(r))
 	}
 
 	return r.Result().(*commoncloudavenue.JobStatus).WaitWithContext(ctx, 5)
@@ -323,7 +323,7 @@ func (v *CAVVDC) New(ctx context.Context, value *CAVVirtualDataCenter) (vdc *CAV
 	}
 
 	if r.IsError() {
-		return nil, fmt.Errorf("error on create VDC: %s", r.Error().(*commoncloudavenue.APIErrorResponse).FormatError())
+		return nil, fmt.Errorf("error on create VDC: %w", commoncloudavenue.ToError(r))
 	}
 
 	if err := r.Result().(*commoncloudavenue.JobStatus).WaitWithContext(ctx, 5); err != nil {

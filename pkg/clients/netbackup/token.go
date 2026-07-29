@@ -12,10 +12,18 @@ package clientnetbackup
 import (
 	"fmt"
 	"net/url"
+	"strings"
 	"time"
 
 	"github.com/go-resty/resty/v2"
 )
+
+// maxErrorBodyLen caps the amount of raw response body embedded in a
+// fallback error message, mirroring commoncloudavenue.ToError, to avoid
+// unbounded error messages / log bloat when the Netbackup auth endpoint
+// returns large error pages (e.g. HTML gateway pages) instead of its usual
+// JSON error body.
+const maxErrorBodyLen = 512
 
 type token struct {
 	baererToken string
@@ -68,7 +76,7 @@ func (t *token) RefreshToken() error {
 		}
 
 		if r.IsError() {
-			return fmt.Errorf("authentification failed : ErrorCode:%s - %s ", r.Status(), r.Error().(*apiAuthTokenErrorResponse).FormatError())
+			return fmt.Errorf("authentication failed: %w", ToError(r))
 		}
 
 		refreshedToken := r.Result().(*authTokenResponse)
@@ -93,6 +101,56 @@ type apiAuthTokenErrorResponse struct {
 	Error string `json:"error"`
 }
 
+// FormatError - Formats the Netbackup auth error, omitting the field when
+// empty. Returns an empty string if Error is not set.
 func (e *apiAuthTokenErrorResponse) FormatError() string {
-	return fmt.Sprintf("Error:%s", e.Error)
+	if e.Error == "" {
+		return ""
+	}
+	return e.Error
+}
+
+// apiCallError carries the HTTP status code alongside the formatted message
+// so callers can check the status structurally instead of substring-matching
+// the final error string, which may embed untrusted raw response bodies.
+// Mirrors commoncloudavenue.apiCallError; kept as a small unexported
+// duplicate here rather than exported/shared to avoid introducing a
+// cross-package dependency between clientnetbackup and commoncloudavenue.
+type apiCallError struct {
+	statusCode int
+	message    string
+}
+
+func (e *apiCallError) Error() string {
+	return e.message
+}
+
+// ToError - Converts a resty response into an error.
+// It prefers the structured apiAuthTokenErrorResponse field when available,
+// falling back to the raw HTTP status and response body when the typed
+// error has nothing usable (e.g. plain-text or HTML error bodies from
+// rate-limiting or upstream gateways).
+func ToError(r *resty.Response) error {
+	statusCode := r.StatusCode()
+
+	authErr, _ := r.Error().(*apiAuthTokenErrorResponse)
+	if authErr != nil {
+		if formatted := authErr.FormatError(); formatted != "" {
+			return &apiCallError{statusCode: statusCode, message: formatted}
+		}
+	}
+
+	body := strings.TrimSpace(r.String())
+	if body == "" {
+		return &apiCallError{statusCode: statusCode, message: fmt.Sprintf("HTTPCode:%s", r.Status())}
+	}
+
+	if len(body) > maxErrorBodyLen {
+		// strings.ToValidUTF8 strips any partial/invalid trailing rune left
+		// dangling by the byte-slice truncation, instead of producing
+		// garbled replacement characters for non-ASCII upstream bodies.
+		body = strings.ToValidUTF8(body[:maxErrorBodyLen], "") + "... (truncated)"
+	}
+
+	return &apiCallError{statusCode: statusCode, message: fmt.Sprintf("HTTPCode:%s - body: %s", r.Status(), body)}
 }

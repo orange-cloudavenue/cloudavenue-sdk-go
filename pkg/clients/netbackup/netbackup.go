@@ -11,6 +11,7 @@ package clientnetbackup
 
 import (
 	"context"
+	stderrors "errors"
 	"fmt"
 	"log"
 
@@ -105,7 +106,7 @@ type Client struct {
 // new creates a new netbackup client.
 func New() (*Client, error) {
 	if !isCredentialProvider() {
-		return nil, fmt.Errorf("the netbackup client is not configured")
+		return nil, stderrors.New("the netbackup client is not configured")
 	}
 
 	if err := c.token.RefreshToken(); err != nil {

@@ -11,6 +11,7 @@ package edgegateway
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/go-resty/resty/v2"
@@ -107,7 +108,7 @@ func (c *client) DeleteEdgeGateway(ctx context.Context, edgeGatewayNameOrID stri
 	}
 
 	if r.IsError() {
-		return fmt.Errorf("error on delete edge gateway: %s", r.Error().(*commoncloudavenue.APIErrorResponse).FormatError())
+		return fmt.Errorf("error on delete edge gateway: %w", commoncloudavenue.ToError(r))
 	}
 
 	job := r.Result().(*commoncloudavenue.JobStatus)
@@ -127,7 +128,7 @@ func (c *client) CreateEdgeGateway(ctx context.Context, edgeGateway *EdgeGateway
 	}
 
 	if edgeGateway.OwnerRef == nil || (edgeGateway.OwnerRef.Name == "" && edgeGateway.OwnerRef.ID == "") {
-		return nil, fmt.Errorf("owner reference name or ID is required")
+		return nil, errors.New("owner reference name or ID is required")
 	}
 
 	var isVDCGroup bool
@@ -198,7 +199,7 @@ func (c *client) CreateEdgeGateway(ctx context.Context, edgeGateway *EdgeGateway
 	}
 
 	if r.IsError() {
-		return nil, fmt.Errorf("error on create edge gateway: %s", r.Error().(*commoncloudavenue.APIErrorResponse).FormatError())
+		return nil, fmt.Errorf("error on create edge gateway: %w", commoncloudavenue.ToError(r))
 	}
 
 	job := r.Result().(*commoncloudavenue.JobStatus)
@@ -307,12 +308,12 @@ func (c *client) getBandwidth(ctx context.Context, edgeGateway *EdgeGatewayModel
 	}
 
 	if r.IsError() {
-		return 0, fmt.Errorf("error on get edge gateway bandwidth: %s", r.Error().(*commoncloudavenue.APIErrorResponse).FormatError())
+		return 0, fmt.Errorf("error on get edge gateway bandwidth: %w", commoncloudavenue.ToError(r))
 	}
 
 	bandwidthResponse := r.Result().(*bandwidthAPI)
 	if bandwidthResponse == nil {
-		return 0, fmt.Errorf("error on get edge gateway bandwidth: response is empty")
+		return 0, errors.New("error on get edge gateway bandwidth: response is empty")
 	}
 
 	return bandwidthResponse.RateLimit, nil
@@ -341,7 +342,7 @@ func (c *client) updateBandwidth(ctx context.Context, edgeGateway *EdgeGatewayMo
 	}
 
 	if r.IsError() {
-		return fmt.Errorf("error on update edge gateway bandwidth: %s", r.Error().(*commoncloudavenue.APIErrorResponse).FormatError())
+		return fmt.Errorf("error on update edge gateway bandwidth: %w", commoncloudavenue.ToError(r))
 	}
 
 	job := r.Result().(*commoncloudavenue.JobStatus)

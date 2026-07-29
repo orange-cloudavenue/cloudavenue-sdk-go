@@ -11,6 +11,7 @@ package v1
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/url"
 
@@ -145,10 +146,10 @@ func networkContextProfilesEndpoint() string {
 // fetch the profile by name to obtain its assigned ID.
 func (e *EdgeClient) CreateNetworkContextProfile(profile *NetworkContextProfile) (*NetworkContextProfile, error) {
 	if profile == nil {
-		return nil, fmt.Errorf("profile must not be nil")
+		return nil, errors.New("profile must not be nil")
 	}
 	if profile.Name == "" {
-		return nil, fmt.Errorf("profile.Name must not be empty")
+		return nil, errors.New("profile.Name must not be empty")
 	}
 
 	cavc, err := clientcloudavenue.New()
@@ -187,7 +188,7 @@ func (e *EdgeClient) CreateNetworkContextProfile(profile *NetworkContextProfile)
 // GetNetworkContextProfileByID retrieves a Network Context Profile by its URN ID.
 func (e *EdgeClient) GetNetworkContextProfileByID(id string) (*NetworkContextProfile, error) {
 	if id == "" {
-		return nil, fmt.Errorf("id must not be empty")
+		return nil, errors.New("id must not be empty")
 	}
 
 	cavc, err := clientcloudavenue.New()
@@ -212,10 +213,10 @@ func (e *EdgeClient) GetNetworkContextProfileByID(id string) (*NetworkContextPro
 // UpdateNetworkContextProfile updates an existing TENANT-scoped Network Context Profile.
 func (e *EdgeClient) UpdateNetworkContextProfile(profile *NetworkContextProfile) (*NetworkContextProfile, error) {
 	if profile == nil {
-		return nil, fmt.Errorf("profile must not be nil")
+		return nil, errors.New("profile must not be nil")
 	}
 	if profile.ID == "" {
-		return nil, fmt.Errorf("profile.ID must not be empty")
+		return nil, errors.New("profile.ID must not be empty")
 	}
 
 	cavc, err := clientcloudavenue.New()
@@ -254,7 +255,7 @@ func (e *EdgeClient) UpdateNetworkContextProfile(profile *NetworkContextProfile)
 // DeleteNetworkContextProfile deletes a TENANT-scoped Network Context Profile by ID.
 func (e *EdgeClient) DeleteNetworkContextProfile(id string) error {
 	if id == "" {
-		return fmt.Errorf("id must not be empty")
+		return errors.New("id must not be empty")
 	}
 
 	cavc, err := clientcloudavenue.New()

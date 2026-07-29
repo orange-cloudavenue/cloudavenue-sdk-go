@@ -39,7 +39,7 @@ func (c *client) GetProperties(ctx context.Context) (values *PropertiesModel, er
 	}
 
 	if r.IsError() {
-		return nil, fmt.Errorf("error on get properties: %s", r.Error().(*commoncloudavenue.APIErrorResponse).FormatError())
+		return nil, fmt.Errorf("error on get properties: %w", commoncloudavenue.ToError(r))
 	}
 
 	return &PropertiesModel{
@@ -72,7 +72,7 @@ func (c *client) UpdateProperties(ctx context.Context, properties *PropertiesReq
 	}
 
 	if r.IsError() {
-		return nil, fmt.Errorf("error on update properties: %s", r.Error().(*commoncloudavenue.APIErrorResponse).FormatError())
+		return nil, fmt.Errorf("error on update properties: %w", commoncloudavenue.ToError(r))
 	}
 
 	return r.Result().(*commoncloudavenue.JobCreatedAPIResponse), nil

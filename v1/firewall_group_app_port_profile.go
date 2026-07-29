@@ -10,6 +10,7 @@
 package v1
 
 import (
+	stderrors "errors"
 	"fmt"
 	"net/url"
 
@@ -33,7 +34,7 @@ import (
 // - An error if no application port profile is found or if multiple profiles with the same name are found.
 func findFirewallAppPortProfile(nameOrID string, vdcOrVDCGroup idOrNameInterface) (*FirewallGroupAppPortProfiles, error) {
 	if nameOrID == "" {
-		return nil, fmt.Errorf("the name or ID must be provided")
+		return nil, stderrors.New("the name or ID must be provided")
 	}
 
 	appProfiles := make([]*FirewallGroupAppPortProfileModelResponse, 0)
@@ -106,7 +107,7 @@ func findFirewallAppPortProfile(nameOrID string, vdcOrVDCGroup idOrNameInterface
 // - error: an error if the profile could not be retrieved or if the nameOrID is empty.
 func getFirewallAppPortProfile(nameOrID string, vdcOrVDCGroup idOrNameInterface) (*FirewallGroupAppPortProfile, error) {
 	if nameOrID == "" {
-		return nil, fmt.Errorf("the name or ID must be provided")
+		return nil, stderrors.New("the name or ID must be provided")
 	}
 
 	c, err := clientcloudavenue.New()
@@ -150,7 +151,7 @@ func getFirewallAppPortProfile(nameOrID string, vdcOrVDCGroup idOrNameInterface)
 // - An error if the configuration is nil, validation fails, or the creation process encounters an issue.
 func createFirewallAppPortProfile(appPortProfileConfig *FirewallGroupAppPortProfileModel, vdcOrVDCGroup idOrNameInterface) (*FirewallGroupAppPortProfile, error) {
 	if appPortProfileConfig == nil {
-		return nil, fmt.Errorf("appPortProfileConfig is nil")
+		return nil, stderrors.New("appPortProfileConfig is nil")
 	}
 
 	if err := appPortProfileConfig.Validate(); err != nil {
