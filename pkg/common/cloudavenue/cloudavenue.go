@@ -21,6 +21,11 @@ import (
 	caverrors "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/errors"
 )
 
+// maxErrorBodyLen caps the amount of raw response body embedded in a
+// fallback error message, to avoid unbounded error messages / log bloat
+// when upstream returns large error pages (e.g. HTML gateway pages).
+const maxErrorBodyLen = 512
+
 type APIErrorResponse struct {
 	Code    string `json:"code"`
 	Reason  string `json:"reason"`

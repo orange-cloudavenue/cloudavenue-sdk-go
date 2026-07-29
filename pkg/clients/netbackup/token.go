@@ -20,6 +20,13 @@ import (
 	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/errors"
 )
 
+// maxErrorBodyLen caps the amount of raw response body embedded in a
+// fallback error message, mirroring commoncloudavenue.ToError, to avoid
+// unbounded error messages / log bloat when the Netbackup auth endpoint
+// returns large error pages (e.g. HTML gateway pages) instead of its usual
+// JSON error body.
+const maxErrorBodyLen = 512
+
 type token struct {
 	baererToken string
 	expiresAt   time.Time

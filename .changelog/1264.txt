@@ -1,0 +1,7 @@
+```release-note:bug
+`pkg/clients/cloudavenue`, `pkg/common/netbackup`, `pkg/clients/netbackup` - Apply the #1263 `FormatError`/`ToError` pattern (omit empty fields, HTTP-status + truncated-body fallback, structural status-carrying error type) to the three remaining bespoke error structs: `CerberusErrorResponse` (Cerberus auth), `commonnetbackup.APIError` (Netbackup API, 21 call sites updated), and `apiAuthTokenErrorResponse` (Netbackup auth). Also fixes a "authentification" typo and stray whitespace in the Netbackup auth error message.
+```
+
+```release-note:note
+Repo-wide error-handling hygiene sweep: flattened `fmt.Errorf(..., "%s"/"%v", err)` patterns to `%w` so wrapped errors remain unwrappable via `errors.Is`/`errors.As`; converted static-message `fmt.Errorf("literal")` calls (no format verbs) to `errors.New(...)` per `go vet`/staticcheck S1028; fixed a "storage profile limit is not integrer" typo and a capitalized "Machine with name %s not found" message in `v1/netbackup`; cleaned up a `fmt.Errorf("%s : %w", "literal", err)` antipattern in `pkg/clients/cloudavenue/cloudavenue.go` into direct format strings.
+```
