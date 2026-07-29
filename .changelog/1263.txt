@@ -1,7 +1,0 @@
-```release-note:bug
-`pkg/common/cloudavenue` - Fix `APIErrorResponse.FormatError`/`ToError` producing empty `ErrorCode: - ErrorReason: - ErrorMessage:` placeholders when the API returns a non-JSON or malformed error body; now falls back to HTTP status + raw body.
-```
-
-```release-note:enhancement
-`pkg/clients/cloudavenue` - Add automatic retry with backoff for HTTP 429/503 responses and network errors, honoring the `Retry-After` header when present.
-```
