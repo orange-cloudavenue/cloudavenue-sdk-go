@@ -11,18 +11,15 @@ package commoncloudavenue
 
 import (
 	"encoding/json"
-	"errors"
+	stderrors "errors"
 	"fmt"
 	"strconv"
 	"strings"
 
 	"github.com/go-resty/resty/v2"
-)
 
-// maxErrorBodyLen caps the amount of raw response body embedded in a
-// fallback error message, to avoid unbounded error messages / log bloat
-// when upstream returns large error pages (e.g. HTML gateway pages).
-const maxErrorBodyLen = 512
+	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/errors"
+)
 
 type APIErrorResponse struct {
 	Code    string `json:"code"`
@@ -112,12 +109,7 @@ func ToError(r *resty.Response) error {
 		return &apiCallError{statusCode: statusCode, message: fmt.Sprintf("HTTPCode:%s", r.Status())}
 	}
 
-	if len(body) > maxErrorBodyLen {
-		// strings.ToValidUTF8 strips any partial/invalid trailing rune left
-		// dangling by the byte-slice truncation, instead of producing
-		// garbled replacement characters for non-ASCII upstream bodies.
-		body = strings.ToValidUTF8(body[:maxErrorBodyLen], "") + "... (truncated)"
-	}
+	body = errors.TruncateBody(body, errors.MaxErrorBodyLen)
 
 	return &apiCallError{statusCode: statusCode, message: fmt.Sprintf("HTTPCode:%s - body: %s", r.Status(), body)}
 }
@@ -129,7 +121,7 @@ func IsNotFound(e error) bool {
 	}
 
 	var apiErr *apiCallError
-	if errors.As(e, &apiErr) {
+	if stderrors.As(e, &apiErr) {
 		return apiErr.statusCode == 404
 	}
 

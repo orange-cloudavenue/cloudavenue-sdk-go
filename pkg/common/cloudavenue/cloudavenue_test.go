@@ -137,7 +137,7 @@ func TestToError(t *testing.T) {
 			// is still valid UTF-8 with no replacement-character garbage.
 			name:        "oversized non-ASCII body truncates on a valid UTF-8 boundary",
 			statusCode:  http.StatusServiceUnavailable,
-			body:        strings.Repeat("€", 200), // 600 bytes, well past maxErrorBodyLen (512)
+			body:        strings.Repeat("€", 200), // 600 bytes, well past MaxErrorBodyLen (512)
 			contentType: "text/plain; charset=utf-8",
 			wantContains: []string{
 				"HTTPCode:503",

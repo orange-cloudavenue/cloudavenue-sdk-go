@@ -10,7 +10,7 @@
 package clientcloudavenue
 
 import (
-	"errors"
+	stderrors "errors"
 	"fmt"
 	"net/url"
 	"strings"
@@ -20,13 +20,8 @@ import (
 	"github.com/go-resty/resty/v2"
 
 	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/clients/consoles"
+	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/errors"
 )
-
-// maxErrorBodyLen caps the amount of raw response body embedded in a
-// fallback error message, mirroring commoncloudavenue.ToError, to avoid
-// unbounded error messages / log bloat when Cerberus returns large error
-// pages (e.g. HTML gateway pages) instead of its usual JSON error body.
-const maxErrorBodyLen = 512
 
 // bearerTokenType is the default OAuth2 token type used when the server
 // does not return one explicitly.
@@ -204,11 +199,11 @@ func (t *token) RefreshToken() error {
 	// Parse the OAuth2 response
 	authResp, ok := r.Result().(*cerberusAuthResponse)
 	if !ok || authResp == nil {
-		return errors.New("authentication failed: invalid response format")
+		return stderrors.New("authentication failed: invalid response format")
 	}
 
 	if authResp.AccessToken == "" {
-		return errors.New("authentication failed: empty access token received")
+		return stderrors.New("authentication failed: empty access token received")
 	}
 
 	// Set the token
@@ -294,12 +289,7 @@ func ToError(r *resty.Response) error {
 		return &apiCallError{statusCode: statusCode, message: fmt.Sprintf("HTTPCode:%s", r.Status())}
 	}
 
-	if len(body) > maxErrorBodyLen {
-		// strings.ToValidUTF8 strips any partial/invalid trailing rune left
-		// dangling by the byte-slice truncation, instead of producing
-		// garbled replacement characters for non-ASCII upstream bodies.
-		body = strings.ToValidUTF8(body[:maxErrorBodyLen], "") + "... (truncated)"
-	}
+	body = errors.TruncateBody(body, errors.MaxErrorBodyLen)
 
 	return &apiCallError{statusCode: statusCode, message: fmt.Sprintf("HTTPCode:%s - body: %s", r.Status(), body)}
 }
