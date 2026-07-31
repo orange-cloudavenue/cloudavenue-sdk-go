@@ -10,7 +10,7 @@
 package clientcloudavenue
 
 import (
-	"errors"
+	stderrors "errors"
 	"fmt"
 	"net/url"
 	"strings"
@@ -199,11 +199,11 @@ func (t *token) RefreshToken() error {
 	// Parse the OAuth2 response
 	authResp, ok := r.Result().(*cerberusAuthResponse)
 	if !ok || authResp == nil {
-		return errors.New("authentication failed: invalid response format")
+		return stderrors.New("authentication failed: invalid response format")
 	}
 
 	if authResp.AccessToken == "" {
-		return errors.New("authentication failed: empty access token received")
+		return stderrors.New("authentication failed: empty access token received")
 	}
 
 	// Set the token

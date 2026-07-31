@@ -11,7 +11,7 @@ package commoncloudavenue
 
 import (
 	"encoding/json"
-	"errors"
+	stderrors "errors"
 	"fmt"
 	"strconv"
 	"strings"
@@ -20,11 +20,6 @@ import (
 
 	caverrors "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/errors"
 )
-
-// maxErrorBodyLen caps the amount of raw response body embedded in a
-// fallback error message, to avoid unbounded error messages / log bloat
-// when upstream returns large error pages (e.g. HTML gateway pages).
-const maxErrorBodyLen = 512
 
 type APIErrorResponse struct {
 	Code    string `json:"code"`
@@ -126,7 +121,7 @@ func IsNotFound(e error) bool {
 	}
 
 	var apiErr *apiCallError
-	if errors.As(e, &apiErr) {
+	if stderrors.As(e, &apiErr) {
 		return apiErr.statusCode == 404
 	}
 
