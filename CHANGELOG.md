@@ -1,4 +1,18 @@
 ## 0.30.0 (Unreleased)
+
+### :tada: **Improvements**
+
+* `pkg/clients/cloudavenue` - Add automatic retry with exponential backoff and jitter for HTTP 429/503 responses and network errors, honoring the `Retry-After` header when present. (GH-330)
+* `pkg/common/cloudavenue`, `pkg/clients/cloudavenue` - Improve error formatting: omit empty fields, fall back to HTTP status + raw response body when the API returns non-JSON or malformed errors, and include resource address and operation context in error messages. (GH-330)
+
+### :bug: **Bug Fixes**
+
+* `pkg/clients/cloudavenue`, `pkg/common/netbackup`, `pkg/clients/netbackup` - Apply the improved `FormatError`/`ToError` pattern to `CerberusErrorResponse` (Cerberus auth), `commonnetbackup.APIError` (Netbackup API), and `apiAuthTokenErrorResponse` (Netbackup auth). Also fixes an "authentification" typo and stray whitespace in the Netbackup auth error message. (GH-330)
+* `pkg/common/cloudavenue` - Fix `APIErrorResponse.FormatError`/`ToError` producing empty `ErrorCode: - ErrorReason: - ErrorMessage:` placeholders when the API returns a non-JSON or malformed error body. (GH-330)
+### :information_source: **Notes**
+
+* Repo-wide error-handling hygiene: flatten `fmt.Errorf(..., "%s"/"%v", err)` patterns to `%w` for unwrappable errors; convert static-message `fmt.Errorf("literal")` to `errors.New(...)`; fix typos in `v1/netbackup`; clean up antipatterns in `pkg/clients/cloudavenue/cloudavenue.go`. (GH-330)
+
 ## 0.29.0 (July 15, 2026)
 
 ### :tada: **Improvements**
