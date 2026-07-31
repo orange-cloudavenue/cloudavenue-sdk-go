@@ -11,6 +11,7 @@ package edgeloadbalancer
 
 import (
 	"context"
+	stderrors "errors"
 	"fmt"
 
 	"github.com/orange-cloudavenue/common-go/validators"
@@ -77,7 +78,7 @@ func (c *client) GetVirtualService(ctx context.Context, edgeGatewayID, virtualSe
 
 	if !urn.IsLoadBalancerVirtualService(virtualServiceNameOrID) {
 		if edgeGatewayID == "" {
-			return nil, fmt.Errorf("edgeGatewayID is required if the provided virtual service is a name")
+			return nil, stderrors.New("edgeGatewayID is required if the provided virtual service is a name")
 		}
 
 		if !urn.IsEdgeGateway(edgeGatewayID) {

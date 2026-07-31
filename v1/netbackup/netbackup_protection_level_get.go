@@ -10,6 +10,7 @@
 package netbackup
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/go-resty/resty/v2"
@@ -42,11 +43,11 @@ func (p *ProtectionLevelClient) getProtectionLevelByID(req getProtectionLevelByI
 	}
 
 	if req.VAppID == nil && req.VDCID == nil && req.MachineID == nil {
-		return resp, fmt.Errorf("you must specify a VAppID, VDCID or MachineID")
+		return resp, errors.New("you must specify a VAppID, VDCID or MachineID")
 	}
 
 	if req.ProtectionLevelID == nil {
-		return resp, fmt.Errorf("you must specify a ProtectionLevelID")
+		return resp, errors.New("you must specify a ProtectionLevelID")
 	}
 
 	var r *resty.Response
@@ -83,7 +84,7 @@ func (p *ProtectionLevelClient) getProtectionLevelByID(req getProtectionLevelByI
 	}
 
 	if r.IsError() {
-		return resp, commonnetbackup.ToError(r.Error().(*commonnetbackup.APIError))
+		return resp, commonnetbackup.ToError(r)
 	}
 
 	return &r.Result().(*getProtectionLevelResponse).Data, nil
@@ -102,11 +103,11 @@ type getProtectionLevelByNameRequest struct {
 // Use GetProtectionLevelsRequest to specify the VAppID, VDCID or MachineID and the ProtectionLevelName.
 func (p *ProtectionLevelClient) getProtectionLevelByName(req getProtectionLevelByNameRequest) (resp *ProtectionLevel, err error) {
 	if req.VAppID == nil && req.VDCID == nil && req.MachineID == nil {
-		return resp, fmt.Errorf("you must specify a VAppID, VDCID or MachineID")
+		return resp, errors.New("you must specify a VAppID, VDCID or MachineID")
 	}
 
 	if req.ProtectionLevelName == nil {
-		return resp, fmt.Errorf("you must specify a ProtectionLevelName")
+		return resp, errors.New("you must specify a ProtectionLevelName")
 	}
 
 	protectionLevels, err := p.ListProtectionLevels(listProtectionLevelsRequest{

@@ -10,6 +10,7 @@
 package netbackup
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 
@@ -89,7 +90,7 @@ func (v *VcloudClient) GetVdcs() (resp *VDCs, err error) {
 	}
 
 	if r.IsError() {
-		return resp, commonnetbackup.ToError(r.Error().(*commonnetbackup.APIError))
+		return resp, commonnetbackup.ToError(r)
 	}
 
 	return &r.Result().(*vdcsResponse).Data, nil
@@ -136,7 +137,7 @@ func (v *VcloudClient) GetVDCByID(id int) (resp *VDC, err error) {
 	}
 
 	if r.IsError() {
-		return resp, commonnetbackup.ToError(r.Error().(*commonnetbackup.APIError))
+		return resp, commonnetbackup.ToError(r)
 	}
 
 	return &r.Result().(*vdcResponse).Data, nil
@@ -238,7 +239,7 @@ func (vdc *VDC) ListProtectionLevels() (resp *ProtectionLevels, err error) {
 	}
 
 	if r.IsError() {
-		return resp, commonnetbackup.ToError(r.Error().(*commonnetbackup.APIError))
+		return resp, commonnetbackup.ToError(r)
 	}
 
 	resp = &ProtectionLevels{}
@@ -261,7 +262,7 @@ func (vdc *VDC) Protect(req ProtectUnprotectRequest) (job *commonnetbackup.JobAP
 	}
 
 	if req.ProtectionLevelID == nil && req.ProtectionLevelName == "" {
-		return job, fmt.Errorf("you must specify a ProtectionLevelID or ProtectionLevelName")
+		return job, errors.New("you must specify a ProtectionLevelID or ProtectionLevelName")
 	}
 
 	var (
@@ -297,7 +298,7 @@ func (vdc *VDC) Protect(req ProtectUnprotectRequest) (job *commonnetbackup.JobAP
 	}
 
 	if r.IsError() {
-		return job, commonnetbackup.ToError(r.Error().(*commonnetbackup.APIError))
+		return job, commonnetbackup.ToError(r)
 	}
 
 	return r.Result().(*commonnetbackup.JobAPIResponse), nil
@@ -313,7 +314,7 @@ func (vdc *VDC) Unprotect(req ProtectUnprotectRequest) (job *commonnetbackup.Job
 	}
 
 	if req.ProtectionLevelID == nil && req.ProtectionLevelName == "" {
-		return job, fmt.Errorf("you must specify a ProtectionLevelID or ProtectionLevelName")
+		return job, errors.New("you must specify a ProtectionLevelID or ProtectionLevelName")
 	}
 
 	var (
@@ -348,7 +349,7 @@ func (vdc *VDC) Unprotect(req ProtectUnprotectRequest) (job *commonnetbackup.Job
 	}
 
 	if r.IsError() {
-		return job, commonnetbackup.ToError(r.Error().(*commonnetbackup.APIError))
+		return job, commonnetbackup.ToError(r)
 	}
 
 	return r.Result().(*commonnetbackup.JobAPIResponse), nil

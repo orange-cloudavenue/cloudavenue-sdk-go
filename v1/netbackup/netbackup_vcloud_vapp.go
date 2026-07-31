@@ -10,6 +10,7 @@
 package netbackup
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 	"time"
@@ -85,7 +86,7 @@ func (v *VcloudClient) GetVApps() (resp *VApps, err error) {
 	}
 
 	if r.IsError() {
-		return resp, commonnetbackup.ToError(r.Error().(*commonnetbackup.APIError))
+		return resp, commonnetbackup.ToError(r)
 	}
 
 	return &r.Result().(*VAppsResponse).Data, nil
@@ -117,7 +118,7 @@ func (v *VcloudClient) GetVAppByID(id int) (resp *VApp, err error) {
 	}
 
 	if r.IsError() {
-		return resp, commonnetbackup.ToError(r.Error().(*commonnetbackup.APIError))
+		return resp, commonnetbackup.ToError(r)
 	}
 
 	return &r.Result().(*VAppResponse).Data, nil
@@ -232,7 +233,7 @@ func (v *VcloudClient) GetVAppMachines(vAppID int) (resp *GetVAppMachinesRespons
 	}
 
 	if r.IsError() {
-		return resp, commonnetbackup.ToError(r.Error().(*commonnetbackup.APIError))
+		return resp, commonnetbackup.ToError(r)
 	}
 
 	return r.Result().(*GetVAppMachinesResponse), nil
@@ -285,7 +286,7 @@ func (vApp *VApp) ListProtectionLevels() (resp *ProtectionLevels, err error) {
 	}
 
 	if r.IsError() {
-		return resp, commonnetbackup.ToError(r.Error().(*commonnetbackup.APIError))
+		return resp, commonnetbackup.ToError(r)
 	}
 
 	resp = &ProtectionLevels{}
@@ -308,7 +309,7 @@ func (vApp *VApp) Protect(req ProtectUnprotectRequest) (job *commonnetbackup.Job
 	}
 
 	if req.ProtectionLevelID == nil && req.ProtectionLevelName == "" {
-		return job, fmt.Errorf("you must specify a ProtectionLevelID or ProtectionLevelName")
+		return job, errors.New("you must specify a ProtectionLevelID or ProtectionLevelName")
 	}
 
 	var (
@@ -344,7 +345,7 @@ func (vApp *VApp) Protect(req ProtectUnprotectRequest) (job *commonnetbackup.Job
 	}
 
 	if r.IsError() {
-		return job, commonnetbackup.ToError(r.Error().(*commonnetbackup.APIError))
+		return job, commonnetbackup.ToError(r)
 	}
 
 	return r.Result().(*commonnetbackup.JobAPIResponse), nil
@@ -360,7 +361,7 @@ func (vApp *VApp) Unprotect(req ProtectUnprotectRequest) (job *commonnetbackup.J
 	}
 
 	if req.ProtectionLevelID == nil && req.ProtectionLevelName == "" {
-		return job, fmt.Errorf("you must specify a ProtectionLevelID or ProtectionLevelName")
+		return job, errors.New("you must specify a ProtectionLevelID or ProtectionLevelName")
 	}
 
 	var (
@@ -395,7 +396,7 @@ func (vApp *VApp) Unprotect(req ProtectUnprotectRequest) (job *commonnetbackup.J
 	}
 
 	if r.IsError() {
-		return job, commonnetbackup.ToError(r.Error().(*commonnetbackup.APIError))
+		return job, commonnetbackup.ToError(r)
 	}
 
 	return r.Result().(*commonnetbackup.JobAPIResponse), nil

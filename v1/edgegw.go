@@ -76,7 +76,7 @@ func (v *EdgeGateway) List() (response *EdgeGateways, err error) {
 	}
 
 	if r.IsError() {
-		return response, fmt.Errorf("error on list edge gateways: %s", r.Error().(*commoncloudavenue.APIErrorResponse).FormatError())
+		return response, fmt.Errorf("error on list edge gateways: %w", commoncloudavenue.ToError(r))
 	}
 
 	return r.Result().(*EdgeGateways), nil
@@ -156,7 +156,7 @@ func (v *EdgeGateway) New(vdcName, tier0VrfName string) (job *commoncloudavenue.
 	}
 
 	if r.IsError() {
-		return job, fmt.Errorf("error on create edge gateway: %s", r.Error().(*commoncloudavenue.APIErrorResponse).FormatError())
+		return job, fmt.Errorf("error on create edge gateway: %w", commoncloudavenue.ToError(r))
 	}
 
 	return r.Result().(*commoncloudavenue.JobStatus), nil
@@ -182,7 +182,7 @@ func (v *EdgeGateway) NewFromVDCGroup(vdcGroupName, tier0VrfName string) (job *c
 	}
 
 	if r.IsError() {
-		return job, fmt.Errorf("error on create edge gateway from VDC Group: %s", r.Error().(*commoncloudavenue.APIErrorResponse).FormatError())
+		return job, fmt.Errorf("error on create edge gateway from VDC Group: %w", commoncloudavenue.ToError(r))
 	}
 
 	return r.Result().(*commoncloudavenue.JobStatus), nil
@@ -192,7 +192,7 @@ func (v *EdgeGateway) NewFromVDCGroup(vdcGroupName, tier0VrfName string) (job *c
 
 func (v *EdgeGateway) Get(edgeGatewayNameOrID string) (edgeClient *EdgeClient, err error) {
 	if edgeGatewayNameOrID == "" {
-		return nil, fmt.Errorf("edge gateway name or ID is empty")
+		return nil, errors.New("edge gateway name or ID is empty")
 	}
 
 	c, err := clientcloudavenue.New()
@@ -231,7 +231,7 @@ func (v *EdgeGateway) Get(edgeGatewayNameOrID string) (edgeClient *EdgeClient, e
 			}
 
 			if r.IsError() {
-				return fmt.Errorf("error on get edge gateway: %s", r.Error().(*commoncloudavenue.APIErrorResponse).FormatError())
+				return fmt.Errorf("error on get edge gateway: %w", commoncloudavenue.ToError(r))
 			}
 
 			edgeClient.EdgeGatewayType = r.Result().(*EdgeGatewayType)
@@ -292,7 +292,7 @@ func (e *EdgeGatewayType) Delete() (job *commoncloudavenue.JobStatus, err error)
 	}
 
 	if r.IsError() {
-		return job, fmt.Errorf("error on delete edge gateway: %s", r.Error().(*commoncloudavenue.APIErrorResponse).FormatError())
+		return job, fmt.Errorf("error on delete edge gateway: %w", commoncloudavenue.ToError(r))
 	}
 
 	return r.Result().(*commoncloudavenue.JobStatus), nil
@@ -327,7 +327,7 @@ func (e *EdgeGatewayType) UpdateBandwidth(rateLimit int) (job *commoncloudavenue
 	}
 
 	if r.IsError() {
-		return job, fmt.Errorf("error on set bandwidth: %s", r.Error().(*commoncloudavenue.APIErrorResponse).FormatError())
+		return job, fmt.Errorf("error on set bandwidth: %w", commoncloudavenue.ToError(r))
 	}
 
 	return r.Result().(*commoncloudavenue.JobStatus), nil
@@ -454,7 +454,7 @@ func (e *EdgeGatewayType) ListNetworksType() (response *NetworkTypes, err error)
 	}
 
 	if r.IsError() {
-		return response, fmt.Errorf("error on list networks type: %s", r.Error().(*commoncloudavenue.APIErrorResponse).FormatError())
+		return response, fmt.Errorf("error on list networks type: %w", commoncloudavenue.ToError(r))
 	}
 
 	return r.Result().(*NetworkTypes), nil

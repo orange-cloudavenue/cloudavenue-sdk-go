@@ -10,12 +10,14 @@
 package v1
 
 import (
+	"errors"
 	"fmt"
 	"regexp"
 
 	"github.com/orange-cloudavenue/cloudavenue-sdk-go/internal/endpoints"
 	clientcloudavenue "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/clients/cloudavenue"
 	commoncloudavenue "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/common/cloudavenue"
+	serrors "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/errors"
 )
 
 type PublicIP struct{}
@@ -76,7 +78,7 @@ func (v *PublicIP) GetIPs() (response *IPs, err error) {
 	}
 
 	if r.IsError() {
-		return nil, fmt.Errorf("error on get public IPs: %s", r.Error().(*commoncloudavenue.APIErrorResponse).FormatError())
+		return nil, fmt.Errorf("error on get public IPs: %w", commoncloudavenue.ToError(r))
 	}
 
 	hierarchy := r.Result().(*networkHierarchyResponse)
@@ -140,13 +142,13 @@ func (v *PublicIP) GetIP(publicIP string) (response *IP, err error) {
 		}
 	}
 
-	return nil, fmt.Errorf("public IP %s not found", publicIP)
+	return nil, fmt.Errorf("public IP %s: %w", publicIP, serrors.ErrNotFound)
 }
 
 // GetIPByJob - Returns the public IP by job.
 func (v *PublicIP) GetIPByJob(job *commoncloudavenue.JobStatus) (response *IP, err error) {
 	if job == nil {
-		return nil, fmt.Errorf("job is nil")
+		return nil, errors.New("job is nil")
 	}
 
 	for _, action := range job.Actions {
@@ -158,7 +160,7 @@ func (v *PublicIP) GetIPByJob(job *commoncloudavenue.JobStatus) (response *IP, e
 		}
 	}
 
-	return nil, fmt.Errorf("public IP not found")
+	return nil, fmt.Errorf("public IP: %w", serrors.ErrNotFound)
 }
 
 // internetServiceRequest represents the request body for creating an internet service.
@@ -171,7 +173,7 @@ type internetServiceRequest struct {
 // The edgeGatewayID must be the UUID of the edge gateway (not the name).
 func (v *PublicIP) New(edgeGatewayID string) (job *commoncloudavenue.JobStatus, err error) {
 	if edgeGatewayID == "" {
-		return nil, fmt.Errorf("edgeGatewayID is empty")
+		return nil, errors.New("edgeGatewayID is empty")
 	}
 
 	c, err := clientcloudavenue.New()
@@ -194,7 +196,7 @@ func (v *PublicIP) New(edgeGatewayID string) (job *commoncloudavenue.JobStatus, 
 	}
 
 	if r.IsError() {
-		return nil, fmt.Errorf("error on create public IP: %s", r.Error().(*commoncloudavenue.APIErrorResponse).FormatError())
+		return nil, fmt.Errorf("error on create public IP: %w", commoncloudavenue.ToError(r))
 	}
 
 	return r.Result().(*commoncloudavenue.JobStatus), nil
@@ -223,7 +225,7 @@ func (i *IP) Delete() (job *commoncloudavenue.JobStatus, err error) {
 	}
 
 	if r.IsError() {
-		return nil, fmt.Errorf("error on delete public IP: %s", r.Error().(*commoncloudavenue.APIErrorResponse).FormatError())
+		return nil, fmt.Errorf("error on delete public IP: %w", commoncloudavenue.ToError(r))
 	}
 
 	return r.Result().(*commoncloudavenue.JobStatus), nil

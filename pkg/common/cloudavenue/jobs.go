@@ -84,7 +84,7 @@ func (j *JobStatus) Refresh() error {
 	}
 
 	if r.IsError() {
-		return ToError(r.Error().(*APIErrorResponse))
+		return fmt.Errorf("error on API call: %w", ToError(r))
 	}
 
 	x := *r.Result().(*[]JobStatus)
@@ -149,7 +149,7 @@ func (j *JobStatus) WaitWithContext(ctx context.Context, refreshInterval int) er
 	for {
 		select {
 		case <-ctx.Done():
-			return fmt.Errorf("timeout reached")
+			return fmt.Errorf("timeout reached (%w)", ctx.Err())
 		case <-ticker.C:
 			err := j.Refresh()
 			if err != nil {

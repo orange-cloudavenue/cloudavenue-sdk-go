@@ -10,6 +10,7 @@
 package v1
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 
@@ -54,7 +55,7 @@ func (g VDCGroup) genericGetFirewallSecurityGroup(nameOrID string) (*govcd.NsxtF
 	var values *govcd.NsxtFirewallGroup
 
 	if nameOrID == "" {
-		return nil, fmt.Errorf("the name or ID must be provided")
+		return nil, errors.New("the name or ID must be provided")
 	}
 
 	err := retry.Do(
@@ -129,7 +130,7 @@ func (g VDCGroup) genericGetFirewallIPSet(nameOrID string) (*govcd.NsxtFirewallG
 	var values *govcd.NsxtFirewallGroup
 
 	if nameOrID == "" {
-		return nil, fmt.Errorf("the name or ID must be provided")
+		return nil, errors.New("the name or ID must be provided")
 	}
 
 	err := retry.Do(
@@ -178,7 +179,7 @@ func (g VDCGroup) GetFirewallIPSet(nameOrID string) (*FirewallGroupIPSet, error)
 // CreateFirewallDynamicSecurityGroup allow creating a new dynamic security group for the VDC Group.
 func (g VDCGroup) CreateFirewallDynamicSecurityGroup(dynamicSecurityGroupConfig *FirewallGroupDynamicSecurityGroupModel) (*FirewallGroupDynamicSecurityGroup, error) {
 	if dynamicSecurityGroupConfig == nil {
-		return nil, fmt.Errorf("dynamicSecurityGroupConfig is nil")
+		return nil, errors.New("dynamicSecurityGroupConfig is nil")
 	}
 
 	if err := dynamicSecurityGroupConfig.Validate(); err != nil {
@@ -203,7 +204,7 @@ func (g VDCGroup) genericGetFirewallDynamicSecurityGroup(nameOrID string) (*govc
 	var values *govcd.NsxtFirewallGroup
 
 	if nameOrID == "" {
-		return nil, fmt.Errorf("the name or ID must be provided")
+		return nil, errors.New("the name or ID must be provided")
 	}
 
 	err := retry.Do(

@@ -39,7 +39,7 @@ func (v *VCDA) List() (VDCAIps, error) {
 	}
 
 	if r.IsError() {
-		return nil, fmt.Errorf("error on list VDCA IPs: %s", r.Error().(*commoncloudavenue.APIErrorResponse).FormatError())
+		return nil, fmt.Errorf("error on list VDCA IPs: %w", commoncloudavenue.ToError(r))
 	}
 
 	return *r.Result().(*VDCAIps), nil
@@ -66,7 +66,7 @@ func (v *VCDA) RegisterIP(ip string) error {
 	}
 
 	if r.IsError() {
-		return fmt.Errorf("error on add new VDCA IP: %s", r.Error().(*commoncloudavenue.APIErrorResponse).FormatError())
+		return fmt.Errorf("error on add new VDCA IP: %w", commoncloudavenue.ToError(r))
 	}
 
 	return nil
@@ -88,7 +88,7 @@ func (v *VDCAIps) DeleteIP(ip string) error {
 	}
 
 	if r.IsError() {
-		return fmt.Errorf("error on delete VDCA IP: %s", r.Error().(*commoncloudavenue.APIErrorResponse).FormatError())
+		return fmt.Errorf("error on delete VDCA IP: %w", commoncloudavenue.ToError(r))
 	}
 
 	for i, vIP := range *v {

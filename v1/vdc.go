@@ -29,12 +29,12 @@ type (
 
 // ! Errors.
 var (
-	ErrEmptyVDCNameProvided    = fmt.Errorf("empty VDC name provided")
-	ErrRetrievingOrg           = fmt.Errorf("error retrieving org")
-	ErrRetrievingOrgAdmin      = fmt.Errorf("error retrieving org admin")
-	ErrRetrievingVDC           = fmt.Errorf("error retrieving VDC")
-	ErrRetrievingVDCGroup      = fmt.Errorf("error retrieving VDC Group")
-	ErrRetrievingVDCOrVDCGroup = fmt.Errorf("error retrieving VDC or VDC Group")
+	ErrEmptyVDCNameProvided    = errors.New("empty VDC name provided")
+	ErrRetrievingOrg           = errors.New("error retrieving org")
+	ErrRetrievingOrgAdmin      = errors.New("error retrieving org admin")
+	ErrRetrievingVDC           = errors.New("error retrieving VDC")
+	ErrRetrievingVDCGroup      = errors.New("error retrieving VDC Group")
+	ErrRetrievingVDCOrVDCGroup = errors.New("error retrieving VDC or VDC Group")
 )
 
 // Get retrieves the VDC (Virtual Data Center) by its name.

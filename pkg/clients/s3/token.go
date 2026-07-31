@@ -10,6 +10,7 @@
 package s3
 
 import (
+	"errors"
 	"fmt"
 	"time"
 
@@ -99,7 +100,7 @@ func (t *token) RefreshAccessKey() error {
 			}
 
 			if len(r.Result().(*tenantsResponse).Items) == 0 {
-				return fmt.Errorf("no accessible tenants found")
+				return errors.New("no accessible tenants found")
 			}
 
 			// find first tenant match with organizationName

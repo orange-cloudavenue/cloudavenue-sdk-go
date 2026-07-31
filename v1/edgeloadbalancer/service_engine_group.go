@@ -11,6 +11,7 @@ package edgeloadbalancer
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/url"
 
@@ -27,11 +28,11 @@ func (c *client) ListServiceEngineGroups(ctx context.Context, edgeGatewayID stri
 
 func (c *client) listServiceEngineGroups(_ context.Context, edgeGatewayID string) ([]*ServiceEngineGroupModel, error) {
 	if edgeGatewayID == "" {
-		return nil, fmt.Errorf("edgeGatewayID cannot be empty")
+		return nil, errors.New("edgeGatewayID cannot be empty")
 	}
 
 	if !urn.IsEdgeGateway(edgeGatewayID) {
-		return nil, fmt.Errorf("edgeGatewayID is not a valid URN")
+		return nil, errors.New("edgeGatewayID is not a valid URN")
 	}
 
 	// Find the service engine group by name
@@ -40,7 +41,7 @@ func (c *client) listServiceEngineGroups(_ context.Context, edgeGatewayID string
 
 	segs, err := c.clientGoVCD.GetAllAlbServiceEngineGroupAssignments(queryParams)
 	if err != nil {
-		return nil, fmt.Errorf("error while fetching service engine group: %s", err.Error())
+		return nil, fmt.Errorf("error while fetching service engine group: %w", err)
 	}
 
 	if len(segs) == 0 {

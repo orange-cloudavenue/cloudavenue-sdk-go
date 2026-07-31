@@ -10,7 +10,7 @@
 package v1
 
 import (
-	"fmt"
+	"errors"
 	"regexp"
 
 	"github.com/vmware/go-vcloud-director/v2/govcd"
@@ -62,7 +62,7 @@ func getUUIDFromHref(href string, idAtEnd bool) (string, error) {
 	matchList := reGetID.FindAllStringSubmatch(href, -1)
 
 	if len(matchList) == 0 {
-		return "", fmt.Errorf("no match found")
+		return "", errors.New("no match found")
 	}
 	return matchList[0][1], nil
 }

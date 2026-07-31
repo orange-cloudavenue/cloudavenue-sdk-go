@@ -10,6 +10,7 @@
 package v1
 
 import (
+	"errors"
 	"fmt"
 	"regexp"
 
@@ -21,7 +22,7 @@ import (
 // Update updates the security group.
 func (fwgsg *FirewallGroupSecurityGroup) Update(securityGroupConfig *FirewallGroupSecurityGroupModel) error {
 	if securityGroupConfig == nil {
-		return fmt.Errorf("securityGroupConfig is nil")
+		return errors.New("securityGroupConfig is nil")
 	}
 
 	var id, name string
@@ -69,7 +70,7 @@ func (fwgsg *FirewallGroupSecurityGroup) Delete() error {
 // Update updates the IP set.
 func (fwgip *FirewallGroupIPSet) Update(ipSetConfig *FirewallGroupIPSetModel) error {
 	if ipSetConfig == nil {
-		return fmt.Errorf("ipSetConfig is nil")
+		return errors.New("ipSetConfig is nil")
 	}
 
 	var id, name string
@@ -117,7 +118,7 @@ func (fwgip *FirewallGroupIPSet) Delete() error {
 // Update updates the dynamic security group.
 func (fwgdsg *FirewallGroupDynamicSecurityGroup) Update(dynamicSecurityGroupConfig *FirewallGroupDynamicSecurityGroupModel) error {
 	if dynamicSecurityGroupConfig == nil {
-		return fmt.Errorf("dynamicSecurityGroupConfig is nil")
+		return errors.New("dynamicSecurityGroupConfig is nil")
 	}
 
 	var id, name string
@@ -153,21 +154,21 @@ func (fwgdsg *FirewallGroupDynamicSecurityGroup) Delete() error {
 // validate validates the firewall group model.
 func (fg *FirewallGroupDynamicSecurityGroupModel) Validate() error {
 	if fg.Name == "" {
-		return fmt.Errorf("name is empty")
+		return errors.New("name is empty")
 	}
 
 	if len(fg.Criteria) > 3 {
-		return fmt.Errorf("allowed max length of Criteria is 3")
+		return errors.New("allowed max length of Criteria is 3")
 	}
 
 	for _, criteria := range fg.Criteria {
 		if len(criteria.Rules) > 4 {
-			return fmt.Errorf("allowed max length of Rules is 4")
+			return errors.New("allowed max length of Rules is 4")
 		}
 
 		for _, rule := range criteria.Rules {
 			if rule.Value == "" {
-				return fmt.Errorf("value is empty")
+				return errors.New("value is empty")
 			}
 
 			typeOperatorMatch := false
@@ -213,15 +214,15 @@ func (appPortProfile *FirewallGroupAppPortProfileModel) Validate() error {
 	re := regexp.MustCompile(`(?m)^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])(-([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5]))?$`)
 
 	if appPortProfile == nil {
-		return fmt.Errorf("appPortProfile is nil")
+		return errors.New("appPortProfile is nil")
 	}
 
 	if appPortProfile.Name == "" {
-		return fmt.Errorf("name is empty")
+		return errors.New("name is empty")
 	}
 
 	if len(appPortProfile.ApplicationPorts) == 0 {
-		return fmt.Errorf("ApplicationPorts is empty")
+		return errors.New("ApplicationPorts is empty")
 	}
 
 	for _, appPort := range appPortProfile.ApplicationPorts {
@@ -252,7 +253,7 @@ func (appPortProfile *FirewallGroupAppPortProfileModel) Validate() error {
 // Update updates the application port profile.
 func (fwgap *FirewallGroupAppPortProfile) Update(appPortProfileConfig *FirewallGroupAppPortProfileModel) error {
 	if appPortProfileConfig == nil {
-		return fmt.Errorf("appPortProfileConfig is nil")
+		return errors.New("appPortProfileConfig is nil")
 	}
 
 	if err := appPortProfileConfig.Validate(); err != nil {

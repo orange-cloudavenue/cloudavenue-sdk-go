@@ -84,7 +84,7 @@ func (v *VcloudClient) GetOrgs() (resp *Orgs, err error) {
 	}
 
 	if r.IsError() {
-		return resp, commonnetbackup.ToError(r.Error().(*commonnetbackup.APIError))
+		return resp, commonnetbackup.ToError(r)
 	}
 
 	return &r.Result().(*orgsResponse).Data, nil
@@ -115,7 +115,7 @@ func (v *VcloudClient) GetOrg(id int) (resp *Org, err error) {
 	}
 
 	if r.IsError() {
-		return resp, commonnetbackup.ToError(r.Error().(*commonnetbackup.APIError))
+		return resp, commonnetbackup.ToError(r)
 	}
 
 	return &r.Result().(*orgResponse).Data, nil

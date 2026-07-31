@@ -66,7 +66,7 @@ func (v *BMS) List() (response *[]BMS, err error) {
 	}
 
 	if r.IsError() {
-		return response, fmt.Errorf("error on list BMS(s): %s", r.Error().(*commoncloudavenue.APIErrorResponse).FormatError())
+		return response, fmt.Errorf("error on list BMS(s): %w", commoncloudavenue.ToError(r))
 	}
 
 	return r.Result().(*[]BMS), nil

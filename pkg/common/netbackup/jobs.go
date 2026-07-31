@@ -52,7 +52,7 @@ func (j *JobAPIResponse) Refresh() error {
 	}
 
 	if r.IsError() {
-		return ToError(r.Error().(*APIError))
+		return ToError(r)
 	}
 
 	*j = *r.Result().(*JobAPIResponse)

@@ -10,6 +10,7 @@
 package netbackup
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/go-resty/resty/v2"
@@ -44,7 +45,7 @@ func (p *ProtectionLevelClient) ListProtectionLevels(req listProtectionLevelsReq
 	}
 
 	if req.VAppID == nil && req.VDCID == nil && req.MachineID == nil {
-		return resp, fmt.Errorf("you must specify a VAppID, VDCID or MachineID")
+		return resp, errors.New("you must specify a VAppID, VDCID or MachineID")
 	}
 
 	var r *resty.Response
@@ -79,7 +80,7 @@ func (p *ProtectionLevelClient) ListProtectionLevels(req listProtectionLevelsReq
 	}
 
 	if r.IsError() {
-		return resp, commonnetbackup.ToError(r.Error().(*commonnetbackup.APIError))
+		return resp, commonnetbackup.ToError(r)
 	}
 
 	return &r.Result().(*protectionLevelsResponse).Data, nil

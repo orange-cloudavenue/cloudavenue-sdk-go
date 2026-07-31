@@ -10,6 +10,7 @@
 package rules
 
 import (
+	"errors"
 	"fmt"
 	"regexp"
 
@@ -362,22 +363,25 @@ var (
 )
 
 var (
-	ErrServiceClassNotFound = fmt.Errorf("service class not found")
+	ErrServiceClassNotFound = errors.New("service class not found")
 
-	ErrBillingModelNotAvailable = fmt.Errorf("billing model is not available")
+	ErrBillingModelNotAvailable = errors.New("billing model is not available")
 
-	ErrDisponibilityClassNotFound = fmt.Errorf("disponibility class not found")
+	ErrDisponibilityClassNotFound = errors.New("disponibility class not found")
 
-	ErrStorageProfileClassNotFound = fmt.Errorf("storage profile class not found")
+	ErrStorageProfileClassNotFound = errors.New("storage profile class not found")
 
-	ErrStorageBillingModelNotFound = fmt.Errorf("storage billing model not found")
+	ErrStorageBillingModelNotFound = errors.New("storage billing model not found")
 
-	ErrVCPUInMhzInvalid               = fmt.Errorf("VCPU in mhz is not valid")
-	ErrCPUAllocatedInvalid            = fmt.Errorf("CPU allocated is not valid")
-	ErrMemoryAllocatedInvalid         = fmt.Errorf("memory allocated is not valid")
-	ErrStorageProfileDefault          = fmt.Errorf("only one storage profile can be default")
-	ErrStorageProfileLimitInvalid     = fmt.Errorf("storage profile limit is not valid")
-	ErrStorageProfileLimitNotIntegrer = fmt.Errorf("storage profile limit is not integrer")
+	ErrVCPUInMhzInvalid           = errors.New("VCPU in mhz is not valid")
+	ErrCPUAllocatedInvalid        = errors.New("CPU allocated is not valid")
+	ErrMemoryAllocatedInvalid     = errors.New("memory allocated is not valid")
+	ErrStorageProfileDefault      = errors.New("only one storage profile can be default")
+	ErrStorageProfileLimitInvalid = errors.New("storage profile limit is not valid")
+	// ErrStorageProfileLimitNotIntegrer - Kept as-is (typo: "Integrer" -> should be
+	// "Integer") since it is an exported identifier; renaming it would be a
+	// breaking API change. Only the string message typo below has been fixed.
+	ErrStorageProfileLimitNotIntegrer = errors.New("storage profile limit is not integer")
 )
 
 var vdcRules = Rules{

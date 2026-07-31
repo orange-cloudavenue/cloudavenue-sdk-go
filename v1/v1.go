@@ -10,7 +10,7 @@
 package v1
 
 import (
-	"fmt"
+	"errors"
 
 	"github.com/vmware/go-vcloud-director/v2/govcd"
 
@@ -71,7 +71,7 @@ func (v *V1) AdminOrg() (*AdminOrg, error) {
 	}
 
 	if c.AdminOrg == nil {
-		return nil, fmt.Errorf("admin org is nil")
+		return nil, errors.New("admin org is nil")
 	}
 
 	return &AdminOrg{
