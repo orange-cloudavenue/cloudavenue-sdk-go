@@ -11,7 +11,7 @@ package commoncloudavenue
 
 import (
 	"encoding/json"
-	stderrors "errors"
+	"errors"
 	"fmt"
 	"strconv"
 	"strings"
@@ -121,7 +121,7 @@ func IsNotFound(e error) bool {
 	}
 
 	var apiErr *apiCallError
-	if stderrors.As(e, &apiErr) {
+	if errors.As(e, &apiErr) {
 		return apiErr.statusCode == 404
 	}
 
