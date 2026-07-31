@@ -11,14 +11,14 @@ package commoncloudavenue
 
 import (
 	"encoding/json"
-	stderrors "errors"
+	"errors"
 	"fmt"
 	"strconv"
 	"strings"
 
 	"github.com/go-resty/resty/v2"
 
-	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/errors"
+	caverrors "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/errors"
 )
 
 type APIErrorResponse struct {
@@ -109,7 +109,7 @@ func ToError(r *resty.Response) error {
 		return &apiCallError{statusCode: statusCode, message: fmt.Sprintf("HTTPCode:%s", r.Status())}
 	}
 
-	body = errors.TruncateBody(body, errors.MaxErrorBodyLen)
+	body = caverrors.TruncateBody(body, caverrors.MaxErrorBodyLen)
 
 	return &apiCallError{statusCode: statusCode, message: fmt.Sprintf("HTTPCode:%s - body: %s", r.Status(), body)}
 }
@@ -121,7 +121,7 @@ func IsNotFound(e error) bool {
 	}
 
 	var apiErr *apiCallError
-	if stderrors.As(e, &apiErr) {
+	if errors.As(e, &apiErr) {
 		return apiErr.statusCode == 404
 	}
 

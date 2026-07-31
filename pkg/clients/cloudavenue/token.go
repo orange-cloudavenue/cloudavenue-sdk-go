@@ -10,7 +10,7 @@
 package clientcloudavenue
 
 import (
-	stderrors "errors"
+	"errors"
 	"fmt"
 	"net/url"
 	"strings"
@@ -20,7 +20,7 @@ import (
 	"github.com/go-resty/resty/v2"
 
 	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/clients/consoles"
-	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/errors"
+	caverrors "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/errors"
 )
 
 // bearerTokenType is the default OAuth2 token type used when the server
@@ -199,11 +199,11 @@ func (t *token) RefreshToken() error {
 	// Parse the OAuth2 response
 	authResp, ok := r.Result().(*cerberusAuthResponse)
 	if !ok || authResp == nil {
-		return stderrors.New("authentication failed: invalid response format")
+		return errors.New("authentication failed: invalid response format")
 	}
 
 	if authResp.AccessToken == "" {
-		return stderrors.New("authentication failed: empty access token received")
+		return errors.New("authentication failed: empty access token received")
 	}
 
 	// Set the token
@@ -289,7 +289,7 @@ func ToError(r *resty.Response) error {
 		return &apiCallError{statusCode: statusCode, message: fmt.Sprintf("HTTPCode:%s", r.Status())}
 	}
 
-	body = errors.TruncateBody(body, errors.MaxErrorBodyLen)
+	body = caverrors.TruncateBody(body, caverrors.MaxErrorBodyLen)
 
 	return &apiCallError{statusCode: statusCode, message: fmt.Sprintf("HTTPCode:%s - body: %s", r.Status(), body)}
 }

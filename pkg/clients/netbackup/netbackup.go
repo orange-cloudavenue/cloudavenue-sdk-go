@@ -11,7 +11,7 @@ package clientnetbackup
 
 import (
 	"context"
-	stderrors "errors"
+	"errors"
 	"fmt"
 	"log"
 
@@ -19,7 +19,7 @@ import (
 	"github.com/sethvargo/go-envconfig"
 
 	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/clients/consoles"
-	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/errors"
+	caverrors "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/errors"
 )
 
 var c = &internalClient{}
@@ -66,7 +66,7 @@ func (o *Opts) Validate() error {
 	}
 
 	if o.org == "" && (o.Endpoint == "" && o.URL == "") {
-		return fmt.Errorf("failed to retrieve the netbackup URL. Because the organization and the URL are %w", errors.ErrEmpty)
+		return fmt.Errorf("failed to retrieve the netbackup URL. Because the organization and the URL are %w", caverrors.ErrEmpty)
 	}
 
 	if o.org != "" && (o.Endpoint == "" && o.URL == "") {
@@ -91,7 +91,7 @@ func (o *Opts) Validate() error {
 	}
 
 	if (o.Username == "" && o.Password != "") || (o.Username != "" && o.Password == "") {
-		return fmt.Errorf("the username or password are %w", errors.ErrEmpty)
+		return fmt.Errorf("the username or password are %w", caverrors.ErrEmpty)
 	}
 
 	// username and password are not checked because they can be empty (NetBackupClient not used)
@@ -106,7 +106,7 @@ type Client struct {
 // new creates a new netbackup client.
 func New() (*Client, error) {
 	if !isCredentialProvider() {
-		return nil, stderrors.New("the netbackup client is not configured")
+		return nil, errors.New("the netbackup client is not configured")
 	}
 
 	if err := c.token.RefreshToken(); err != nil {
