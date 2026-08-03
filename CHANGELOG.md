@@ -13,6 +13,11 @@
 
 * Repo-wide error-handling hygiene: flatten `fmt.Errorf(..., "%s"/"%v", err)` patterns to `%w` for unwrappable errors; convert static-message `fmt.Errorf("literal")` to `errors.New(...)`; fix typos in `v1/netbackup`; clean up antipatterns in `pkg/clients/cloudavenue/cloudavenue.go`. (GH-330)
 
+### :dependabot: **Dependencies**
+
+* deps: bumps github.com/jarcoal/httpmock, github.com/sethvargo/go-envconfig, go.uber.org/mock from 1.4.0 to 1.4.1 (GH-326)
+* deps: bumps golang.org/x/mod from 0.37.0 to 0.28.0 (GH-296)
+
 ## 0.29.0 (July 15, 2026)
 
 ### :tada: **Improvements**
