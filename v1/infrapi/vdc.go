@@ -256,26 +256,27 @@ func (v *CAVVDC) List() (*VDCs, error) {
 }
 
 // Delete - Delete the VDC.
-func (v *CAVVirtualDataCenter) Delete(ctx context.Context) (err error) {
+func (v *CAVVirtualDataCenter) Delete(ctx context.Context) (job *commoncloudavenue.JobStatus, err error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {
-		return err
+		return job, err
 	}
 
 	r, err := c.R().
+		SetContext(ctx).
 		SetResult(&commoncloudavenue.JobStatus{}).
 		SetError(&commoncloudavenue.APIErrorResponse{}).
 		SetPathParam("vdcName", v.VDC.Name).
 		Delete("/infrapicustomerproxy/v2.0/vdcs/{vdcName}")
 	if err != nil {
-		return err
+		return job, err
 	}
 
 	if r.IsError() {
-		return fmt.Errorf("error on delete VDC: %w", commoncloudavenue.ToError(r))
+		return job, fmt.Errorf("error on delete VDC: %w", commoncloudavenue.ToError(r))
 	}
 
-	return r.Result().(*commoncloudavenue.JobStatus).WaitWithContext(ctx, 5)
+	return r.Result().(*commoncloudavenue.JobStatus), nil
 }
 
 // Update - Update the VDC.
