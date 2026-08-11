@@ -13,7 +13,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"sync"
 
 	"github.com/vmware/go-vcloud-director/v2/govcd"
 	govcdtypes "github.com/vmware/go-vcloud-director/v2/types/v56"
@@ -39,31 +38,13 @@ var (
 	ErrRetrievingVDCOrVDCGroup = errors.New("error retrieving VDC or VDC Group")
 )
 
-// vdcLookupSource identifies which concurrent lookup produced a result.
-type vdcLookupSource uint8
-
-const (
-	vdcLookupGet       vdcLookupSource = iota // infrapi Get(name)
-	vdcLookupGetVmware                        // vmware GetVDCByNameOrId
-	vdcLookupList                             // infrapi List() name-scan
-)
-
-// vdcLookupResult carries the outcome of a single concurrent lookup in GetVDC.
-// Each lookup source sends exactly one result, so the collector never blocks.
-type vdcLookupResult struct {
-	source  vdcLookupSource
-	vmware  *govcd.Vdc
-	infrapi *infrapi.CAVVirtualDataCenter
-	err     error
-}
-
 // GetVDC retrieves the VDC (Virtual Data Center) by its name.
 // It returns a pointer to the VDC and an error if any.
-// The function performs concurrent requests from three sources: the infrapi Get lookup,
+// The function performs sequential lookups from three sources: the infrapi Get lookup,
 // the VMware GetVDCByNameOrId lookup, and an infrapi List() name-scan.
-// It uses goroutines and channels to handle the concurrent requests and waits for all goroutines to finish using a WaitGroup.
-// A single successful lookup is enough to return the VDC: the function returns an error
-// only when all three lookups fail, with the error chosen by priority Get, GetVmware, List.
+// Each lookup is only performed if the previous one failed, so a single successful
+// lookup is enough to return the VDC. The function returns an error only when all
+// three lookups fail, with the error chosen by priority Get, GetVmware, List.
 func (v *CAVVdc) GetVDC(vdcName string) (*VDC, error) {
 	if vdcName == "" {
 		return nil, ErrEmptyVDCNameProvided
@@ -74,96 +55,32 @@ func (v *CAVVdc) GetVDC(vdcName string) (*VDC, error) {
 		return nil, err
 	}
 
-	// Buffered result channel: each source sends exactly one result, and the
-	// channel is closed once all goroutines are done. The buffer guarantees
-	// goroutines never block on send.
-	results := make(chan vdcLookupResult, 3)
-
-	// wait group to wait for all goroutines to finish
-	var wg sync.WaitGroup
-
-	// goroutine to get the VDC from the vmware
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		vdc, err := c.Org.GetVDCByNameOrId(vdcName, true)
-		results <- vdcLookupResult{source: vdcLookupGetVmware, vmware: vdc, err: err}
-	}()
-
-	// goroutine to get the VDC from the infrapi
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		infraPIVDC := infrapi.CAVVDC{}
-		vdc, err := infraPIVDC.Get(vdcName)
-		results <- vdcLookupResult{source: vdcLookupGet, infrapi: vdc, err: err}
-	}()
-
-	// goroutine to get the VDC from the infrapi List name-scan
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		infraPIVDC := infrapi.CAVVDC{}
-		vdcs, err := infraPIVDC.List()
-		if err != nil {
-			// The List error is only considered when both other lookups fail.
-			results <- vdcLookupResult{source: vdcLookupList, err: err}
-			return
-		}
-		for _, vdc := range *vdcs {
-			if vdc.VDC.Name == vdcName {
-				results <- vdcLookupResult{source: vdcLookupList, infrapi: &vdc}
-				return
-			}
-		}
-		// No name match: still send a result so the collector sees the full
-		// set of outcomes and does not block waiting for a missing one.
-		results <- vdcLookupResult{source: vdcLookupList}
-	}()
-
-	// Close the results channel once every goroutine has sent its result.
-	go func() {
-		wg.Wait()
-		close(results)
-	}()
-
 	getVDC := new(VDC)
 
-	var (
-		errGet       error
-		errGetVmware error
-		errList      error
-		infrapiList  *infrapi.CAVVirtualDataCenter
-	)
-
-	for result := range results {
-		switch result.source {
-		case vdcLookupGet:
-			errGet = result.err
-			if result.infrapi != nil {
-				getVDC.infrapi = result.infrapi
-			}
-		case vdcLookupGetVmware:
-			errGetVmware = result.err
-			if result.vmware != nil {
-				getVDC.Vdc = result.vmware
-			}
-		case vdcLookupList:
-			errList = result.err
-			if result.infrapi != nil {
-				infrapiList = result.infrapi
-			}
-		}
+	// First lookup: infrapi Get(name).
+	infraPIVDC := infrapi.CAVVDC{}
+	vdc, errGet := infraPIVDC.Get(vdcName)
+	if errGet == nil {
+		getVDC.infrapi = vdc
+		return getVDC, nil
 	}
 
-	// A single successful lookup is enough: a VDC with only the vmware or only
-	// the infrapi side populated is valid.
-	if getVDC.Vdc != nil || getVDC.infrapi != nil {
-		// Fall back to the List name-scan result when the infrapi Get failed.
-		if getVDC.infrapi == nil {
-			getVDC.infrapi = infrapiList
-		}
+	// Second lookup: vmware GetVDCByNameOrId.
+	vdcVmware, errGetVmware := c.Org.GetVDCByNameOrId(vdcName, true)
+	if errGetVmware == nil {
+		getVDC.Vdc = vdcVmware
 		return getVDC, nil
+	}
+
+	// Third lookup: infrapi List() name-scan.
+	vdcs, errList := infraPIVDC.List()
+	if errList == nil {
+		for _, vdc := range *vdcs {
+			if vdc.VDC.Name == vdcName {
+				getVDC.infrapi = &vdc
+				return getVDC, nil
+			}
+		}
 	}
 
 	// All three lookups failed: return the single error by priority Get, GetVmware, List.
