@@ -42,9 +42,9 @@ var (
 // It returns a pointer to the VDC and an error if any.
 // The function performs sequential lookups from three sources: the infrapi Get lookup,
 // the VMware GetVDCByNameOrId lookup, and an infrapi List() name-scan.
-// Each lookup is only performed if the previous one failed, so a single successful
-// lookup is enough to return the VDC. The function returns an error only when all
-// three lookups fail, with the error chosen by priority Get, GetVmware, List.
+// A successful infrapi Get is enough to return the VDC, and also triggers the VMware
+// lookup to populate the VMware side of the object. The function returns an error only
+// when all three lookups fail, with the error chosen by priority Get, GetVmware, List.
 func (v *CAVVdc) GetVDC(vdcName string) (*VDC, error) {
 	if vdcName == "" {
 		return nil, ErrEmptyVDCNameProvided
@@ -60,21 +60,30 @@ func (v *CAVVdc) GetVDC(vdcName string) (*VDC, error) {
 	// First lookup: infrapi Get(name).
 	infraPIVDC := infrapi.CAVVDC{}
 	vdc, errGet := infraPIVDC.Get(vdcName)
-	if errGet == nil {
+	if errGet == nil && vdc != nil {
 		getVDC.infrapi = vdc
+
+		// Also resolve the VMware side so VDC methods backed by the VMware API
+		// (e.g. CreateVAPP, GetSecurityGroupByID) keep working. This is
+		// best-effort: a failure here only loses the VMware side.
+		vdcVmware, errGetVmware := c.Org.GetVDCByNameOrId(vdcName, true)
+		if errGetVmware == nil && vdcVmware != nil {
+			getVDC.Vdc = vdcVmware
+		}
+
 		return getVDC, nil
 	}
 
 	// Second lookup: vmware GetVDCByNameOrId.
 	vdcVmware, errGetVmware := c.Org.GetVDCByNameOrId(vdcName, true)
-	if errGetVmware == nil {
+	if errGetVmware == nil && vdcVmware != nil {
 		getVDC.Vdc = vdcVmware
 		return getVDC, nil
 	}
 
 	// Third lookup: infrapi List() name-scan.
 	vdcs, errList := infraPIVDC.List()
-	if errList == nil {
+	if errList == nil && vdcs != nil {
 		for _, vdc := range *vdcs {
 			if vdc.VDC.Name == vdcName {
 				getVDC.infrapi = &vdc
