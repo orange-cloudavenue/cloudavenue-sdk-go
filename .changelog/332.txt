@@ -1,0 +1,15 @@
+```release-note:enhancement
+`v1.VDC` - GetVDC now performs lookups sequentially with fallback instead of concurrent goroutines, reducing API calls. A successful infrapi Get returns immediately and resolves the VMware side best-effort; the infrapi List name-scan is only used as a last resort.
+```
+
+```release-note:enhancement
+`v1.VDC`, `v1.infrapi` - `Delete` now returns the created job (`*commoncloudavenue.JobCreatedAPIResponse`) instead of blocking until job completion, so callers can track the deletion asynchronously. It returns `infrapi.ErrVDCDeleteNotAccepted` when the API rejects the request without creating a job.
+```
+
+```release-note:bug
+`v1.VDC` - Guard `GetName`, `GetID`, and `GetDefaultPlacementPolicyID` against empty VMware-side objects, and reject a nil object in `New`.
+```
+
+```release-note:bug
+`internal/endpoints`, `pkg/common/cloudavenue` - Fix job status lookup by using the correct `{jobId}` path parameter (was `{job-id}`), and refuse to refresh a job with an empty ID.
+```
