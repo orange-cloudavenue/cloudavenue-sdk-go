@@ -11,6 +11,7 @@ package infrapi
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"regexp"
 
@@ -20,6 +21,10 @@ import (
 	commoncloudavenue "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/common/cloudavenue"
 	rules "github.com/orange-cloudavenue/cloudavenue-sdk-go/v1/infrapi/rules"
 )
+
+// ErrVDCDeleteNotAccepted is returned when the API rejects a VDC delete request
+// without creating a job (e.g. transient proxy rejection). Callers may retry.
+var ErrVDCDeleteNotAccepted = errors.New("the API did not create a job (jobId is empty), the delete request was not accepted")
 
 type (
 	CAVVDC               struct{}
@@ -256,7 +261,7 @@ func (v *CAVVDC) List() (*VDCs, error) {
 }
 
 // Delete - Delete the VDC.
-func (v *CAVVirtualDataCenter) Delete(ctx context.Context) (job *commoncloudavenue.JobStatus, err error) {
+func (v *CAVVirtualDataCenter) Delete(ctx context.Context) (job *commoncloudavenue.JobCreatedAPIResponse, err error) {
 	c, err := clientcloudavenue.New()
 	if err != nil {
 		return job, err
@@ -264,7 +269,7 @@ func (v *CAVVirtualDataCenter) Delete(ctx context.Context) (job *commoncloudaven
 
 	r, err := c.R().
 		SetContext(ctx).
-		SetResult(&commoncloudavenue.JobStatus{}).
+		SetResult(&commoncloudavenue.JobCreatedAPIResponse{}).
 		SetError(&commoncloudavenue.APIErrorResponse{}).
 		SetPathParam("vdcName", v.VDC.Name).
 		Delete("/infrapicustomerproxy/v2.0/vdcs/{vdcName}")
@@ -276,7 +281,12 @@ func (v *CAVVirtualDataCenter) Delete(ctx context.Context) (job *commoncloudaven
 		return job, fmt.Errorf("error on delete VDC: %w", commoncloudavenue.ToError(r))
 	}
 
-	return r.Result().(*commoncloudavenue.JobStatus), nil
+	job = r.Result().(*commoncloudavenue.JobCreatedAPIResponse)
+	if job.JobID == "" {
+		return nil, fmt.Errorf("error on delete VDC: %w", ErrVDCDeleteNotAccepted)
+	}
+
+	return job, nil
 }
 
 // Update - Update the VDC.

@@ -68,6 +68,10 @@ func (j *JobCreatedAPIResponse) GetJobStatus() (response *JobStatus, err error) 
 
 // Refresh - Refreshes the job status.
 func (j *JobStatus) Refresh() error {
+	if j.JobID == "" {
+		return fmt.Errorf("cannot refresh job status: job ID is empty")
+	}
+
 	jobID := j.JobID
 
 	c := clientcloudavenue.GetClient()
@@ -76,7 +80,7 @@ func (j *JobStatus) Refresh() error {
 		SetResult(&[]JobStatus{}).
 		SetError(&APIErrorResponse{}).
 		SetPathParams(map[string]string{
-			"job-id": j.JobID,
+			"jobId": j.JobID,
 		}).
 		Get(endpoints.JobStatusGet)
 	if err != nil {

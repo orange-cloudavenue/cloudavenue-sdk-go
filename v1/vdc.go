@@ -245,7 +245,7 @@ func (v *VDC) IsValid(isUpdate bool) error {
 }
 
 // Delete deletes the VDC.
-func (v *VDC) Delete(ctx context.Context) (job *commoncloudavenue.JobStatus, err error) {
+func (v *VDC) Delete(ctx context.Context) (job *commoncloudavenue.JobCreatedAPIResponse, err error) {
 	return v.infrapi.Delete(ctx)
 }
 
