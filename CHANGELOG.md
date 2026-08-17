@@ -1,4 +1,9 @@
 ## 0.31.0 (Unreleased)
+
+### :dependabot: **Dependencies**
+
+* deps: bumps github.com/jarcoal/httpmock, github.com/sethvargo/go-envconfig from 1.4.1 to 1.4.2 (GH-331)
+
 ## 0.30.0 (August  3, 2026)
 
 ### :tada: **Improvements**
