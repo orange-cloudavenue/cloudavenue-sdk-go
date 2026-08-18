@@ -12,7 +12,7 @@ require (
 	github.com/jarcoal/httpmock v1.4.2
 	github.com/orange-cloudavenue/common-go/validators v1.2.0
 	github.com/sethvargo/go-envconfig v1.4.3
-	github.com/stretchr/testify v1.11.1
+	github.com/stretchr/testify v1.12.0
 	github.com/vmware/go-vcloud-director/v2 v2.26.2
 	go.uber.org/mock v0.6.0
 	golang.org/x/sync v0.22.0
@@ -26,7 +26,6 @@ require (
 	github.com/araddon/dateparse v0.0.0-20210429162001-6b43995a97de // indirect
 	github.com/cloudflare/circl v1.6.4 // indirect
 	github.com/creasty/defaults v1.8.0 // indirect
-	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/fatih/color v1.19.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.13 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
@@ -70,7 +69,6 @@ require (
 	github.com/orange-cloudavenue/common-go/strcase v1.0.0 // indirect
 	github.com/orange-cloudavenue/common-go/urn v1.4.0 // indirect
 	github.com/peterhellberg/link v1.2.0 // indirect
-	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/rogpeppe/go-internal v1.15.0 // indirect
 	github.com/vmihailenco/msgpack v4.0.4+incompatible // indirect
 	github.com/vmihailenco/msgpack/v5 v5.4.1 // indirect
