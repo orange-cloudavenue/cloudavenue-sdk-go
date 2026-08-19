@@ -1,4 +1,5 @@
-## 0.31.0 (Unreleased)
+## 0.32.0 (Unreleased)
+## 0.31.0 (August 19, 2026)
 
 ### :tada: **Improvements**
 
