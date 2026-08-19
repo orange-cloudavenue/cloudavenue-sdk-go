@@ -3,6 +3,7 @@
 ### :dependabot: **Dependencies**
 
 * deps: bumps github.com/jarcoal/httpmock, github.com/sethvargo/go-envconfig from 1.4.1 to 1.4.2 (GH-331)
+* deps: bumps github.com/stretchr/testify from 1.11.1 to 1.12.0 (GH-333)
 
 ## 0.30.0 (August  3, 2026)
 
