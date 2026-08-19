@@ -1,5 +1,15 @@
 ## 0.31.0 (Unreleased)
 
+### :tada: **Improvements**
+
+* `v1.VDC` - GetVDC now performs lookups sequentially with fallback instead of concurrent goroutines, reducing API calls. A successful infrapi Get returns immediately and resolves the VMware side best-effort; the infrapi List name-scan is only used as a last resort. (GH-332)
+* `v1.VDC`, `v1.infrapi` - `Delete` now returns the created job (`*commoncloudavenue.JobCreatedAPIResponse`) instead of blocking until job completion, so callers can track the deletion asynchronously. It returns `infrapi.ErrVDCDeleteNotAccepted` when the API rejects the request without creating a job. (GH-332)
+
+### :bug: **Bug Fixes**
+
+* `internal/endpoints`, `pkg/common/cloudavenue` - Fix job status lookup by using the correct `{jobId}` path parameter (was `{job-id}`), and refuse to refresh a job with an empty ID. (GH-332)
+* `v1.VDC` - Guard `GetName`, `GetID`, and `GetDefaultPlacementPolicyID` against empty VMware-side objects, and reject a nil object in `New`. (GH-332)
+
 ### :dependabot: **Dependencies**
 
 * deps: bumps github.com/jarcoal/httpmock, github.com/sethvargo/go-envconfig from 1.4.1 to 1.4.2 (GH-331)
