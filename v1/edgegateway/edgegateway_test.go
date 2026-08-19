@@ -43,7 +43,7 @@ const (
 	testServiceDisplayName = "Cloud Avenue Services"
 	testEdgeGatewayName2   = "test-edge-gateway-2"
 	testEdgeGatewayDesc2   = "test description 2"
-	testJobID              = "job-id"
+	testJobID              = "jobId"
 	testErrorGetJobStatus  = "error-get-job-status"
 	testServiceID          = "service-id"
 )

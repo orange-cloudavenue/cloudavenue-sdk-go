@@ -13,12 +13,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"sync"
 
 	"github.com/vmware/go-vcloud-director/v2/govcd"
 	govcdtypes "github.com/vmware/go-vcloud-director/v2/types/v56"
 
 	clientcloudavenue "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/clients/cloudavenue"
+	commoncloudavenue "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/common/cloudavenue"
 	"github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/urn"
 	"github.com/orange-cloudavenue/cloudavenue-sdk-go/v1/infrapi"
 )
@@ -30,6 +30,7 @@ type (
 // ! Errors.
 var (
 	ErrEmptyVDCNameProvided    = errors.New("empty VDC name provided")
+	ErrEmptyVDCIDProvided      = errors.New("empty VDC ID provided")
 	ErrRetrievingOrg           = errors.New("error retrieving org")
 	ErrRetrievingOrgAdmin      = errors.New("error retrieving org admin")
 	ErrRetrievingVDC           = errors.New("error retrieving VDC")
@@ -37,11 +38,13 @@ var (
 	ErrRetrievingVDCOrVDCGroup = errors.New("error retrieving VDC or VDC Group")
 )
 
-// Get retrieves the VDC (Virtual Data Center) by its name.
+// GetVDC retrieves the VDC (Virtual Data Center) by its name.
 // It returns a pointer to the VDC and an error if any.
-// The function performs concurrent requests to retrieve the VDC from both the VMware and the infrapi.
-// It uses goroutines and channels to handle the concurrent requests and waits for all goroutines to finish using a WaitGroup.
-// Both lookups (VMware and InfrAPI) must succeed: if either source returns an error, the function returns nil and the error.
+// The function performs sequential lookups from three sources: the infrapi Get lookup,
+// the VMware GetVDCByNameOrId lookup, and an infrapi List() name-scan.
+// A successful infrapi Get is enough to return the VDC, and also triggers the VMware
+// lookup to populate the VMware side of the object. The function returns an error only
+// when all three lookups fail, with the error chosen by priority Get, GetVmware, List.
 func (v *CAVVdc) GetVDC(vdcName string) (*VDC, error) {
 	if vdcName == "" {
 		return nil, ErrEmptyVDCNameProvided
@@ -52,72 +55,57 @@ func (v *CAVVdc) GetVDC(vdcName string) (*VDC, error) {
 		return nil, err
 	}
 
-	// wait group to wait for all goroutines to finish
-	var wg sync.WaitGroup
-
-	// channels
-	var (
-		errChan = make(chan error, 2)
-		vdcChan = make(chan any, 2)
-	)
-
 	getVDC := new(VDC)
 
-	// goroutine to get the VDC from the vmware
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		vdc, err := c.Org.GetVDCByNameOrId(vdcName, true)
-		if err != nil {
-			errChan <- err
-			return
+	// First lookup: infrapi Get(name).
+	infraPIVDC := infrapi.CAVVDC{}
+	vdc, errGet := infraPIVDC.Get(vdcName)
+	if errGet == nil && vdc != nil {
+		getVDC.infrapi = vdc
+
+		// Also resolve the VMware side so VDC methods backed by the VMware API
+		// (e.g. CreateVAPP, GetSecurityGroupByID) keep working. This is
+		// best-effort: a failure here only loses the VMware side.
+		vdcVmware, errGetVmware := c.Org.GetVDCByNameOrId(vdcName, true)
+		if errGetVmware == nil && vdcVmware != nil {
+			getVDC.Vdc = vdcVmware
 		}
-		vdcChan <- vdc
-	}()
 
-	// goroutine to get the VDC from the infrapi
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		infraPIVDC := infrapi.CAVVDC{}
-		vdc, err := infraPIVDC.Get(vdcName)
-		if err != nil {
-			errChan <- err
-			return
-		}
-		vdcChan <- vdc
-	}()
+		return getVDC, nil
+	}
 
-	wg.Wait()
+	// Second lookup: vmware GetVDCByNameOrId.
+	vdcVmware, errGetVmware := c.Org.GetVDCByNameOrId(vdcName, true)
+	if errGetVmware == nil && vdcVmware != nil {
+		getVDC.Vdc = vdcVmware
+		return getVDC, nil
+	}
 
-	errs := []error{}
-
-	for i := 0; i < 2; i++ {
-		select {
-		case err := <-errChan:
-			errs = append(errs, err)
-		case vdc := <-vdcChan:
-			switch x := vdc.(type) {
-			case *govcd.Vdc:
-				getVDC.Vdc = x
-			case *infrapi.CAVVirtualDataCenter:
-				getVDC.infrapi = x
-			default:
-				return nil, fmt.Errorf("unknown type %T", x)
+	// Third lookup: infrapi List() name-scan.
+	vdcs, errList := infraPIVDC.List()
+	if errList == nil && vdcs != nil {
+		for _, vdc := range *vdcs {
+			if vdc.VDC.Name == vdcName {
+				getVDC.infrapi = &vdc
+				return getVDC, nil
 			}
 		}
 	}
 
-	if len(errs) > 0 {
-		return nil, fmt.Errorf("%w: %s: %w", ErrRetrievingVDC, vdcName, errors.Join(errs...))
+	// All three lookups failed: return the single error by priority Get, GetVmware, List.
+	err = errGet
+	if err == nil {
+		err = errGetVmware
+	}
+	if err == nil {
+		err = errList
+	}
+	if err == nil {
+		// Defensive guard: all lookups failed without returning an error.
+		return nil, fmt.Errorf("%w: %s: no VDC data retrieved", ErrRetrievingVDC, vdcName)
 	}
 
-	// Defensive guard: should not be reachable under current logic, but protects against future goroutine changes.
-	if getVDC.Vdc == nil || getVDC.infrapi == nil {
-		return nil, fmt.Errorf("%w: %s: incomplete VDC object retrieved", ErrRetrievingVDC, vdcName)
-	}
-
-	return getVDC, nil
+	return nil, fmt.Errorf("%w: %w", ErrRetrievingVDC, err)
 }
 
 func (v *VDC) Vmware() *govcd.Vdc {
@@ -125,12 +113,16 @@ func (v *VDC) Vmware() *govcd.Vdc {
 }
 
 // New creates a new VDC.
-// For the context use contet.withTimeout to set a timeout.
+// For the context use context.WithTimeout to set a timeout.
 func (v *CAVVdc) New(ctx context.Context, object *infrapi.CAVVirtualDataCenter) (*VDC, error) {
+	if object == nil {
+		return nil, fmt.Errorf("error on create VDC: object is nil")
+	}
+
 	infraPIVDC := infrapi.CAVVDC{}
 	vdcCreated, err := infraPIVDC.New(ctx, object)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error on create VDC: %w", err)
 	}
 
 	return v.GetVDC(vdcCreated.GetName())
@@ -147,11 +139,19 @@ func (v *CAVVdc) List() (*infrapi.VDCs, error) {
 
 // GetName returns the name of the VDC.
 func (v *VDC) GetName() string {
+	if v.Vdc == nil || v.Vdc.Vdc == nil {
+		return ""
+	}
+
 	return v.Vdc.Vdc.Name
 }
 
 // GetID returns the ID of the VDC.
 func (v *VDC) GetID() string {
+	if v.Vdc == nil || v.Vdc.Vdc == nil {
+		return ""
+	}
+
 	return v.Vdc.Vdc.ID
 }
 
@@ -254,7 +254,7 @@ func (v *VDC) IsValid(isUpdate bool) error {
 }
 
 // Delete deletes the VDC.
-func (v *VDC) Delete(ctx context.Context) (err error) {
+func (v *VDC) Delete(ctx context.Context) (job *commoncloudavenue.JobCreatedAPIResponse, err error) {
 	return v.infrapi.Delete(ctx)
 }
 
@@ -313,6 +313,10 @@ func (v VDC) SetIPSet(ipSetConfig *govcdtypes.NsxtFirewallGroup) (*govcd.NsxtFir
 
 // GetDefaultPlacementPolicyID give you the ID of the default placement policy.
 func (v VDC) GetDefaultPlacementPolicyID() string {
+	if v.Vdc == nil || v.Vdc.Vdc == nil || v.Vdc.Vdc.DefaultComputePolicy == nil {
+		return ""
+	}
+
 	return v.Vdc.Vdc.DefaultComputePolicy.ID
 }
 
