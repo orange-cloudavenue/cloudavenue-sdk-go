@@ -21,12 +21,12 @@ type S3Client struct {
 	*s3.S3
 }
 
-func (v *V1) S3() S3Client {
+func (v *V1) S3() (S3Client, error) {
 	c, err := clientS3.New()
 	if err != nil {
-		panic(err)
+		return S3Client{}, err
 	}
-	return S3Client{c.S3}
+	return S3Client{c.S3}, nil
 }
 
 type OSEError struct {

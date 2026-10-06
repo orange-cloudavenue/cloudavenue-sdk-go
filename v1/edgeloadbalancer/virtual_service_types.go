@@ -112,7 +112,7 @@ type (
 		ServiceEngineGroupID *string `validate:"omitempty,urn_rfc2141,urn=serviceEngineGroup"`
 
 		// EdgeGatewayID contains a reference to the Edge Gateway where the virtual service will be created
-		EdgeGatewayID string `validate:"required,urn_rfc2141,urn=gateway"`
+		EdgeGatewayID string `validate:"required,urn_rfc2141,urn=edgegateway"`
 
 		// CertificateID contains certificate reference if serving encrypted traffic
 		// If not set, the virtual service will not serve encrypted traffic (TLS/HTTPS).

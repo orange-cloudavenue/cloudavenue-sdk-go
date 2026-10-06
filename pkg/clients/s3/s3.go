@@ -33,6 +33,7 @@ type Opts struct {
 	CAVToken         string `env:"CAV_TOKEN"`
 	Debug            bool   `env:"DEBUG,default=false"`
 	OrganizationName string `env:"ORGANIZATION_NAME"`
+	OrganizationID   string
 	Username         string `env:"USERNAME"`
 }
 
@@ -53,6 +54,7 @@ func Init(opts Opts) (err error) {
 
 	c.token.cavToken = opts.CAVToken
 	c.token.organizationName = opts.OrganizationName
+	c.token.organizationID = opts.OrganizationID
 	c.token.oseEndpoint = opts.OSEEndpoint
 	c.token.s3Endpoint = opts.S3Endpoint
 	c.token.debug = opts.Debug

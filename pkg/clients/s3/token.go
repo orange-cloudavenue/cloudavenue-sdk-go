@@ -112,6 +112,10 @@ func (t *token) RefreshAccessKey() error {
 			}
 		}
 
+		if t.organizationID == "" {
+			return fmt.Errorf("organization ID not found for organization %q", t.organizationName)
+		}
+
 		type credentialsResponse struct {
 			Items []struct {
 				TenantID        string    `json:"tenantId"`
