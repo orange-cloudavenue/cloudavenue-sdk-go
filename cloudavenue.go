@@ -72,6 +72,7 @@ func New(opts *ClientOpts) (*Client, error) {
 		if err := clientS3.Init(clientS3.Opts{
 			Username:         cavClient.GetUsername(),
 			OrganizationName: cavClient.GetOrganization(),
+			OrganizationID:   cavClient.GetOrganizationID(),
 			Debug:            cavClient.GetDebug(),
 			CAVToken:         clientcloudavenue.GetClient().Vmware.Client.VCDToken,
 		}); err != nil {
