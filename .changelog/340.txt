@@ -1,0 +1,3 @@
+```release-note:bug
+`v1/edgeloadbalancer` - Fix `CreatePool` and `UpdatePool` failing on VCD API 39.0 and later with `Load Balancer Health Monitor Assignment is not supported with legacy API`. The health monitors are no longer sent in the Load Balancer Pool payload and are now assigned through the dedicated health monitor assignment API (`POST/GET/DELETE /cloudapi/1.0.0/loadBalancer/healthMonitors/assignment(s)`). Add `ListPoolHealthMonitors`, `AssignPoolHealthMonitor`, `UnassignPoolHealthMonitor` and `ReconcilePoolHealthMonitors`.
+```

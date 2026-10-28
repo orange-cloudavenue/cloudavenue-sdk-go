@@ -51,6 +51,20 @@ func (m *MockClient) EXPECT() *MockClientMockRecorder {
 	return m.recorder
 }
 
+// AssignPoolHealthMonitor mocks base method.
+func (m *MockClient) AssignPoolHealthMonitor(ctx context.Context, edgeGatewayID, poolID string, monitorType PoolHealthMonitorType) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AssignPoolHealthMonitor", ctx, edgeGatewayID, poolID, monitorType)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// AssignPoolHealthMonitor indicates an expected call of AssignPoolHealthMonitor.
+func (mr *MockClientMockRecorder) AssignPoolHealthMonitor(ctx, edgeGatewayID, poolID, monitorType any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AssignPoolHealthMonitor", reflect.TypeOf((*MockClient)(nil).AssignPoolHealthMonitor), ctx, edgeGatewayID, poolID, monitorType)
+}
+
 // CreatePool mocks base method.
 func (m *MockClient) CreatePool(ctx context.Context, pool PoolModelRequest) (*PoolModel, error) {
 	m.ctrl.T.Helper()
@@ -256,6 +270,21 @@ func (mr *MockClientMockRecorder) GetVirtualService(ctx, edgeGatewayID, virtualS
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetVirtualService", reflect.TypeOf((*MockClient)(nil).GetVirtualService), ctx, edgeGatewayID, virtualServiceNameOrID)
 }
 
+// ListPoolHealthMonitors mocks base method.
+func (m *MockClient) ListPoolHealthMonitors(ctx context.Context, edgeGatewayID, poolID string) ([]PoolModelHealthMonitor, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListPoolHealthMonitors", ctx, edgeGatewayID, poolID)
+	ret0, _ := ret[0].([]PoolModelHealthMonitor)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListPoolHealthMonitors indicates an expected call of ListPoolHealthMonitors.
+func (mr *MockClientMockRecorder) ListPoolHealthMonitors(ctx, edgeGatewayID, poolID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListPoolHealthMonitors", reflect.TypeOf((*MockClient)(nil).ListPoolHealthMonitors), ctx, edgeGatewayID, poolID)
+}
+
 // ListPools mocks base method.
 func (m *MockClient) ListPools(ctx context.Context, edgeGatewayID string) ([]*PoolModel, error) {
 	m.ctrl.T.Helper()
@@ -299,6 +328,34 @@ func (m *MockClient) ListVirtualServices(ctx context.Context, edgeGatewayID stri
 func (mr *MockClientMockRecorder) ListVirtualServices(ctx, edgeGatewayID any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListVirtualServices", reflect.TypeOf((*MockClient)(nil).ListVirtualServices), ctx, edgeGatewayID)
+}
+
+// ReconcilePoolHealthMonitors mocks base method.
+func (m *MockClient) ReconcilePoolHealthMonitors(ctx context.Context, edgeGatewayID, poolID string, wanted []PoolHealthMonitorType) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ReconcilePoolHealthMonitors", ctx, edgeGatewayID, poolID, wanted)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ReconcilePoolHealthMonitors indicates an expected call of ReconcilePoolHealthMonitors.
+func (mr *MockClientMockRecorder) ReconcilePoolHealthMonitors(ctx, edgeGatewayID, poolID, wanted any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReconcilePoolHealthMonitors", reflect.TypeOf((*MockClient)(nil).ReconcilePoolHealthMonitors), ctx, edgeGatewayID, poolID, wanted)
+}
+
+// UnassignPoolHealthMonitor mocks base method.
+func (m *MockClient) UnassignPoolHealthMonitor(ctx context.Context, edgeGatewayID, poolID string, monitorType PoolHealthMonitorType) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UnassignPoolHealthMonitor", ctx, edgeGatewayID, poolID, monitorType)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UnassignPoolHealthMonitor indicates an expected call of UnassignPoolHealthMonitor.
+func (mr *MockClientMockRecorder) UnassignPoolHealthMonitor(ctx, edgeGatewayID, poolID, monitorType any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UnassignPoolHealthMonitor", reflect.TypeOf((*MockClient)(nil).UnassignPoolHealthMonitor), ctx, edgeGatewayID, poolID, monitorType)
 }
 
 // UpdatePoliciesHTTPRequest mocks base method.
@@ -535,6 +592,82 @@ func (mr *MockclientFakeMockRecorder) GetAllAlbVirtualServiceSummaries(edgeGatew
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAllAlbVirtualServiceSummaries", reflect.TypeOf((*MockclientFake)(nil).GetAllAlbVirtualServiceSummaries), edgeGatewayID, queryParameters)
 }
 
+// OpenApiBuildEndpoint mocks base method.
+func (m *MockclientFake) OpenApiBuildEndpoint(endpoint ...string) (*url.URL, error) {
+	m.ctrl.T.Helper()
+	varargs := []any{}
+	for _, a := range endpoint {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "OpenApiBuildEndpoint", varargs...)
+	ret0, _ := ret[0].(*url.URL)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// OpenApiBuildEndpoint indicates an expected call of OpenApiBuildEndpoint.
+func (mr *MockclientFakeMockRecorder) OpenApiBuildEndpoint(endpoint ...any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "OpenApiBuildEndpoint", reflect.TypeOf((*MockclientFake)(nil).OpenApiBuildEndpoint), endpoint...)
+}
+
+// OpenApiDeleteItem mocks base method.
+func (m *MockclientFake) OpenApiDeleteItem(apiVersion string, urlRef *url.URL, params url.Values, additionalHeader map[string]string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "OpenApiDeleteItem", apiVersion, urlRef, params, additionalHeader)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// OpenApiDeleteItem indicates an expected call of OpenApiDeleteItem.
+func (mr *MockclientFakeMockRecorder) OpenApiDeleteItem(apiVersion, urlRef, params, additionalHeader any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "OpenApiDeleteItem", reflect.TypeOf((*MockclientFake)(nil).OpenApiDeleteItem), apiVersion, urlRef, params, additionalHeader)
+}
+
+// OpenApiGetAllItems mocks base method.
+func (m *MockclientFake) OpenApiGetAllItems(apiVersion string, urlRef *url.URL, queryParams url.Values, outType any, additionalHeader map[string]string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "OpenApiGetAllItems", apiVersion, urlRef, queryParams, outType, additionalHeader)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// OpenApiGetAllItems indicates an expected call of OpenApiGetAllItems.
+func (mr *MockclientFakeMockRecorder) OpenApiGetAllItems(apiVersion, urlRef, queryParams, outType, additionalHeader any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "OpenApiGetAllItems", reflect.TypeOf((*MockclientFake)(nil).OpenApiGetAllItems), apiVersion, urlRef, queryParams, outType, additionalHeader)
+}
+
+// OpenApiGetItem mocks base method.
+func (m *MockclientFake) OpenApiGetItem(apiVersion string, urlRef *url.URL, params url.Values, outType any, additionalHeader map[string]string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "OpenApiGetItem", apiVersion, urlRef, params, outType, additionalHeader)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// OpenApiGetItem indicates an expected call of OpenApiGetItem.
+func (mr *MockclientFakeMockRecorder) OpenApiGetItem(apiVersion, urlRef, params, outType, additionalHeader any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "OpenApiGetItem", reflect.TypeOf((*MockclientFake)(nil).OpenApiGetItem), apiVersion, urlRef, params, outType, additionalHeader)
+}
+
+// OpenApiPostItemAsync mocks base method.
+func (m *MockclientFake) OpenApiPostItemAsync(apiVersion string, urlRef *url.URL, params url.Values, payload any) (govcd.Task, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "OpenApiPostItemAsync", apiVersion, urlRef, params, payload)
+	ret0, _ := ret[0].(govcd.Task)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// OpenApiPostItemAsync indicates an expected call of OpenApiPostItemAsync.
+func (mr *MockclientFakeMockRecorder) OpenApiPostItemAsync(apiVersion, urlRef, params, payload any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "OpenApiPostItemAsync", reflect.TypeOf((*MockclientFake)(nil).OpenApiPostItemAsync), apiVersion, urlRef, params, payload)
+}
+
 // R mocks base method.
 func (m *MockclientFake) R() *resty.Request {
 	m.ctrl.T.Helper()
@@ -720,6 +853,106 @@ func (m *MockclientGoVCD) GetAllAlbVirtualServiceSummaries(edgeGatewayID string,
 func (mr *MockclientGoVCDMockRecorder) GetAllAlbVirtualServiceSummaries(edgeGatewayID, queryParameters any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAllAlbVirtualServiceSummaries", reflect.TypeOf((*MockclientGoVCD)(nil).GetAllAlbVirtualServiceSummaries), edgeGatewayID, queryParameters)
+}
+
+// MockclientGoVCDOpenAPI is a mock of clientGoVCDOpenAPI interface.
+type MockclientGoVCDOpenAPI struct {
+	ctrl     *gomock.Controller
+	recorder *MockclientGoVCDOpenAPIMockRecorder
+	isgomock struct{}
+}
+
+// MockclientGoVCDOpenAPIMockRecorder is the mock recorder for MockclientGoVCDOpenAPI.
+type MockclientGoVCDOpenAPIMockRecorder struct {
+	mock *MockclientGoVCDOpenAPI
+}
+
+// NewMockclientGoVCDOpenAPI creates a new mock instance.
+func NewMockclientGoVCDOpenAPI(ctrl *gomock.Controller) *MockclientGoVCDOpenAPI {
+	mock := &MockclientGoVCDOpenAPI{ctrl: ctrl}
+	mock.recorder = &MockclientGoVCDOpenAPIMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockclientGoVCDOpenAPI) EXPECT() *MockclientGoVCDOpenAPIMockRecorder {
+	return m.recorder
+}
+
+// OpenApiBuildEndpoint mocks base method.
+func (m *MockclientGoVCDOpenAPI) OpenApiBuildEndpoint(endpoint ...string) (*url.URL, error) {
+	m.ctrl.T.Helper()
+	varargs := []any{}
+	for _, a := range endpoint {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "OpenApiBuildEndpoint", varargs...)
+	ret0, _ := ret[0].(*url.URL)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// OpenApiBuildEndpoint indicates an expected call of OpenApiBuildEndpoint.
+func (mr *MockclientGoVCDOpenAPIMockRecorder) OpenApiBuildEndpoint(endpoint ...any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "OpenApiBuildEndpoint", reflect.TypeOf((*MockclientGoVCDOpenAPI)(nil).OpenApiBuildEndpoint), endpoint...)
+}
+
+// OpenApiDeleteItem mocks base method.
+func (m *MockclientGoVCDOpenAPI) OpenApiDeleteItem(apiVersion string, urlRef *url.URL, params url.Values, additionalHeader map[string]string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "OpenApiDeleteItem", apiVersion, urlRef, params, additionalHeader)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// OpenApiDeleteItem indicates an expected call of OpenApiDeleteItem.
+func (mr *MockclientGoVCDOpenAPIMockRecorder) OpenApiDeleteItem(apiVersion, urlRef, params, additionalHeader any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "OpenApiDeleteItem", reflect.TypeOf((*MockclientGoVCDOpenAPI)(nil).OpenApiDeleteItem), apiVersion, urlRef, params, additionalHeader)
+}
+
+// OpenApiGetAllItems mocks base method.
+func (m *MockclientGoVCDOpenAPI) OpenApiGetAllItems(apiVersion string, urlRef *url.URL, queryParams url.Values, outType any, additionalHeader map[string]string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "OpenApiGetAllItems", apiVersion, urlRef, queryParams, outType, additionalHeader)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// OpenApiGetAllItems indicates an expected call of OpenApiGetAllItems.
+func (mr *MockclientGoVCDOpenAPIMockRecorder) OpenApiGetAllItems(apiVersion, urlRef, queryParams, outType, additionalHeader any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "OpenApiGetAllItems", reflect.TypeOf((*MockclientGoVCDOpenAPI)(nil).OpenApiGetAllItems), apiVersion, urlRef, queryParams, outType, additionalHeader)
+}
+
+// OpenApiGetItem mocks base method.
+func (m *MockclientGoVCDOpenAPI) OpenApiGetItem(apiVersion string, urlRef *url.URL, params url.Values, outType any, additionalHeader map[string]string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "OpenApiGetItem", apiVersion, urlRef, params, outType, additionalHeader)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// OpenApiGetItem indicates an expected call of OpenApiGetItem.
+func (mr *MockclientGoVCDOpenAPIMockRecorder) OpenApiGetItem(apiVersion, urlRef, params, outType, additionalHeader any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "OpenApiGetItem", reflect.TypeOf((*MockclientGoVCDOpenAPI)(nil).OpenApiGetItem), apiVersion, urlRef, params, outType, additionalHeader)
+}
+
+// OpenApiPostItemAsync mocks base method.
+func (m *MockclientGoVCDOpenAPI) OpenApiPostItemAsync(apiVersion string, urlRef *url.URL, params url.Values, payload any) (govcd.Task, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "OpenApiPostItemAsync", apiVersion, urlRef, params, payload)
+	ret0, _ := ret[0].(govcd.Task)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// OpenApiPostItemAsync indicates an expected call of OpenApiPostItemAsync.
+func (mr *MockclientGoVCDOpenAPIMockRecorder) OpenApiPostItemAsync(apiVersion, urlRef, params, payload any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "OpenApiPostItemAsync", reflect.TypeOf((*MockclientGoVCDOpenAPI)(nil).OpenApiPostItemAsync), apiVersion, urlRef, params, payload)
 }
 
 // MockclientCloudavenue is a mock of clientCloudavenue interface.

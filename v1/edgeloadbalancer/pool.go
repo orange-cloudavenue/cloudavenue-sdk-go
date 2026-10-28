@@ -94,6 +94,9 @@ func (c *client) getpool(_ context.Context, edgeGatewayID, nameOrID string) (*go
 	return albPool, err
 }
 
+// CreatePool creates a Load Balancer Pool.
+// When the request defines health monitors, they are assigned through the health
+// monitor assignment API once the pool is created.
 func (c *client) CreatePool(ctx context.Context, pool PoolModelRequest) (*PoolModel, error) {
 	if err := validators.New().StructCtx(ctx, &pool); err != nil {
 		return nil, err
@@ -106,6 +109,16 @@ func (c *client) CreatePool(ctx context.Context, pool PoolModelRequest) (*PoolMo
 	poolCreated, err := c.clientGoVCD.CreateNsxtAlbPool(fromModelToGoVCDNsxtALBPool("", pool))
 	if err != nil {
 		return nil, fmt.Errorf("error creating Load Balancer Pool: %w", err)
+	}
+
+	if len(pool.HealthMonitors) > 0 {
+		if err := c.reconcileHealthMonitors(
+			poolCreated.NsxtAlbPool.GatewayRef.ID,
+			poolCreated.NsxtAlbPool.ID,
+			healthMonitorTypes(pool.HealthMonitors),
+		); err != nil {
+			return nil, fmt.Errorf("error assigning Load Balancer Pool health monitors: %w", err)
+		}
 	}
 
 	return fromVCDNsxtALBPoolToModel(poolCreated.NsxtAlbPool), nil
@@ -141,6 +154,18 @@ func (c *client) UpdatePool(ctx context.Context, poolID string, pool PoolModelRe
 	poolUpdated, err := updatePool(poolToUpdate, fromModelToGoVCDNsxtALBPool(poolToUpdate.NsxtAlbPool.ID, pool))
 	if err != nil {
 		return nil, fmt.Errorf("error updating Load Balancer Pool: %w", err)
+	}
+
+	// An empty list leaves the existing assignments untouched; to remove all the
+	// monitors of the pool, call ReconcilePoolHealthMonitors with an empty list.
+	if len(pool.HealthMonitors) > 0 {
+		if err := c.reconcileHealthMonitors(
+			poolUpdated.NsxtAlbPool.GatewayRef.ID,
+			poolUpdated.NsxtAlbPool.ID,
+			healthMonitorTypes(pool.HealthMonitors),
+		); err != nil {
+			return nil, fmt.Errorf("error assigning Load Balancer Pool health monitors: %w", err)
+		}
 	}
 
 	return fromVCDNsxtALBPoolToModel(poolUpdated.NsxtAlbPool), nil
