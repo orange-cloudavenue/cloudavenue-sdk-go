@@ -736,6 +736,8 @@ func TestClient_CreatePool(t *testing.T) {
 
 	c, _ := NewFakeClient(clientCAV)
 
+	stubHealthMonitorAPI(t, clientCAV)
+
 	urnEdgeGateway := urn.Gateway.String() + uuid.New().String()
 	urnPool := urn.LoadBalancerPool.String() + uuid.New().String()
 	urnIPSet := urn.SecurityGroup.String() + uuid.New().String()
@@ -1229,6 +1231,8 @@ func TestClient_UpdatePool(t *testing.T) {
 	clientCAV := NewMockclientFake(ctrl)
 
 	c, _ := NewFakeClient(clientCAV)
+
+	stubHealthMonitorAPI(t, clientCAV)
 
 	urnEdgeGateway := urn.Gateway.String() + uuid.New().String()
 	urnPool := urn.LoadBalancerPool.String() + uuid.New().String()

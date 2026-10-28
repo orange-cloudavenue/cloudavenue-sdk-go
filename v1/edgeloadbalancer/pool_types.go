@@ -365,16 +365,6 @@ func fromModelToGoVCDNsxtALBPool(poolID string, pool PoolModelRequest) *govcdtyp
 		DefaultPort:              pool.DefaultPort,
 		GracefulTimeoutPeriod:    pool.GracefulTimeoutPeriod,
 		PassiveMonitoringEnabled: pool.PassiveMonitoringEnabled,
-		HealthMonitors: func() []govcdtypes.NsxtAlbPoolHealthMonitor {
-			monitors := make([]govcdtypes.NsxtAlbPoolHealthMonitor, len(pool.HealthMonitors))
-			for i, monitor := range pool.HealthMonitors {
-				monitors[i] = govcdtypes.NsxtAlbPoolHealthMonitor{
-					Name: monitor.Name,
-					Type: string(monitor.Type),
-				}
-			}
-			return monitors
-		}(),
 		Members: func() []govcdtypes.NsxtAlbPoolMember {
 			members := make([]govcdtypes.NsxtAlbPoolMember, len(pool.Members))
 			for i, member := range pool.Members {

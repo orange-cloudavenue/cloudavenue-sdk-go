@@ -38,6 +38,15 @@ type (
 		UpdatePool(ctx context.Context, poolID string, pool PoolModelRequest) (*PoolModel, error)
 		DeletePool(ctx context.Context, poolID string) error
 
+		// * Pools Health Monitors
+		// Since the VCD API 39.0 the health monitors are assigned with a dedicated API.
+		// CreatePool and UpdatePool reconcile them when the request defines some, the
+		// methods below allow to manage them independently from the pool lifecycle.
+		ListPoolHealthMonitors(ctx context.Context, edgeGatewayID, poolID string) ([]PoolModelHealthMonitor, error)
+		AssignPoolHealthMonitor(ctx context.Context, edgeGatewayID, poolID string, monitorType PoolHealthMonitorType) error
+		UnassignPoolHealthMonitor(ctx context.Context, edgeGatewayID, poolID string, monitorType PoolHealthMonitorType) error
+		ReconcilePoolHealthMonitors(ctx context.Context, edgeGatewayID, poolID string, wanted []PoolHealthMonitorType) error
+
 		// * Virtual Services
 		ListVirtualServices(ctx context.Context, edgeGatewayID string) ([]*VirtualServiceModel, error)
 		GetVirtualService(ctx context.Context, edgeGatewayID, virtualServiceNameOrID string) (*VirtualServiceModel, error)
@@ -63,12 +72,18 @@ type (
 	// Internal client interfaces.
 	clientFake interface {
 		clientGoVCD
+		clientGoVCDOpenAPI
 		clientCloudavenue
 	}
 
 	client struct {
-		clientGoVCD       clientGoVCD
-		clientCloudavenue clientCloudavenue
+		clientGoVCD        clientGoVCD
+		clientGoVCDOpenAPI clientGoVCDOpenAPI
+		clientCloudavenue  clientCloudavenue
+
+		// apiVersion is the OpenAPI version of the VCD instance, required by the
+		// generic OpenAPI calls which take it as a parameter.
+		apiVersion string
 	}
 
 	clientGoVCD interface {
@@ -88,6 +103,19 @@ type (
 		CreateNsxtAlbVirtualService(albVirtualServiceConfig *govcdtypes.NsxtAlbVirtualService) (*govcd.NsxtAlbVirtualService, error)
 	}
 
+	// Generic OpenAPI calls of go-vcloud-director. They live on the underlying
+	// govcd.Client (a named field of VCDClient, not an embedded one), so they
+	// cannot join the clientGoVCD interface, which is satisfied by *govcd.VCDClient.
+	// Used by the entities go-vcloud-director does not expose, like the Load
+	// Balancer Pool health monitor assignments.
+	clientGoVCDOpenAPI interface {
+		OpenApiBuildEndpoint(endpoint ...string) (*url.URL, error)
+		OpenApiGetItem(apiVersion string, urlRef *url.URL, params url.Values, outType interface{}, additionalHeader map[string]string) error
+		OpenApiGetAllItems(apiVersion string, urlRef *url.URL, queryParams url.Values, outType interface{}, additionalHeader map[string]string) error
+		OpenApiPostItemAsync(apiVersion string, urlRef *url.URL, params url.Values, payload interface{}) (govcd.Task, error)
+		OpenApiDeleteItem(apiVersion string, urlRef *url.URL, params url.Values, additionalHeader map[string]string) error
+	}
+
 	clientCloudavenue interface {
 		Refresh() error
 		R() *resty.Request
@@ -102,15 +130,19 @@ func NewClient() (Client, error) {
 	}
 
 	return &client{
-		clientCloudavenue: c,
-		clientGoVCD:       c.Vmware,
+		clientCloudavenue:  c,
+		clientGoVCD:        c.Vmware,
+		clientGoVCDOpenAPI: &c.Vmware.Client,
+		apiVersion:         c.Vmware.Client.APIVersion,
 	}, nil
 }
 
 // NewFakeClient creates a new fake Org client used for testing.
 func NewFakeClient(i clientFake) (Client, error) {
 	return &client{
-		clientCloudavenue: i,
-		clientGoVCD:       i,
+		clientCloudavenue:  i,
+		clientGoVCD:        i,
+		clientGoVCDOpenAPI: i,
+		apiVersion:         clientcloudavenue.DefaultVCDAPIVersion,
 	}, nil
 }
