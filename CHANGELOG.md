@@ -1,4 +1,12 @@
 ## 0.32.0 (Unreleased)
+
+### :bug: **Bug Fixes**
+
+* `v1/edgeloadbalancer` - Fix `CreatePool` and `UpdatePool` failing on VCD API 39.0 and later with `Load Balancer Health Monitor Assignment is not supported with legacy API`. The health monitors are no longer sent in the Load Balancer Pool payload and are now assigned through the dedicated health monitor assignment API (`POST/GET/DELETE /cloudapi/1.0.0/loadBalancer/healthMonitors/assignment(s)`). Add `ListPoolHealthMonitors`, `AssignPoolHealthMonitor`, `UnassignPoolHealthMonitor` and `ReconcilePoolHealthMonitors`. (GH-340)
+### :information_source: **Notes**
+
+* `all` - The Go toolchain required to build this module is now go 1.26.8 (previously go 1.25.8). No go 1.26 language feature is used; the minimum version is raised so the CI license check (`go.elastic.co/go-licence-detector` v0.11.1, which requires go >= 1.26.0) can provision its toolchain from this module's go directive. (GH-340)
+
 ## 0.31.1 (October  6, 2026)
 ## 0.31.0 (August 19, 2026)
 
