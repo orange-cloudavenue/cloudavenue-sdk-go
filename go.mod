@@ -15,7 +15,7 @@ require (
 	github.com/stretchr/testify v1.12.1
 	github.com/vmware/go-vcloud-director/v2 v2.26.2
 	go.uber.org/mock v0.6.0
-	golang.org/x/sync v0.24.0
+	golang.org/x/sync v0.25.0
 )
 
 require (
