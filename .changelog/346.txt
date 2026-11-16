@@ -1,0 +1,3 @@
+```release-note:bug
+`v1/infrapi` - VDC `New` and `Update` now fail with the HTTP status and the truncated response body when the API answers outside 2xx (e.g. a final 3xx from an intercepting proxy) or returns a 2xx without a job ID, instead of the opaque `cannot refresh job status: job ID is empty`. Adds `commoncloudavenue.ErrJobIDEmpty` (detectable with `errors.Is`) and `commoncloudavenue.MissingJobIDError`.
+```

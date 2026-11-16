@@ -11,12 +11,40 @@ package commoncloudavenue
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"strings"
 	"time"
+
+	"github.com/go-resty/resty/v2"
 
 	"github.com/orange-cloudavenue/cloudavenue-sdk-go/internal/endpoints"
 	clientcloudavenue "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/clients/cloudavenue"
+	caverrors "github.com/orange-cloudavenue/cloudavenue-sdk-go/pkg/errors"
 )
+
+// ErrJobIDEmpty is returned when the API responds without a job ID, meaning
+// the requested operation never started. Callers can match it with errors.Is
+// to produce a tailored message.
+var ErrJobIDEmpty = errors.New("job id is empty")
+
+// MissingJobIDError builds the error to return when a write operation got an
+// HTTP response with a non-error status code but no job ID in the body: the
+// operation did not start and the raw response (status plus truncated body)
+// is the only evidence of why the API declined it. It wraps ErrJobIDEmpty so
+// callers can detect the case with errors.Is and keeps its wording in the
+// message for substring matching.
+func MissingJobIDError(r *resty.Response) error {
+	return &apiCallError{
+		statusCode: r.StatusCode(),
+		message: fmt.Sprintf("%s: HTTP %s, response body: %s",
+			ErrJobIDEmpty,
+			r.Status(),
+			caverrors.TruncateBody(strings.TrimSpace(r.String()), caverrors.MaxErrorBodyLen),
+		),
+		wrapped: ErrJobIDEmpty,
+	}
+}
 
 // JobStatusMessage is a type for job status.
 type JobStatusMessage string
@@ -69,7 +97,7 @@ func (j *JobCreatedAPIResponse) GetJobStatus() (response *JobStatus, err error) 
 // Refresh - Refreshes the job status.
 func (j *JobStatus) Refresh() error {
 	if j.JobID == "" {
-		return fmt.Errorf("cannot refresh job status: job ID is empty")
+		return fmt.Errorf("cannot refresh job status: %w", ErrJobIDEmpty)
 	}
 
 	jobID := j.JobID
