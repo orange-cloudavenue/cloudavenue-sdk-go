@@ -306,11 +306,16 @@ func (v *CAVVirtualDataCenter) Update(ctx context.Context) (err error) {
 		return err
 	}
 
-	if r.IsError() {
+	if !r.IsSuccess() {
 		return fmt.Errorf("error on update VDC: %w", commoncloudavenue.ToError(r))
 	}
 
-	return r.Result().(*commoncloudavenue.JobStatus).WaitWithContext(ctx, 5)
+	job := r.Result().(*commoncloudavenue.JobStatus)
+	if job.JobID == "" {
+		return fmt.Errorf("error on update VDC: %w", commoncloudavenue.MissingJobIDError(r))
+	}
+
+	return job.WaitWithContext(ctx, 5)
 }
 
 // New - Create a new VDC.
@@ -333,11 +338,16 @@ func (v *CAVVDC) New(ctx context.Context, value *CAVVirtualDataCenter) (vdc *CAV
 		return vdc, err
 	}
 
-	if r.IsError() {
+	if !r.IsSuccess() {
 		return nil, fmt.Errorf("error on create VDC: %w", commoncloudavenue.ToError(r))
 	}
 
-	if err := r.Result().(*commoncloudavenue.JobStatus).WaitWithContext(ctx, 5); err != nil {
+	job := r.Result().(*commoncloudavenue.JobStatus)
+	if job.JobID == "" {
+		return nil, fmt.Errorf("error on create VDC: %w", commoncloudavenue.MissingJobIDError(r))
+	}
+
+	if err := job.WaitWithContext(ctx, 5); err != nil {
 		return nil, err
 	}
 

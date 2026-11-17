@@ -82,10 +82,18 @@ func (e *APIErrorResponse) FormatError() string {
 type apiCallError struct {
 	statusCode int
 	message    string
+	// wrapped carries an optional sentinel error (e.g. ErrJobIDEmpty) so
+	// callers can detect specific failure modes with errors.Is.
+	wrapped error
 }
 
 func (e *apiCallError) Error() string {
 	return e.message
+}
+
+// Unwrap exposes the optional sentinel error for errors.Is matching.
+func (e *apiCallError) Unwrap() error {
+	return e.wrapped
 }
 
 // ToError - Converts a resty response into an error.
