@@ -8,6 +8,7 @@
 
 * deps: bump Go version to 1.26.11 (GH-347)
 * deps: bumps github.com/stretchr/testify, golang.org/x/sync from 1.12.0 to 1.12.1 (GH-337)
+* deps: bumps golang.org/x/sync from 0.24.0 to 0.25.0, github.com/ProtonMail/go-crypto from 1.4.1 to 1.5.2, github.com/cloudflare/circl from 1.6.4 to 1.6.5, github.com/hashicorp/terraform-exec from 0.25.2 to 0.26.0, github.com/hashicorp/terraform-json from 0.27.2 to 0.29.0, github.com/hashicorp/terraform-plugin-log from 0.10.0 to 0.11.0, github.com/hashicorp/terraform-registry-address from 0.4.0 to 0.5.1, github.com/go-playground/validator/v10 from 10.30.3 to 10.30.6, and related indirect dependencies, to address security advisories. (GH-348)
 
 ## 0.31.2 (October 28, 2026)
 
