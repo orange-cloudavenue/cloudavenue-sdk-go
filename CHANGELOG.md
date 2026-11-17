@@ -1,5 +1,9 @@
 ## 0.32.0 (Unreleased)
 
+### :bug: **Bug Fixes**
+
+* `v1/infrapi` - VDC `New` and `Update` now fail with the HTTP status and the truncated response body when the API answers outside 2xx (e.g. a final 3xx from an intercepting proxy) or returns a 2xx without a job ID, instead of the opaque `cannot refresh job status: job ID is empty`. Adds `commoncloudavenue.ErrJobIDEmpty` (detectable with `errors.Is`) and `commoncloudavenue.MissingJobIDError`. (GH-346)
+
 ### :dependabot: **Dependencies**
 
 * deps: bumps github.com/stretchr/testify, golang.org/x/sync from 1.12.0 to 1.12.1 (GH-337)
