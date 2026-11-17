@@ -6,6 +6,7 @@
 
 ### :dependabot: **Dependencies**
 
+* deps: bump Go version to 1.26.11 (GH-347)
 * deps: bumps github.com/stretchr/testify, golang.org/x/sync from 1.12.0 to 1.12.1 (GH-337)
 
 ## 0.31.2 (October 28, 2026)
