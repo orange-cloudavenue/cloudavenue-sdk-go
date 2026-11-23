@@ -8,7 +8,7 @@ require (
 	github.com/fbiville/markdown-table-formatter v0.3.0
 	github.com/go-resty/resty/v2 v2.17.2
 	github.com/google/uuid v1.6.0
-	github.com/hashicorp/terraform-plugin-sdk/v2 v2.40.1
+	github.com/hashicorp/terraform-plugin-sdk/v2 v2.41.1
 	github.com/jarcoal/httpmock v1.4.2
 	github.com/orange-cloudavenue/common-go/validators v1.2.0
 	github.com/sethvargo/go-envconfig v1.4.3
